@@ -227,9 +227,14 @@ export class SavingsAccountChargesStepComponent implements OnInit, OnChanges {
     return { charges: this.chargesDataSource };
   }
 
+  // get selectedClientMembers() {
+  //   return { selectedMembers: this.activeClientMembers.filter((item: any) => item.selected) };
+  // }
+
   get selectedClientMembers() {
-    return { selectedMembers: this.activeClientMembers.filter((item: any) => item.selected) };
+    return { selectedMembers: (this.activeClientMembers || []).filter((item: any) => item.selected) };
   }
+  
 
   /** Toggle all checks */
   toggleSelects() {
