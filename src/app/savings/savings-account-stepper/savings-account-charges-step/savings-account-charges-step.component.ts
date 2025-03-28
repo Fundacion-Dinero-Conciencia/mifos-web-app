@@ -234,7 +234,6 @@ export class SavingsAccountChargesStepComponent implements OnInit, OnChanges {
   get selectedClientMembers() {
     return { selectedMembers: (this.activeClientMembers || []).filter((item: any) => item.selected) };
   }
-  
 
   /** Toggle all checks */
   toggleSelects() {
