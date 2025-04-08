@@ -36,3 +36,35 @@
     background: #555;
   }
 }
+
+.loader-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  z-index: 9999;
+}
+
+.logo-loader {
+  width: 160px;
+  animation: fade-zoom 1s ease-in-out;
+}
+
+@keyframes fade-zoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hide-loader {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
