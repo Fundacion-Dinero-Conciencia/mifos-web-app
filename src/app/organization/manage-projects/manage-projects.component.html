@@ -72,6 +72,17 @@
           >
             <i [matTooltip]="'labels.buttons.View Status History' | translate" class="fa fa-history"></i>
           </button>
+
+          <a
+            class="document-action-button custom-button"
+            mat-raised-button
+            color="primary"
+            [href]="projectUrl + element.id"
+            target="_blank"
+            rel="noopener"
+          >
+            <i class="fa fa-external-link-alt" [matTooltip]="'labels.buttons.View Project' | translate"></i>
+          </a>
         </td>
       </ng-container>
 
