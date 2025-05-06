@@ -32,7 +32,6 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Impact Description' | translate }}</mat-label>
-            <input matInput autofocus formControlName="impactDescription" />
             <textarea
               matInput
               formControlName="impactDescription"
@@ -40,14 +39,13 @@
               cdkAutosizeMinRows="2"
             ></textarea>
             <mat-error *ngIf="investmentProjectForm?.get('impactDescription')?.hasError('required')">
-              {{ 'labels.inputs.custom.Description' | translate }} {{ 'labels.commons.is' | translate }}
+              {{ 'labels.inputs.custom.Impact Description' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Institution Description' | translate }}</mat-label>
-            <input matInput autofocus formControlName="institutionDescription" />
             <textarea
               matInput
               formControlName="institutionDescription"
@@ -55,7 +53,7 @@
               cdkAutosizeMinRows="2"
             ></textarea>
             <mat-error *ngIf="investmentProjectForm?.get('institutionDescription')?.hasError('required')">
-              {{ 'labels.inputs.custom.Description' | translate }} {{ 'labels.commons.is' | translate }}
+              {{ 'labels.inputs.custom.Institution Description' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
           </mat-form-field>

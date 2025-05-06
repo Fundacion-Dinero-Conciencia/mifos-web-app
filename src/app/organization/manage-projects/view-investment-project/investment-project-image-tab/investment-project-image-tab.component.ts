@@ -23,6 +23,9 @@ export class InvestmentProjectImageTabComponent {
   ) {
     this.projectId = this.route.parent.snapshot.params['id'];
 
+    if (this.projectId) {
+      this.getProjectImages();
+    }
     this.route.data.subscribe((data: { imageData: any }) => {
       this.imageData = data.imageData;
       console.log(this.imageData);
