@@ -49,9 +49,6 @@ export class CretateSubCreditComponent implements OnInit {
       dateOfCreation: [
         this.settingService.businessDate,
         Validators.required
-      ],
-      referenceLoanId: [
-        this.loanId
       ]
     });
   }
