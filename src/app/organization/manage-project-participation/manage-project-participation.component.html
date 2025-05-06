@@ -56,6 +56,7 @@
           <td mat-cell *matCellDef="let item">
             <span *ngIf="item.status.value !== 100">
               <button
+                *ngIf="item.status.value !== 300"
                 class="action-button"
                 mat-raised-button
                 color="warn"
@@ -66,16 +67,7 @@
                 <fa-icon icon="trash"></fa-icon>
               </button>
               <button
-                class="action-button"
-                mat-raised-button
-                style="background-color: green; color: white"
-                matTooltip="{{ 'tooltips.Approve' | translate }}"
-                matTooltipPosition="right"
-                (click)="manageRequest(item, 'Approve')"
-              >
-                <fa-icon icon="check"></fa-icon>
-              </button>
-              <button
+                *ngIf="item.status.value !== 400"
                 class="action-button"
                 mat-raised-button
                 color="primary"
