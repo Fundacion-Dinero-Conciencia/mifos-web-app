@@ -92,7 +92,7 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Invest' | translate }}</th>
           <td mat-cell *matCellDef="let item">
             <mat-checkbox
-              *ngIf="item.status.value === 100"
+              *ngIf="item.status.value === 400 || item.status.value === 200"
               [(ngModel)]="item.selected"
               (change)="onSelectionChange(item)"
             ></mat-checkbox>

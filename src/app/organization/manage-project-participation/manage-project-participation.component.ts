@@ -129,6 +129,8 @@ export class ManageProjectParticipationComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        result.amount = item.amount;
+        result.projectId = item.id;
         item.selectedData = result;
         this.selectedItems.push(item);
       } else {
