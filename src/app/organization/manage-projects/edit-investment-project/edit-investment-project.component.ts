@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
@@ -55,8 +55,6 @@ export class EditInvestmentProjectComponent implements OnInit {
       this.organizationService.getInvestmentProject(id).subscribe({
         next: (data) => {
           this.projectData = data;
-
-          console.log('dataa: ', data);
 
           this.investmentProjectForm = this.formBuilder.group({
             name: [
@@ -116,7 +114,7 @@ export class EditInvestmentProjectComponent implements OnInit {
               Validators.required
             ],
             subCategories: [
-              '',
+              data.subCategories?.map((o: any) => o.id) || [],
               Validators.required
             ],
             areaId: [
@@ -124,12 +122,12 @@ export class EditInvestmentProjectComponent implements OnInit {
               Validators.required
             ],
             objectives: [
-              '',
+              data.objectives?.map((o: any) => o.id) || [],
               Validators.required
             ],
             isActive: [data.isActive],
             statusId: [
-              data.status.id,
+              data.status.statusValue.id,
               Validators.required
             ]
           });
