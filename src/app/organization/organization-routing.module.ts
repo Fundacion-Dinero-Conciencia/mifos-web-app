@@ -123,6 +123,7 @@ import { InvestmentProjectDocumentsResolver } from './manage-projects/investment
 import { InvestmentProjectGeneralTabComponent } from './manage-projects/view-investment-project/investment-project-general-tab/investment-project-general-tab.component';
 import { InvestmentProjectImageTabComponent } from './manage-projects/view-investment-project/investment-project-image-tab/investment-project-image-tab.component';
 import { DataCodeObjectiveResolver } from './manage-projects/data-code-objective.resolver';
+import { CreateProjectParticipationComponent } from './manage-project-participation/create-project-participation/create-project-participation.component';
 
 /** Organization Routes */
 const routes: Routes = [
@@ -798,6 +799,14 @@ const routes: Routes = [
               component: ManageProjectParticipationComponent,
               resolve: {
                 projectparticipations: ManageProjectParticipationsResolver
+              }
+            },
+            {
+              path: 'create',
+              component: CreateProjectParticipationComponent,
+              data: { title: 'Create Project Participation', breadcrumb: 'Create Project Participation' },
+              resolve: {
+                accountData: InvestmentProjectTemplateResolver
               }
             }
           ]

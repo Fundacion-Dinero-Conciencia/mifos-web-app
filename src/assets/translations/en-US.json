@@ -371,6 +371,7 @@
       "Create Office": "Create Office",
       "Create Payment Type": "Create Payment Type",
       "Create Preference": "Create Preference",
+      "Create Project Participation": "Create Project Participation",
       "Create Provisioning Criteria": "Create Provisioning Criteria",
       "Create Provisioning Entry": "Create Provisioning Entry",
       "Create Recurring Deposit Product": "Create Recurring Deposit Product",
@@ -3412,7 +3413,8 @@
       "Write a note": "Write a note",
       "“Maker-Checker” principle requires every tasks": "The “Maker-Checker” principle requires every tasks to be completed by two people to reduce the chance of errors and misuse. One person initiates the process and the second completes it.",
       "Accepted": "Accepted",
-      "Pending": "Pending"
+      "Pending": "Pending",
+      "Reserved": "Reserved"
     },
     "titles": {
       "Dashboard": "Dashboard",
@@ -3556,6 +3558,7 @@
     "Remove Period": "Remove Period",
     "Resume Delinquency Classification": "Resume Delinquency Classification",
     "Repayment schedule will start the installment": "Repayment schedule will start the installment dates from the submitted date or the disbursement date",
+    "Reserve": "Reserve",
     "Savings Account": "Savings Account",
     "Sets the balance required for interest calculation": "Sets the balance required for interest calculation",
     "Sets the maximum allowed overdraft amount": "Sets the maximum allowed overdraft amount for a saving account that is allowed to have an overdraft",

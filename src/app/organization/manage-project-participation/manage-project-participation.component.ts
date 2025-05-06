@@ -63,6 +63,8 @@ export class ManageProjectParticipationComponent implements OnInit {
         let status = 100;
         if (command === 'Reject') {
           status = 300;
+        } else if (command === 'Reserve') {
+          status = 400;
         }
         const payload = {
           amount: request.amount,
@@ -84,6 +86,8 @@ export class ManageProjectParticipationComponent implements OnInit {
       return 'status-active';
     } else if (status === 300) {
       return 'status-matured';
+    } else if (status === 400) {
+      return 'text-primary';
     }
   }
 
@@ -94,6 +98,8 @@ export class ManageProjectParticipationComponent implements OnInit {
       return 'Accepted';
     } else if (status === 300) {
       return 'Canceled';
+    } else if (status === 400) {
+      return 'Reserved';
     }
   }
 

@@ -1,12 +1,12 @@
 <div class="container">
-  <form [formGroup]="investmentProjectForm" (ngSubmit)="submit()">
+  <form *ngIf="investmentProjectForm" [formGroup]="investmentProjectForm" (ngSubmit)="submit()">
     <mat-card>
       <mat-card-content>
         <div fxLayout="column">
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Name' | translate }}</mat-label>
             <input matInput autofocus formControlName="name" />
-            <mat-error *ngIf="investmentProjectForm.controls.name.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('name')?.hasError('required')">
               {{ 'labels.inputs.Name' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -15,7 +15,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Subtitle' | translate }}</mat-label>
             <input matInput autofocus formControlName="subtitle" />
-            <mat-error *ngIf="investmentProjectForm.controls.subtitle.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('subtitle')?.hasError('required')">
               {{ 'labels.inputs.custom.Subtitle' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -24,7 +24,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
             <input matInput autofocus formControlName="mnemonic" />
-            <mat-error *ngIf="investmentProjectForm.controls.mnemonic.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('mnemonic')?.hasError('required')">
               {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -39,7 +39,7 @@
               cdkTextareaAutosize
               cdkAutosizeMinRows="2"
             ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.impactDescription.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('impactDescription')?.hasError('required')">
               {{ 'labels.inputs.custom.Description' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -54,7 +54,7 @@
               cdkTextareaAutosize
               cdkAutosizeMinRows="2"
             ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.institutionDescription.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('institutionDescription')?.hasError('required')">
               {{ 'labels.inputs.custom.Description' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -63,7 +63,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Team Description' | translate }}</mat-label>
             <textarea matInput formControlName="teamDescription" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.teamDescription.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('teamDescription')?.hasError('required')">
               {{ 'labels.inputs.custom.Team Description' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -77,7 +77,7 @@
               cdkTextareaAutosize
               cdkAutosizeMinRows="2"
             ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.financingDescription.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('financingDescription')?.hasError('required')">
               {{ 'labels.inputs.custom.Financial Description' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -91,7 +91,7 @@
               cdkTextareaAutosize
               cdkAutosizeMinRows="2"
             ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.littleSocioEnvironmentalDescription.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('littleSocioEnvironmentalDescription')?.hasError('required')">
               {{ 'labels.inputs.custom.Socio Environmental Description' | translate }}
               {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
@@ -107,7 +107,7 @@
               cdkAutosizeMinRows="2"
             ></textarea>
             <mat-error
-              *ngIf="investmentProjectForm.controls.detailedSocioEnvironmentalDescription.hasError('required')"
+              *ngIf="investmentProjectForm?.get('detailedSocioEnvironmentalDescription')?.hasError('required')"
             >
               {{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}
               {{ 'labels.commons.is' | translate }}
@@ -118,7 +118,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Max Amount' | translate }}</mat-label>
             <input type="number" matInput required formControlName="maxAmount" />
-            <mat-error *ngIf="investmentProjectForm.controls.maxAmount.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('maxAmount')?.hasError('required')">
               {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -127,7 +127,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Min Amount' | translate }}</mat-label>
             <input type="number" matInput required formControlName="minAmount" />
-            <mat-error *ngIf="investmentProjectForm.controls.minAmount.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('minAmount')?.hasError('required')">
               {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -136,7 +136,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Interest Rate' | translate }}</mat-label>
             <input type="number" matInput required formControlName="projectRate" />
-            <mat-error *ngIf="investmentProjectForm.controls.projectRate.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('projectRate')?.hasError('required')">
               {{ 'labels.inputs.Interest Rate' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
@@ -145,7 +145,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Position' | translate }}</mat-label>
             <input type="number" matInput required formControlName="position" />
-            <mat-error *ngIf="investmentProjectForm.controls.position.hasError('required')">
+            <mat-error *ngIf="investmentProjectForm?.get('position')?.hasError('required')">
               {{ 'labels.inputs.custom.Position' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>

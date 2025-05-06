@@ -18,6 +18,7 @@ export class EditInvestmentProjectComponent implements OnInit {
   statusData: any[] = [];
   objectivesData: any[] = [];
   idProject: any;
+  projectData: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -45,85 +46,101 @@ export class EditInvestmentProjectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.setupInvestmentProjectForm();
     this.idProject = this.route.parent?.snapshot.paramMap.get('id');
+    this.setupInvestmentProjectForm(this.idProject);
   }
 
-  setupInvestmentProjectForm() {
-    this.investmentProjectForm = this.formBuilder.group({
-      name: [
-        '',
-        Validators.required
-      ],
-      subtitle: [
-        '',
-        Validators.required
-      ],
-      mnemonic: [
-        '',
-        Validators.required
-      ],
-      impactDescription: [
-        '',
-        Validators.required
-      ],
-      institutionDescription: [
-        '',
-        Validators.required
-      ],
-      teamDescription: [
-        '',
-        Validators.required
-      ],
-      financingDescription: [
-        '',
-        Validators.required
-      ],
-      littleSocioEnvironmentalDescription: [
-        '',
-        Validators.required
-      ],
-      detailedSocioEnvironmentalDescription: [
-        '',
-        Validators.required
-      ],
-      maxAmount: [
-        0,
-        Validators.required
-      ],
-      minAmount: [
-        0,
-        Validators.required
-      ],
-      projectRate: [
-        '',
-        Validators.required
-      ],
-      position: [
-        '',
-        Validators.required
-      ],
-      categoryId: [
-        '',
-        Validators.required
-      ],
-      subCategories: [
-        '',
-        Validators.required
-      ],
-      areaId: [
-        '',
-        Validators.required
-      ],
-      objectives: [
-        '',
-        Validators.required
-      ],
-      isActive: [false],
-      statusId: [
-        '',
-        Validators.required
-      ]
+  async setupInvestmentProjectForm(id: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.organizationService.getInvestmentProject(id).subscribe({
+        next: (data) => {
+          this.projectData = data;
+
+          console.log('dataa: ', data);
+
+          this.investmentProjectForm = this.formBuilder.group({
+            name: [
+              data.name,
+              Validators.required
+            ],
+            subtitle: [
+              data.subtitle,
+              Validators.required
+            ],
+            mnemonic: [
+              data.mnemonic,
+              Validators.required
+            ],
+            impactDescription: [
+              data.impactDescription,
+              Validators.required
+            ],
+            institutionDescription: [
+              data.institutionDescription,
+              Validators.required
+            ],
+            teamDescription: [
+              data.teamDescription,
+              Validators.required
+            ],
+            financingDescription: [
+              data.financingDescription,
+              Validators.required
+            ],
+            littleSocioEnvironmentalDescription: [
+              data.littleSocioEnvironmentalDescription,
+              Validators.required
+            ],
+            detailedSocioEnvironmentalDescription: [
+              data.detailedSocioEnvironmentalDescription,
+              Validators.required
+            ],
+            maxAmount: [
+              data.maxAmount,
+              Validators.required
+            ],
+            minAmount: [
+              data.minAmount,
+              Validators.required
+            ],
+            projectRate: [
+              data.rate,
+              Validators.required
+            ],
+            position: [
+              data.position,
+              Validators.required
+            ],
+            categoryId: [
+              data.category.id,
+              Validators.required
+            ],
+            subCategories: [
+              '',
+              Validators.required
+            ],
+            areaId: [
+              data.area.id,
+              Validators.required
+            ],
+            objectives: [
+              '',
+              Validators.required
+            ],
+            isActive: [data.isActive],
+            statusId: [
+              data.status.id,
+              Validators.required
+            ]
+          });
+
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error al obtener el proyecto', err);
+          reject(err);
+        }
+      });
     });
   }
 
