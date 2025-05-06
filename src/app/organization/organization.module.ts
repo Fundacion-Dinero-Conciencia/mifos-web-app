@@ -85,6 +85,7 @@ import { ViewInvestmentProjectComponent } from './manage-projects/view-investmen
 import { ViewStatusHistoryComponent } from './manage-projects/view-status-history/view-status-history.component';
 import { InvestmentProjectGeneralTabComponent } from './manage-projects/view-investment-project/investment-project-general-tab/investment-project-general-tab.component';
 import { InvestmentProjectImageTabComponent } from './manage-projects/view-investment-project/investment-project-image-tab/investment-project-image-tab.component';
+import { CreateProjectParticipationComponent } from './manage-project-participation/create-project-participation/create-project-participation.component';
 
 /**
  * Organization Module
@@ -169,7 +170,8 @@ import { InvestmentProjectImageTabComponent } from './manage-projects/view-inves
     ViewInvestmentProjectComponent,
     ViewStatusHistoryComponent,
     InvestmentProjectGeneralTabComponent,
-    InvestmentProjectImageTabComponent
+    InvestmentProjectImageTabComponent,
+    CreateProjectParticipationComponent
   ],
   providers: [
     CreateHoliday,
