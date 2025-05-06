@@ -76,6 +76,10 @@ export class AccountTransfersService {
     return this.http.post(`/accounttransfers`, data);
   }
 
+  createMultipleInvestment(data: any): Observable<any> {
+    return this.http.post(`/accounttransfers/multiple`, data);
+  }
+
   /**
    * @param clientId Client Id
    * @param clientName Client Name

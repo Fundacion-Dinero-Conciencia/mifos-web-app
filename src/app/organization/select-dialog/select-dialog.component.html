@@ -1,0 +1,151 @@
+<div class="container">
+  <h3 class="mat-h3" fxFlexFill>{{ 'labels.heading.Transferring From Details' | translate }}</h3>
+
+  <form [formGroup]="makeAccountTransferForm">
+    <div fxLayout="row wrap" fxLayout.lt-md="column">
+      <div fxFlexFill>
+        <span fxFlex="40%">{{ 'labels.inputs.Applicant' | translate }}</span>
+        <span fxFlex="60%">{{ data.participantName }}</span>
+      </div>
+
+      <div fxFlexFill>
+        <span fxFlex="40%">{{ 'labels.inputs.Office' | translate }}</span>
+        <span fxFlex="60%">{{ accountTransferTemplateData?.fromOffice?.name }}</span>
+      </div>
+
+      <div fxFlexFill>
+        <span fxFlex="40%">{{ 'labels.inputs.From Account' | translate }}</span>
+        <span fxFlex="60%">{{ fromAccountData?.accountNo }}</span>
+      </div>
+
+      <div fxFlexFill>
+        <span fxFlex="40%">{{ 'labels.inputs.Currency' | translate }}</span>
+        <span fxFlex="60%">{{ fromAccountData?.currency?.name }}</span>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div fxFlexFill>
+        <span fxFlex="40%">{{ 'labels.inputs.Destination' | translate }}</span>
+        <span fxFlex="60%">{{ data?.project?.ownerName }}</span>
+      </div>
+    </div>
+
+    <br />
+    <mat-divider></mat-divider>
+    <!-- campos en común-->
+    <div fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+      <mat-form-field fxFlex="98%" (click)="transferDatePicker.open()">
+        <mat-label>{{ 'labels.inputs.Transaction Date' | translate }}</mat-label>
+        <input
+          matInput
+          [min]="minDate"
+          [max]="maxDate"
+          [matDatepicker]="transferDatePicker"
+          required
+          formControlName="transferDate"
+        />
+        <mat-datepicker-toggle matSuffix [for]="transferDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #transferDatePicker></mat-datepicker>
+        <mat-error *ngIf="makeAccountTransferForm.controls.transferDate.hasError('required')">
+          {{ 'labels.inputs.Transaction Date' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field fxFlex="98%">
+        <mat-label>{{ 'labels.inputs.Office' | translate }}</mat-label>
+        <mat-select required formControlName="toOfficeId" (selectionChange)="changeEvent()">
+          <mat-option *ngFor="let toOfficeType of toOfficeTypeData" [value]="toOfficeType.id">
+            {{ toOfficeType.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="makeAccountTransferForm.controls.toOfficeId.hasError('required')">
+          {{ 'labels.inputs.Office' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="98%">
+        <mat-label>{{ 'labels.inputs.Account' | translate }}</mat-label>
+        <mat-select required formControlName="toAccountId" (selectionChange)="changeEvent()">
+          <mat-option *ngFor="let toAccount of toAccountData" [value]="toAccount.id">
+            {{ toAccount.productName }} - {{ toAccount.accountNo }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="makeAccountTransferForm.controls.toAccountId.hasError('required')">
+          {{ 'labels.inputs.Account' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="98%">
+        <mat-label>{{ 'labels.inputs.External Agent' | translate }}</mat-label>
+        <mat-select formControlName="investmentAgentId" #selectPanel>
+          <mat-option>
+            <input
+              matInput
+              [(ngModel)]="searchTerm"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="filterStaff()"
+              (click)="$event.stopPropagation()"
+              (keydown)="stopClosing($event)"
+              placeholder="Buscar por nombre"
+            />
+          </mat-option>
+
+          <mat-option *ngFor="let staff of filteredStaffData" [value]="staff.id">
+            {{ staff.displayName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="98%">
+        <mat-label>{{ 'labels.inputs.Percentage' | translate }}</mat-label>
+        <input type="number" matInput formControlName="percentageInvestmentAgent" />
+      </mat-form-field>
+
+      <mat-form-field fxFlex="98%">
+        <mat-label>{{ 'labels.inputs.Amount' | translate }}</mat-label>
+        <input type="number" matInput required formControlName="transferAmount" />
+        <mat-error *ngIf="makeAccountTransferForm.controls.transferAmount.hasError('required')">
+          {{ 'labels.inputs.Amount' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+        <mat-error *ngIf="makeAccountTransferForm.get('transferAmount')?.hasError('amountExceedsBalance')">
+          <fa-icon icon="exclamation-triangle" size="md"></fa-icon>
+          {{ 'errors.validation.msg.savingsproduct.insufficient.balance' | translate: { balance } }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="98%">
+        <mat-label>{{ 'labels.inputs.Description' | translate }}</mat-label>
+        <textarea matInput formControlName="transferDescription" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
+        <mat-error *ngIf="makeAccountTransferForm.controls.transferDescription.hasError('required')">
+          {{ 'labels.inputs.Transfer Description' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <mat-dialog-actions
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutAlign="center"
+    fxLayoutGap="2%"
+    style="flex-shrink: 0"
+  >
+    <button class="action-button" mat-raised-button color="primary" (click)="onCancel()">
+      {{ 'labels.buttons.Close' | translate }}
+    </button>
+    <button
+      class="action-button"
+      mat-raised-button
+      color="primary"
+      (click)="onConfirm()"
+      [disabled]="makeAccountTransferForm.invalid"
+    >
+      {{ 'labels.buttons.Confirm' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>
