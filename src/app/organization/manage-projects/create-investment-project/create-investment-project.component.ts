@@ -76,10 +76,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         0,
         Validators.required
       ],
-      loanId: [
-        0,
-        Validators.required
-      ],
       name: [
         '',
         Validators.required
@@ -171,20 +167,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
    */
   displayClient(client: any): string | undefined {
     return client ? client.displayName : undefined;
-  }
-
-  clientSelected(event: any) {
-    const client: any = event.option.value;
-    this.loansData = [];
-    this.clientsService.getClientAccountData(client.id).subscribe((response: any) => {
-      if (response.loanAccounts) {
-        response.loanAccounts.forEach((loan: any) => {
-          if (loan.status.id == 100) {
-            this.loansData.push({ id: loan.id, accountNo: loan.accountNo, productName: loan.productName });
-          }
-        });
-      }
-    });
   }
 
   submit() {
