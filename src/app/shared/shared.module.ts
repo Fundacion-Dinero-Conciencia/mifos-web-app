@@ -52,6 +52,7 @@ import { DropdownComponent } from './dropdown/dropdown.component';
 import { InputAmountComponent } from './input-amount/input-amount.component';
 import { InputPasswordComponent } from './input-password/input-password.component';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 /**
  * Shared Module
@@ -69,7 +70,8 @@ import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
     DirectivesModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
-    RichTextEditorModule
+    RichTextEditorModule,
+    CKEditorModule
   ],
   declarations: [
     FormfieldComponent,

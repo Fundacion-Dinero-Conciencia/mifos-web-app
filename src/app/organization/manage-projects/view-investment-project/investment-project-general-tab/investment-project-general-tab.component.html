@@ -17,7 +17,7 @@
           {{ 'labels.inputs.Client Name' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.ownerName }}
+          {{ shorten(projectData.ownerName, 100) }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.name' | translate }}
@@ -53,37 +53,37 @@
           {{ 'labels.inputs.custom.Financial Description' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.financingDescription }}
+          {{ shorten(projectData.financingDescription, 100) }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.custom.Impact Description' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.impactDescription }}
+          {{ shorten(projectData.impactDescription, 100) }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.custom.Institution Description' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.institutionDescription }}
+          {{ shorten(projectData.institutionDescription, 100) }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.custom.Team Description' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.teamDescription }}
+          {{ shorten(projectData.teamDescription, 100) }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.custom.Socio Environmental Description' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.littleSocioEnvironmentalDescription }}
+          {{ shorten(projectData.littleSocioEnvironmentalDescription, 100) }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.detailedSocioEnvironmentalDescription }}
+          {{ shorten(projectData.detailedSocioEnvironmentalDescription, 100) }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.Amount' | translate }}

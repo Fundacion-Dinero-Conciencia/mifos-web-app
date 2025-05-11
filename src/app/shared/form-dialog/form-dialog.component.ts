@@ -32,12 +32,14 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
   form: UntypedFormGroup;
   formfields: FormfieldBase[] = [];
   pristine: boolean;
+  showMap: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formGroupService: FormGroupService
   ) {
+    this.showMap = !!data.showMap;
     this.dialogRef.disableClose = data.disableClose !== undefined ? data.disableClose : true;
     this.formfields = data.formfields.sort(
       (a: FormfieldBase, b: FormfieldBase) => a.order - b.order
@@ -57,7 +59,10 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.initMap(), 0);
+    if (this.showMap) {
+      setTimeout(() => this.initMap(), 0);
+    }
+    
   }
 
   initMap(): void {

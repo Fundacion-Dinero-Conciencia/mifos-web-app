@@ -87,6 +87,7 @@ import { InvestmentProjectGeneralTabComponent } from './manage-projects/view-inv
 import { InvestmentProjectImageTabComponent } from './manage-projects/view-investment-project/investment-project-image-tab/investment-project-image-tab.component';
 import { CreateProjectParticipationComponent } from './manage-project-participation/create-project-participation/create-project-participation.component';
 import { SelectDialogComponent } from './select-dialog/select-dialog.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 /**
  * Organization Module
@@ -98,7 +99,8 @@ import { SelectDialogComponent } from './select-dialog/select-dialog.component';
     SharedModule,
     PipesModule,
     DirectivesModule,
-    OrganizationRoutingModule
+    OrganizationRoutingModule,
+    CKEditorModule
   ],
   declarations: [
     OrganizationComponent,
