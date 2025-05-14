@@ -44,9 +44,5 @@
   // OAuth Client Id  
   window['env']['oauthAppId'] = '';
 
-  window.env = {
-    GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
-  };
-  
-
+  window['env']['GOOGLE_MAPS_API_KEY'] = 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
 })(this);
