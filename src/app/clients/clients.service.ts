@@ -306,17 +306,18 @@ export class ClientsService {
   }
 
   executeClientCommand(clientId: string, command: string, data: any): Observable<any> {
-  const locale = window['env']?.['defaultLanguage'] || 'es';
-  const dateFormat = window['env']?.['defaultDateFormat'] || 'dd MMMM yyyy';
 
-  const enrichedData = {
-    ...data,
-    locale,
-    dateFormat
-  };
+    const locale = window['env']?.['defaultLanguage'] || 'es';
+    const dateFormat = window['env']?.['defaultDateFormat'] || 'dd MMMM yyyy';
+
+    const enrichedData = {
+      ...data,
+      locale,
+      dateFormat
+    };
     
     const httpParams = new HttpParams().set('command', command);
-     /**return this.http.post(`/clients/${clientId}`, data, { params: httpParams }); */
+    /**return this.http.post(`/clients/${clientId}`, data, { params: httpParams }); */
     return this.http.post(`/clients/${clientId}`, enrichedData, { params: httpParams });
   }
 
