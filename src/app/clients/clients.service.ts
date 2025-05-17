@@ -1,6 +1,7 @@
 /** Angular Imports */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 /** rxjs Imports */
 import { Observable } from 'rxjs';
@@ -304,10 +305,19 @@ export class ClientsService {
     return this.http.put(`/client/${clientId}/addresses?type=${addressTypeId}`, addressData);
   }
 
-  executeClientCommand(clientId: string, command: string, data: any): Observable<any> {
-    const httpParams = new HttpParams().set('command', command);
-    return this.http.post(`/clients/${clientId}`, data, { params: httpParams });
-  }
+ executeClientCommand(clientId: string, command: string, data: any): Observable<any> {
+  const locale = window['env']?.['defaultLanguage'] || 'es';
+  const dateFormat = window['env']?.['defaultDateFormat'] || 'dd MMMM yyyy';
+
+  const enrichedData = {
+    ...data,
+    locale,
+    dateFormat
+  };
+
+  const httpParams = new HttpParams().set('command', command);
+  return this.http.post(`/clients/${clientId}`, enrichedData, { params: httpParams });
+ }
 
   getClientCommandTemplate(command: string): Observable<any> {
     const httpParams = new HttpParams().set('commandParam', command);
