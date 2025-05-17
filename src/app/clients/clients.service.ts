@@ -306,6 +306,7 @@ export class ClientsService {
   }
 
   executeClientCommand(clientId: string, command: string, data: any): Observable<any> {
+
     const locale = window['env']?.['defaultLanguage'] || 'es';
     const dateFormat = window['env']?.['defaultDateFormat'] || 'dd MMMM yyyy';
 
