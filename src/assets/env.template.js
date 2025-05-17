@@ -51,4 +51,5 @@
   window['env']['vNextApiProvider'] = '$VNEXT_API_PROVIDER';
   window['env']['vNextApiVersion'] = '$VNEXT_API_VERSION';
   window['env']['interbankTransfers'] = '$VNEXT_INTERBANK_TRANSFERS';
+  window['env']['GOOGLE_MAPS_API_KEY'] = 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k';
 })(this);
