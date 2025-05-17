@@ -319,7 +319,6 @@ export class ClientsService {
     const httpParams = new HttpParams().set('command', command);
     /**return this.http.post(`/clients/${clientId}`, data, { params: httpParams }); */
     return this.http.post(`/clients/${clientId}`, enrichedData, { params: httpParams });
-
   }
 
   getClientCommandTemplate(command: string): Observable<any> {
