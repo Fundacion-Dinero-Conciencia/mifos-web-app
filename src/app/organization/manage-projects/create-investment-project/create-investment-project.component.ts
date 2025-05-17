@@ -1,8 +1,13 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { TranslateService } from '@ngx-translate/core';
 import { ClientsService } from 'app/clients/clients.service';
 import { OrganizationService } from 'app/organization/organization.service';
+import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
+import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
 
 @Component({
   selector: 'mifosx-create-investment-project',
@@ -21,13 +26,16 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   currency: any;
   statusData: any[] = [];
   objectivesData: any[] = [];
+  public Editor = ClassicEditor;
 
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     private router: Router,
+    private dialog: MatDialog,
     private clientsService: ClientsService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private translateService: TranslateService
   ) {
     this.route.data.subscribe(
       (data: {
@@ -73,10 +81,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         Validators.required
       ],
       ownerId: [
-        0,
-        Validators.required
-      ],
-      loanId: [
         0,
         Validators.required
       ],
@@ -173,20 +177,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     return client ? client.displayName : undefined;
   }
 
-  clientSelected(event: any) {
-    const client: any = event.option.value;
-    this.loansData = [];
-    this.clientsService.getClientAccountData(client.id).subscribe((response: any) => {
-      if (response.loanAccounts) {
-        response.loanAccounts.forEach((loan: any) => {
-          if (loan.status.id == 100) {
-            this.loansData.push({ id: loan.id, accountNo: loan.accountNo, productName: loan.productName });
-          }
-        });
-      }
-    });
-  }
-
   submit() {
     const currencyCode: string = this.currency.code;
 
@@ -204,4 +194,48 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
   }
+
+
+  openRichTextEditor(fieldName: string) {
+    const data = {
+      formfields: [
+        new RichTextBase({
+          controlName: fieldName,
+          label: this.translateService.instant(`labels.inputs.custom.${this.toLabelKey(fieldName)}`),
+          value: this.investmentProjectForm.controls[fieldName].value,
+          required: true,
+          order: 1
+        })
+      ],
+      showMap: false
+    };
+
+    const dialogRef = this.dialog.open(FormDialogComponent, { data });
+
+    dialogRef.afterClosed().subscribe((response: any) => {
+      if (response?.data?.value?.[fieldName]) {
+        this.investmentProjectForm.controls[fieldName].setValue(response.data.value[fieldName]);
+      }
+    });
+  }
+
+  shorten(content: string, length: number = 100): string {
+    const plain = content?.replace(/<[^>]+>/g, '') || '';
+    return plain.length > length ? plain.slice(0, length) + '...' : plain;
+  }
+
+
+  toLabelKey(fieldName: string): string {
+
+    switch (fieldName) {
+      case 'impactDescription': return 'Impact Description';
+      case 'institutionDescription': return 'Institution Description';
+      case 'teamDescription': return 'Team Description';
+      case 'financingDescription': return 'Financial Description';
+      case 'littleSocioEnvironmentalDescription': return 'Socio Environmental Description';
+      case 'detailedSocioEnvironmentalDescription': return 'Detailed Socio Environmental Description';
+      default: return fieldName;
+    }
+  }
+
 }

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-
 import { FormfieldBase } from './model/formfield-base';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'mifosx-formfield',
@@ -12,5 +12,20 @@ export class FormfieldComponent {
   @Input() form: UntypedFormGroup;
   @Input() formfield: FormfieldBase;
 
-  constructor() {}
+  Editor = ClassicEditor;
+  editorConfig = {
+    toolbar: [
+      'heading', '|',
+      'bold', 'italic', 'underline', 'link', '|',
+      'bulletedList', 'numberedList', 'blockQuote', '|',
+      'undo', 'redo', '|',
+      'alignment', 'outdent', 'indent', 'removeFormat'
+    ]
+  };
+
+  constructor() { }
+
+  ngOnInit() {
+    console.log('Field received in formfield:', this.formfield);
+  }
 }

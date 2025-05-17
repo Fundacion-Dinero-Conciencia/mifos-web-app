@@ -1,3 +1,20 @@
 .container {
   max-width: 37rem;
 }
+.ckeditor-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .ck-editor__editable {
+    min-height: 150px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    border-radius: 4px;
+    padding: 8px;
+  }
+
+  .mat-label {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}

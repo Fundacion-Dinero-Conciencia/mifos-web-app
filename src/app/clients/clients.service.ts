@@ -305,6 +305,7 @@ export class ClientsService {
     return this.http.put(`/client/${clientId}/addresses?type=${addressTypeId}`, addressData);
   }
 
+
  executeClientCommand(clientId: string, command: string, data: any): Observable<any> {
   const locale = window['env']?.['defaultLanguage'] || 'es';
   const dateFormat = window['env']?.['defaultDateFormat'] || 'dd MMMM yyyy';
@@ -318,6 +319,7 @@ export class ClientsService {
   const httpParams = new HttpParams().set('command', command);
   return this.http.post(`/clients/${clientId}`, enrichedData, { params: httpParams });
  }
+
 
   getClientCommandTemplate(command: string): Observable<any> {
     const httpParams = new HttpParams().set('commandParam', command);

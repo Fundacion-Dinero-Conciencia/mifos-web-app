@@ -1,0 +1,74 @@
+<div class="container">
+  <form [formGroup]="projectParticipationForm" (ngSubmit)="submit()">
+    <mat-card>
+      <mat-card-content>
+        <div fxLayout="column">
+          <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Participant' | translate }}</mat-label>
+            <input matInput formControlName="participantId" [matAutocomplete]="participantsAutocomplete" />
+            <mat-error *ngIf="projectParticipationForm.controls.participantId.hasError('required')">
+              {{ 'labels.inputs.aArticipant' | translate }} {{ 'labels.commons.is' | translate }}
+              <strong>{{ 'labels.commons.required' | translate }}</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-autocomplete
+            autoActiveFirstOption
+            #participantsAutocomplete="matAutocomplete"
+            [displayWith]="displayParticipant"
+          >
+            <mat-option *ngFor="let client of participantsData" [value]="client">
+              {{ client.id }} - {{ client.displayName }}
+            </mat-option>
+          </mat-autocomplete>
+
+          <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Project' | translate }}</mat-label>
+            <input matInput formControlName="projectId" [matAutocomplete]="projectsAutocomplete" />
+            <mat-error *ngIf="projectParticipationForm.controls.projectId.hasError('required')">
+              {{ 'labels.inputs.aArticipant' | translate }} {{ 'labels.commons.is' | translate }}
+              <strong>{{ 'labels.commons.required' | translate }}</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-autocomplete
+            autoActiveFirstOption
+            #projectsAutocomplete="matAutocomplete"
+            [displayWith]="displayProject"
+          >
+            <mat-option *ngFor="let project of projectsData" [value]="project">
+              {{ project.id }} - {{ project.name }}
+            </mat-option>
+          </mat-autocomplete>
+
+          <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Amount' | translate }}</mat-label>
+            <input type="number" matInput required formControlName="amount" />
+            <mat-error *ngIf="projectParticipationForm.controls.amount.hasError('required')">
+              {{ 'labels.inputs.Amount' | translate }} {{ 'labels.commons.is' | translate }}
+              <strong>{{ 'labels.commons.required' | translate }}</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Commission' | translate }}</mat-label>
+            <input type="number" matInput required formControlName="commission" />
+            <mat-error *ngIf="projectParticipationForm.controls.commission.hasError('required')">
+              {{ 'labels.inputs.Commission' | translate }} {{ 'labels.commons.is' | translate }}
+              <strong>{{ 'labels.commons.required' | translate }}</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px">
+        <button type="button" mat-raised-button [routerLink]="['../']">
+          {{ 'labels.buttons.Cancel' | translate }}
+        </button>
+        <button mat-raised-button color="primary" [disabled]="!projectParticipationForm.valid">
+          {{ 'labels.buttons.Submit' | translate }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

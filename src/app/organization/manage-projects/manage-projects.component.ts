@@ -12,6 +12,7 @@ import { FormfieldBase } from 'app/shared/form-dialog/formfield/model/formfield-
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { ContinueSetupDialogComponent } from 'app/configuration-wizard/continue-setup-dialog/continue-setup-dialog.component';
 import { InputBase } from 'app/shared/form-dialog/formfield/model/input-base';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'mifosx-manage-projects',
@@ -43,6 +44,8 @@ export class ManageProjectsComponent implements OnInit {
   ];
   /** Data source for Funds table. */
   dataSource: MatTableDataSource<any>;
+
+  projectUrl: string;
 
   /** Paginator for charges table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -78,6 +81,7 @@ export class ManageProjectsComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.projectsData);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.projectUrl = `${environment.baseUrlProject}`;
   }
 
   /**

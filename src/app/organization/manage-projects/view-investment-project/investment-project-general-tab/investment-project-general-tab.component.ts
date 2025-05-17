@@ -66,7 +66,8 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
 
   addAddress() {
     const data = {
-      formfields: this.getAddressFormFields('add', this.addressData)
+      formfields: this.getAddressFormFields('add', this.addressData),
+      showMap: true
     };
 
     const addAddressDialogRef = this.dialog.open(FormDialogComponent, { data });
@@ -93,10 +94,10 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
 
     const normalizedAddress = address
       ? {
-          ...address,
-          stateProvinceId: address.stateProvince?.id,
-          countryId: address.country?.id
-        }
+        ...address,
+        stateProvinceId: address.stateProvince?.id,
+        countryId: address.country?.id
+      }
       : null;
 
     for (let index = 0; index < this.addressTemplate.addressTypeIdOptions.length; index++) {
@@ -210,4 +211,10 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
     formfields = formfields.filter((field) => field !== null);
     return formfields;
   }
+
+  shorten(content: string, length: number = 100): string {
+    const plain = content?.replace(/<[^>]+>/g, '').replace(/\n+/g, ' ') || '';
+    return plain.length > length ? plain.slice(0, length) + '...' : plain;
+  }
+  
 }

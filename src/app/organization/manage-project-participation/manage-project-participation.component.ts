@@ -5,6 +5,8 @@ import { OrganizationService } from '../organization.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
+import { AccountTransfersService } from 'app/account-transfers/account-transfers.service';
 
 @Component({
   selector: 'mifosx-manage-project-participation',
@@ -20,15 +22,18 @@ export class ManageProjectParticipationComponent implements OnInit {
     'amount',
     'date',
     'status',
-    'actions'
+    'actions',
+    'select'
   ];
+  selectedItems: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private organizationservice: OrganizationService,
     public dialog: MatDialog,
     private router: Router,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private accountTransfersService: AccountTransfersService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.projectParticipationsData = [];
@@ -63,6 +68,8 @@ export class ManageProjectParticipationComponent implements OnInit {
         let status = 100;
         if (command === 'Reject') {
           status = 300;
+        } else if (command === 'Reserve') {
+          status = 400;
         }
         const payload = {
           amount: request.amount,
@@ -84,6 +91,8 @@ export class ManageProjectParticipationComponent implements OnInit {
       return 'status-active';
     } else if (status === 300) {
       return 'status-matured';
+    } else if (status === 400) {
+      return 'text-primary';
     }
   }
 
@@ -94,11 +103,50 @@ export class ManageProjectParticipationComponent implements OnInit {
       return 'Accepted';
     } else if (status === 300) {
       return 'Canceled';
+    } else if (status === 400) {
+      return 'Reserved';
     }
   }
 
   reload() {
     const url: string = this.router.url;
     this.router.navigateByUrl(`/clients`, { skipLocationChange: true }).then(() => this.router.navigate([url]));
+  }
+
+  onSelectionChange(item: any): void {
+    if (item.selected) {
+      this.openSelectionModal(item);
+    } else {
+      this.selectedItems = this.selectedItems.filter((i) => i !== item);
+    }
+  }
+
+  openSelectionModal(item: any): void {
+    const dialogRef = this.dialog.open(SelectDialogComponent, {
+      width: '400px',
+      data: item
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        result.amount = item.amount;
+        result.projectId = item.id;
+        item.selectedData = result;
+        this.selectedItems.push(item);
+      } else {
+        item.selected = false;
+        this.selectedItems = this.selectedItems.filter((i) => i !== item);
+      }
+    });
+  }
+
+  processInvestments(): void {
+    const dataToSend = this.selectedItems.map((item) => item.selectedData);
+
+    this.accountTransfersService.createMultipleInvestment(dataToSend).subscribe({
+      next: (response) => {
+        this.router.navigate(['../'], { relativeTo: this.route });
+      }
+    });
   }
 }

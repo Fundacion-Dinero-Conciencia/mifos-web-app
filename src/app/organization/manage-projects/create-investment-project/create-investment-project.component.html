@@ -21,25 +21,11 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-autocomplete
-            autoActiveFirstOption
-            #clientsAutocomplete="matAutocomplete"
-            [displayWith]="displayClient"
-            (optionSelected)="clientSelected($event)"
-          >
+          <mat-autocomplete autoActiveFirstOption #clientsAutocomplete="matAutocomplete" [displayWith]="displayClient">
             <mat-option *ngFor="let client of clientsData" [value]="client">
               {{ client.id }} - {{ client.displayName }}
             </mat-option>
           </mat-autocomplete>
-
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Loan Account' | translate }}</mat-label>
-            <mat-select required formControlName="loanId">
-              <mat-option *ngFor="let loan of loansData" [value]="loan.id">
-                {{ loan.accountNo }} - {{ loan.productName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Name' | translate }}</mat-label>
@@ -70,95 +56,46 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Impact Description' | translate }}</mat-label>
-            <input matInput autofocus formControlName="impactDescription" />
-            <textarea
-              matInput
-              formControlName="impactDescription"
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="2"
-            ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.impactDescription.hasError('required')">
-              {{ 'labels.inputs.custom.Description' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
+            <input matInput [value]="shorten(investmentProjectForm.controls['impactDescription'].value)" readonly
+              (click)="openRichTextEditor('impactDescription')" />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Institution Description' | translate }}</mat-label>
-            <input matInput autofocus formControlName="institutionDescription" />
-            <textarea
-              matInput
-              formControlName="institutionDescription"
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="2"
-            ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.institutionDescription.hasError('required')">
-              {{ 'labels.inputs.custom.Description' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
+            <input matInput [value]="shorten(investmentProjectForm.controls['institutionDescription'].value)" readonly
+              (click)="openRichTextEditor('institutionDescription')" />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Team Description' | translate }}</mat-label>
-            <textarea matInput formControlName="teamDescription" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.teamDescription.hasError('required')">
-              {{ 'labels.inputs.custom.Team Description' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
+            <input matInput [value]="shorten(investmentProjectForm.controls['teamDescription'].value)" readonly
+              (click)="openRichTextEditor('teamDescription')" />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Financial Description' | translate }}</mat-label>
-            <textarea
-              matInput
-              formControlName="financingDescription"
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="2"
-            ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.financingDescription.hasError('required')">
-              {{ 'labels.inputs.custom.Financial Description' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
+            <input matInput [value]="shorten(investmentProjectForm.controls['financingDescription'].value)" readonly
+              (click)="openRichTextEditor('financingDescription')" />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Socio Environmental Description' | translate }}</mat-label>
-            <textarea
-              matInput
-              formControlName="littleSocioEnvironmentalDescription"
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="2"
-            ></textarea>
-            <mat-error *ngIf="investmentProjectForm.controls.littleSocioEnvironmentalDescription.hasError('required')">
-              {{ 'labels.inputs.custom.Socio Environmental Description' | translate }}
-              {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
+            <input matInput
+              [value]="shorten(investmentProjectForm.controls['littleSocioEnvironmentalDescription'].value)" readonly
+              (click)="openRichTextEditor('littleSocioEnvironmentalDescription')" />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}</mat-label>
-            <textarea
-              matInput
-              formControlName="detailedSocioEnvironmentalDescription"
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="2"
-            ></textarea>
-            <mat-error
-              *ngIf="investmentProjectForm.controls.detailedSocioEnvironmentalDescription.hasError('required')"
-            >
-              {{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}
-              {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
+            <input matInput
+              [value]="shorten(investmentProjectForm.controls['detailedSocioEnvironmentalDescription'].value)" readonly
+              (click)="openRichTextEditor('detailedSocioEnvironmentalDescription')" />
           </mat-form-field>
 
-          <mifosx-input-amount
-            [currency]="currency"
-            [isRequired]="true"
-            [inputFormControl]="investmentProjectForm.controls.amount"
-            [inputLabel]="'Amount'"
-          >
+
+
+          <mifosx-input-amount [currency]="currency" [isRequired]="true"
+            [inputFormControl]="investmentProjectForm.controls.amount" [inputLabel]="'Amount'">
           </mifosx-input-amount>
 
           <mat-form-field fxFlex="98%">
@@ -252,8 +189,8 @@
           </mat-form-field>
 
           <div class="filter-box">
-            <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive"
-              >{{ 'labels.inputs.Active' | translate }}
+            <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive">{{ 'labels.inputs.Active' |
+              translate }}
             </mat-checkbox>
           </div>
         </div>

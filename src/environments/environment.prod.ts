@@ -59,7 +59,9 @@ export const environment = {
   vNextApiVersion: window['env']['vNextApiVersion'] || '/v1.0',
   interbankTransfers: window['env']['interbankTransfers'] || false,
 
-  minPasswordLength: loadedEnv['minPasswordLength'] || 12
+  minPasswordLength: loadedEnv['minPasswordLength'] || 12,
+  baseUrlProject: 'https://investments-backend-dev.up.railway.app/project-details/',
+  GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
 };
 
 // Server URL
