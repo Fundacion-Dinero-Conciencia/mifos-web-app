@@ -56,46 +56,70 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Impact Description' | translate }}</mat-label>
-            <input matInput [value]="shorten(investmentProjectForm.controls['impactDescription'].value)" readonly
-              (click)="openRichTextEditor('impactDescription')" />
+            <input
+              matInput
+              [value]="shorten(investmentProjectForm.controls['impactDescription'].value)"
+              readonly
+              (click)="openRichTextEditor('impactDescription')"
+            />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Institution Description' | translate }}</mat-label>
-            <input matInput [value]="shorten(investmentProjectForm.controls['institutionDescription'].value)" readonly
-              (click)="openRichTextEditor('institutionDescription')" />
+            <input
+              matInput
+              [value]="shorten(investmentProjectForm.controls['institutionDescription'].value)"
+              readonly
+              (click)="openRichTextEditor('institutionDescription')"
+            />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Team Description' | translate }}</mat-label>
-            <input matInput [value]="shorten(investmentProjectForm.controls['teamDescription'].value)" readonly
-              (click)="openRichTextEditor('teamDescription')" />
+            <input
+              matInput
+              [value]="shorten(investmentProjectForm.controls['teamDescription'].value)"
+              readonly
+              (click)="openRichTextEditor('teamDescription')"
+            />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Financial Description' | translate }}</mat-label>
-            <input matInput [value]="shorten(investmentProjectForm.controls['financingDescription'].value)" readonly
-              (click)="openRichTextEditor('financingDescription')" />
+            <input
+              matInput
+              [value]="shorten(investmentProjectForm.controls['financingDescription'].value)"
+              readonly
+              (click)="openRichTextEditor('financingDescription')"
+            />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Socio Environmental Description' | translate }}</mat-label>
-            <input matInput
-              [value]="shorten(investmentProjectForm.controls['littleSocioEnvironmentalDescription'].value)" readonly
-              (click)="openRichTextEditor('littleSocioEnvironmentalDescription')" />
+            <input
+              matInput
+              [value]="shorten(investmentProjectForm.controls['littleSocioEnvironmentalDescription'].value)"
+              readonly
+              (click)="openRichTextEditor('littleSocioEnvironmentalDescription')"
+            />
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}</mat-label>
-            <input matInput
-              [value]="shorten(investmentProjectForm.controls['detailedSocioEnvironmentalDescription'].value)" readonly
-              (click)="openRichTextEditor('detailedSocioEnvironmentalDescription')" />
+            <input
+              matInput
+              [value]="shorten(investmentProjectForm.controls['detailedSocioEnvironmentalDescription'].value)"
+              readonly
+              (click)="openRichTextEditor('detailedSocioEnvironmentalDescription')"
+            />
           </mat-form-field>
 
-
-
-          <mifosx-input-amount [currency]="currency" [isRequired]="true"
-            [inputFormControl]="investmentProjectForm.controls.amount" [inputLabel]="'Amount'">
+          <mifosx-input-amount
+            [currency]="currency"
+            [isRequired]="true"
+            [inputFormControl]="investmentProjectForm.controls.amount"
+            [inputLabel]="'Amount'"
+          >
           </mifosx-input-amount>
 
           <mat-form-field fxFlex="98%">
@@ -189,8 +213,8 @@
           </mat-form-field>
 
           <div class="filter-box">
-            <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive">{{ 'labels.inputs.Active' |
-              translate }}
+            <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive"
+              >{{ 'labels.inputs.Active' | translate }}
             </mat-checkbox>
           </div>
         </div>

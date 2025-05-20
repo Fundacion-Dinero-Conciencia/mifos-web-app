@@ -1,9 +1,8 @@
 <div [formGroup]="form" fxFlexFill>
-
   <!-- Rich Text Editor (CKEditor) -->
   <div *ngIf="formfield.controlType === 'richtext'" fxFlexFill>
     <label class="mat-label">{{ formfield.label }}</label>
-    <br>
+    <br />
     <ckeditor [editor]="Editor" [formControl]="form.controls[formfield.controlName]" [config]="editorConfig"></ckeditor>
     <mat-error *ngIf="form.controls[formfield.controlName].hasError('required')">
       {{ formfield.label }} {{ 'labels.commons.is' | translate }}
@@ -11,16 +10,23 @@
     </mat-error>
   </div>
 
-
   <div *ngIf="formfield.controlType === 'input' || formfield.controlType === 'select'" fxFlexFill>
     <mat-form-field fxFlexFill>
       <mat-label>{{ formfield.label }}</mat-label>
 
-      <input *ngIf="formfield.controlType === 'input'" [type]="formfield.type" matInput
-        [formControlName]="formfield.controlName" [required]="formfield.required" />
+      <input
+        *ngIf="formfield.controlType === 'input'"
+        [type]="formfield.type"
+        matInput
+        [formControlName]="formfield.controlName"
+        [required]="formfield.required"
+      />
 
-      <mat-select *ngIf="formfield.controlType === 'select'" [formControlName]="formfield.controlName"
-        [required]="formfield.required">
+      <mat-select
+        *ngIf="formfield.controlType === 'select'"
+        [formControlName]="formfield.controlName"
+        [required]="formfield.required"
+      >
         <mat-option *ngFor="let option of formfield.options.data" [value]="option[formfield.options.value]">
           {{ option[formfield.options.label] }}
         </mat-option>
@@ -35,8 +41,14 @@
 
   <mat-form-field fxFlexFill *ngIf="formfield.controlType === 'datepicker'" (click)="datePicker.open()">
     <mat-label>{{ formfield.label }}</mat-label>
-    <input matInput [matDatepicker]="datePicker" [min]="formfield.minDate" [max]="formfield.maxDate"
-      [formControlName]="formfield.controlName" [required]="formfield.required" />
+    <input
+      matInput
+      [matDatepicker]="datePicker"
+      [min]="formfield.minDate"
+      [max]="formfield.maxDate"
+      [formControlName]="formfield.controlName"
+      [required]="formfield.required"
+    />
     <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
     <mat-datepicker #datePicker></mat-datepicker>
     <mat-error *ngIf="form.controls[formfield.controlName].hasError('required')">
@@ -47,8 +59,14 @@
 
   <mat-form-field fxFlexFill *ngIf="formfield.controlType === 'datetimepicker'" (click)="datePicker.open()">
     <mat-label>{{ formfield.label }}</mat-label>
-    <input matInput [ngxMatDatetimePicker]="datetimePicker" [min]="formfield.minDate" [max]="formfield.maxDate"
-      [formControlName]="formfield.controlName" [required]="formfield.required" />
+    <input
+      matInput
+      [ngxMatDatetimePicker]="datetimePicker"
+      [min]="formfield.minDate"
+      [max]="formfield.maxDate"
+      [formControlName]="formfield.controlName"
+      [required]="formfield.required"
+    />
     <mat-datepicker-toggle matSuffix [for]="datetimePicker"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #datetimePicker [enableMeridian]="true"></ngx-mat-datetime-picker>
     <mat-error *ngIf="form.controls[formfield.controlName].hasError('required')">
@@ -57,8 +75,13 @@
     </mat-error>
   </mat-form-field>
 
-  <mat-checkbox *ngIf="formfield.controlType === 'checkbox'" labelPosition="before" [checked]="formfield.value"
-    [formControlName]="formfield.controlName" [required]="formfield.required">
+  <mat-checkbox
+    *ngIf="formfield.controlType === 'checkbox'"
+    labelPosition="before"
+    [checked]="formfield.value"
+    [formControlName]="formfield.controlName"
+    [required]="formfield.required"
+  >
     {{ formfield.label }}
   </mat-checkbox>
 </div>

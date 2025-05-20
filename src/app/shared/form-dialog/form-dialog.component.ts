@@ -41,9 +41,7 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
   ) {
     this.showMap = !!data.showMap;
     this.dialogRef.disableClose = data.disableClose !== undefined ? data.disableClose : true;
-    this.formfields = data.formfields.sort(
-      (a: FormfieldBase, b: FormfieldBase) => a.order - b.order
-    );
+    this.formfields = data.formfields.sort((a: FormfieldBase, b: FormfieldBase) => a.order - b.order);
     this.pristine = data.pristine !== undefined ? data.pristine : true;
     this.layout = { ...this.layout, ...data.layout };
     this.layout.gap = this.layout.columns > 1 ? layoutGap : 0;
@@ -62,14 +60,13 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
     if (this.showMap) {
       setTimeout(() => this.initMap(), 0);
     }
-    
   }
 
   initMap(): void {
     const latVal = this.form.get('latitude')?.value;
     const lngVal = this.form.get('longitude')?.value;
 
-    const defaultLat = latVal && !isNaN(parseFloat(latVal)) ? parseFloat(latVal) : 4.7110;
+    const defaultLat = latVal && !isNaN(parseFloat(latVal)) ? parseFloat(latVal) : 4.711;
     const defaultLng = lngVal && !isNaN(parseFloat(lngVal)) ? parseFloat(lngVal) : -74.0721;
 
     const map = new google.maps.Map(document.getElementById('map') as HTMLElement, {
@@ -93,6 +90,5 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
         longitude: lng
       });
     });
-    
   }
 }
