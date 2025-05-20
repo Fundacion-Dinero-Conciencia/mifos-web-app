@@ -195,7 +195,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   openRichTextEditor(fieldName: string) {
     const data = {
       formfields: [
@@ -206,6 +205,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
           required: true,
           order: 1
         })
+
       ],
       showMap: false
     };
@@ -224,18 +224,22 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     return plain.length > length ? plain.slice(0, length) + '...' : plain;
   }
 
-
   toLabelKey(fieldName: string): string {
-
     switch (fieldName) {
-      case 'impactDescription': return 'Impact Description';
-      case 'institutionDescription': return 'Institution Description';
-      case 'teamDescription': return 'Team Description';
-      case 'financingDescription': return 'Financial Description';
-      case 'littleSocioEnvironmentalDescription': return 'Socio Environmental Description';
-      case 'detailedSocioEnvironmentalDescription': return 'Detailed Socio Environmental Description';
-      default: return fieldName;
+      case 'impactDescription':
+        return 'Impact Description';
+      case 'institutionDescription':
+        return 'Institution Description';
+      case 'teamDescription':
+        return 'Team Description';
+      case 'financingDescription':
+        return 'Financial Description';
+      case 'littleSocioEnvironmentalDescription':
+        return 'Socio Environmental Description';
+      case 'detailedSocioEnvironmentalDescription':
+        return 'Detailed Socio Environmental Description';
+      default:
+        return fieldName;
     }
   }
-
 }
