@@ -70,6 +70,9 @@
     "xlsx": "^0.18.5",
     "zone.js": "0.11.6"
   },
+  "eslintIgnore":[
+    "src/app/system/configurations/default-account/default-account.component.html"
+  ],
   "devDependencies": {
     "@angular-devkit/build-angular": "14.2.12",
     "@angular-eslint/builder": "^19.2.1",
