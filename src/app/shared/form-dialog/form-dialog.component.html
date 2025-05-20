@@ -1,4 +1,4 @@
-<div *ngIf="showMap" id="map" style="height: 250px; width: 100%; margin-bottom: 1rem;"></div>
+<div *ngIf="showMap" id="map" style="height: 250px; width: 100%; margin-bottom: 1rem"></div>
 
 <!-- <h1 mat-dialog-title>{{ data.title }}</h1> -->
 
@@ -8,14 +8,14 @@
   fxLayout.lt-md="column"
   [fxLayoutGap]="(layout.columns > 1 ? layout.gap : 0) + '%'"
   fxLayoutGap.lt-md="0%"
-  style="max-height: 350px; overflow-y: auto;"
+  style="max-height: 350px; overflow-y: auto"
 >
   <div *ngFor="let formfield of formfields" [fxFlex]="layout.flex + '%'" fxFlex.lt-md="100%">
     <mifosx-formfield [formfield]="formfield" [form]="form" fxFlexFill></mifosx-formfield>
   </div>
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="2%" style="flex-shrink: 0;">
+<mat-dialog-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="2%" style="flex-shrink: 0">
   <button mat-raised-button mat-dialog-close>{{ 'labels.buttons.' + layout.cancelButtonText | translate }}</button>
   <button
     mat-raised-button
@@ -26,4 +26,3 @@
     {{ 'labels.buttons.' + layout.addButtonText | translate }}
   </button>
 </mat-dialog-actions>
-

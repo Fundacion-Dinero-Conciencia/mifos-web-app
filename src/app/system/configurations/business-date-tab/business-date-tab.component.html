@@ -19,7 +19,7 @@
 
             <!-- Business Date -->
             <div fxFlexFill fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
-              <div fxFlex="50%" *ngIf="!isEditInProgress">
+              <div fxFlex="50%" *ngIf="!isEditInProgress && isLoaded">
                 <span fxFlex="40%" class="date-type">{{ 'labels.inputs.Business Date' | translate }}: </span>
                 <span fxFlex="60%" class="date-value">{{ businessDate | dateFormat }}</span>
               </div>

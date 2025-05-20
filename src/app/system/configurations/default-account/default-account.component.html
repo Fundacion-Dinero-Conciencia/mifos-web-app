@@ -39,7 +39,7 @@
       <button
         mat-raised-button
         color="primary"
-        [disabled]="selectedAccountId == null"
+        [disabled]="selectedAccountId === null"
         *mifosxHasPermission="'UPDATE_CONFIGURATION'"
         (click)="submit()"
       >

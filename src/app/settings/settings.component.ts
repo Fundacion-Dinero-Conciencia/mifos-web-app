@@ -19,6 +19,10 @@ export class SettingsComponent implements OnInit {
     {
       name: 'English',
       code: 'en'
+    },
+    {
+      name: 'Español',
+      code: 'es'
     }
   ];
   /** Date formats. */
@@ -61,9 +65,20 @@ export class SettingsComponent implements OnInit {
   constructor(private settingsService: SettingsService) {}
 
   ngOnInit() {
+    if (!this.settingsService.language) {
+      this.settingsService.setLanguage({ name: 'Español', code: 'es' });
+    }
+    if (!this.settingsService.dateFormat) {
+      this.settingsService.setDateFormat('dd MMMM yyyy');
+    }
+    if (!this.settingsService.decimals) {
+      this.settingsService.setDecimalToDisplay('2');
+    }
+
     this.language.patchValue(this.settingsService.language);
     this.dateFormat.patchValue(this.settingsService.dateFormat);
     this.decimalsToDisplay.patchValue(this.settingsService.decimals);
+
     this.buildDependencies();
   }
 
