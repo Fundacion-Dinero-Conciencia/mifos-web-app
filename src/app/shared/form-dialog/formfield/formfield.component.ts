@@ -15,15 +15,28 @@ export class FormfieldComponent {
   Editor = ClassicEditor;
   editorConfig = {
     toolbar: [
-      'heading', '|',
-      'bold', 'italic', 'underline', 'link', '|',
-      'bulletedList', 'numberedList', 'blockQuote', '|',
-      'undo', 'redo', '|',
-      'alignment', 'outdent', 'indent', 'removeFormat'
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'underline',
+      'link',
+      '|',
+      'bulletedList',
+      'numberedList',
+      'blockQuote',
+      '|',
+      'undo',
+      'redo',
+      '|',
+      'alignment',
+      'outdent',
+      'indent',
+      'removeFormat'
     ]
   };
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     console.log('Field received in formfield:', this.formfield);

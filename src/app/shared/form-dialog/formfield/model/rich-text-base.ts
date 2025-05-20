@@ -1,4 +1,4 @@
-import { FormfieldBase } from "./formfield-base";
+import { FormfieldBase } from './formfield-base';
 
 export class RichTextBase extends FormfieldBase {
   controlType = 'richtext';

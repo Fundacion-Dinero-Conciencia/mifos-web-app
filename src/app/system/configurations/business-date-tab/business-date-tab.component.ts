@@ -56,7 +56,7 @@ export class BusinessDateTabComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private dateUtils: Dates,
     private alertService: AlertService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.settingsService.setDateFormat('dd MMMM yyyy');
