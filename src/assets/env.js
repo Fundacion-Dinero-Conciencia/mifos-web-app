@@ -1,19 +1,19 @@
-(function(window) {
-  window["env"] = window["env"] || {};
+(function (window) {
+  window['env'] = window['env'] || {};
 
   // BackEnd Environment variables
-  window["env"]["fineractApiUrls"] = 'https://fineract-mifos-dev.up.railway.app';
-  window["env"]["fineractApiUrl"]  = 'https://fineract-mifos-dev.up.railway.app';
+  window['env']['fineractApiUrls'] = 'https://fineract-mifos-dev.up.railway.app';
+  window['env']['fineractApiUrl'] = 'https://fineract-mifos-dev.up.railway.app';
 
-  window["env"]["apiProvider"] = '';
-  window["env"]["apiVersion"]  = '';
+  window['env']['apiProvider'] = '';
+  window['env']['apiVersion'] = '';
 
-  window["env"]["fineractPlatformTenantId"]  = '';
-  window["env"]["fineractPlatformTenantIds"]  = '';
+  window['env']['fineractPlatformTenantId'] = '';
+  window['env']['fineractPlatformTenantIds'] = '';
 
   // Language Environment variables
-  window["env"]["defaultLanguage"] = '';
-  window["env"]["supportedLanguages"] = '';
+  window['env']['defaultLanguage'] = '';
+  window['env']['supportedLanguages'] = '';
 
   window['env']['preloadClients'] = '';
 
@@ -35,15 +35,14 @@
   // Time in milliseconds for Session idle timeout, default 300000 seconds
   window['env']['sessionIdleTimeout'] = '0';
 
-  // OAuth Server Enabled  
+  // OAuth Server Enabled
   window['env']['oauthServerEnabled'] = '';
 
-  // OAuth Server URL  
+  // OAuth Server URL
   window['env']['oauthServerUrl'] = '';
 
-  // OAuth Client Id  
+  // OAuth Client Id
   window['env']['oauthAppId'] = '';
 
-  window['env']['GOOGLE_MAPS_API_KEY'] = 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
-
+  window['env']['GOOGLE_MAPS_API_KEY'] = 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k';
 })(this);
