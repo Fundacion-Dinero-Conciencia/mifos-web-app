@@ -23,7 +23,7 @@
     "test:ci": "npm run env -s && npm run lint -s && ng test --code-coverage --watch=false",
     "e2e": "ng e2e",
     "translations:extract": "ngx-translate-extract --input ./src --output ./src/translations/template.json --format=json --clean -sort --marker extract",
-    "env": "node version.js  && node scripts/set-env.js",
+    "env": "node version.js",
     "postinstall": "node version.js && ngcc",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
