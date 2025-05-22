@@ -112,7 +112,7 @@ export class ViewCodeComponent implements OnInit {
         Validators.required
       ],
       codeScore: [
-        { value: codeValue ? codeValue.position : 0, disabled: true }],
+        { value: codeValue ? codeValue.codeScore : 0, disabled: true }],
       isActive: [{ value: codeValue ? codeValue.active : false, disabled: true }]
     });
   }
