@@ -124,6 +124,9 @@ import { InvestmentProjectGeneralTabComponent } from './manage-projects/view-inv
 import { InvestmentProjectImageTabComponent } from './manage-projects/view-investment-project/investment-project-image-tab/investment-project-image-tab.component';
 import { DataCodeObjectiveResolver } from './manage-projects/data-code-objective.resolver';
 import { CreateProjectParticipationComponent } from './manage-project-participation/create-project-participation/create-project-participation.component';
+import { LoanProductResolver } from 'app/products/loan-products/loan-product.resolver';
+import { LoanProducts } from 'app/products/loan-products/loan-products';
+import { LoanProductsResolver } from 'app/products/loan-products/loan-products.resolver';
 
 /** Organization Routes */
 const routes: Routes = [
@@ -735,7 +738,8 @@ const routes: Routes = [
                 subcategoryData: DataCodeSubCategoryResolver,
                 areaData: DataCodeAreaResolver,
                 objectivesData: DataCodeObjectiveResolver,
-                statusData: DataCodeStatusResolver
+                statusData: DataCodeStatusResolver,
+                loanProductsData: LoanProductsResolver
               }
             },
             {
