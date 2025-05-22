@@ -33,7 +33,7 @@ export class SettingsService {
    * @param {string} dateFormat Date Format
    */
   setDateFormat(dateFormat: string) {
-    localStorage.setItem('mifosXDateFormat', JSON.stringify(dateFormat));
+    localStorage.setItem('mifosXDateFormat', JSON.stringify(dateFormat || SettingsService.businessDateFormat));
   }
 
   /**
@@ -112,7 +112,7 @@ export class SettingsService {
    * Returns date format setting.
    */
   get dateFormat() {
-    return JSON.parse(localStorage.getItem('mifosXDateFormat'));
+    return JSON.parse(localStorage.getItem('mifosXDateFormat')) || SettingsService.businessDateFormat;
   }
 
   /**
