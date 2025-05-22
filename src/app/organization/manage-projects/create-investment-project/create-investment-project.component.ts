@@ -28,6 +28,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   currency: any;
   statusData: any[] = [];
   objectivesData: any[] = [];
+  loanProductsData: any[] = [];
   public Editor = ClassicEditor;
 
   constructor(
@@ -48,6 +49,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         areaData: any;
         statusData: any;
         objectivesData: any;
+        loanProductsData: any;
       }) => {
         this.clientsData = [];
         this.countryData = data.countryData.codeValues;
@@ -56,6 +58,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         this.areaData = data.areaData.codeValues;
         this.statusData = data.statusData.codeValues;
         this.objectivesData = data.objectivesData.codeValues;
+        this.loanProductsData = data.loanProductsData;
       }
     );
   }
@@ -152,6 +155,10 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         Validators.required
       ],
       objectives: [
+        '',
+        Validators.required
+      ],
+      basedInLoanProductId: [
         '',
         Validators.required
       ],

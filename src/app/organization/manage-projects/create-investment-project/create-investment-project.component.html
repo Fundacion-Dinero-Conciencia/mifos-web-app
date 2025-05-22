@@ -212,6 +212,15 @@
             </mat-select>
           </mat-form-field>
 
+          <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Based in Loan Product' | translate }}</mat-label>
+            <mat-select required formControlName="basedInLoanProductId">
+              <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
+                {{ loanProduct.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
           <div class="filter-box">
             <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive"
               >{{ 'labels.inputs.Active' | translate }}
