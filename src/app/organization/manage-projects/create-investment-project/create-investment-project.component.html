@@ -115,7 +115,7 @@
           </mat-form-field>
 
           <mifosx-input-amount
-            [currency]="currency"
+            [currency]="currency || ''"
             [isRequired]="true"
             [inputFormControl]="investmentProjectForm.controls.amount"
             [inputLabel]="'Amount'"

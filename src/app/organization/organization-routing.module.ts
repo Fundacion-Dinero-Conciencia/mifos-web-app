@@ -729,7 +729,7 @@ const routes: Routes = [
               component: CreateInvestmentProjectComponent,
               data: { title: 'Create Investment Project', breadcrumb: 'Create Investment Project' },
               resolve: {
-                accountData: InvestmentProjectTemplateResolver,
+                //accountData: InvestmentProjectTemplateResolver,
                 countryData: DataCodeCountryResolver,
                 categoryData: DataCodeCategoryResolver,
                 subcategoryData: DataCodeSubCategoryResolver,
@@ -777,7 +777,7 @@ const routes: Routes = [
                   component: EditInvestmentProjectComponent,
                   data: { title: 'Edit Investment Project', breadcrumb: 'Edit', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: InvestmentProjectTemplateResolver,
+                    //accountData: InvestmentProjectTemplateResolver,
                     countryData: DataCodeCountryResolver,
                     categoryData: DataCodeCategoryResolver,
                     subcategoryData: DataCodeSubCategoryResolver,

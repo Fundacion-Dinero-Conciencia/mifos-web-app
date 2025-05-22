@@ -6,6 +6,7 @@ import { SettingsService } from 'app/settings/settings.service';
 
 /** Custom Services */
 import { SystemService } from '../../../system.service';
+import { OrganizationService } from 'app/organization/organization.service';
 
 /**
  * Edit Configuration Component
@@ -26,6 +27,10 @@ export class EditConfigurationComponent implements OnInit {
   /** Configuration. */
   configuration: any;
 
+  currencies: any[] = [];
+
+  DEFAULT_CURRENCY: string;
+
   /**
    * Retrieves the configuration data from `resolve`.
    * @param {FormBuilder} formBuilder Form Builder.
@@ -39,10 +44,15 @@ export class EditConfigurationComponent implements OnInit {
     private systemService: SystemService,
     private settingsService: SettingsService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private organizationService: OrganizationService
   ) {
     this.route.data.subscribe((data: { configuration: any }) => {
       this.configuration = data.configuration;
+    });
+
+    this.organizationService.getCurrencies().subscribe((data) => {
+      this.currencies = data?.selectedCurrencyOptions;
     });
   }
 
@@ -50,6 +60,7 @@ export class EditConfigurationComponent implements OnInit {
    * Creates and sets the configuration form.
    */
   ngOnInit() {
+    this.DEFAULT_CURRENCY = SettingsService.default_currency;
     this.maxDate = this.settingsService.businessDate;
     this.createConfigurationForm();
   }

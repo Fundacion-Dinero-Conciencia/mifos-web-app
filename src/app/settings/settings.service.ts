@@ -15,6 +15,7 @@ import { environment } from '../../environments/environment';
 export class SettingsService {
   public static businessDateFormat = 'yyyy-MM-dd';
   public static businessDateConfigName = 'enable-business-date';
+  public static default_currency = 'default-currency';
   public static businessDateType = 'BUSINESS_DATE';
   public static cobDateType = 'COB_DATE';
   public static defaultAccountConfigName = 'belat-account';
@@ -32,7 +33,7 @@ export class SettingsService {
    * @param {string} dateFormat Date Format
    */
   setDateFormat(dateFormat: string) {
-    localStorage.setItem('mifosXDateFormat', JSON.stringify(dateFormat));
+    localStorage.setItem('mifosXDateFormat', JSON.stringify(dateFormat || SettingsService.businessDateFormat));
   }
 
   /**
@@ -111,7 +112,7 @@ export class SettingsService {
    * Returns date format setting.
    */
   get dateFormat() {
-    return JSON.parse(localStorage.getItem('mifosXDateFormat'));
+    return JSON.parse(localStorage.getItem('mifosXDateFormat')) || SettingsService.businessDateFormat;
   }
 
   /**

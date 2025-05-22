@@ -6,8 +6,10 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
 import { ClientsService } from 'app/clients/clients.service';
 import { OrganizationService } from 'app/organization/organization.service';
+import { SettingsService } from 'app/settings/settings.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
+import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-create-investment-project',
@@ -35,11 +37,11 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private clientsService: ClientsService,
     private organizationService: OrganizationService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private systemService: SystemService
   ) {
     this.route.data.subscribe(
       (data: {
-        accountData: any;
         countryData: any;
         categoryData: any;
         subcategoryData: any;
@@ -47,7 +49,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         statusData: any;
         objectivesData: any;
       }) => {
-        this.currency = data.accountData.currency;
         this.clientsData = [];
         this.countryData = data.countryData.codeValues;
         this.categoryData = data.categoryData.codeValues;
@@ -62,6 +63,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.setupInvestmentProjectForm();
     this.loansData = [];
+    this.getDefaultCurrency();
   }
 
   ngAfterViewInit() {
@@ -178,7 +180,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   }
 
   submit() {
-    const currencyCode: string = this.currency.code;
+    const currencyCode: string = this.currency;
 
     const payload = {
       ...this.investmentProjectForm.getRawValue(),
@@ -189,9 +191,14 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     payload['amount'] = payload['amount'] * 1;
     payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
     payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
-    console.log(payload);
     this.organizationService.createInvestmentProjects(payload).subscribe((response: any) => {
       this.router.navigate(['../'], { relativeTo: this.route });
+    });
+  }
+
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
     });
   }
 

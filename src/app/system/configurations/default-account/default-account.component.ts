@@ -118,7 +118,6 @@ export class DefaultAccountComponent implements OnInit {
    * Send changes to back
    */
   submit() {
-    console.log(this.configuration);
     if (
       this.selectedAccountId != null ||
       this.configurationForm.value.stringValue != null ||
