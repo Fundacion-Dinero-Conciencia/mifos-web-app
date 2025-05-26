@@ -12,12 +12,11 @@ import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/conf
 import { SystemService } from 'app/system/system.service';
 
 @Component({
-  selector: 'app-investment-project-commission-tab',
+  selector: 'mifosx-investment-project-commission-tab',
   templateUrl: './investment-project-commission-tab.component.html',
   styleUrls: ['./investment-project-commission-tab.component.css']
 })
 export class InvestmentProjectCommissionTabComponent implements OnInit {
-
   currency: any;
   adicionalForm!: FormGroup;
   projectData: any;
@@ -25,10 +24,16 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   commissionToShow: any[] = [];
   commissionAEF: any[] = [];
   comisiones: MatTableDataSource<any> = new MatTableDataSource();
-  displayedColumns: string[] = ['commissionType', 'description', 'netAmount', 'vat', 'total'];
+  displayedColumns: string[] = [
+    'commissionType',
+    'description',
+    'netAmount',
+    'vat',
+    'total'
+  ];
 
-
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private systemService: SystemService,
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
@@ -36,7 +41,8 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     public dialog: MatDialog,
     private translateService: TranslateService,
     private alertService: AlertService,
-    private loanService: LoansService) {
+    private loanService: LoansService
+  ) {
     this.route.data.subscribe((data: { accountData: any }) => {
       this.projectData = data.accountData;
     });
@@ -45,9 +51,20 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   ngOnInit(): void {
     this.getDefaultCurrency();
     this.adicionalForm = this.fb.group({
-      commissionTypeId: [null, Validators.required],
-      description: ['', Validators.required],
-      netAmount: [null, [Validators.required, Validators.min(0)]],
+      commissionTypeId: [
+        null,
+        Validators.required
+      ],
+      description: [
+        '',
+        Validators.required
+      ],
+      netAmount: [
+        null,
+        [
+          Validators.required,
+          Validators.min(0)]
+      ],
       vat: [null],
       total: [null]
     });
@@ -56,12 +73,14 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   loadTypesCommissions(): void {
-    this.systemService.getCodeByName('CONFIG_COMMISSION_TAXES').subscribe(data => {
+    this.systemService.getCodeByName('CONFIG_COMMISSION_TAXES').subscribe((data) => {
       this.commissionTypes = data?.codeValues?.filter((cv: any) => cv.active);
-      this.commissionToShow = this.commissionTypes.filter((cv: any) =>
-        ['OTROS GASTOS', 'ITE', 'MONTO FACTURA'].includes(cv.name?.trim().toUpperCase())
-      );
-      this.systemService.getCodeByName('COMMISSION_AEF').subscribe(data => {
+      this.commissionToShow = this.commissionTypes.filter((cv: any) => [
+          'OTROS GASTOS',
+          'ITE',
+          'MONTO FACTURA'
+        ].includes(cv.name?.trim().toUpperCase()));
+      this.systemService.getCodeByName('COMMISSION_AEF').subscribe((data) => {
         this.commissionAEF = data?.codeValues?.filter((cv: any) => cv.active);
 
         this.addCommissionAEF();
@@ -69,17 +88,14 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     });
   }
 
-
   getIvaVigente(): number {
-    const ivaItem = this.commissionTypes.find(t => t.name?.trim().toLowerCase() === 'iva');
+    const ivaItem = this.commissionTypes.find((t) => t.name?.trim().toLowerCase() === 'iva');
     return parseFloat(ivaItem.description);
   }
 
-
-
   addCommission(): void {
     const formValue = this.adicionalForm.value;
-    const tipo = this.commissionTypes.find(c => c.id === formValue.commissionTypeId);
+    const tipo = this.commissionTypes.find((c) => c.id === formValue.commissionTypeId);
     const total = formValue.netAmount + (formValue.netAmount * this.getIvaVigente()) / 100;
     const nuevaComision = {
       commissionType: tipo,
@@ -89,14 +105,16 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       total: total
     };
 
-    this.comisiones.data = [...this.comisiones.data, nuevaComision];
+    this.comisiones.data = [
+      ...this.comisiones.data,
+      nuevaComision
+    ];
     this.adicionalForm.reset();
   }
 
   calcularComision(): void {
-
     const formValue = this.adicionalForm.value;
-    const tipo = this.commissionTypes.find(c => c.id === formValue.commissionTypeId);
+    const tipo = this.commissionTypes.find((c) => c.id === formValue.commissionTypeId);
 
     if (tipo.name.trim().toUpperCase() === 'ITE') {
       this.addCommissionITE();
@@ -154,7 +172,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     });
   }
 
-
   addCommissionAmountInvoice() {
     const formValue = this.adicionalForm.value;
     const tipoInvoice = this.getCommissionByName('MONTO FACTURA');
@@ -174,7 +191,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         message: this.translateService.instant('errors.validation.msg.percentage.required')
       });
     }
-
   }
 
   getPercentageITEAcordingPeriod(): number {
@@ -196,33 +212,31 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     const amount = this.projectData?.amount || 0;
 
     // Buscar comisión AEF
-    const aef = this.comisiones.data.find(c => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
+    const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
     const montoAEF = aef?.total || 0;
 
     // Buscar IVA sobre AEF
-    const ivaAef = this.comisiones.data.find(c => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF');
+    const ivaAef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF');
     const montoIVAAEF = ivaAef?.total || 0;
 
     // Sumar OTROS GASTOS
     const otrosGastos = this.comisiones.data
-      .filter(c => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
+      .filter((c) => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
       .reduce((acc, curr) => acc + (curr.total || 0), 0);
 
     const pagaré = amount + montoAEF + montoIVAAEF + otrosGastos;
     return pagaré;
   }
 
-
-
   getCommissionByName(nombre: string): any {
-    return this.commissionTypes.find(t => t.name?.trim().toLowerCase() === nombre.toLowerCase());
+    return this.commissionTypes.find((t) => t.name?.trim().toLowerCase() === nombre.toLowerCase());
   }
 
   getCommissionAcordingByPeriod(): number | null {
     const period = this.projectData?.period;
     if (period == null || !this.commissionAEF?.length) return null;
 
-    const activeCommissions = this.commissionAEF.filter(item => item.active);
+    const activeCommissions = this.commissionAEF.filter((item) => item.active);
 
     for (const item of activeCommissions) {
       const name = item.name?.trim();
@@ -251,9 +265,8 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     return null;
   }
 
-
   saveCommissions(): void {
-    const payload = this.comisiones.data.map(c => ({
+    const payload = this.comisiones.data.map((c) => ({
       projectId: this.projectData.id,
       commissionTypeId: c.commissionType.id,
       description: c.description,
@@ -261,10 +274,9 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       vat: c.vat,
       total: c.total
     }));
-    this.organizationService.saveAdditionalExpenses(payload).subscribe(data => {
+    this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
-
 
     console.log('Guardando comisiones en backend', payload);
   }
@@ -277,7 +289,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
   isITESelected(): boolean {
     const commissionId = this.adicionalForm.get('commissionTypeId')?.value;
-    const commission = this.commissionToShow.find(c => c.id === commissionId);
+    const commission = this.commissionToShow.find((c) => c.id === commissionId);
     return commission?.name === 'ITE';
   }
 
@@ -285,9 +297,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     const warningtDialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         heading: this.translateService.instant('labels.heading.Approve Share'),
-        dialogContext: this.translateService.instant(
-          'labels.text.Are you sure you want to save commisions not edit'
-        ),
+        dialogContext: this.translateService.instant('labels.text.Are you sure you want to save commisions not edit'),
         type: 'Mild'
       }
     });
@@ -301,17 +311,21 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   isFactoring(): boolean {
-    console.log("IsFactoring", this.projectData?.loanId?.toString().toUpperCase());
+    console.log('IsFactoring', this.projectData?.loanId?.toString().toUpperCase());
     return this.projectData?.loanId?.toString().toUpperCase() === '2'; // reemplazar por factoring y tomar el producto
   }
 
   getMontoAFinanciar(): number {
-    const aef = this.comisiones.data.find(c => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.total || 0;
-    const ivaAef = this.comisiones.data.find(c => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF')?.total || 0;
+    const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.total || 0;
+    const ivaAef =
+      this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF')?.total || 0;
     const otrosGastos = this.comisiones.data
-      .filter(c => ['OTROS GASTOS', 'MONTO FACTURA'].includes(c.commissionType?.name?.trim().toUpperCase()))
+      .filter((c) => [
+          'OTROS GASTOS',
+          'MONTO FACTURA'
+        ].includes(c.commissionType?.name?.trim().toUpperCase()))
       .reduce((acc, curr) => acc + (curr.total || 0), 0);
-    const ite = this.comisiones.data.find(c => c.commissionType?.name?.trim().toUpperCase() === 'ITE')?.total || 0;
+    const ite = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'ITE')?.total || 0;
 
     if (this.isFactoring()) {
       const porcentajeFinanciamiento = this.projectData?.porcentajeFinanciamientoFactura || 100;
@@ -327,10 +341,11 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     if (this.isFactoring()) {
       const montoFinanciar = this.getMontoAFinanciar();
       const valorIntereses = this.projectData?.valorInteresesInversionistas || 0;
-      const aef = this.comisiones.data.find(c => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.total || 0;
-      const ivaAef = this.comisiones.data.find(c => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF')?.total || 0;
+      const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.total || 0;
+      const ivaAef =
+        this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF')?.total || 0;
       const otrosGastos = this.comisiones.data
-        .filter(c => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
+        .filter((c) => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
         .reduce((acc, curr) => acc + (curr.total || 0), 0);
       return montoFinanciar - valorIntereses - aef - ivaAef - otrosGastos;
     }
@@ -340,9 +355,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
   getScheduleAndPercentageCAE() {
     //repaymentSchedule.periods.totalInstallmentAmountForPeriod || principalDisbursed
-    this.loanService.getLoanAccountAssociationDetails(this.projectData.loanId);
+    //this.loanService.getLoanAccountAssociationDetails(this.projectData.loanId);
   }
-
-
-
 }

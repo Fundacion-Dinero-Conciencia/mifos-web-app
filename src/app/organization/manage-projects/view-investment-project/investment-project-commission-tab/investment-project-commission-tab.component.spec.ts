@@ -11,9 +11,8 @@ describe('InvestmentProjectCommissionTabComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InvestmentProjectCommissionTabComponent ]
-    })
-    .compileComponents();
+      declarations: [InvestmentProjectCommissionTabComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
