@@ -865,4 +865,8 @@ export class OrganizationService {
   uploadProjectDocumentsImage(projectId: string, formData: FormData) {
     return this.http.post(`/projects/${projectId}/documents`, formData);
   }
+
+  saveAdditionalExpenses(formData: any) {
+    return this.http.post(`/additionalExpenses`, formData);
+  }
 }

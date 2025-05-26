@@ -88,6 +88,7 @@ import { InvestmentProjectImageTabComponent } from './manage-projects/view-inves
 import { CreateProjectParticipationComponent } from './manage-project-participation/create-project-participation/create-project-participation.component';
 import { SelectDialogComponent } from './select-dialog/select-dialog.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-investment-project/investment-project-commission-tab/investment-project-commission-tab.component';
 
 /**
  * Organization Module
@@ -175,7 +176,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     InvestmentProjectGeneralTabComponent,
     InvestmentProjectImageTabComponent,
     CreateProjectParticipationComponent,
-    SelectDialogComponent
+    SelectDialogComponent,
+    InvestmentProjectCommissionTabComponent
   ],
   providers: [
     CreateHoliday,

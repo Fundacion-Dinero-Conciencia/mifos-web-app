@@ -12,6 +12,15 @@
     <a mat-tab-link [routerLink]="['./images']" routerLinkActive #images="routerLinkActive" [active]="images.isActive">
       {{ 'labels.heading.Images' | translate }}
     </a>
+    <a
+      mat-tab-link
+      [routerLink]="['./commissions']"
+      routerLinkActive
+      #commissions="routerLinkActive"
+      [active]="commissions.isActive"
+    >
+      {{ 'labels.catalogs.Fees' | translate }}
+    </a>
   </nav>
 
   <router-outlet></router-outlet>
