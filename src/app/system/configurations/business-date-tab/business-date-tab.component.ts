@@ -10,7 +10,6 @@ import { Subscription } from 'rxjs';
 
 /** Custom Services */
 import { SystemService } from '../../system.service';
-import moment from 'moment';
 
 @Component({
   selector: 'mifosx-business-date-tab',
@@ -20,9 +19,7 @@ import moment from 'moment';
 export class BusinessDateTabComponent implements OnInit {
   /** Subscription to alerts. */
   alert$: Subscription;
-
   defaultFormatDate = 'dd MMMM yyyy';
-
   /** Minimum date allowed. */
   minDate = new Date(2000, 0, 1);
   /** Maximum date allowed. */
@@ -35,8 +32,6 @@ export class BusinessDateTabComponent implements OnInit {
   businessDateForm: UntypedFormGroup;
   /** Business data. */
   businessDateData: any;
-
-  isLoaded = false;
 
   dateIndex = 0;
   userDateFormat: '';
@@ -59,7 +54,7 @@ export class BusinessDateTabComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.settingsService.setDateFormat('dd MMMM yyyy');
+    this.settingsService.setDateFormat(this.defaultFormatDate);
     this.alert$ = this.alertService.alertEvent.subscribe((alertEvent: Alert) => {
       const alertType = alertEvent.type;
       if (alertType === SettingsService.businessDateType + ' Set Config') {
@@ -92,17 +87,18 @@ export class BusinessDateTabComponent implements OnInit {
   setBusinessDates(): void {
     this.systemService.getBusinessDates().subscribe((businessDateData: any) => {
       businessDateData.forEach((data: any) => {
-        const date = moment(data.date).toDate();
-
         if (data.type === SettingsService.businessDateType) {
-          this.businessDate = date;
-          this.businessDateForm.patchValue({ businessDate: date });
+          this.businessDate = new Date(data.date);
+          this.businessDateForm.patchValue({
+            businessDate: this.businessDate
+          });
         } else {
-          this.cobDate = date;
-          this.businessDateForm.patchValue({ cobDate: date });
+          this.cobDate = new Date(data.date);
+          this.businessDateForm.patchValue({
+            cobDate: this.cobDate
+          });
         }
       });
-      this.isLoaded = true;
     });
   }
 
