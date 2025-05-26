@@ -127,6 +127,7 @@ import { CreateProjectParticipationComponent } from './manage-project-participat
 import { LoanProductResolver } from 'app/products/loan-products/loan-product.resolver';
 import { LoanProducts } from 'app/products/loan-products/loan-products';
 import { LoanProductsResolver } from 'app/products/loan-products/loan-products.resolver';
+import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-investment-project/investment-project-commission-tab/investment-project-commission-tab.component';
 
 /** Organization Routes */
 const routes: Routes = [
@@ -788,6 +789,14 @@ const routes: Routes = [
                     areaData: DataCodeAreaResolver,
                     objectivesData: DataCodeObjectiveResolver,
                     statusData: DataCodeStatusResolver
+                  }
+                },
+                {
+                  path: 'commissions',
+                  component: InvestmentProjectCommissionTabComponent,
+                  data: { title: 'Investment Project Commissions', breadcrumb: 'Edit', routeParamBreadcrumb: false },
+                  resolve: {
+                    accountData: ManageProjectResolver
                   }
                 }
               ]

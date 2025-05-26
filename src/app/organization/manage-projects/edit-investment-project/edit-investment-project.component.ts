@@ -135,7 +135,7 @@ export class EditInvestmentProjectComponent implements OnInit {
             ],
             isActive: [data.isActive],
             statusId: [
-              data.status.statusValue.id,
+              data.status?.statusValue?.id,
               Validators.required
             ]
           });
