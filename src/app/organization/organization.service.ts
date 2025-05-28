@@ -869,4 +869,16 @@ export class OrganizationService {
   saveAdditionalExpenses(formData: any) {
     return this.http.post(`/additionalExpenses`, formData);
   }
+
+  getAdditionalExpensesByProjectId(projectId: string) {
+    return this.http.get(`/additionalExpenses/by-project/${projectId}`);
+  }
+
+  deleteAdditionalExpensesById(projectId: string) {
+    return this.http.get(`/additionalExpenses/${projectId}`);
+  }
+
+  getCae(data: number[]) {
+    return this.http.post(`/additionalExpenses/getTir`, data);
+  }
 }
