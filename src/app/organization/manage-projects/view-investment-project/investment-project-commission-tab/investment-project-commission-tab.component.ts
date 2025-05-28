@@ -10,6 +10,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { SystemService } from 'app/system/system.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'mifosx-investment-project-commission-tab',
@@ -17,6 +18,9 @@ import { SystemService } from 'app/system/system.service';
   styleUrls: ['./investment-project-commission-tab.component.css']
 })
 export class InvestmentProjectCommissionTabComponent implements OnInit {
+  caeValue: any;
+  loanTemplate: any;
+  selectedCommission: any = null;
   currency: any;
   adicionalForm!: FormGroup;
   projectData: any;
@@ -29,7 +33,8 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     'description',
     'netAmount',
     'vat',
-    'total'
+    'total',
+    'actions'
   ];
 
   constructor(
@@ -45,12 +50,14 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   ) {
     this.route.data.subscribe((data: { accountData: any }) => {
       this.projectData = data.accountData;
+      this.getLoanTemplate();
     });
   }
 
   ngOnInit(): void {
     this.getDefaultCurrency();
     this.adicionalForm = this.fb.group({
+      commissionType: [null],
       commissionTypeId: [
         null,
         Validators.required
@@ -82,8 +89,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         ].includes(cv.name?.trim().toUpperCase()));
       this.systemService.getCodeByName('COMMISSION_AEF').subscribe((data) => {
         this.commissionAEF = data?.codeValues?.filter((cv: any) => cv.active);
-
-        this.addCommissionAEF();
+        this.getAdditionalExpensesByProjectId();
       });
     });
   }
@@ -95,40 +101,72 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
   addCommission(): void {
     const formValue = this.adicionalForm.value;
-    const tipo = this.commissionTypes.find((c) => c.id === formValue.commissionTypeId);
-    const total = formValue.netAmount + (formValue.netAmount * this.getIvaVigente()) / 100;
-    const nuevaComision = {
-      commissionType: tipo,
+    const otherExpenses = this.getCommissionByName('OTROS GASTOS');
+    const vat = formValue.vat ?? this.getIvaVigente();
+
+    const total = formValue.netAmount + (formValue.netAmount * vat) / 100;
+
+    const nuevaComision: any = {
+      commissionTypeId: otherExpenses.id,
+      commissionType: otherExpenses,
       description: formValue.description,
       netAmount: formValue.netAmount,
-      vat: this.getIvaVigente(),
+      vat: vat,
       total: total
     };
 
-    this.comisiones.data = [
-      ...this.comisiones.data,
-      nuevaComision
-    ];
+    if (this.selectedCommission) {
+      if (this.selectedCommission.id) {
+        nuevaComision.id = this.selectedCommission.id;
+      } else if (this.selectedCommission.uuid) {
+        nuevaComision.uuid = this.selectedCommission.uuid;
+      }
+
+      const index = this.comisiones.data.findIndex((c) => {
+        if (this.selectedCommission.id) {
+          return c.id === this.selectedCommission.id;
+        } else if (this.selectedCommission.uuid) {
+          return c.uuid === this.selectedCommission.uuid;
+        }
+        return false;
+      });
+
+      if (index !== -1) {
+        this.comisiones.data[index] = nuevaComision;
+      } else {
+        nuevaComision.uuid = uuidv4();
+        this.comisiones.data.push(nuevaComision);
+      }
+    } else {
+      nuevaComision.uuid = uuidv4();
+      this.comisiones.data.push(nuevaComision);
+    }
+
     this.adicionalForm.reset();
+    this.selectedCommission = null;
+    this.comisiones._updateChangeSubscription();
   }
 
   calcularComision(): void {
     const formValue = this.adicionalForm.value;
     const tipo = this.commissionTypes.find((c) => c.id === formValue.commissionTypeId);
 
-    if (tipo.name.trim().toUpperCase() === 'ITE') {
+    if (tipo.name?.trim().toUpperCase() === 'ITE') {
       this.addCommissionITE();
-    } else if (tipo.name.trim().toUpperCase() === 'OTROS GASTOS') {
+    } else if (tipo.name?.trim().toUpperCase() === 'OTROS GASTOS') {
       this.addCommission();
-    } else if (tipo.name.trim().toUpperCase() === 'MONTO FACTURA') {
+    } else if (tipo.name?.trim().toUpperCase() === 'MONTO FACTURA') {
       this.addCommissionAmountInvoice();
+    } else if (tipo.name?.trim().toUpperCase() === 'AEF') {
+      this.addCommissionAEF(formValue.netAmount, formValue.vat);
     }
     this.comisiones._updateChangeSubscription();
+    this.cancelEdit();
   }
 
-  addCommissionAEF(): void {
-    const montoSolicitado = this.projectData?.amount;
-    const tasaAEF = this.getCommissionAcordingByPeriod();
+  addCommissionAEF(baseAmount: number, percentage: number): void {
+    const montoSolicitado = baseAmount || this.projectData?.amount;
+    const tasaAEF = percentage || this.getCommissionAcordingByPeriod();
     const montoAEF = (montoSolicitado * tasaAEF) / 100;
     const ivaAEF = (montoAEF * this.getIvaVigente()) / 100;
 
@@ -136,23 +174,49 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     const tipoIVAAEF = this.getCommissionByName('IVA-AEF');
 
     if (tipoAEF) {
-      this.comisiones.data.push({
+      const indexAEF = this.comisiones.data.findIndex((c) => c.commissionType?.id === tipoAEF.id);
+
+      const existingAEF = indexAEF >= 0 ? this.comisiones.data[indexAEF] : null;
+
+      const aefCommission = {
+        ...(existingAEF?.id && { id: existingAEF.id }),
+        ...(existingAEF?.uuid && { uuid: existingAEF.uuid }),
+        commissionTypeId: tipoAEF.id,
         commissionType: tipoAEF,
         description: 'Comisión por Asesoría de Estructuración Financiera (AEF)',
-        netAmount: this.projectData?.amount,
+        netAmount: montoSolicitado,
         vat: tasaAEF,
         total: montoAEF
-      });
+      };
+
+      if (indexAEF >= 0) {
+        this.comisiones.data[indexAEF] = aefCommission;
+      } else {
+        this.comisiones.data.push(aefCommission);
+      }
     }
 
     if (tipoIVAAEF) {
-      this.comisiones.data.push({
+      const indexIVAAEF = this.comisiones.data.findIndex((c) => c.commissionType?.id === tipoIVAAEF.id);
+
+      const existingIVAAEF = indexIVAAEF >= 0 ? this.comisiones.data[indexIVAAEF] : null;
+
+      const ivaCommission = {
+        ...(existingIVAAEF?.id && { id: existingIVAAEF.id }),
+        ...(existingIVAAEF?.uuid && { uuid: existingIVAAEF.uuid }),
+        commissionTypeId: tipoIVAAEF.id,
         commissionType: tipoIVAAEF,
         description: 'IVA sobre AEF',
         netAmount: montoAEF,
         vat: this.getIvaVigente(),
         total: ivaAEF
-      });
+      };
+
+      if (indexIVAAEF >= 0) {
+        this.comisiones.data[indexIVAAEF] = ivaCommission;
+      } else {
+        this.comisiones.data.push(ivaCommission);
+      }
     }
 
     this.comisiones._updateChangeSubscription();
@@ -175,22 +239,51 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   addCommissionAmountInvoice() {
     const formValue = this.adicionalForm.value;
     const tipoInvoice = this.getCommissionByName('MONTO FACTURA');
-    if (formValue.vat) {
-      const total = (formValue.netAmount * formValue.vat) / 100;
-      this.comisiones.data.push({
-        commissionType: tipoInvoice,
-        description: 'Monto de factura (factoring)',
-        netAmount: formValue.netAmount,
-        vat: formValue.vat,
-        total: total
-      });
-      this.adicionalForm.reset();
-    } else {
-      this.alertService.alert({
-        type: 'Warning',
-        message: this.translateService.instant('errors.validation.msg.percentage.required')
-      });
+
+    if (!tipoInvoice) {
+      return;
     }
+
+    // Buscar si ya existe una comisión "MONTO FACTURA" por id o uuid
+    const existingIndex = this.comisiones.data.findIndex(
+      (c) => c.commissionType?.id === tipoInvoice.id && (c.id || c.uuid)
+    );
+
+    const existing = existingIndex >= 0 ? this.comisiones.data[existingIndex] : null;
+    var total = 0;
+    if (formValue.vat) {
+      total = (formValue.netAmount * formValue.vat) / 100;
+    } else {
+      total = formValue.netAmount;
+    }
+
+    const invoiceCommission: any = {
+      commissionTypeId: tipoInvoice.id,
+      commissionType: tipoInvoice,
+      description: 'Monto de factura (factoring)',
+      netAmount: formValue.netAmount,
+      vat: formValue.vat,
+      total: total
+    };
+
+    // Preservar ID si ya existe
+    if (existing?.id) {
+      invoiceCommission.id = existing.id;
+    } else if (existing?.uuid) {
+      invoiceCommission.uuid = existing.uuid;
+    } else {
+      // Solo generar uuid si no hay id ni uuid
+      invoiceCommission.uuid = uuidv4();
+    }
+
+    if (existingIndex >= 0) {
+      this.comisiones.data[existingIndex] = invoiceCommission;
+    } else {
+      this.comisiones.data.push(invoiceCommission);
+    }
+
+    this.adicionalForm.reset();
+    this.comisiones._updateChangeSubscription();
   }
 
   getPercentageITEAcordingPeriod(): number {
@@ -272,13 +365,12 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       description: c.description,
       netAmount: c.netAmount,
       vat: c.vat,
-      total: c.total
+      total: c.total,
+      id: c.id
     }));
     this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
-
-    console.log('Guardando comisiones en backend', payload);
   }
 
   getDefaultCurrency() {
@@ -311,7 +403,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   isFactoring(): boolean {
-    console.log('IsFactoring', this.projectData?.loanId?.toString().toUpperCase());
     return this.projectData?.loanId?.toString().toUpperCase() === '2'; // reemplazar por factoring y tomar el producto
   }
 
@@ -353,8 +444,127 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     return this.projectData?.amount || 0;
   }
 
-  getScheduleAndPercentageCAE() {
+  getLoanTemplate() {
     //repaymentSchedule.periods.totalInstallmentAmountForPeriod || principalDisbursed
-    //this.loanService.getLoanAccountAssociationDetails(this.projectData.loanId);
+    this.loanService.getLoanAccountAssociationDetails(this.projectData.loanId).subscribe((data) => {
+      this.loanTemplate = data;
+      this.getCAE();
+    });
+  }
+
+  getCAE() {
+    const installments = this.loanTemplate?.repaymentSchedule?.periods;
+
+    const cashFlows: number[] = [];
+    cashFlows.push(-installments[0].principalDisbursed);
+
+    for (let i = 1; i < installments.length; i++) {
+      const p = installments[i];
+      const payment = p.totalInstallmentAmountForPeriod ?? 0;
+      cashFlows.push(payment);
+    }
+
+    this.organizationService.getCae(cashFlows).subscribe((data) => {
+      this.caeValue = data;
+      this.caeValue = this.caeValue;
+    });
+  }
+
+  getCaeValue(): number {
+    return this.caeValue;
+  }
+
+  getAdditionalExpensesByProjectId(): void {
+    this.organizationService.getAdditionalExpensesByProjectId(this.projectData.id).subscribe((data) => {
+      if (data && Array.isArray(data)) {
+        const enriched = data.map((item) => {
+          const tipo = this.commissionTypes.find((c) => c.id === item.commissionTypeId);
+          return {
+            ...item,
+            id: item.id,
+            commissionType: tipo
+          };
+        });
+
+        this.comisiones.data = enriched;
+
+        const existeAEF = enriched.some((item) => item.commissionType?.name === 'AEF');
+        if (!existeAEF) {
+          this.addCommissionAEF(null, null);
+        }
+      } else {
+        this.addCommissionAEF(null, null);
+      }
+    });
+  }
+
+  editCommission(commission: any): void {
+    console.log(commission);
+    this.selectedCommission = commission;
+    this.adicionalForm.patchValue({
+      commissionTypeId: commission.commissionTypeId,
+      commissionType: commission.commissionType,
+      netAmount: commission.netAmount,
+      vat: commission.vat,
+      description: commission.description,
+      total: commission.total,
+      id: commission.id,
+      uuid: commission.uuid
+    });
+  }
+
+  cancelEdit(): void {
+    this.adicionalForm.reset();
+    this.selectedCommission = null;
+  }
+
+  deleteCommission(index: number): void {
+    const commission = this.comisiones.data[index];
+    const toDelete = [];
+
+    // Si es AEF, buscar también IVA-AEF
+    if (commission.commissionType?.name?.trim().toUpperCase() === 'AEF') {
+      const ivaIndex = this.comisiones.data.findIndex(
+        (c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF'
+      );
+      if (ivaIndex !== -1) {
+        toDelete.push({ index: ivaIndex, commission: this.comisiones.data[ivaIndex] });
+      }
+    }
+
+    // Agregar la comisión original a eliminar
+    toDelete.push({ index, commission });
+
+    // Ordenar los índices de mayor a menor para eliminar sin errores
+    toDelete.sort((a, b) => b.index - a.index);
+
+    // Procesar cada eliminación
+    toDelete.forEach((item) => {
+      const { index, commission } = item;
+
+      if (commission.id) {
+        // Eliminar desde el backend
+        this.organizationService.deleteAdditionalExpensesById(commission.id).subscribe({
+          next: () => {
+            this.comisiones.data.splice(index, 1);
+            this.comisiones._updateChangeSubscription();
+            this.alertService.alert({
+              type: 'Warning',
+              message: this.translateService.instant('errors.validation.msg.percentage.required')
+            });
+          },
+          error: () => {
+            this.alertService.alert({
+              type: 'Warning',
+              message: this.translateService.instant('errors.validation.msg.percentage.required')
+            });
+          }
+        });
+      } else {
+        // Solo eliminar localmente
+        this.comisiones.data.splice(index, 1);
+        this.comisiones._updateChangeSubscription();
+      }
+    });
   }
 }

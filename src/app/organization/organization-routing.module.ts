@@ -819,7 +819,7 @@ const routes: Routes = [
               component: CreateProjectParticipationComponent,
               data: { title: 'Create Project Participation', breadcrumb: 'Create Project Participation' },
               resolve: {
-                accountData: InvestmentProjectTemplateResolver
+                //accountData: InvestmentProjectTemplateResolver
               }
             }
           ]
