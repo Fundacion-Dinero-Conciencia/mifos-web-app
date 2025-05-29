@@ -40,11 +40,54 @@
     </div>
   </form>
 
+  <!-- Checkbox para activar el modal de edición de crédito -->
+  <div
+    *mifosxHasPermission="'EDIT_CREDIT_IN_PROJECT'"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="16px"
+    style="margin-top: 16px"
+  >
+    <mat-checkbox [(ngModel)]="editLoanEnabled">Editar crédito</mat-checkbox>
+    <button mat-stroked-button color="accent" (click)="openFormEdit()">Editar crédito solicitado</button>
+  </div>
+
   <div fxLayout="column" style="margin-top: 24px">
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
-      <div><strong>Monto a Financiar:</strong> ${{ getMontoAFinanciar() | currency: currency }}</div>
-      <div><strong>Monto a Entregar:</strong> ${{ getMontoAEntregar() | currency: currency }}</div>
+      <div>
+        <strong>{{ 'labels.inputs.Amount to be Financed' | translate }}:</strong> ${{
+          getMontoAFinanciar() | currency: currency
+        }}
+      </div>
+      <div>
+        <strong>{{ 'labels.inputs.Amount to be Delivered' | translate }}:</strong> ${{
+          getMontoAEntregar() | currency: currency
+        }}
+      </div>
       <div><strong>CAE:</strong> {{ getCaeValue() }}%</div>
+      <div>
+        <strong>{{ 'labels.inputs.Credit' | translate }}:</strong> {{ loanTemplate?.loanProductName }}
+      </div>
+    </div>
+    <br />
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
+      <div>
+        <strong>{{ 'labels.inputs.Amount Requested' | translate }}:</strong> ${{
+          projectData?.amount | currency: currency
+        }}
+      </div>
+      <div>
+        <strong>{{ 'labels.inputs.Loan Term' | translate }} ({{ 'labels.catalogs.Months' | translate }}):</strong>
+        {{ projectData?.period }}
+      </div>
+      <div>
+        <strong>{{ 'labels.inputs.Interest Rate' | translate }}:</strong> {{ projectData?.rate }}%
+      </div>
+      <div>
+        <strong>{{ 'labels.inputs.Investor Interest' | translate }}:</strong> ${{
+          investorInterests | currency: currency
+        }}
+      </div>
     </div>
   </div>
 
@@ -93,7 +136,7 @@
           class="document-action-button custom-button"
           mat-raised-button
           color="primary"
-          (click)="deleteCommission(commission)"
+          (click)="deleteCommission(element)"
         >
           <i class="fa fa-trash" [matTooltip]="'labels.buttons.Delete' | translate"></i>
         </a>
