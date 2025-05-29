@@ -476,7 +476,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   getCaeValue(): number {
-    return this.caeValue * 100;
+    return this.caeValue;
   }
 
   getAdditionalExpensesByProjectId(): void {
