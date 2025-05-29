@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { FormfieldBase } from './model/formfield-base';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -8,7 +8,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.scss']
 })
-export class FormfieldComponent {
+export class FormfieldComponent implements OnInit {
   @Input() form: UntypedFormGroup;
   @Input() formfield: FormfieldBase;
 
