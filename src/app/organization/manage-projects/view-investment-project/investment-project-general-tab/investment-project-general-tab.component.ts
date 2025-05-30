@@ -64,6 +64,33 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
     });
   }
 
+  generateSimulationPdf() {
+    const payload = { projectId: this.idProject };
+    this.organizationService.generateSimulationPdf(payload).subscribe((data: any) => {
+      const byteCharacters = atob(data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+      // 2. Crear un objeto URL
+      const blobUrl = URL.createObjectURL(blob);
+
+      // 3. Crear un enlace y forzar la descarga
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'SimulacionFinanciamiento.pdf';
+      document.body.appendChild(link);
+      link.click();
+
+      // 4. Limpiar
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    });
+  }
+
   addAddress() {
     const data = {
       formfields: this.getAddressFormFields('add', this.addressData),
