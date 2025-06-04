@@ -31,7 +31,6 @@ export class EditInvestmentProjectComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private router: Router,
     private organizationService: OrganizationService,
-    private systemService: SystemService,
     private translateService: TranslateService,
     private dialog: MatDialog
   ) {
