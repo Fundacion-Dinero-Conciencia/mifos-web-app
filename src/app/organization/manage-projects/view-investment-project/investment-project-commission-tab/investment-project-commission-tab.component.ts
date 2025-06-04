@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup, UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -38,6 +38,8 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   commissionTypes: any[] = [];
   commissionToShow: any[] = [];
   commissionAEF: any[] = [];
+  idProject: any;
+  investmentProjectForm: UntypedFormGroup;
   comisiones: MatTableDataSource<any> = new MatTableDataSource();
   displayedColumns: string[] = [
     'commissionType',
@@ -59,7 +61,8 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     private alertService: AlertService,
     private loanService: LoansService,
     private settingsService: SettingsService,
-    private dateUtils: Dates
+    private dateUtils: Dates,
+    private formBuilder: UntypedFormBuilder
   ) {
     this.route.data.subscribe((data: { accountData: any }) => {
       this.projectData = data.accountData;
@@ -88,6 +91,10 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       total: [null]
     });
     this.getLoanTemplate();
+
+    //Project
+    this.idProject = this.route.parent?.snapshot.paramMap.get('id');
+    this.setupInvestmentProjectForm(this.idProject);
   }
 
   loadTypesCommissions(): void {
@@ -104,6 +111,99 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       });
     });
     this.getDataForEditLoan();
+  }
+
+  async setupInvestmentProjectForm(id: any): Promise<void> {
+    console.log('id in setupInvestmentProjectForm: ', id);
+    return new Promise((resolve, reject) => {
+      this.organizationService.getInvestmentProject(id).subscribe({
+        next: (data) => {
+          this.projectData = data;
+
+          this.investmentProjectForm = this.formBuilder.group({
+            name: [
+              data.name,
+              Validators.required
+            ],
+            subtitle: [
+              data.subtitle,
+              Validators.required
+            ],
+            mnemonic: [
+              data.mnemonic,
+              Validators.required
+            ],
+            impactDescription: [
+              data.impactDescription,
+              Validators.required
+            ],
+            institutionDescription: [
+              data.institutionDescription,
+              Validators.required
+            ],
+            teamDescription: [
+              data.teamDescription,
+              Validators.required
+            ],
+            financingDescription: [
+              data.financingDescription,
+              Validators.required
+            ],
+            littleSocioEnvironmentalDescription: [
+              data.littleSocioEnvironmentalDescription,
+              Validators.required
+            ],
+            detailedSocioEnvironmentalDescription: [
+              data.detailedSocioEnvironmentalDescription,
+              Validators.required
+            ],
+            maxAmount: [
+              data.maxAmount,
+              Validators.required
+            ],
+            minAmount: [
+              data.minAmount,
+              Validators.required
+            ],
+            projectRate: [
+              data.rate,
+              Validators.required
+            ],
+            position: [
+              data.position,
+              Validators.required
+            ],
+            categoryId: [
+              data.category.id,
+              Validators.required
+            ],
+            subCategories: [
+              data.subCategories?.map((o: any) => o.id) || [],
+              Validators.required
+            ],
+            areaId: [
+              data.area.id,
+              Validators.required
+            ],
+            objectives: [
+              data.objectives?.map((o: any) => o.id) || [],
+              Validators.required
+            ],
+            isActive: [data.isActive],
+            statusId: [
+              data.status?.statusValue?.id,
+              Validators.required
+            ]
+          });
+
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error al obtener el proyecto', err);
+          reject(err);
+        }
+      });
+    });
   }
 
   getIvaVigente(): number {
@@ -383,6 +483,21 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
+    this.submitProjectData();
+  }
+
+  submitProjectData() {
+    const payload = {
+      ...this.investmentProjectForm.getRawValue()
+    };
+    payload['amountToBeFinanced'] = this.getMontoAFinanciar();
+    payload['amountToBeDelivered'] = this.getMontoAEntregar();
+    payload['subCategories'] = JSON.stringify(payload['subCategories']);
+    payload['objectives'] = JSON.stringify(payload['objectives']);
+
+    this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe((response: any) => {
+      this.router.navigate(['../'], { relativeTo: this.route });
+    });
   }
 
   getDefaultCurrency() {
@@ -579,7 +694,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
   getDataForEditLoan() {
     this.loanService.getLoansAccountAndTemplateResource(this.projectData?.loanId).subscribe((data: any) => {
-      console.log(data);
       this.loanTemplateEdit = {
         productId: data.product.id,
         submittedOnDate: this.dateUtils.formatDate(
