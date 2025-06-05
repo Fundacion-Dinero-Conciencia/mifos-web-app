@@ -177,9 +177,18 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.custom.Area' | translate }}</mat-label>
+            <mat-select required formControlName="areaId" (ngModelChange)="setArea($event)">
+              <mat-option *ngFor="let area of areaData" [value]="area.id">
+                {{ area.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Category' | translate }}</mat-label>
             <mat-select required formControlName="categoryId">
-              <mat-option *ngFor="let category of categoryData" [value]="category.id">
+              <mat-option *ngFor="let category of filtereCategoryData" [value]="category.id">
                 {{ category.name }}
               </mat-option>
             </mat-select>
@@ -190,15 +199,6 @@
             <mat-select required formControlName="subCategories" multiple>
               <mat-option *ngFor="let subcategory of subcategoryData" [value]="subcategory.id">
                 {{ subcategory.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Area' | translate }}</mat-label>
-            <mat-select required formControlName="areaId">
-              <mat-option *ngFor="let area of areaData" [value]="area.id">
-                {{ area.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
