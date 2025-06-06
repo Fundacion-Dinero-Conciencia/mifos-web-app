@@ -34,6 +34,7 @@ export class SavingAccountActionsComponent {
     'Unblock Deposit': boolean;
     'Block Withdrawal': boolean;
     'Unblock Withdrawal': boolean;
+    'Generate fund promissory': boolean;
   } = {
     Approve: false,
     Reject: false,
@@ -54,7 +55,8 @@ export class SavingAccountActionsComponent {
     'Block Deposit': false,
     'Unblock Deposit': false,
     'Block Withdrawal': false,
-    'Unblock Withdrawal': false
+    'Unblock Withdrawal': false,
+    'Generate fund promissory': false
   };
 
   currency: Currency;
