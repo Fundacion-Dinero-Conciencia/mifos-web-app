@@ -179,6 +179,10 @@ export class SavingsButtonsConfiguration {
           {
             name: 'Delete',
             taskPermissionName: 'DELETE_SAVINGSACCOUNT'
+          },
+          {
+            name: 'Generate fund promissory',
+            taskPermissionName: 'GENERATE_PDF'
           }
         ];
         break;

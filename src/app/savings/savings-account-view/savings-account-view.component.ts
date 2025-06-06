@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 import { DistributeFundDialogComponent } from './custom-dialogs/distribute-fund-dialog/distribute-fund-dialog.component';
 import { AlertService } from 'app/core/alert/alert.service';
+import { OrganizationService } from 'app/organization/organization.service';
 
 /**
  * Savings Account View Component
@@ -53,6 +54,7 @@ export class SavingsAccountViewComponent implements OnInit {
     private router: Router,
     private savingsService: SavingsService,
     private translateService: TranslateService,
+    private organizationService: OrganizationService,
     public dialog: MatDialog,
     private alertService: AlertService
   ) {
@@ -218,6 +220,9 @@ export class SavingsAccountViewComponent implements OnInit {
       case 'Unblock Withdrawal':
         this.unblockSavingsAccount(name);
         break;
+      case 'Generate fund promissory':
+        this.generateFundPromissoryPdf();
+        break;
     }
   }
 
@@ -356,6 +361,33 @@ export class SavingsAccountViewComponent implements OnInit {
           this.reload();
         });
       }
+    });
+  }
+
+  private generateFundPromissoryPdf() {
+    const payload = { fundId: this.savingsAccountData.id };
+    this.organizationService.generateFundPromissoryPdf(payload).subscribe((data: any) => {
+      const byteCharacters = atob(data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+      // 2. Crear un objeto URL
+      const blobUrl = URL.createObjectURL(blob);
+
+      // 3. Crear un enlace y forzar la descarga
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'PagareFondo.pdf';
+      document.body.appendChild(link);
+      link.click();
+
+      // 4. Limpiar
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
     });
   }
 }

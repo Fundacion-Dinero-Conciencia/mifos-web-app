@@ -874,6 +874,10 @@ export class OrganizationService {
     return this.http.post(`/generatepdf/simulation`, formData);
   }
 
+  generateFundPromissoryPdf(formData: any) {
+    return this.http.post(`/generatepdf/fundpromissorynote`, formData);
+  }
+
   getAdditionalExpensesByProjectId(projectId: string) {
     return this.http.get(`/additionalExpenses/by-project/${projectId}`);
   }
