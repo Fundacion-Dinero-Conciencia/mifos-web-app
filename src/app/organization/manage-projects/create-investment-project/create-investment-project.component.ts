@@ -25,6 +25,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   categoryData: any[] = [];
   filtereCategoryData: any[] = [];
   subcategoryData: any[] = [];
+  filteredSubcategoryData: any[] = [];
   areaData: any[] = [];
   currency: any;
   statusData: any[] = [];
@@ -56,6 +57,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         this.countryData = data.countryData.codeValues;
         this.categoryData = data.categoryData.codeValues;
         this.filtereCategoryData = [];
+        this.filteredSubcategoryData = [];
         this.subcategoryData = data.subcategoryData.codeValues;
         this.areaData = data.areaData.codeValues;
         this.statusData = data.statusData.codeValues;
@@ -215,6 +217,18 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       }
     });
     this.filtereCategoryData = filtered;
+  }
+
+  setCategory(categoryValue: any) {
+    const filtered = this.subcategoryData.filter((c) => {
+      try {
+        const desc = JSON.parse(c.description);
+        return desc.category === categoryValue;
+      } catch (e) {
+        return null;
+      }
+    });
+    this.filteredSubcategoryData = filtered;
   }
 
   getDefaultCurrency() {
