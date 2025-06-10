@@ -17,6 +17,7 @@ import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
 import { OrganizationService } from '../organization.service';
 import { SavingsService } from 'app/savings/savings.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'mifosx-select-dialog',
@@ -57,7 +58,8 @@ export class SelectDialogComponent implements OnInit {
     private settingsService: SettingsService,
     private clientsService: ClientsService,
     private orgService: OrganizationService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -77,18 +79,27 @@ export class SelectDialogComponent implements OnInit {
 
     this.clientsService.getClientAccountData(this.data.project.ownerId).subscribe((response) => {
       const data: any = response;
-      this.toAccountData = data?.savingsAccounts.filter(
-        (account: { status: { approved: boolean; submittedAndPendingApproval: boolean } }) =>
-          account.status?.approved === true || account.status?.submittedAndPendingApproval === true
-      );
-    });
+      this.toAccountData =
+        data?.savingsAccounts?.filter(
+          (account: { status: { approved: boolean; submittedAndPendingApproval: boolean } }) =>
+            account.status?.approved === true || account.status?.submittedAndPendingApproval === true
+        ) || [];
 
-    this.accountTransfersService
-      .newAccountTranferResource(this.data.project.ownerId, this.accountTypeId)
-      .subscribe((response) => {
-        this.accountTransferTemplateData = response;
-        this.setOptions();
-      });
+      const accountId: number | undefined = this.toAccountData.length > 0 ? this.toAccountData[0].id : undefined;
+
+      if (accountId) {
+        this.accountTransfersService.newAccountTranferResource(accountId, this.accountTypeId).subscribe((response) => {
+          this.accountTransferTemplateData = response;
+          this.setOptions();
+        });
+      } else {
+        const message = 'errors.error.msg.account.not.fount.to.investment';
+        this.alertService.alert({
+          type: 'Error',
+          message: this.translateService.instant(message)
+        });
+      }
+    });
   }
 
   getEmployyesActive() {

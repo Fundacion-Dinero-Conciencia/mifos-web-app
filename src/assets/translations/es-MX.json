@@ -9,6 +9,7 @@
     "Searched query resulted more than 200 records": "La consulta buscada resultó en más de 200 registros, mostrando los primeros 200 registros.",
     "Username is required": "Se requiere nombre de usuario",
     "Username or password incorrect.": "Usuario o contraseña incorrectos",
+    "error.msg.account.not.fount.to.investment": "No se encontraron fondos para realizar la inversión",
     "error.msg.charge.attach.to.savings.product.invalid.currency": "El Producto de Cargo y Ahorro debe tener la misma moneda.",
     "error.msg.charge.cannot.be.applied.to.savings.product": "El cargo con identificador `{{params[0].value}} no se puede aplicar al producto de ahorro.",
     "error.msg.charge.cannot.be.deleted.it.is.already.used.in.loan": "Este cargo no se puede eliminar porque ya está asociado con un Producto de Crédito y/o un Crédito.",
