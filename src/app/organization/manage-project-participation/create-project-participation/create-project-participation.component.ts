@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,28 +7,30 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { OrganizationService } from 'app/organization/organization.service';
 import { ClientsService } from 'app/clients/clients.service';
 import { ProjectsService } from '../../manage-projects/manage-projects.service';
+import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-create-project-participation',
   templateUrl: './create-project-participation.component.html',
   styleUrls: ['./create-project-participation.component.scss']
 })
-export class CreateProjectParticipationComponent implements OnInit {
+export class CreateProjectParticipationComponent implements OnInit, AfterViewInit {
   projectParticipationsData: any[] = [];
   dataSource: MatTableDataSource<any>;
   projectParticipationForm: UntypedFormGroup;
   participantsData: any[] = [];
   projectsData: any[] = [];
+  investmentFee: any;
 
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,
     private formBuilder: UntypedFormBuilder,
     private router: Router,
-    private translateService: TranslateService,
     private organizationService: OrganizationService,
     private clientsService: ClientsService,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private systemService: SystemService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.projectParticipationsData = [];
@@ -47,6 +49,18 @@ export class CreateProjectParticipationComponent implements OnInit {
   ngOnInit(): void {
     this.setupProjectPArticipationForm();
     this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+    this.getInvestmentFeeConfiguration();
+  }
+
+  /**
+   * Get the Configuration and the investment fee value
+   */
+  getInvestmentFeeConfiguration(): void {
+    this.systemService.getConfigurationByName('investment-fee').subscribe((configurationData: any) => {
+      const value = parseFloat(configurationData.stringValue);
+      this.investmentFee = isNaN(value) ? 0 : value;
+      console.log('investmentFee: ', this.investmentFee);
+    });
   }
 
   setupProjectPArticipationForm() {
@@ -121,5 +135,15 @@ export class CreateProjectParticipationComponent implements OnInit {
         });
       }
     });
+  }
+
+  calculateCUFCommission() {
+    const selectedProject = this.projectParticipationForm.get('projectId')?.value;
+    if (selectedProject) {
+      const amountValue = this.projectParticipationForm.get('amount')?.value;
+      const periods = selectedProject.period > 10 ? 10 : selectedProject.period;
+      var commissionValue = amountValue * this.investmentFee * periods;
+      this.projectParticipationForm.get('commission')?.setValue(commissionValue / 100);
+    }
   }
 }
