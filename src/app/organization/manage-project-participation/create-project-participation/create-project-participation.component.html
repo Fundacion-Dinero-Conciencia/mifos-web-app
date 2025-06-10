@@ -43,7 +43,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Amount' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="amount" />
+            <input type="number" matInput required formControlName="amount" (input)="calculateCUFCommission()" />
             <mat-error *ngIf="projectParticipationForm.controls.amount.hasError('required')">
               {{ 'labels.inputs.Amount' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
@@ -52,7 +52,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Commission' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="commission" />
+            <input type="number" matInput required formControlName="commission" readonly="true" disabled="true" />
             <mat-error *ngIf="projectParticipationForm.controls.commission.hasError('required')">
               {{ 'labels.inputs.Commission' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
