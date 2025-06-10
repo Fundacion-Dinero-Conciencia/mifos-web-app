@@ -187,7 +187,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Category' | translate }}</mat-label>
-            <mat-select required formControlName="categoryId">
+            <mat-select required formControlName="categoryId" (ngModelChange)="setCategory($event)">
               <mat-option *ngFor="let category of filtereCategoryData" [value]="category.id">
                 {{ category.name }}
               </mat-option>
@@ -197,7 +197,7 @@
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Subcategory' | translate }}</mat-label>
             <mat-select required formControlName="subCategories" multiple>
-              <mat-option *ngFor="let subcategory of subcategoryData" [value]="subcategory.id">
+              <mat-option *ngFor="let subcategory of filteredSubcategoryData" [value]="subcategory.id">
                 {{ subcategory.name }}
               </mat-option>
             </mat-select>

@@ -17,7 +17,9 @@ import { SystemService } from 'app/system/system.service';
 export class EditInvestmentProjectComponent implements OnInit {
   /** New Investment Project form */
   investmentProjectForm: UntypedFormGroup;
+  filteredCategoryData: any[] = [];
   categoryData: any[] = [];
+  filteredSubcategoryData: any[] = [];
   subcategoryData: any[] = [];
   areaData: any[] = [];
   statusData: any[] = [];
@@ -43,7 +45,9 @@ export class EditInvestmentProjectComponent implements OnInit {
         statusData: any;
         objectivesData: any;
       }) => {
+        this.filteredCategoryData = [];
         this.categoryData = data.categoryData.codeValues;
+        this.filteredSubcategoryData = [];
         this.subcategoryData = data.subcategoryData.codeValues;
         this.areaData = data.areaData.codeValues;
         this.statusData = data.statusData.codeValues;
@@ -61,7 +65,8 @@ export class EditInvestmentProjectComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.organizationService.getInvestmentProject(id).subscribe({
         next: (data) => {
-          this.projectData = data;
+          this.setArea(data.area.id);
+          this.setCategory(data.category.id);
 
           this.investmentProjectForm = this.formBuilder.group({
             name: [
@@ -159,6 +164,30 @@ export class EditInvestmentProjectComponent implements OnInit {
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe((response: any) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
+  }
+
+  setArea(areaValue: any) {
+    const filtered = this.categoryData.filter((a) => {
+      try {
+        const desc = JSON.parse(a.description);
+        return desc.area === areaValue;
+      } catch (e) {
+        return null;
+      }
+    });
+    this.filteredCategoryData = filtered;
+  }
+
+  setCategory(categoryValue: any) {
+    const filtered = this.subcategoryData.filter((c) => {
+      try {
+        const desc = JSON.parse(c.description);
+        return desc.category === categoryValue;
+      } catch (e) {
+        return null;
+      }
+    });
+    this.filteredSubcategoryData = filtered;
   }
 
   openRichTextEditor(fieldName: string) {
