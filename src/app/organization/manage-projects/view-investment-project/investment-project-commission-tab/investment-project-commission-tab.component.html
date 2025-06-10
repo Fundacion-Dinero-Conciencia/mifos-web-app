@@ -1,5 +1,5 @@
 <div class="container" style="margin-top: 16px">
-  <form [formGroup]="adicionalForm" fxLayout="column" fxLayoutGap="16px">
+  <form *ngIf="adicionalForm" [formGroup]="adicionalForm" fxLayout="column" fxLayoutGap="16px">
     <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="start center">
       <mat-form-field appearance="fill" fxFlex style="margin-top: 16px">
         <mat-label>{{ 'labels.inputs.Charge Type' | translate }}</mat-label>

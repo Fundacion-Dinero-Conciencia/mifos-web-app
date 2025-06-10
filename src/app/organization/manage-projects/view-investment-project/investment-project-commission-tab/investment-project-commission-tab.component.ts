@@ -114,7 +114,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   async setupInvestmentProjectForm(id: any): Promise<void> {
-    console.log('id in setupInvestmentProjectForm: ', id);
     return new Promise((resolve, reject) => {
       this.organizationService.getInvestmentProject(id).subscribe({
         next: (data) => {
