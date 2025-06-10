@@ -670,11 +670,14 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
               });
             }
           },
-          error: () => {
-            this.alertService.alert({
-              type: 'Error',
-              message: this.translateService.instant('general.msg.error')
-            });
+          error: (error) => {
+            if (error?.error?.defaultUserMessage) {
+              const message = error.error.defaultUserMessage;
+              this.alertService.alert({
+                type: 'Error',
+                message: this.translateService.instant(message)
+              });
+            }
           }
         });
       } else {
