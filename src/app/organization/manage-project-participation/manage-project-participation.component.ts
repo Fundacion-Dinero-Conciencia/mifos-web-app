@@ -20,6 +20,7 @@ export class ManageProjectParticipationComponent implements OnInit {
     'project',
     'participant',
     'amount',
+    'commission',
     'date',
     'status',
     'actions',
@@ -130,6 +131,7 @@ export class ManageProjectParticipationComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         result.amount = item.amount;
+        result.commission = item.commission;
         result.projectId = item.id;
         item.selectedData = result;
         this.selectedItems.push(item);
