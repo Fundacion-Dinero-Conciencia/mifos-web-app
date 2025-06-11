@@ -211,4 +211,8 @@ export class ManageProjectsComponent implements OnInit {
       }
     });
   }
+
+  goToParticipations(projectId: number) {
+    window.location.hash = `#/organization/project-participation/${projectId}`;
+  }
 }

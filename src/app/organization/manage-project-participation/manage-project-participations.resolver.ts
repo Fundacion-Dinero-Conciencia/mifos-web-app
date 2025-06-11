@@ -1,6 +1,6 @@
 /** Angular Imports */
 import { Injectable } from '@angular/core';
-import { Resolve } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
 /** rxjs Imports */
 import { Observable } from 'rxjs';
@@ -22,7 +22,12 @@ export class ManageProjectParticipationsResolver implements Resolve<Object> {
    * Returns the manage funds data.
    * @returns {Observable<any>}
    */
-  resolve(): Observable<any> {
-    return this.organizationService.getInvestmentProjectParticipations();
+  resolve(route: ActivatedRouteSnapshot): Observable<any> {
+    const projectId = route.params.projectId;
+    if (projectId) {
+      return this.organizationService.getInvestmentProjectParticipationsByProjectId(projectId);
+    } else {
+      return this.organizationService.getInvestmentProjectParticipations();
+    }
   }
 }

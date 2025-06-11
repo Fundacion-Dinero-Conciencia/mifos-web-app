@@ -858,6 +858,14 @@ export class OrganizationService {
     return this.http.get('/projectparticipation/all');
   }
 
+  getInvestmentProjectParticipationsByProjectId(projectId: string): Observable<any> {
+    return this.http.get(`/projectparticipation/search`, {
+      params: {
+        projectId: projectId.toString()
+      }
+    });
+  }
+
   updateInvestmentProjectParticipations(itemId: number, payload: any): Observable<any> {
     return this.http.put(`/projectparticipation/${itemId}`, payload);
   }
