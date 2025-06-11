@@ -258,7 +258,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     this.comisiones._updateChangeSubscription();
   }
 
-  calcularComision(): void {
+  calculateCommission(): void {
     const formValue = this.adicionalForm.value;
     const tipo = this.commissionTypes.find((c) => c.id === formValue.commissionTypeId);
 
@@ -334,17 +334,25 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   addCommissionITE() {
-    const tipoITE = this.getCommissionByName('ITE');
-    const prommisoryAmount = this.calculatePromissoryNote();
-    const percentage = this.getPercentageITEAcordingPeriod();
-    const total = (prommisoryAmount * percentage * this.projectData?.period) / 100;
-    this.comisiones.data.push({
-      commissionType: tipoITE,
-      description: 'Impuesto de Timbres y Estampillas (ITE)',
-      netAmount: prommisoryAmount,
-      vat: percentage,
-      total: total
-    });
+    const existe = this.comisiones.data.some((x) => x.commissionType?.name?.trim().toUpperCase() === 'ITE');
+    if (existe) {
+      this.alertService.alert({
+        type: 'warning',
+        message: this.translateService.instant('errors.error.msg.charge.duplicate.name')
+      });
+    } else {
+      const tipoITE = this.getCommissionByName('ITE');
+      const prommisoryAmount = this.calculatePromissoryNote();
+      const percentage = this.getPercentageITEAcordingPeriod();
+      const total = (prommisoryAmount * percentage * this.projectData?.period) / 100;
+      this.comisiones.data.push({
+        commissionType: tipoITE,
+        description: 'Impuesto de Timbres y Estampillas (ITE)',
+        netAmount: prommisoryAmount,
+        vat: percentage,
+        total: total
+      });
+    }
   }
 
   addCommissionAmountInvoice() {
@@ -508,7 +516,21 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   isITESelected(): boolean {
     const commissionId = this.adicionalForm.get('commissionTypeId')?.value;
     const commission = this.commissionToShow.find((c) => c.id === commissionId);
-    return commission?.name === 'ITE';
+    const ite = commission?.name === 'ITE';
+    this.enabledFields(ite);
+    return ite;
+  }
+
+  enabledFields(flag: boolean) {
+    if (flag) {
+      this.adicionalForm.get('netAmount')?.disable();
+      this.adicionalForm.get('description')?.disable();
+      this.adicionalForm.get('vat')?.disable();
+    } else {
+      this.adicionalForm.get('netAmount')?.enable();
+      this.adicionalForm.get('description')?.enable();
+      this.adicionalForm.get('vat')?.enable();
+    }
   }
 
   submit() {
