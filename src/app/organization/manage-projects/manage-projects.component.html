@@ -83,6 +83,15 @@
           >
             <i class="fa fa-external-link-alt" [matTooltip]="'labels.buttons.View Project' | translate"></i>
           </a>
+
+          <button
+            class="document-action-button custom-button"
+            mat-raised-button
+            color="primary"
+            (click)="goToParticipations(element.id)"
+          >
+            <i class="fa fa-people-arrows" [matTooltip]="'tooltips.View Participations' | translate"></i>
+          </button>
         </td>
       </ng-container>
 
