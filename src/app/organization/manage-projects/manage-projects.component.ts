@@ -24,6 +24,8 @@ export class ManageProjectsComponent implements OnInit {
   projectsData: any[] = [];
   /** New Fund form */
   projectForm: any;
+  /** State */
+  state: any;
   /** Funds form reference */
   @ViewChild('formRef') formRef: any;
 
@@ -75,6 +77,7 @@ export class ManageProjectsComponent implements OnInit {
       this.projectsData = data.projects;
       this.dataSource = new MatTableDataSource(this.projectsData);
     });
+    this.applyOwnerFilter();
   }
 
   ngOnInit() {
@@ -82,6 +85,14 @@ export class ManageProjectsComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.projectUrl = `${environment.baseUrlProject}`;
+  }
+
+  applyOwnerFilter() {
+    const navigation = this.router.getCurrentNavigation();
+    this.state = navigation?.extras?.state;
+    if (this.state) {
+      this.projectsData = this.projectsData.filter((project) => project.ownerId === this.state.ownerId);
+    }
   }
 
   /**
