@@ -36,6 +36,11 @@
         <td mat-cell *matCellDef="let item">{{ item.amount | currency: item.currencyCode }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="commission">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Commission' | translate }}</th>
+        <td mat-cell *matCellDef="let item">{{ item.commission | currency: item.currencyCode }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Date' | translate }}</th>
         <td mat-cell *matCellDef="let item">{{ item.createdOnDate | dateFormat }}</td>
