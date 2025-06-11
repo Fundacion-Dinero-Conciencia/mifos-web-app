@@ -122,6 +122,11 @@ export class ClientsViewComponent implements OnInit {
           queryParams: viewStandingInstructionsQueryParams
         });
         break;
+      case 'See Projects':
+        this.router.navigate(['/organization/projects'], {
+          state: { ownerId: this.clientViewData.id }
+        });
+        break;
     }
   }
 
