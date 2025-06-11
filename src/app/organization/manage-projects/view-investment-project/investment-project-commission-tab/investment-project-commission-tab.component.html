@@ -3,7 +3,7 @@
     <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="start center">
       <mat-form-field appearance="fill" fxFlex style="margin-top: 16px">
         <mat-label>{{ 'labels.inputs.Charge Type' | translate }}</mat-label>
-        <mat-select formControlName="commissionTypeId" required>
+        <mat-select formControlName="commissionTypeId" required (selectionChange)="isITESelected()">
           <mat-option *ngFor="let type of commissionToShow" [value]="type.id">
             {{ type.name }}
           </mat-option>
@@ -28,7 +28,7 @@
       <button
         mat-raised-button
         color="primary"
-        (click)="calcularComision()"
+        (click)="calculateCommission()"
         [disabled]="!isITESelected() && adicionalForm.invalid"
       >
         {{ selectedCommission ? ('labels.buttons.Refresh' | translate) : ('labels.buttons.Add' | translate) }}
