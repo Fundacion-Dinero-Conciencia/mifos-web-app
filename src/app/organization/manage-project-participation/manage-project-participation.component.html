@@ -3,7 +3,7 @@
     <button
       mat-raised-button
       color="primary"
-      [routerLink]="['create']"
+      (click)="navigateToCreate()"
       *mifosxHasPermission="'CREATE_PROJECT_PARTICIPATION'"
     >
       <fa-icon icon="plus" class="m-r-10"></fa-icon>

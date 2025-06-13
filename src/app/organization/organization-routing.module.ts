@@ -815,18 +815,18 @@ const routes: Routes = [
               }
             },
             {
-              path: ':projectId',
-              component: ManageProjectParticipationComponent,
-              resolve: {
-                projectparticipations: ManageProjectParticipationsResolver
-              }
-            },
-            {
               path: 'create',
               component: CreateProjectParticipationComponent,
               data: { title: 'Create Project Participation', breadcrumb: 'Create Project Participation' },
               resolve: {
                 //accountData: InvestmentProjectTemplateResolver
+              }
+            },
+            {
+              path: ':projectId',
+              component: ManageProjectParticipationComponent,
+              resolve: {
+                projectparticipations: ManageProjectParticipationsResolver
               }
             }
           ]
