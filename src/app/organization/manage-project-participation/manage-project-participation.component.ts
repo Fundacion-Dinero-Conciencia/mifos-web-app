@@ -151,4 +151,8 @@ export class ManageProjectParticipationComponent implements OnInit {
       }
     });
   }
+
+  navigateToCreate() {
+    this.router.navigate(['/organization/project-participation/create']);
+  }
 }
