@@ -202,6 +202,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     payload['amount'] = payload['amount'] * 1;
     payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
     payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
+    payload['mnemonic'] = this.investmentProjectForm.controls.ownerId.value?.accountNo + payload['mnemonic'];
     this.organizationService.createInvestmentProjects(payload).subscribe((response: any) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
