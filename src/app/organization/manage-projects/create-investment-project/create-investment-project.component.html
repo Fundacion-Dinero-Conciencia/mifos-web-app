@@ -45,14 +45,20 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
-            <input matInput autofocus formControlName="mnemonic" />
-            <mat-error *ngIf="investmentProjectForm.controls.mnemonic.hasError('required')">
-              {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+          <div fxLayout="row" fxLayoutGap="1%">
+            <mat-form-field fxFlex="30%">
+              <input matInput [value]="investmentProjectForm.controls.ownerId.value?.accountNo || ''" disabled />
+            </mat-form-field>
+
+            <mat-form-field fxFlex="68%">
+              <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
+              <input matInput formControlName="mnemonic" />
+              <mat-error *ngIf="investmentProjectForm.controls.mnemonic.hasError('required')">
+                {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Impact Description' | translate }}</mat-label>
