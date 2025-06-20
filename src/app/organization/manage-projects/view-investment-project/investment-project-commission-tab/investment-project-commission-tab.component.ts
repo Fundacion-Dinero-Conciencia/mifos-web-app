@@ -342,9 +342,10 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       });
     } else {
       const tipoITE = this.getCommissionByName('ITE');
-      const prommisoryAmount = this.calculatePromissoryNote();
-      const percentage = this.getPercentageITEAcordingPeriod();
-      const total = (prommisoryAmount * percentage * this.projectData?.period) / 100;
+      const percentage = this.getPercentageITEAcordingPeriod() / 100;
+      const prommisoryAmount = this.calculatePromissoryNote(percentage);
+      const total =
+        this.projectData?.period >= 12 ? prommisoryAmount * percentage : prommisoryAmount * (percentage + percentage);
       this.comisiones.data.push({
         commissionType: tipoITE,
         description: 'Impuesto de Timbres y Estampillas (ITE)',
@@ -417,10 +418,10 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     const lower = parseFloat(match[1]);
     const upper = parseFloat(match[2]);
 
-    return period >= 12 ? lower : upper;
+    return period >= 12 ? upper : lower;
   }
 
-  calculatePromissoryNote(): number {
+  calculatePromissoryNote(percentage: any): number {
     const amount = this.projectData?.amount || 0;
 
     // Buscar comisión AEF
@@ -436,7 +437,9 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       .filter((c) => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
       .reduce((acc, curr) => acc + (curr.total || 0), 0);
 
-    const pagaré = amount + montoAEF + montoIVAAEF + otrosGastos;
+    const pagaré =
+      (amount + montoAEF + montoIVAAEF + otrosGastos) /
+      (1 - (this.projectData?.period >= 12 ? percentage : percentage + percentage));
     return pagaré;
   }
 
