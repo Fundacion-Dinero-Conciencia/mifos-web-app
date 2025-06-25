@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Dates } from 'app/core/utils/dates';
 import { LoansService } from 'app/loans/loans.service';
 
 import { SettingsService } from 'app/settings/settings.service';
@@ -24,7 +25,8 @@ export class CretateSubCreditComponent implements OnInit {
     private loanService: LoansService,
     private route: ActivatedRoute,
     private router: Router,
-    private settingService: SettingsService
+    private settingService: SettingsService,
+    private dateUtils: Dates
   ) {
     this.loanId = this.route.snapshot.params['loanId'];
   }
@@ -58,13 +60,15 @@ export class CretateSubCreditComponent implements OnInit {
    */
   submit() {
     const createSubCreditFormData = this.createSubCreditForm.value;
+    const subCreditAmount = createSubCreditFormData.subCreditAmount;
     const locale = this.settingService.language.code;
     const dateFormat = this.settingService.dateFormat;
-
+    const dateOfCreation = this.dateUtils.formatDate(createSubCreditFormData.dateOfCreation, dateFormat);
     const data = {
-      ...createSubCreditFormData,
       locale,
-      dateFormat
+      dateFormat,
+      dateOfCreation,
+      subCreditAmount
     };
     data['subCreditAmount'] = data['subCreditAmount'] * 1;
     this.loanService
