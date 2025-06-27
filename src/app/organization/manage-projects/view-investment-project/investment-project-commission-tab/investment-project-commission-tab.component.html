@@ -15,10 +15,18 @@
         <input matInput formControlName="description" required />
       </mat-form-field>
 
-      <mat-form-field appearance="fill" fxFlex>
+      <mifosx-input-amount
+        [currency]="currency || ''"
+        [isRequired]="true"
+        [inputFormControl]="adicionalForm.controls.netAmount"
+        [inputLabel]="'labels.inputs.Base Price'"
+      >
+      </mifosx-input-amount>
+
+      <!-- <mat-form-field appearance="fill" fxFlex>
         <mat-label>{{ 'labels.inputs.Base Price' | translate }}</mat-label>
         <input matInput type="number" formControlName="netAmount" required />
-      </mat-form-field>
+      </mat-form-field> -->
 
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>{{ 'labels.inputs.Base Percentage' | translate }}</mat-label>

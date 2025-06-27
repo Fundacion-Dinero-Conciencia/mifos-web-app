@@ -98,36 +98,29 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         Validators.required
       ],
       subtitle: [
-        '',
-        Validators.required
+        ''
       ],
       mnemonic: [
         '',
         Validators.required
       ],
       impactDescription: [
-        '',
-        Validators.required
+        ''
       ],
       institutionDescription: [
-        '',
-        Validators.required
+        ''
       ],
       teamDescription: [
-        '',
-        Validators.required
+        ''
       ],
       financingDescription: [
-        '',
-        Validators.required
+        ''
       ],
       littleSocioEnvironmentalDescription: [
-        '',
-        Validators.required
+        ''
       ],
       detailedSocioEnvironmentalDescription: [
-        '',
-        Validators.required
+        ''
       ],
       amount: [
         0,
@@ -142,41 +135,33 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         Validators.required
       ],
       categoryId: [
-        '',
-        Validators.required
+        ''
       ],
       subCategories: [
-        '',
-        Validators.required
+        ''
       ],
       areaId: [
-        '',
-        Validators.required
+        ''
       ],
       isActive: [false],
       statusId: [
-        '',
-        Validators.required
+        ''
       ],
       objectives: [
-        '',
-        Validators.required
+        ''
       ],
       basedInLoanProductId: [
         '',
         Validators.required
       ],
       maxAmount: [
-        0,
-        Validators.required
+        0
       ],
       minAmount: [
-        0,
-        Validators.required
+        0
       ],
       position: [
-        0,
-        Validators.required
+        0
       ]
     });
   }
@@ -200,8 +185,14 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     const owner: any = payload['ownerId'];
     payload['ownerId'] = owner['id'];
     payload['amount'] = payload['amount'] * 1;
-    payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
-    payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
+    if (Array.isArray(payload['subCategories']) && payload['subCategories'].length > 0) {
+      payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
+    }
+
+    if (Array.isArray(payload['objectives']) && payload['objectives'].length > 0) {
+      payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
+    }
+
     payload['mnemonic'] = this.investmentProjectForm.controls.ownerId.value?.accountNo + payload['mnemonic'];
     this.organizationService.createInvestmentProjects(payload).subscribe((response: any) => {
       this.router.navigate(['../'], { relativeTo: this.route });

@@ -130,7 +130,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Max Amount' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="maxAmount" />
+            <input type="number" matInput formControlName="maxAmount" />
             <mat-error *ngIf="investmentProjectForm.controls.maxAmount.hasError('required')">
               {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
@@ -139,7 +139,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Min Amount' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="minAmount" />
+            <input type="number" matInput formControlName="minAmount" />
             <mat-error *ngIf="investmentProjectForm.controls.minAmount.hasError('required')">
               {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
@@ -166,7 +166,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Position' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="position" />
+            <input type="number" matInput formControlName="position" />
             <mat-error *ngIf="investmentProjectForm.controls.position.hasError('required')">
               {{ 'labels.inputs.Position' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
@@ -175,7 +175,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Status' | translate }}</mat-label>
-            <mat-select required formControlName="statusId">
+            <mat-select formControlName="statusId">
               <mat-option *ngFor="let status of statusData" [value]="status.id">
                 {{ status.name }}
               </mat-option>
@@ -184,7 +184,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Area' | translate }}</mat-label>
-            <mat-select required formControlName="areaId" (ngModelChange)="setArea($event)">
+            <mat-select formControlName="areaId" (ngModelChange)="setArea($event)">
               <mat-option *ngFor="let area of areaData" [value]="area.id">
                 {{ area.name }}
               </mat-option>
@@ -193,7 +193,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Category' | translate }}</mat-label>
-            <mat-select required formControlName="categoryId" (ngModelChange)="setCategory($event)">
+            <mat-select formControlName="categoryId" (ngModelChange)="setCategory($event)">
               <mat-option *ngFor="let category of filtereCategoryData" [value]="category.id">
                 {{ category.name }}
               </mat-option>
@@ -202,7 +202,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Subcategory' | translate }}</mat-label>
-            <mat-select required formControlName="subCategories" multiple>
+            <mat-select formControlName="subCategories" multiple>
               <mat-option *ngFor="let subcategory of filteredSubcategoryData" [value]="subcategory.id">
                 {{ subcategory.name }}
               </mat-option>
@@ -211,7 +211,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Objectives' | translate }}</mat-label>
-            <mat-select required formControlName="objectives" multiple>
+            <mat-select formControlName="objectives" multiple>
               <mat-option *ngFor="let objectives of objectivesData" [value]="objectives.id">
                 {{ objectives.name }}
               </mat-option>
