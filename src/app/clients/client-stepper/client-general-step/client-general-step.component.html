@@ -78,10 +78,10 @@
     </mat-form-field>
 
     <mat-form-field fxFlex="48%">
-      <mat-label>{{ 'labels.inputs.Account Number' | translate }}</mat-label>
-      <input matInput required formControlName="accountNo" />
-      <mat-error *ngIf="createClientForm.controls.accountNo.hasError('required')">
-        {{ 'labels.inputs.Account Number' | translate }} {{ 'labels.commons.is' | translate }}
+      <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
+      <input matInput required formControlName="mnemonic" />
+      <mat-error *ngIf="createClientForm.controls.mnemonic.hasError('required')">
+        {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
         <strong>{{ 'labels.commons.required' | translate }}</strong>
       </mat-error>
     </mat-form-field>

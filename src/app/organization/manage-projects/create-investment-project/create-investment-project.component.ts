@@ -78,6 +78,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       if (value.length >= 2) {
         this.clientsService.getFilteredClients('displayName', 'ASC', true, value).subscribe((data: any) => {
           this.clientsData = data.pageItems;
+          console.log(this.clientsData);
         });
       }
     });
@@ -193,7 +194,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
     }
 
-    payload['mnemonic'] = this.investmentProjectForm.controls.ownerId.value?.accountNo + payload['mnemonic'];
+    payload['mnemonic'] = this.investmentProjectForm.controls.ownerId.value?.mnemonic + payload['mnemonic'];
     this.organizationService.createInvestmentProjects(payload).subscribe((response: any) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
