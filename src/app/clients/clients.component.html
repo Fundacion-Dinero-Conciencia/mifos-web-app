@@ -49,6 +49,14 @@
         </td>
       </ng-container>
 
+      <!-- Mnemonic no Column -->
+      <ng-container matColumnDef="mnemonic">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.mnemonic }}
+        </td>
+      </ng-container>
+
       <!-- External ID Column -->
       <ng-container matColumnDef="externalId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.External Id' | translate }}</th>
