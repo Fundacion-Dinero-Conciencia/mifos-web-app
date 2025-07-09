@@ -86,7 +86,7 @@
         }}
       </div>
       <div>
-        <strong>{{ 'labels.inputs.Loan Term' | translate }} ({{ 'labels.catalogs.Months' | translate }}):</strong>
+        <strong>{{ 'labels.inputs.Loan Term' | translate }}:</strong>
         {{ projectData?.period }}
       </div>
       <div>
@@ -95,6 +95,11 @@
       <div>
         <strong>{{ 'labels.inputs.Investor Interest' | translate }}:</strong> ${{
           investorInterests | currency: currency
+        }}
+      </div>
+      <div>
+        <strong>{{ 'labels.inputs.Total Credit' | translate }}:</strong> ${{
+          loanTemplate.repaymentSchedule?.totalRepaymentExpected | currency: currency
         }}
       </div>
     </div>

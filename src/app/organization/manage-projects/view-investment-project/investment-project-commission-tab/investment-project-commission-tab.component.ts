@@ -103,7 +103,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       this.commissionToShow = this.commissionTypes.filter((cv: any) => [
           'OTROS GASTOS',
           'ITE',
-          this.isFactoring ? 'MONTO FACTURA' : ''
+          this.isFactoring === true ? 'MONTO FACTURA' : ''
         ].includes(cv.name?.trim().toUpperCase()));
       this.systemService.getCodeByName('COMMISSION_AEF').subscribe((data) => {
         this.commissionAEF = data?.codeValues?.filter((cv: any) => cv.active);
@@ -341,11 +341,11 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         message: this.translateService.instant('errors.error.msg.charge.duplicate.name')
       });
     } else {
+      const period = this.isFactoring === true ? this.projectData?.period / 30 : this.projectData?.period;
       const tipoITE = this.getCommissionByName('ITE');
       const percentage = this.getPercentageITEAcordingPeriod() / 100;
       const prommisoryAmount = this.calculatePromissoryNote(percentage);
-      const total =
-        this.projectData?.period >= 12 ? prommisoryAmount * percentage : prommisoryAmount * (percentage + percentage);
+      const total = period >= 12 ? prommisoryAmount * percentage : prommisoryAmount * (percentage + percentage);
       this.comisiones.data.push({
         commissionType: tipoITE,
         description: 'Impuesto de Timbres y Estampillas (ITE)',
@@ -409,7 +409,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
   getPercentageITEAcordingPeriod(): number {
     const ite = this.getCommissionByName('ITE');
-    const period = this.projectData?.period;
+    const period = this.isFactoring === true ? this.projectData?.period / 30 : this.projectData?.period;
 
     if (!ite?.description || period == null) return null;
 
@@ -424,6 +424,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
   calculatePromissoryNote(percentage: any): number {
     const amount = this.projectData?.amount || 0;
+    const period = this.isFactoring === true ? this.projectData?.period / 30 : this.projectData?.period;
 
     // Buscar comisión AEF
     const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
@@ -439,8 +440,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       .reduce((acc, curr) => acc + (curr.total || 0), 0);
 
     const pagaré =
-      (amount + montoAEF + montoIVAAEF + otrosGastos) /
-      (1 - (this.projectData?.period >= 12 ? percentage : percentage + percentage));
+      (amount + montoAEF + montoIVAAEF + otrosGastos) / (1 - (period >= 12 ? percentage : percentage + percentage));
     return pagaré;
   }
 
@@ -449,7 +449,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   getCommissionAcordingByPeriod(): number | null {
-    const period = this.projectData?.period;
+    const period = this.isFactoring ? this.projectData?.period / 30 : this.projectData?.period;
     if (period == null || !this.commissionAEF?.length) return null;
 
     const activeCommissions = this.commissionAEF.filter((item) => item.active);
