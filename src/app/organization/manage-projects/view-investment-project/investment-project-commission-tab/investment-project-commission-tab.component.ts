@@ -521,7 +521,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe({
       next: (data) => {
         if (editCredit === true) {
-          console.log('Entrando a eliminar', editCredit);
           this.organizationService.deleteAdditionalExpensesById(this.idProject, true).subscribe({
             next: (dataX) => {
               this.router.navigate(['../'], { relativeTo: this.route });
@@ -728,7 +727,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         });
       } else {
         // Eliminar solo localmente (por UUID)
-        console.log(item);
         this.removeCommissionFromTable(item);
       }
     });
