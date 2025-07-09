@@ -890,8 +890,8 @@ export class OrganizationService {
     return this.http.get(`/additionalExpenses/by-project/${projectId}`);
   }
 
-  deleteAdditionalExpensesById(projectId: string) {
-    return this.http.delete(`/additionalExpenses/${projectId}`);
+  deleteAdditionalExpensesById(projectId: string, flagAllDelete: boolean) {
+    return this.http.delete(`/additionalExpenses/${projectId}?flagAllDelete=${flagAllDelete}`);
   }
 
   getCae(data: number[]) {

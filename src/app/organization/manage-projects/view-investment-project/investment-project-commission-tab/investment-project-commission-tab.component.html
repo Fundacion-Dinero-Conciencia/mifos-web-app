@@ -19,7 +19,7 @@
         [currency]="currency || ''"
         [isRequired]="true"
         [inputFormControl]="adicionalForm.controls.netAmount"
-        [inputLabel]="'labels.inputs.Base Price'"
+        [inputLabel]="'Base Price'"
       >
       </mifosx-input-amount>
 
@@ -145,7 +145,7 @@
 
         <a
           *ngIf="
-            !['IVA-AEF', 'ITE', 'AEF'].includes(element.commissionType?.name.trim().toUpperCase()) &&
+            !['IVA-AEF', 'AEF'].includes(element.commissionType?.name.trim().toUpperCase()) &&
             projectData?.status?.statusValue?.name === 'En Borrador'
           "
           class="document-action-button custom-button"

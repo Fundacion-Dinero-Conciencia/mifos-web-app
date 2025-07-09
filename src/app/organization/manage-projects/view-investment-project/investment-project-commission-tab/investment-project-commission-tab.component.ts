@@ -213,9 +213,9 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   addCommission(): void {
     const formValue = this.adicionalForm.value;
     const otherExpenses = this.getCommissionByName('OTROS GASTOS');
-    const vat = formValue.vat ?? this.getIvaVigente();
-
-    const total = formValue.netAmount + (formValue.netAmount * vat) / 100;
+    const vat = Number(formValue.vat ?? this.getIvaVigente());
+    const netAMount = Number(formValue.netAmount);
+    const total = netAMount + (netAMount * vat) / 100;
 
     const nuevaComision: any = {
       commissionTypeId: otherExpenses.id,
@@ -351,7 +351,8 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         description: 'Impuesto de Timbres y Estampillas (ITE)',
         netAmount: prommisoryAmount,
         vat: percentage,
-        total: total
+        total: total,
+        uuid: uuidv4()
       });
     }
   }
@@ -493,20 +494,41 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
-    this.submitProjectData();
+    this.submitProjectData(false);
   }
 
-  submitProjectData() {
+  submitProjectData(editCredit: boolean, amount?: any, rate?: any, period?: any) {
     const payload = {
       ...this.investmentProjectForm.getRawValue()
     };
-    payload['amountToBeFinanced'] = this.getMontoAFinanciar();
-    payload['amountToBeDelivered'] = this.getMontoAEntregar();
+    if (editCredit === false) {
+      payload['amountToBeFinanced'] = this.getMontoAFinanciar();
+      payload['amountToBeDelivered'] = this.getMontoAEntregar();
+    }
     payload['subCategories'] = JSON.stringify(payload['subCategories']);
     payload['objectives'] = JSON.stringify(payload['objectives']);
 
-    this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe((response: any) => {
-      this.router.navigate(['../'], { relativeTo: this.route });
+    if (amount && amount > 0) {
+      payload['amount'] = amount;
+    }
+    if (rate && rate > 0) {
+      payload['projectRate'] = rate;
+    }
+    if (period && period > 0) {
+      payload['period'] = period;
+    }
+
+    this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe({
+      next: (data) => {
+        if (editCredit === true) {
+          console.log('Entrando a eliminar', editCredit);
+          this.organizationService.deleteAdditionalExpensesById(this.idProject, true).subscribe({
+            next: (dataX) => {
+              this.router.navigate(['../'], { relativeTo: this.route });
+            }
+          });
+        }
+      }
     });
   }
 
@@ -589,7 +611,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   getLoanTemplate() {
     this.loanService.getLoanAccountAssociationDetails(this.projectData.loanId).subscribe((data) => {
       this.loanTemplate = data;
-      this.isFactoring = this.loanTemplate.loanProductName === 'CREDITO FACTORING';
+      this.isFactoring = this.loanTemplate?.shortName === 'FACT';
       this.loadTypesCommissions();
       this.getCAE();
     });
@@ -684,7 +706,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
       // Eliminar del backend si tiene ID
       if (item.id) {
-        this.organizationService.deleteAdditionalExpensesById(item.id).subscribe({
+        this.organizationService.deleteAdditionalExpensesById(item.id, false).subscribe({
           next: () => {
             this.removeCommissionFromTable(item);
             if (item === commission) {
@@ -706,6 +728,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         });
       } else {
         // Eliminar solo localmente (por UUID)
+        console.log(item);
         this.removeCommissionFromTable(item);
       }
     });
@@ -796,6 +819,10 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
     this.loanService.updateLoansAccount(this.projectData?.loanId, modifiedData).subscribe({
       next: (data) => {
+        const principal = this.form.get('principal').value;
+        const numberOfRepayments = this.form.get('numberOfRepayments').value;
+        const interestRatePerPeriod = this.form.get('interestRatePerPeriod').value;
+        this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments);
         this.alertService.alert({
           type: 'Success',
           message: this.translateService.instant('labels.heading.Saved Successfully')

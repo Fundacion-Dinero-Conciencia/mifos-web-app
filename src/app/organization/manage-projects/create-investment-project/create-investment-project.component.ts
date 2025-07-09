@@ -1,10 +1,12 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { getTreeControlFunctionsMissingError } from '@angular/cdk/tree';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
 import { ClientsService } from 'app/clients/clients.service';
+import { LoansService } from 'app/loans/loans.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
@@ -31,6 +33,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   statusData: any[] = [];
   objectivesData: any[] = [];
   loanProductsData: any[] = [];
+  termFrequencyTypeData: any[] = [];
   public Editor = ClassicEditor;
 
   constructor(
@@ -41,7 +44,8 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     private clientsService: ClientsService,
     private organizationService: OrganizationService,
     private translateService: TranslateService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private loanService: LoansService
   ) {
     this.route.data.subscribe(
       (data: {
@@ -71,6 +75,16 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     this.setupInvestmentProjectForm();
     this.loansData = [];
     this.getDefaultCurrency();
+    // this.investmentProjectForm.get('basedInLoanProductId')?.valueChanges.subscribe(value => {
+    //   this.getTermFrequency(value);
+    // });
+  }
+
+  getTermFrequency(value: string) {
+    const entityId = this.investmentProjectForm.get('ownerId')?.value.id;
+    this.loanService.getLoansAccountTemplateResource(entityId, false, value).subscribe((response: any) => {
+      this.termFrequencyTypeData = response.repaymentFrequencyTypeOptions;
+    });
   }
 
   ngAfterViewInit() {
