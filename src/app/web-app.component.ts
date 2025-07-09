@@ -112,7 +112,7 @@ export class WebAppComponent implements OnInit {
 
     this.alertService.alertEvent.subscribe((alertEvent: Alert) => {
       this.snackBar.open(`${alertEvent.message}`, 'Close', {
-        duration: 2000,
+        duration: environment.msgDuration,
         horizontalPosition: 'right',
         verticalPosition: 'top'
       });
