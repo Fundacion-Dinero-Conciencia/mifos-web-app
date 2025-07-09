@@ -8,6 +8,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { ClientsService } from 'app/clients/clients.service';
 import { ProjectsService } from '../../manage-projects/manage-projects.service';
 import { SystemService } from 'app/system/system.service';
+import { LoansService } from 'app/loans/loans.service';
 
 @Component({
   selector: 'mifosx-create-project-participation',
@@ -30,7 +31,8 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
     private organizationService: OrganizationService,
     private clientsService: ClientsService,
     private projectsService: ProjectsService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private loanService: LoansService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.projectParticipationsData = [];
@@ -47,7 +49,7 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
   }
 
   ngOnInit(): void {
-    this.setupProjectPArticipationForm();
+    this.setupProjectParticipationForm();
     this.dataSource = new MatTableDataSource(this.projectParticipationsData);
     this.getInvestmentFeeConfiguration();
   }
@@ -59,11 +61,10 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
     this.systemService.getConfigurationByName('investment-fee').subscribe((configurationData: any) => {
       const value = parseFloat(configurationData.stringValue);
       this.investmentFee = isNaN(value) ? 0 : value;
-      console.log('investmentFee: ', this.investmentFee);
     });
   }
 
-  setupProjectPArticipationForm() {
+  setupProjectParticipationForm() {
     this.projectParticipationForm = this.formBuilder.group({
       participantId: [
         '',
@@ -141,9 +142,17 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
     const selectedProject = this.projectParticipationForm.get('projectId')?.value;
     if (selectedProject) {
       const amountValue = this.projectParticipationForm.get('amount')?.value;
-      const periods = selectedProject.period > 10 ? 10 : selectedProject.period;
-      var commissionValue = amountValue * this.investmentFee * periods;
-      this.projectParticipationForm.get('commission')?.setValue(commissionValue / 100);
+      var isFactoring;
+      this.loanService.getLoanAccountAssociationDetails(selectedProject.loanId).subscribe((data) => {
+        const loanTemplate: any = data;
+        isFactoring = loanTemplate?.shortName === 'FACT';
+        var periods = isFactoring === true ? selectedProject.period / 30 : selectedProject.period;
+        periods = periods > 10 ? 10 : periods;
+        var commissionValue = amountValue * this.investmentFee * periods;
+        const rawValue = commissionValue / 100;
+        const rounded = Math.round(rawValue);
+        this.projectParticipationForm.get('commission')?.setValue(rounded);
+      });
     }
   }
 }
