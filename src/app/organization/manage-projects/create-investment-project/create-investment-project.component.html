@@ -156,6 +156,28 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Based in Loan Product' | translate }}</mat-label>
+            <mat-select required formControlName="basedInLoanProductId">
+              <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
+                {{ loanProduct.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- <mat-form-field fxFlex="23%">
+            <mat-label>{{ 'labels.inputs.Frequency' | translate }}</mat-label>
+            <mat-select required formControlName="loanTermFrequencyType">
+              <mat-option *ngFor="let type of termFrequencyTypeData" [value]="type.id">
+                {{ type.value | translateKey: 'catalogs' }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="investmentProjectForm.controls.loanTermFrequencyType.hasError('required')">
+              {{ 'labels.inputs.Frequency' | translate }} {{ 'labels.commons.is' | translate }}
+              <strong>{{ 'labels.commons.required' | translate }}</strong>
+            </mat-error>
+          </mat-form-field> -->
+
+          <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Number of Installments' | translate }}</mat-label>
             <input type="number" matInput required formControlName="period" />
             <mat-error *ngIf="investmentProjectForm.controls.period.hasError('required')">
@@ -214,15 +236,6 @@
             <mat-select formControlName="objectives" multiple>
               <mat-option *ngFor="let objectives of objectivesData" [value]="objectives.id">
                 {{ objectives.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Based in Loan Product' | translate }}</mat-label>
-            <mat-select required formControlName="basedInLoanProductId">
-              <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
-                {{ loanProduct.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
