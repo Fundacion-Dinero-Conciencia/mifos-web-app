@@ -13,7 +13,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class SettingsService {
-  public static businessDateFormat = 'yyyy-MM-dd';
+  public static businessDateFormat = 'dd MMMM yyyy';
   public static businessDateConfigName = 'enable-business-date';
   public static default_currency = 'default-currency';
   public static businessDateType = 'BUSINESS_DATE';
@@ -141,7 +141,7 @@ export class SettingsService {
    */
   get decimals() {
     if (!localStorage.getItem('mifosXDecimalsToDisplay')) {
-      return '2';
+      return '0';
     }
     return localStorage.getItem('mifosXDecimalsToDisplay');
   }
@@ -233,7 +233,8 @@ export class SettingsService {
     configurations.some((config: any) => {
       if (config.name === SettingsService.businessDateConfigName) {
         return config.enabled;
-      } else if (config.name === SettingsService.defaultAccountConfigName) {
+      }
+      if (config.name === SettingsService.defaultAccountConfigName) {
         return config.enabled;
       }
     });

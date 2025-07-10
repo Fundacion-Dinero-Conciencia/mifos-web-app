@@ -48,16 +48,19 @@
     </div>
   </form>
 
-  <!-- Checkbox para activar el modal de edición de crédito -->
-  <div
-    *mifosxHasPermission="'UPDATE_ADDITIONAL_EXPENSES'"
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    fxLayoutGap="16px"
-    style="margin-top: 16px"
-  >
-    <button mat-stroked-button color="accent" (click)="openFormEdit()">
+  <!--  modal de edición de crédito -->
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px" style="margin-top: 16px">
+    <button
+      mat-stroked-button
+      color="accent"
+      *mifosxHasPermission="'UPDATE_ADDITIONAL_EXPENSES'"
+      (click)="openFormEdit()"
+    >
       {{ 'labels.inputs.Credit Adjustments' | translate }}
+    </button>
+
+    <button mat-stroked-button color="accent" (click)="goToModifyApplication()">
+      {{ 'labels.menus.Modify Application' | translate }}
     </button>
   </div>
 
@@ -98,9 +101,7 @@
         }}
       </div>
       <div>
-        <strong>{{ 'labels.inputs.Total Credit' | translate }}:</strong> ${{
-          loanTemplate.repaymentSchedule?.totalRepaymentExpected | currency: currency
-        }}
+        <strong>{{ 'labels.inputs.Total Credit' | translate }}:</strong> ${{ totalCredit | currency: currency }}
       </div>
     </div>
   </div>
