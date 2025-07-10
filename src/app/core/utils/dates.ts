@@ -37,7 +37,7 @@ export class Dates {
   }
 
   public convertToDate(value: any, format: string): Date {
-    return moment(value).toDate();
+    return moment(value, format).toDate();
   }
 
   get language() {

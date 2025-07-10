@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class InvestmentProjectCommissionTabComponent implements OnInit {
   isFactoring = false;
   investorInterests: any;
+  totalCredit: any;
   amountToFinance: any;
   amountToRequested: any;
   editLoanEnabled = false;
@@ -108,6 +109,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       this.systemService.getCodeByName('COMMISSION_AEF').subscribe((data) => {
         this.commissionAEF = data?.codeValues?.filter((cv: any) => cv.active);
         this.getAdditionalExpensesByProjectId();
+        this.getMontoAEntregar();
       });
     });
     this.getDataForEditLoan();
@@ -256,6 +258,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     this.adicionalForm.reset();
     this.selectedCommission = null;
     this.comisiones._updateChangeSubscription();
+    this.getTotalCredit();
   }
 
   calculateCommission(): void {
@@ -329,7 +332,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         this.comisiones.data.push(ivaCommission);
       }
     }
-
+    this.getTotalCredit();
     this.comisiones._updateChangeSubscription();
   }
 
@@ -355,6 +358,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         uuid: uuidv4()
       });
     }
+    this.getTotalCredit();
   }
 
   addCommissionAmountInvoice() {
@@ -405,6 +409,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
     this.adicionalForm.reset();
     this.comisiones._updateChangeSubscription();
+    this.getTotalCredit();
   }
 
   getPercentageITEAcordingPeriod(): number {
@@ -526,6 +531,32 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
               this.router.navigate(['../'], { relativeTo: this.route });
             }
           });
+        } else {
+          const modifiedData = {
+            ...this.loanTemplateEdit,
+            submittedOnDate: this.dateUtils.formatDate(
+              this.loanTemplate.timeline.expectedDisbursementDate,
+              SettingsService.businessDateFormat
+            ),
+            expectedDisbursementDate: this.dateUtils.formatDate(
+              this.loanTemplate.timeline.expectedDisbursementDate,
+              SettingsService.businessDateFormat
+            ),
+            principal: this.getMontoAFinanciar()
+          };
+
+          this.loanService.updateLoansAccount(this.projectData?.loanId, modifiedData).subscribe({
+            next: (data) => {
+              this.alertService.alert({
+                type: 'Success',
+                message: this.translateService.instant('labels.heading.Saved Successfully')
+              });
+              this.reload();
+            },
+            error: (err) => {
+              console.error('Error update loan:', err);
+            }
+          });
         }
       }
     });
@@ -612,14 +643,12 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       this.loanTemplate = data;
       this.isFactoring = this.loanTemplate?.shortName === 'FACT';
       this.loadTypesCommissions();
-      this.getCAE();
+      this.getTotalCredit();
     });
   }
 
-  getCAE() {
-    const installments = this.loanTemplate?.repaymentSchedule?.periods;
-    this.investorInterests = this.loanTemplate?.repaymentSchedule?.totalInterestCharged;
-
+  getCAE(periods?: any) {
+    const installments = periods ? periods : this.loanTemplate?.repaymentSchedule?.periods;
     const cashFlows: number[] = [];
     cashFlows.push(-installments[0].principalDisbursed);
 
@@ -660,6 +689,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       } else {
         this.addCommissionAEF(null, null);
       }
+      this.getTotalCredit();
     });
   }
 
@@ -738,6 +768,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       c.id ? c.id !== commissionToRemove.id : c.uuid !== commissionToRemove.uuid
     );
     this.comisiones._updateChangeSubscription();
+    this.getTotalCredit();
   }
 
   getDataForEditLoan() {
@@ -902,5 +933,67 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       .subscribe((response: any) => {
         this.reload();
       });
+  }
+
+  getTotalCredit() {
+    const extractDate = (arr: any): string => {
+      if (!arr || arr.length !== 3) return '';
+
+      const [
+        year,
+        month,
+        day
+      ] = arr;
+      return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    };
+
+    const payload = {
+      clientId: this.projectData?.ownerId,
+      loanId: this.projectData?.loanId,
+      principal: this.getMontoAFinanciar(),
+      submittedOnDate: extractDate(this.loanTemplate.timeline?.submittedOnDate),
+      expectedDisbursementDate: extractDate(this.loanTemplate.timeline?.expectedDisbursementDate),
+      loanTermFrequency: this.loanTemplate?.termFrequency,
+      loanTermFrequencyType: this.loanTemplate?.termPeriodFrequencyType?.id,
+      numberOfRepayments: this.loanTemplate?.numberOfRepayments,
+      repaymentEvery: this.loanTemplate?.repaymentEvery,
+      repaymentFrequencyType: this.loanTemplate?.repaymentFrequencyType?.id,
+      interestType: this.loanTemplate?.interestType?.id,
+      isEqualAmortization: this.loanTemplate?.isEqualAmortization,
+      amortizationType: this.loanTemplate?.amortizationType?.id,
+      interestCalculationPeriodType: this.loanTemplate?.interestCalculationPeriodType?.id,
+      graceOnPrincipalPayment: this.loanTemplate?.graceOnPrincipalPayment,
+      graceOnArrearsAgeing: this.loanTemplate?.graceOnArrearsAgeing,
+      transactionProcessingStrategyCode: this.loanTemplate?.transactionProcessingStrategyCode,
+      interestRateFrequencyType: this.loanTemplate?.interestRateFrequencyType?.id,
+      interestRatePerPeriod: this.loanTemplate?.interestRatePerPeriod,
+      allowPartialPeriodInterestCalcualtion: this.loanTemplate?.allowPartialPeriodInterestCalcualtion,
+      charges: [] as any[],
+      collateral: [] as any[],
+      disbursementData: [] as any[],
+      dateFormat: Dates.DEFAULT_DATEFORMAT,
+      locale: this.settingsService.language.code,
+      loanType: this.loanTemplate?.loanType?.value.toLowerCase()
+    };
+
+    this.loanService.calculateLoanSchedule(payload).subscribe((data: any) => {
+      this.getMontoAEntregar();
+      this.totalCredit = Math.round(data.totalRepaymentExpected);
+      this.investorInterests = Math.round(data.totalInterestCharged);
+      this.getCAE(data.periods);
+    });
+  }
+
+  goToModifyApplication(): void {
+    const clientId = this.projectData?.ownerId;
+    const loanId = this.projectData?.loanId;
+
+    this.router.navigate([
+      '/clients',
+      clientId,
+      'loans-accounts',
+      loanId,
+      'edit-loans-account'
+    ]);
   }
 }

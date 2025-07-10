@@ -65,15 +65,9 @@ export class SettingsComponent implements OnInit {
   constructor(private settingsService: SettingsService) {}
 
   ngOnInit() {
-    if (!this.settingsService.language) {
-      this.settingsService.setLanguage({ name: 'Español', code: 'es' });
-    }
-    if (!this.settingsService.dateFormat) {
-      this.settingsService.setDateFormat('dd MMMM yyyy');
-    }
-    if (!this.settingsService.decimals) {
-      this.settingsService.setDecimalToDisplay('2');
-    }
+    this.settingsService.setLanguage({ name: 'Español', code: 'es' });
+    this.settingsService.setDateFormat('dd MMMM yyyy');
+    this.settingsService.setDecimalToDisplay('0');
 
     this.language.patchValue(this.settingsService.language);
     this.dateFormat.patchValue(this.settingsService.dateFormat);

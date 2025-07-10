@@ -27,7 +27,8 @@ export class ConfigurationsComponent implements OnInit {
       const alertType = alertEvent.type;
       if (alertType === SettingsService.businessDateType + ' Set Config') {
         this.isBusinessDateEnabled = alertEvent.message === 'enabled' ? true : false;
-      } else if (alertType === SettingsService.defaultAccountType + ' Set Config') {
+      }
+      if (alertType === SettingsService.defaultAccountType + ' Set Config') {
         this.isDefaultAccountEnabled = alertEvent.message === 'enabled' ? true : false;
       }
       this.getConfigurations();

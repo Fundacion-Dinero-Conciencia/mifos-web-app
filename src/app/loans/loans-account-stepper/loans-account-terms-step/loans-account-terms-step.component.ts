@@ -167,6 +167,9 @@ export class LoansAccountTermsStepComponent implements OnInit, OnChanges {
 
       this.setAdvancedPaymentStrategyControls();
 
+      // disabled fields
+      this.setupChangesFields();
+
       if (this.loansAccountTermsData.loanScheduleType.code == LoanProducts.LOAN_SCHEDULE_TYPE_CUMULATIVE) {
         this.loansAccountTermsForm.removeControl('interestRecognitionOnDisbursementDate');
       }
@@ -230,6 +233,14 @@ export class LoansAccountTermsStepComponent implements OnInit, OnChanges {
       }
       this.setOptions();
     }
+  }
+
+  setupChangesFields() {
+    this.loansAccountTermsForm.controls.principalAmount.disable();
+    this.loansAccountTermsForm.controls.numberOfRepayments.disable();
+    this.loansAccountTermsForm.controls.loanTermFrequencyType.disable();
+    this.loansAccountTermsForm.controls.interestRatePerPeriod.disable();
+    this.loansAccountTermsForm.controls.interestRateFrequencyType.disable();
   }
 
   ngOnInit() {
