@@ -25,6 +25,8 @@ export class EditFamilyMemberComponent implements OnInit {
   addFamilyMemberTemplate: any;
   /** Family Members Details */
   familyMemberDetails: any;
+  /** Client Identifier Codes */
+  clientIdentifierCodes: any;
 
   /**
    * @param {FormBuilder} formBuilder Form Builder
@@ -42,9 +44,10 @@ export class EditFamilyMemberComponent implements OnInit {
     private clientsService: ClientsService,
     private settingsService: SettingsService
   ) {
-    this.route.data.subscribe((data: { clientTemplate: any; editFamilyMember: any }) => {
+    this.route.data.subscribe((data: { clientTemplate: any; editFamilyMember: any; clientIdentifierCodes: any }) => {
       this.addFamilyMemberTemplate = data.clientTemplate.familyMemberOptions;
       this.familyMemberDetails = data.editFamilyMember;
+      this.clientIdentifierCodes = data.clientIdentifierCodes.codeValues;
     });
   }
 
@@ -68,12 +71,14 @@ export class EditFamilyMemberComponent implements OnInit {
         familyMember.lastName,
         Validators.required
       ],
-      qualification: [familyMember.qualification],
-      age: [
+      /* qualification: [familyMember.qualification], */
+      email: [familyMember.email],
+      mobileNumber: [familyMember.mobileNumber],
+      /* age: [
         familyMember.age,
         Validators.required
-      ],
-      isDependent: [familyMember.isDependent],
+      ], */
+      isMaritalPartnership: [familyMember.isMaritalPartnership],
       relationshipId: [
         familyMember.relationshipId,
         Validators.required
@@ -82,12 +87,24 @@ export class EditFamilyMemberComponent implements OnInit {
         familyMember.genderId,
         Validators.required
       ],
-      professionId: [familyMember.professionId],
+      /* professionId: [familyMember.professionId], */
       maritalStatusId: [familyMember.maritalStatusId],
-      dateOfBirth: [
-        this.dateUtils.formatDate(familyMember.dateOfBirth, 'yyyy-MM-dd'),
+      documentTypeId: [
+        familyMember.documentTypeId,
+        Validators.required
+      ],
+      documentNumber: [
+        familyMember.documentNumber,
+        Validators.required
+      ],
+      address: [
+        familyMember.address,
         Validators.required
       ]
+      /* dateOfBirth: [
+        this.dateUtils.formatDate(familyMember.dateOfBirth, 'yyyy-MM-dd'),
+        Validators.required
+      ] */
     });
   }
 
@@ -112,5 +129,13 @@ export class EditFamilyMemberComponent implements OnInit {
       .subscribe((res) => {
         this.router.navigate(['../../'], { relativeTo: this.route });
       });
+  }
+
+  getRelationValue() {
+    const relationshipId = this.editFamilyMemberForm.get('relationshipId')?.value;
+
+    const matchedCode = this.clientIdentifierCodes.find((code: any) => code.id === relationshipId);
+
+    return matchedCode.name;
   }
 }

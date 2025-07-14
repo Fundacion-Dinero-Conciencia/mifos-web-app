@@ -46,6 +46,7 @@ import { ClientChargeViewResolver } from './common-resolvers/client-charge-view.
 import { ClientTransactionPayResolver } from './common-resolvers/client-transaction-pay.resolver';
 import { ClientDataAndTemplateResolver } from './common-resolvers/client-and-template.resolver';
 import { ClientCollateralResolver } from './common-resolvers/client-collateral.resolver';
+import { ClientIdentifierResolver } from './common-resolvers/client-identifier.resolver';
 
 const routes: Routes = [
   Route.withShell([
@@ -117,7 +118,8 @@ const routes: Routes = [
                   component: AddFamilyMemberComponent,
                   data: { title: 'Add', breadcrumb: 'Add', routeParamBreadcrumb: false },
                   resolve: {
-                    clientTemplate: ClientTemplateResolver
+                    clientTemplate: ClientTemplateResolver,
+                    clientIdentifierCodes: ClientIdentifierResolver
                   }
                 },
                 {
@@ -129,7 +131,8 @@ const routes: Routes = [
                       data: { title: 'Family Member View', routeParamBreadcrumb: 'familyMemberId' },
                       resolve: {
                         clientTemplate: ClientTemplateResolver,
-                        editFamilyMember: ClientFamilyMemberResolver
+                        editFamilyMember: ClientFamilyMemberResolver,
+                        clientIdentifierCodes: ClientIdentifierResolver
                       }
                     }
                   ]
@@ -305,7 +308,8 @@ const routes: Routes = [
     ClientChargeViewResolver,
     ClientTransactionPayResolver,
     ClientDataAndTemplateResolver,
-    ClientCollateralResolver
+    ClientCollateralResolver,
+    ClientIdentifierResolver
   ]
 })
 export class ClientsRoutingModule {}

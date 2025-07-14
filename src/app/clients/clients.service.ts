@@ -227,6 +227,10 @@ export class ClientsService {
     return this.http.get(`/clients/${clientId}/identifiers`);
   }
 
+  getClientIdentifiersCodes() {
+    return this.http.get(`/codes/name/Customer Identifier`);
+  }
+
   getClientIdentifierTemplate(clientId: string) {
     return this.http.get(`/clients/${clientId}/identifiers/template`);
   }

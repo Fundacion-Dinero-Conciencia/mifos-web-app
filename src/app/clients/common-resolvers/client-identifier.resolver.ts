@@ -1,6 +1,6 @@
 /** Angular Imports */
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { Resolve } from '@angular/router';
 
 /** rxjs Imports */
 import { Observable } from 'rxjs';
@@ -9,10 +9,10 @@ import { Observable } from 'rxjs';
 import { ClientsService } from '../clients.service';
 
 /**
- * Client Identifier Template resolver.
+ * Client Identifier resolver.
  */
 @Injectable()
-export class ClientIdentifierTemplateResolver implements Resolve<Object> {
+export class ClientIdentifierResolver implements Resolve<Object> {
   /**
    * @param {ClientsService} ClientsService Clients service.
    */
@@ -21,11 +21,7 @@ export class ClientIdentifierTemplateResolver implements Resolve<Object> {
    * Returns the Client Identities data.
    * @returns {Observable<any>}
    */
-  resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    var clientId = route.parent.paramMap.get('clientId');
-    if (!clientId) {
-      console.log('jejejeje: ', route);
-    }
-    return this.clientsService.getClientIdentifierTemplate(clientId);
+  resolve(): Observable<any> {
+    return this.clientsService.getClientIdentifiersCodes();
   }
 }
