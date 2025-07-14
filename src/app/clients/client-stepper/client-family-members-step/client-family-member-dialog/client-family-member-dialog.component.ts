@@ -21,6 +21,8 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
 
   /** Add/Edit family member form. */
   familyMemberForm: UntypedFormGroup;
+  /** Relation Code Value */
+  relationValue: any;
 
   /**
    * @param {MatDialogRef} dialogRef Client Family Member Dialog Reference
@@ -71,12 +73,12 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
         '',
         Validators.required
       ],
-      qualification: [''],
-      age: [
+      /* qualification: [''], */
+      /* age: [
         '',
         Validators.required
-      ],
-      isDependent: [''],
+      ], */
+      isMaritalPartnership: [''],
       relationshipId: [
         '',
         Validators.required
@@ -85,12 +87,33 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
         '',
         Validators.required
       ],
-      professionId: [''],
+      /* professionId: [''], */
       maritalStatusId: [''],
-      dateOfBirth: [
+      email: [
         '',
         Validators.required
-      ]
+      ],
+      mobileNumber: [
+        '',
+        Validators.required
+      ],
+      address: [
+        '',
+        Validators.required
+      ],
+      documentNumber: [
+        '',
+        Validators.required
+      ],
+      documentTypeId: [
+        '',
+        Validators.required
+      ],
+      expirationDate: ['']
+      /* dateOfBirth: [
+        '',
+        Validators.required
+      ] */
     });
   }
 
@@ -104,6 +127,9 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
     if (familyMemberFormData.dateOfBirth instanceof Date) {
       familyMemberFormData.dateOfBirth = this.dateUtils.formatDate(familyMemberFormData.dateOfBirth, dateFormat);
     }
+    if (familyMemberFormData.expirationDate instanceof Date) {
+      familyMemberFormData.expirationDate = this.dateUtils.formatDate(familyMemberFormData.expirationDate, dateFormat);
+    }
     const familyMember = {
       ...familyMemberFormData,
       dateFormat,
@@ -115,5 +141,13 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
       }
     }
     return familyMember;
+  }
+
+  getRelationValue() {
+    const relationshipId = this.familyMemberForm.get('relationshipId')?.value;
+
+    const matchedCode = this.data.options.relationshipIdOptions.find((code: any) => code.id === relationshipId);
+
+    this.relationValue = matchedCode?.name;
   }
 }

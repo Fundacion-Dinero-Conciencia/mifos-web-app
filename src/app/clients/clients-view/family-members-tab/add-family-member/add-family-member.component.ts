@@ -27,6 +27,10 @@ export class AddFamilyMemberComponent implements OnInit {
   addFamilyMemberTemplate: any;
   /** Client ID */
   clientId: any;
+  /** Client Identifier Codes */
+  clientIdentifierCodes: any;
+  /** Relation Code Value */
+  relationValue: any;
 
   /**
    * @param {FormBuilder} formBuilder FormBuilder
@@ -44,8 +48,9 @@ export class AddFamilyMemberComponent implements OnInit {
     private clientsService: ClientsService,
     private settingsService: SettingsService
   ) {
-    this.route.data.subscribe((data: { clientTemplate: any }) => {
+    this.route.data.subscribe((data: { clientTemplate: any; clientIdentifierCodes: any }) => {
       this.addFamilyMemberTemplate = data.clientTemplate.familyMemberOptions;
+      this.clientIdentifierCodes = data.clientIdentifierCodes.codeValues;
     });
     this.clientId = this.route.parent.parent.snapshot.params['clientId'];
   }
@@ -69,12 +74,20 @@ export class AddFamilyMemberComponent implements OnInit {
         '',
         Validators.required
       ],
-      qualification: [''],
-      age: [
+      /* qualification: [''], */
+      email: [
         '',
         Validators.required
       ],
-      isDependent: [''],
+      mobileNumber: [
+        '',
+        Validators.required
+      ],
+      /* age: [
+        '',
+        Validators.required
+      ], */
+      isMaritalPartnership: [''],
       relationshipId: [
         '',
         Validators.required
@@ -83,12 +96,25 @@ export class AddFamilyMemberComponent implements OnInit {
         '',
         Validators.required
       ],
-      professionId: [''],
+      /* professionId: [''], */
       maritalStatusId: [''],
-      dateOfBirth: [
+      documentTypeId: [
         '',
         Validators.required
-      ]
+      ],
+      address: [
+        '',
+        Validators.required
+      ],
+      documentNumber: [
+        '',
+        Validators.required
+      ],
+      expirationDate: ['']
+      /* dateOfBirth: [
+        '',
+        Validators.required
+      ] */
     });
   }
 
@@ -100,8 +126,12 @@ export class AddFamilyMemberComponent implements OnInit {
     const locale = this.settingsService.language.code;
     const dateFormat = this.settingsService.dateFormat;
     const prevDateOfBirth: Date = this.addFamilyMemberForm.value.dateOfBirth;
+    const prevExpirationDate: Date = this.addFamilyMemberForm.value.expirationDate;
     if (addFamilyMemberFormData.dateOfBirth instanceof Date) {
       addFamilyMemberFormData.dateOfBirth = this.dateUtils.formatDate(prevDateOfBirth, dateFormat);
+    }
+    if (addFamilyMemberFormData.expirationDate instanceof Date) {
+      addFamilyMemberFormData.expirationDate = this.dateUtils.formatDate(prevExpirationDate, dateFormat);
     }
     const data = {
       ...addFamilyMemberFormData,
@@ -111,5 +141,15 @@ export class AddFamilyMemberComponent implements OnInit {
     this.clientsService.addFamilyMember(this.clientId, data).subscribe((res) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
+  }
+
+  getRelationValue() {
+    const relationshipId = this.addFamilyMemberForm.get('relationshipId')?.value;
+
+    const matchedCode = this.addFamilyMemberTemplate.relationshipIdOptions.find(
+      (code: any) => code.id === relationshipId
+    );
+
+    this.relationValue = matchedCode?.name;
   }
 }

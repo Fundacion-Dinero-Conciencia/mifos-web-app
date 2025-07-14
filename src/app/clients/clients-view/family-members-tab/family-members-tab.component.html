@@ -41,13 +41,17 @@
           <span *ngIf="member.qualification"
             >{{ 'labels.inputs.Qualification' | translate }} : {{ member.qualification }}<br
           /></span>
+          <span *ngIf="member.email">{{ 'labels.inputs.Email' | translate }} : {{ member.email }}<br /></span>
           <span *ngIf="member.mobileNumber"
-            >{{ 'labels.inputs.Mobile Number' | translate }} : {{ member.mobileNumber }}<br
+            >{{ 'labels.inputs.Mobile No' | translate }} : {{ member.mobileNumber }}<br
+          /></span>
+          <span *ngIf="member.documentType"
+            >{{ 'labels.inputs.Document Type' | translate }} : {{ member.documentType }}<br
+          /></span>
+          <span *ngIf="member.documentNumber"
+            >{{ 'labels.inputs.Document Key' | translate }} : {{ member.documentNumber }}<br
           /></span>
           <span *ngIf="member.age">{{ 'labels.inputs.Age' | translate }} : {{ member.age }}<br /></span>
-          <span *ngIf="member.isDependent"
-            >{{ 'labels.inputs.Is Dependent' | translate }} : {{ member.isDependent | yesNo }}<br
-          /></span>
           <span *ngIf="member.maritalStatus"
             >{{ 'labels.inputs.Marital Status' | translate }} : {{ member.maritalStatus }}<br
           /></span>
@@ -57,6 +61,13 @@
           /></span>
           <span *ngIf="member.dateOfBirth"
             >{{ 'labels.inputs.Date Of Birth' | translate }} : {{ member.dateOfBirth | dateFormat }}<br
+          /></span>
+          <span *ngIf="member.relationship === 'Aval'"
+            >{{ 'labels.inputs.Is Marital Partnership' | translate }} : {{ member.isMaritalPartnership | yesNo }}<br
+          /></span>
+          <span *ngIf="member.address">{{ 'labels.inputs.Address' | translate }} : {{ member.address }}<br /></span>
+          <span *ngIf="member.expirationDate"
+            >{{ 'labels.inputs.Expiry Date' | translate }} : {{ member.expirationDate | dateFormat }}<br
           /></span>
         </p>
       </mat-expansion-panel>
