@@ -25,27 +25,63 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field fxFlex="48%">
+    <!-- <mat-form-field fxFlex="48%">
       <mat-label>{{ 'labels.inputs.Qualification' | translate }}</mat-label>
       <input formControlName="qualification" matInput />
+    </mat-form-field> -->
+
+    <mat-form-field fxFlex="calc(50% - 25px)">
+      <mat-label>{{ 'labels.inputs.Email' | translate }}</mat-label>
+      <input formControlName="email" required matInput type="email" />
+      <mat-error *ngIf="familyMemberForm.controls.email.hasError('required')">
+        {{ 'labels.inputs.Email' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
     </mat-form-field>
 
-    <mat-form-field fxFlex="48%">
+    <mat-form-field fxFlex="calc(50% - 25px)">
+      <mat-label>{{ 'labels.inputs.Mobile No' | translate }}</mat-label>
+      <input formControlName="mobileNumber" required matInput type="number" />
+      <mat-error *ngIf="familyMemberForm.controls.mobileNumber.hasError('required')">
+        {{ 'labels.inputs.Mobile No' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="calc(50% - 25px)">
+      <mat-label>{{ 'labels.inputs.Document Type' | translate }}</mat-label>
+      <mat-select formControlName="documentTypeId">
+        <mat-option *ngFor="let documentType of data.options.documentTypeIdOptions" [value]="documentType.id">
+          {{ documentType.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="familyMemberForm.controls.documentTypeId.hasError('required')">
+        {{ 'labels.inputs.Document Type' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="calc(50% - 25px)">
+      <mat-label>{{ 'labels.inputs.Document Key' | translate }}</mat-label>
+      <input formControlName="documentNumber" required matInput type="number" />
+      <mat-error *ngIf="familyMemberForm.controls.documentNumber.hasError('required')">
+        {{ 'labels.inputs.Document Key' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <!-- <mat-form-field fxFlex="48%">
       <mat-label>{{ 'labels.inputs.Age' | translate }}</mat-label>
       <input type="number" formControlName="age" matInput [min]="0" />
       <mat-error *ngIf="familyMemberForm.controls.age.hasError('required')">
         {{ 'labels.inputs.Age' | translate }} {{ 'labels.commons.is' | translate }}
         <strong>{{ 'labels.commons.required and cannot be negative' | translate }}</strong>
       </mat-error>
-    </mat-form-field>
-
-    <mat-checkbox formControlName="isDependent" labelPosition="before" fxFlex="48%"
-      >{{ 'labels.inputs.Is Dependent' | translate }}?</mat-checkbox
-    >
+    </mat-form-field> -->
 
     <mat-form-field fxFlex="48%">
       <mat-label>{{ 'labels.inputs.Relationship' | translate }}</mat-label>
-      <mat-select formControlName="relationshipId" required>
+      <mat-select formControlName="relationshipId" required (selectionChange)="getRelationValue()">
         <mat-option *ngFor="let relation of data.options.relationshipIdOptions" [value]="relation.id">
           {{ relation.name | translateKey: 'catalogs' }}
         </mat-option>
@@ -69,14 +105,14 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field fxFlex="48%">
+    <!-- <mat-form-field fxFlex="48%">
       <mat-label>{{ 'labels.inputs.Profession' | translate }}</mat-label>
       <mat-select formControlName="professionId">
         <mat-option *ngFor="let profession of data.options.professionIdOptions" [value]="profession.id">
           {{ profession.name | translateKey: 'catalogs' }}
         </mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
 
     <mat-form-field fxFlex="48%">
       <mat-label>{{ 'labels.inputs.Marital Status' | translate }}</mat-label>
@@ -87,7 +123,35 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field fxFlex="98%" (click)="dueDatePicker.open()">
+    <mat-form-field fxFlex="calc(50% - 25px)">
+      <mat-label>{{ 'labels.inputs.Address' | translate }}</mat-label>
+      <input formControlName="address" required matInput />
+      <mat-error *ngIf="familyMemberForm.controls.address.hasError('required')">
+        {{ 'labels.inputs.Address' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-checkbox
+      *ngIf="relationValue === 'Aval' || relationValue === 'Representante legal'"
+      formControlName="isMaritalPartnership"
+      labelPosition="before"
+      fxFlex="calc(50% - 25px)"
+      >{{ 'labels.inputs.Is Marital Partnership' | translate }}?
+    </mat-checkbox>
+
+    <mat-form-field
+      *ngIf="relationValue === 'Aval' || relationValue === 'Representante legal'"
+      fxFlex
+      (click)="dueDatePicker.open()"
+    >
+      <mat-label>{{ 'labels.inputs.Expiry Date' | translate }}</mat-label>
+      <input formControlName="expirationDate" matInput [matDatepicker]="dueDatePicker" />
+      <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #dueDatePicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- <mat-form-field fxFlex="98%" (click)="dueDatePicker.open()">
       <mat-label>{{ 'labels.inputs.Date Of Birth' | translate }}</mat-label>
       <input formControlName="dateOfBirth" matInput [max]="maxDate" [matDatepicker]="dueDatePicker" required />
       <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
@@ -96,7 +160,7 @@
         {{ 'labels.inputs.Date Of Birth' | translate }} {{ 'labels.commons.is' | translate }}
         <strong>{{ 'labels.commons.required' | translate }}</strong>
       </mat-error>
-    </mat-form-field>
+    </mat-form-field> -->
   </div>
 
   <mat-dialog-actions align="center">
