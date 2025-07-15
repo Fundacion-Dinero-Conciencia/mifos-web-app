@@ -41,18 +41,23 @@
             </mat-option>
           </mat-autocomplete>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Amount' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="amount" (input)="calculateCUFCommission()" />
-            <mat-error *ngIf="projectParticipationForm.controls.amount.hasError('required')">
-              {{ 'labels.inputs.Amount' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+          <mifosx-input-amount
+            [currency]="currency || ''"
+            [isRequired]="true"
+            [inputFormControl]="projectParticipationForm.controls.amount"
+            [inputLabel]="'Amount'"
+          >
+          </mifosx-input-amount>
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Commission' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="commission" readonly="true" disabled="true" />
+            <input
+              matInput
+              [value]="projectParticipationForm.get('commission')?.value | currency: currency.code"
+              readonly
+              disabled
+              style="text-align: right"
+            />
             <mat-error *ngIf="projectParticipationForm.controls.commission.hasError('required')">
               {{ 'labels.inputs.Commission' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>

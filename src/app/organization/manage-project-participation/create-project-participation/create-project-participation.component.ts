@@ -9,6 +9,8 @@ import { ClientsService } from 'app/clients/clients.service';
 import { ProjectsService } from '../../manage-projects/manage-projects.service';
 import { SystemService } from 'app/system/system.service';
 import { LoansService } from 'app/loans/loans.service';
+import { SettingsService } from 'app/settings/settings.service';
+import { AccountingService } from 'app/accounting/accounting.service';
 
 @Component({
   selector: 'mifosx-create-project-participation',
@@ -22,6 +24,7 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
   participantsData: any[] = [];
   projectsData: any[] = [];
   investmentFee: any;
+  currency: any = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +35,8 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
     private clientsService: ClientsService,
     private projectsService: ProjectsService,
     private systemService: SystemService,
-    private loanService: LoansService
+    private loanService: LoansService,
+    private accountingService: AccountingService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.projectParticipationsData = [];
@@ -49,9 +53,11 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
   }
 
   ngOnInit(): void {
+    this.getDefaultCurrency();
     this.setupProjectParticipationForm();
     this.dataSource = new MatTableDataSource(this.projectParticipationsData);
     this.getInvestmentFeeConfiguration();
+    this.setupListeners();
   }
 
   /**
@@ -138,17 +144,36 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
     });
   }
 
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.accountingService.getCurrencies().subscribe((currencies) => {
+        const defaultCurrency = currencies?.selectedCurrencyOptions.find((c: any) => c.code === data.stringValue);
+        if (defaultCurrency) {
+          this.currency = defaultCurrency;
+        }
+      });
+    });
+  }
+
+  setupListeners(): void {
+    this.projectParticipationForm.get('amount')?.valueChanges.subscribe(() => {
+      this.calculateCUFCommission();
+    });
+  }
+
   calculateCUFCommission() {
     const selectedProject = this.projectParticipationForm.get('projectId')?.value;
     if (selectedProject) {
       const amountValue = this.projectParticipationForm.get('amount')?.value;
       var isFactoring;
-      this.loanService.getLoanAccountAssociationDetails(selectedProject.loanId).subscribe((data) => {
+      this.loanService.getLoanAccountAssociationDetails(selectedProject.loanId).subscribe((data: any) => {
+        console.log('DATA LOAN', data);
         const loanTemplate: any = data;
         isFactoring = loanTemplate?.shortName === 'FACT';
         var periods = isFactoring === true ? selectedProject.period / 30 : selectedProject.period;
         periods = periods > 10 ? 10 : periods;
-        var commissionValue = amountValue * this.investmentFee * periods;
+        const percentageParticipation = amountValue / data?.approvedPrincipal;
+        var commissionValue = data?.approvedPrincipal * this.investmentFee * periods * percentageParticipation;
         const rawValue = commissionValue / 100;
         const rounded = Math.round(rawValue);
         this.projectParticipationForm.get('commission')?.setValue(rounded);

@@ -281,7 +281,16 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   addCommissionAEF(baseAmount: number, percentage: number): void {
     const montoSolicitado = baseAmount || this.projectData?.amount;
     const tasaAEF = percentage || this.getCommissionAcordingByPeriod();
-    const montoAEF = (montoSolicitado * tasaAEF) / 100;
+    var tasaToApply = 0;
+    if (this.isFactoring === true) {
+      tasaToApply = tasaAEF / 360;
+    } else {
+      tasaToApply = tasaAEF / 12;
+    }
+
+    const period = this.projectData?.period;
+
+    const montoAEF = (montoSolicitado * tasaToApply * period) / 100;
     const ivaAEF = (montoAEF * this.getIvaVigente()) / 100;
 
     const tipoAEF = this.getCommissionByName('AEF');
