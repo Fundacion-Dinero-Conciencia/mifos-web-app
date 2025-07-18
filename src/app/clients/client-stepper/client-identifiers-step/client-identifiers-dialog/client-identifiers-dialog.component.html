@@ -1,0 +1,56 @@
+<h1 mat-dialog-title>{{ data.context }} {{ 'labels.heading.Add Client Identifier' | translate }}</h1>
+
+<form [formGroup]="identifierForm">
+  <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutAlign="start center" fxLayoutGap="2%">
+    <mat-form-field fxFlex="98%">
+      <mat-label>{{ 'labels.inputs.Document Type' | translate }}</mat-label>
+      <mat-select formControlName="documentTypeId">
+        <mat-option *ngFor="let documentType of data.options" [value]="documentType.id">
+          {{ documentType.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="identifierForm.controls.documentTypeId.hasError('required')">
+        {{ 'labels.inputs.Document Type' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="98%">
+      <mat-label>{{ 'labels.inputs.Document Key' | translate }}</mat-label>
+      <input formControlName="documentKey" required matInput type="number" />
+      <mat-error *ngIf="identifierForm.controls.documentKey.hasError('required')">
+        {{ 'labels.inputs.Document Key' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="98%">
+      <mat-label>{{ 'labels.inputs.Status' | translate }}</mat-label>
+      <mat-select formControlName="status">
+        <mat-option [value]="'Active'">{{ 'labels.catalogs.Active' | translate }}</mat-option>
+        <mat-option [value]="'Inactive'">{{ 'labels.catalogs.Inactive' | translate }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="identifierForm.controls.status?.hasError('required')">
+        {{ 'labels.inputs.Status' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="98%">
+      <mat-label>{{ 'labels.inputs.Description' | translate }}</mat-label>
+      <input formControlName="description" matInput type="text" />
+    </mat-form-field>
+  </div>
+
+  <mat-dialog-actions align="center">
+    <button mat-raised-button mat-dialog-close>{{ 'labels.buttons.Cancel' | translate }}</button>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!identifierForm.valid"
+      [mat-dialog-close]="{ identifier: identifier }"
+    >
+      {{ 'labels.buttons.Confirm' | translate }}
+    </button>
+  </mat-dialog-actions>
+</form>

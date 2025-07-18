@@ -30,6 +30,15 @@
     </mat-step>
 
     <mat-step>
+      <ng-template matStepLabel>{{ 'labels.inputs.IDENTITIES' | translate }}</ng-template>
+
+      <mifosx-client-identifiers-step
+        #clientIdentifier
+        [clientTemplate]="clientTemplate"
+      ></mifosx-client-identifiers-step>
+    </mat-step>
+
+    <mat-step>
       <ng-template matStepLabel>{{ 'labels.inputs.FAMILY MEMBERS' | translate }}</ng-template>
 
       <mifosx-client-family-members-step

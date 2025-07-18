@@ -168,6 +168,32 @@
     </mat-accordion>
   </div>
 
+  <div fxFlexFill *ngIf="client.identifiers.length" fxLayout="row wrap" fxLayout.lt-md="column" class="m-b-20">
+    <h3 class="mat-h3" fxFlexFill>{{ 'labels.heading.Identities' | translate }}</h3>
+
+    <mat-divider fxFlexFill></mat-divider>
+
+    <mat-accordion fxFlexFill class="m-t-5">
+      <mat-expansion-panel *ngFor="let identifier of client.identifiers" class="family-member">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ identifier.documentKey }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-divider></mat-divider>
+
+        <p>
+          {{ 'labels.inputs.Document Key' | translate }} : {{ identifier.documentKey }}<br />
+          {{ 'labels.inputs.Document Type' | translate }} :
+          {{ identifier.documentTypeId | find: clientTemplate.documentTypeIdOptions : 'id' : 'name' }}<br />
+          {{ 'labels.inputs.Status' | translate }} : {{ 'labels.catalogs.' + identifier.status | translate }}<br />
+          {{ 'labels.inputs.Description' | translate }} : {{ identifier.description }}<br />
+        </p>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
   <div
     fxFlexFill
     *ngIf="clientTemplate.isAddressEnabled && client.address && client.address.length"
