@@ -31,6 +31,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   areaData: any[] = [];
   currency: any;
   statusData: any[] = [];
+  creditTypesData: any[] = [];
   objectivesData: any[] = [];
   loanProductsData: any[] = [];
   termFrequencyTypeData: any[] = [];
@@ -56,6 +57,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         statusData: any;
         objectivesData: any;
         loanProductsData: any;
+        creditTypesData: any;
       }) => {
         this.clientsData = [];
         this.countryData = data.countryData.codeValues;
@@ -67,6 +69,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         this.statusData = data.statusData.codeValues;
         this.objectivesData = data.objectivesData.codeValues;
         this.loanProductsData = data.loanProductsData;
+        this.creditTypesData = data.creditTypesData.codeValues;
       }
     );
   }
@@ -177,6 +180,9 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       ],
       position: [
         0
+      ],
+      creditTypeId: [
+        ''
       ]
     });
   }

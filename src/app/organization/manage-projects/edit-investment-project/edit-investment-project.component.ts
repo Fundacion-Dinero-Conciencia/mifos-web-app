@@ -27,6 +27,7 @@ export class EditInvestmentProjectComponent implements OnInit {
   idProject: any;
   projectData: any[] = [];
   public Editor = ClassicEditor;
+  creditTypesData: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +45,9 @@ export class EditInvestmentProjectComponent implements OnInit {
         areaData: any;
         statusData: any;
         objectivesData: any;
+        creditTypesData: any;
       }) => {
+        console.log('data', data);
         this.filteredCategoryData = [];
         this.categoryData = data.categoryData.codeValues;
         this.filteredSubcategoryData = [];
@@ -52,6 +55,7 @@ export class EditInvestmentProjectComponent implements OnInit {
         this.areaData = data.areaData.codeValues;
         this.statusData = data.statusData.codeValues;
         this.objectivesData = data.objectivesData.codeValues;
+        this.creditTypesData = data.creditTypesData.codeValues;
       }
     );
   }
@@ -65,24 +69,24 @@ export class EditInvestmentProjectComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.organizationService.getInvestmentProject(id).subscribe({
         next: (data) => {
-          this.setArea(data.area.id);
-          this.setCategory(data.category.id);
+          this.setArea(data?.area?.id);
+          this.setCategory(data?.category?.id);
 
           this.investmentProjectForm = this.formBuilder.group({
             name: [
-              data.name,
+              data?.name,
               Validators.required
             ],
             subtitle: [
-              data.subtitle,
+              data?.subtitle,
               Validators.required
             ],
             mnemonic: [
-              data.mnemonic,
+              data?.mnemonic,
               Validators.required
             ],
             impactDescription: [
-              data.impactDescription,
+              data?.impactDescription,
               Validators.required
             ],
             institutionDescription: [
@@ -90,57 +94,60 @@ export class EditInvestmentProjectComponent implements OnInit {
               Validators.required
             ],
             teamDescription: [
-              data.teamDescription,
+              data?.teamDescription,
               Validators.required
             ],
             financingDescription: [
-              data.financingDescription,
+              data?.financingDescription,
               Validators.required
             ],
             littleSocioEnvironmentalDescription: [
-              data.littleSocioEnvironmentalDescription,
+              data?.littleSocioEnvironmentalDescription,
               Validators.required
             ],
             detailedSocioEnvironmentalDescription: [
-              data.detailedSocioEnvironmentalDescription,
+              data?.detailedSocioEnvironmentalDescription,
               Validators.required
             ],
             maxAmount: [
-              data.maxAmount,
+              data?.maxAmount,
               Validators.required
             ],
             minAmount: [
-              data.minAmount,
+              data?.minAmount,
               Validators.required
             ],
             projectRate: [
-              data.rate,
+              data?.rate,
               Validators.required
             ],
             position: [
-              data.position,
+              data?.position,
               Validators.required
             ],
             categoryId: [
-              data.category.id,
+              data?.category?.id,
               Validators.required
             ],
             subCategories: [
-              data.subCategories?.map((o: any) => o.id) || [],
+              data?.subCategories?.map((o: any) => o.id) || [],
               Validators.required
             ],
             areaId: [
-              data.area.id,
+              data?.area?.id,
               Validators.required
             ],
             objectives: [
-              data.objectives?.map((o: any) => o.id) || [],
+              data?.objectives?.map((o: any) => o.id) || [],
               Validators.required
             ],
             isActive: [data.isActive],
             statusId: [
-              data.status?.statusValue?.id,
+              data?.status?.statusValue?.id,
               Validators.required
+            ],
+            creditTypeId: [
+              data?.creditType?.id
             ]
           });
 

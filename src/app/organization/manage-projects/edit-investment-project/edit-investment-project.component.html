@@ -91,6 +91,15 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
+            <mat-select formControlName="creditTypeId">
+              <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
+                {{ creditType.name + ' - ' + creditType.description }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Max Amount' | translate }}</mat-label>
             <input type="number" matInput required formControlName="maxAmount" />
             <mat-error *ngIf="investmentProjectForm?.get('maxAmount')?.hasError('required')">

@@ -29,7 +29,7 @@
 
       <ng-container matColumnDef="country">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Country' | translate }}</th>
-        <td mat-cell *matCellDef="let item">{{ item.country.code }}</td>
+        <td mat-cell *matCellDef="let item">{{ item.country.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="occupancyPercentage">

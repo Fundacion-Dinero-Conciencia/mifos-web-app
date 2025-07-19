@@ -164,6 +164,15 @@
             </mat-select>
           </mat-form-field>
 
+          <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
+            <mat-select formControlName="creditTypeId">
+              <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
+                {{ creditType.name + ' - ' + creditType.description }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
           <!-- <mat-form-field fxFlex="23%">
             <mat-label>{{ 'labels.inputs.Frequency' | translate }}</mat-label>
             <mat-select required formControlName="loanTermFrequencyType">
