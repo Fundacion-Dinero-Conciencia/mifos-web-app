@@ -1,19 +1,74 @@
-<div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
-  <button mat-raised-button color="primary" (click)="uploadDocument()">
-    <fa-icon icon="plus" class="m-r-10"></fa-icon>
-    {{ 'labels.buttons.Add' | translate }}
-  </button>
+<div class="container m-b-30">
+  <mat-card>
+    <mat-card-title class="text-center">{{ 'labels.heading.Cover Image' | translate }}</mat-card-title>
+    <mat-divider></mat-divider>
+
+    <div
+      fxLayout="row"
+      fxLayoutAlign="end center"
+      fxLayoutGap="10px"
+      fxLayout.lt-md="column"
+      class="m-b-20"
+      *ngIf="!coverImage"
+    >
+      <button mat-raised-button color="primary" (click)="uploadCoverDocument()">
+        <fa-icon icon="plus" class="m-r-5"></fa-icon>
+        {{ 'labels.buttons.Add' | translate }}
+      </button>
+    </div>
+    <mat-card-content fxLayout="column" fxLayoutAlign="center center" class="m-t-10">
+      <div *ngIf="coverImage">
+        <mat-card class="thumbnail-card">
+          <img mat-card-image [src]="getImagePath(coverImage.location)" alt="Image" class="project-img" />
+          <button mat-icon-button class="delete-btn" (click)="deleteDocument(coverImage.id)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
 
-<div class="container">
+<div class="container m-b-30">
   <mat-card>
+    <mat-card-title class="text-center">{{ 'labels.heading.Other Images' | translate }}</mat-card-title>
+    <mat-divider></mat-divider>
+
     <mat-card-content>
-      <div fxLayout="row wrap" class="content">
-        <div class="thumbnail-wall">
-          <<ng-container class="thumbnail" *ngFor="let image of imageData">
-            <img class="project-img" [src]="getImagePath(image.location)" />
-          </ng-container>
-        </div>
+      <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px" fxLayout.lt-md="column" class="m-b-20">
+        <button mat-raised-button color="primary" (click)="uploadDocument(null)">
+          <fa-icon icon="plus" class="m-r-5"></fa-icon>
+          {{ 'labels.buttons.Add' | translate }}
+        </button>
+      </div>
+
+      <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="center start" fxLayoutWrap class="thumbnail-gallery">
+        <ng-container *ngFor="let image of imageData">
+          <div class="thumbnail-wrapper" *ngIf="image.description !== 'Cover'">
+            <mat-card class="thumbnail-card">
+              <img mat-card-image [src]="getImagePath(image.location)" alt="Image" class="project-img" />
+
+              <button mat-icon-button class="delete-btn" (click)="deleteDocument(image.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-card>
+
+            <mat-form-field appearance="fill" class="order-field m-t-10">
+              <mat-label>{{ 'labels.inputs.Order' | translate }}</mat-label>
+              <input matInput type="number" [(ngModel)]="image.description" (ngModelChange)="image.modified = true" />
+
+              <button
+                mat-icon-button
+                matSuffix
+                color="accent"
+                (click)="updateImageOrder(image)"
+                [disabled]="!image.modified"
+              >
+                <mat-icon>save</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </ng-container>
       </div>
     </mat-card-content>
   </mat-card>
