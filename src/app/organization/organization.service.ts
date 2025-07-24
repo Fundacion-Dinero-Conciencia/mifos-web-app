@@ -874,6 +874,14 @@ export class OrganizationService {
     return this.http.post(`/projects/${projectId}/documents`, formData);
   }
 
+  deleteProjectDocumentsImage(projectId: string, imageId: string) {
+    return this.http.delete(`/projects/${projectId}/documents/${imageId}`);
+  }
+
+  updateProjectDocumentsImage(projectId: string, imageId: string, formData: FormData) {
+    return this.http.put(`/projects/${projectId}/documents/${imageId}`, formData);
+  }
+
   saveAdditionalExpenses(formData: any) {
     return this.http.post(`/additionalExpenses`, formData);
   }
