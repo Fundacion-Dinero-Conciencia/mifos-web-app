@@ -129,7 +129,7 @@
           </mifosx-input-amount>
 
           <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Max Amount' | translate }}</mat-label>
+            <mat-label>{{ 'labels.inputs.custom.Max Amount' | translate }}</mat-label>
             <input type="number" matInput formControlName="maxAmount" />
             <mat-error *ngIf="investmentProjectForm.controls.maxAmount.hasError('required')">
               {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
@@ -138,7 +138,7 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Min Amount' | translate }}</mat-label>
+            <mat-label>{{ 'labels.inputs.custom.Min Amount' | translate }}</mat-label>
             <input type="number" matInput formControlName="minAmount" />
             <mat-error *ngIf="investmentProjectForm.controls.minAmount.hasError('required')">
               {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
@@ -169,6 +169,15 @@
             <mat-select formControlName="creditTypeId">
               <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
                 {{ creditType.name + ' - ' + creditType.description }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="98%">
+            <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
+            <mat-select formControlName="loanPurposeId">
+              <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
+                {{ loanPurpose.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
