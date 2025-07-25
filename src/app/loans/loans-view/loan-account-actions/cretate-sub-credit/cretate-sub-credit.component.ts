@@ -32,7 +32,7 @@ export class CretateSubCreditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.maxDate = this.settingService.maxFutureDate;
+    this.maxDate = this.settingService.businessDate;
     this.createSubCreditLoanForm();
     if (this.dataObject.currency) {
       this.currency = this.dataObject.currency;
