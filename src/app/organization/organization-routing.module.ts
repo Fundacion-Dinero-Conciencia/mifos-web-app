@@ -129,6 +129,7 @@ import { LoanProducts } from 'app/products/loan-products/loan-products';
 import { LoanProductsResolver } from 'app/products/loan-products/loan-products.resolver';
 import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-investment-project/investment-project-commission-tab/investment-project-commission-tab.component';
 import { DataCodeCreditTypesResolver } from './manage-projects/data-code-credit-types.resolver';
+import { DataCodeLoanPurposeResolver } from './manage-projects/data-code-loan-purpose.resolver';
 
 /** Organization Routes */
 const routes: Routes = [
@@ -741,7 +742,8 @@ const routes: Routes = [
                 objectivesData: DataCodeObjectiveResolver,
                 statusData: DataCodeStatusResolver,
                 loanProductsData: LoanProductsResolver,
-                creditTypesData: DataCodeCreditTypesResolver
+                creditTypesData: DataCodeCreditTypesResolver,
+                loanPurposeData: DataCodeLoanPurposeResolver
               }
             },
             {
@@ -790,7 +792,8 @@ const routes: Routes = [
                     areaData: DataCodeAreaResolver,
                     objectivesData: DataCodeObjectiveResolver,
                     statusData: DataCodeStatusResolver,
-                    creditTypesData: DataCodeCreditTypesResolver
+                    creditTypesData: DataCodeCreditTypesResolver,
+                    loanPurposeData: DataCodeLoanPurposeResolver
                   }
                 },
                 {
@@ -900,7 +903,8 @@ const routes: Routes = [
     StatusHistoryProjectResolver,
     InvestmentProjectDocumentsResolver,
     DataCodeObjectiveResolver,
-    DataCodeCreditTypesResolver
+    DataCodeCreditTypesResolver,
+    DataCodeLoanPurposeResolver
   ]
 })
 export class OrganizationRoutingModule {}
