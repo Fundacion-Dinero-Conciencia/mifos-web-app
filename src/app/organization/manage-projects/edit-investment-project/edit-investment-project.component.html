@@ -146,7 +146,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Area' | translate }}</mat-label>
-            <mat-select required formControlName="areaId" (ngModelChange)="setArea($event)">
+            <mat-select formControlName="areaId" (ngModelChange)="setArea($event)">
               <mat-option *ngFor="let area of areaData" [value]="area.id">
                 {{ area.name }}
               </mat-option>
@@ -155,7 +155,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Category' | translate }}</mat-label>
-            <mat-select required formControlName="categoryId" (ngModelChange)="setCategory($event)">
+            <mat-select formControlName="categoryId" (ngModelChange)="setCategory($event)">
               <mat-option *ngFor="let category of filteredCategoryData" [value]="category.id">
                 {{ category.name }}
               </mat-option>
@@ -164,7 +164,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Subcategory' | translate }}</mat-label>
-            <mat-select required formControlName="subCategories" multiple>
+            <mat-select formControlName="subCategories" multiple>
               <mat-option *ngFor="let subcategory of filteredSubcategoryData" [value]="subcategory.id">
                 {{ subcategory.name }}
               </mat-option>
@@ -173,7 +173,7 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.custom.Objectives' | translate }}</mat-label>
-            <mat-select required formControlName="objectives" multiple>
+            <mat-select formControlName="objectives" multiple>
               <mat-option *ngFor="let objectives of objectivesData" [value]="objectives.id">
                 {{ objectives.name }}
               </mat-option>
