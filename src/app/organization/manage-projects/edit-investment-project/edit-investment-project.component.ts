@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { OrganizationService } from 'app/organization/organization.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
-import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-edit-investment-project',
@@ -47,7 +46,6 @@ export class EditInvestmentProjectComponent implements OnInit {
         objectivesData: any;
         creditTypesData: any;
       }) => {
-        console.log('data', data);
         this.filteredCategoryData = [];
         this.categoryData = data.categoryData.codeValues;
         this.filteredSubcategoryData = [];
@@ -86,28 +84,22 @@ export class EditInvestmentProjectComponent implements OnInit {
               Validators.required
             ],
             impactDescription: [
-              data?.impactDescription,
-              Validators.required
+              data?.impactDescription
             ],
             institutionDescription: [
-              data.institutionDescription,
-              Validators.required
+              data.institutionDescription
             ],
             teamDescription: [
-              data?.teamDescription,
-              Validators.required
+              data?.teamDescription
             ],
             financingDescription: [
-              data?.financingDescription,
-              Validators.required
+              data?.financingDescription
             ],
             littleSocioEnvironmentalDescription: [
-              data?.littleSocioEnvironmentalDescription,
-              Validators.required
+              data?.littleSocioEnvironmentalDescription
             ],
             detailedSocioEnvironmentalDescription: [
-              data?.detailedSocioEnvironmentalDescription,
-              Validators.required
+              data?.detailedSocioEnvironmentalDescription
             ],
             maxAmount: [
               data?.maxAmount,
@@ -126,20 +118,16 @@ export class EditInvestmentProjectComponent implements OnInit {
               Validators.required
             ],
             categoryId: [
-              data?.category?.id,
-              Validators.required
+              data?.category?.id
             ],
             subCategories: [
-              data?.subCategories?.map((o: any) => o.id) || [],
-              Validators.required
+              data?.subCategories?.map((o: any) => o.id) || []
             ],
             areaId: [
-              data?.area?.id,
-              Validators.required
+              data?.area?.id
             ],
             objectives: [
-              data?.objectives?.map((o: any) => o.id) || [],
-              Validators.required
+              data?.objectives?.map((o: any) => o.id) || []
             ],
             isActive: [data.isActive],
             statusId: [
@@ -165,9 +153,12 @@ export class EditInvestmentProjectComponent implements OnInit {
     const payload = {
       ...this.investmentProjectForm.getRawValue()
     };
-    payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
-    payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
-    console.log(payload);
+    if (payload['subCategories'] && Array.isArray(payload['subCategories']) && payload['subCategories'].length > 0) {
+      payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
+    }
+    if (payload['objectives'] && Array.isArray(payload['objectives']) && payload['objectives'].length > 0) {
+      payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
+    }
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe((response: any) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
