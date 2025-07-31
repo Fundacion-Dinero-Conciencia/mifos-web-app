@@ -121,13 +121,13 @@ export class EditInvestmentProjectComponent implements OnInit {
               data?.category?.id
             ],
             subCategories: [
-              data?.subCategories?.map((o: any) => o.id) || []
+              data?.subCategories?.map((o: any) => o.category.id) || []
             ],
             areaId: [
               data?.area?.id
             ],
             objectives: [
-              data?.objectives?.map((o: any) => o.id) || []
+              data?.objectives?.map((o: any) => o.objective.id) || []
             ],
             isActive: [data.isActive],
             statusId: [
