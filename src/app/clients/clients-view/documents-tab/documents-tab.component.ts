@@ -14,15 +14,21 @@ export class DocumentsTabComponent {
   entityDocuments: any;
   entityId: string;
   entityType = 'clients';
+  customerDocumentOptions: [];
+  documentTypeOptions: [];
 
   constructor(
     private route: ActivatedRoute,
     private clientsService: ClientsService,
     public dialog: MatDialog
   ) {
-    this.route.data.subscribe((data: { clientDocuments: any }) => {
-      this.entityDocuments = data.clientDocuments;
-    });
+    this.route.data.subscribe(
+      (data: { clientDocuments: any; customerDocumentOptions: any; documentTypeOptions: any }) => {
+        this.entityDocuments = data.clientDocuments;
+        this.customerDocumentOptions = data.customerDocumentOptions;
+        this.documentTypeOptions = data.documentTypeOptions;
+      }
+    );
     this.entityId = this.route.parent.snapshot.paramMap.get('clientId');
   }
 

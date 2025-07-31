@@ -231,6 +231,14 @@ export class ClientsService {
     return this.http.get(`/codes/name/Customer Identifier`);
   }
 
+  getCustomerDocumentCodes() {
+    return this.http.get(`/codes/name/Customer Documents`);
+  }
+
+  getDocumentTypeCodes() {
+    return this.http.get(`/codes/name/DocumentTypes`);
+  }
+
   getClientIdentifierTemplate(clientId: string) {
     return this.http.get(`/clients/${clientId}/identifiers/template`);
   }

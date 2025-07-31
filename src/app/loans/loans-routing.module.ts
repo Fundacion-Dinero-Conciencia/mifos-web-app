@@ -62,6 +62,8 @@ import { LoanDelinquencyDataResolver } from './common-resolvers/loan-delinquency
 import { LoanDelinquencyActionsResolver } from './common-resolvers/loan-delinquency-actions.resolver';
 import { LoanTermVariationsTabComponent } from './loans-view/loan-term-variations-tab/loan-term-variations-tab.component';
 import { LoanTermVariationsResolver } from './common-resolvers/loan-term-variations.resolver';
+import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
+import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 
 /** Loans Route. */
 const routes: Routes = [
@@ -208,7 +210,9 @@ const routes: Routes = [
             component: LoanDocumentsTabComponent,
             data: { title: 'Loan Documents', breadcrumb: 'Loan Documents', routeParamBreadcrumb: false },
             resolve: {
-              loanDocuments: LoanDocumentsResolver
+              loanDocuments: LoanDocumentsResolver,
+              customerDocumentOptions: CustomerDocumentsResolver,
+              documentTypeOptions: DocumentTypesResolver
             }
           },
           {
