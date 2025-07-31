@@ -43,6 +43,8 @@ import { SavingNotesResolver } from './common-resolvers/saving-notes.resolver';
 import { SavingDocumentsResolver } from './common-resolvers/saving-documents.resolver';
 import { SavingsTransactionGeneralTabComponent } from './savings-account-view/transactions/view-transaction/savings-transaction-general-tab/savings-transaction-general-tab.component';
 import { GeneralTabComponent } from './savings-account-view/general-tab/general-tab.component';
+import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
+import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 
 /** Savings Routes */
 const routes: Routes = [
@@ -119,7 +121,9 @@ const routes: Routes = [
             component: SavingsDocumentsTabComponent,
             data: { title: 'Savings Account Documents', breadcrumb: 'Documents', routeParamBreadcrumb: false },
             resolve: {
-              savingsDocuments: SavingDocumentsResolver
+              savingsDocuments: SavingDocumentsResolver,
+              customerDocumentOptions: CustomerDocumentsResolver,
+              documentTypeOptions: DocumentTypesResolver
             }
           },
           {
