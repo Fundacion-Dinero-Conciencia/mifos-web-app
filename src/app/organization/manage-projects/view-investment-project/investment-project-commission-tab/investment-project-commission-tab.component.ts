@@ -357,7 +357,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       const tipoITE = this.getCommissionByName('ITE');
       const percentage = this.getPercentageITEAcordingPeriod() / 100;
       const prommisoryAmount = this.calculatePromissoryNote(percentage);
-      const total = period >= 12 ? prommisoryAmount * percentage : prommisoryAmount * (percentage + percentage);
+      const total = period >= 12 ? prommisoryAmount * percentage : prommisoryAmount * percentage * period;
       this.comisiones.data.push({
         commissionType: tipoITE,
         description: 'Impuesto de Timbres y Estampillas (ITE)',
@@ -454,7 +454,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       .reduce((acc, curr) => acc + (curr.total || 0), 0);
 
     const pagaré =
-      (amount + montoAEF + montoIVAAEF + otrosGastos) / (1 - (period >= 12 ? percentage : percentage + percentage));
+      (amount + montoAEF + montoIVAAEF + otrosGastos) / (1 - (period >= 12 ? percentage : percentage * period));
     return pagaré;
   }
 
@@ -512,26 +512,31 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   submitProjectData(editCredit: boolean, amount?: any, rate?: any, period?: any) {
-    const payload = {
-      ...this.investmentProjectForm.getRawValue()
-    };
+    var payload: any = {};
+    payload.mnemonic = this.investmentProjectForm.get('mnemonic')?.value;
+    payload.name = this.investmentProjectForm.get('name')?.value;
+    payload.position = this.investmentProjectForm.get('position')?.value;
+
     if (editCredit === false) {
-      payload['amountToBeFinanced'] = this.getMontoAFinanciar();
-      payload['amountToBeDelivered'] = this.getMontoAEntregar();
+      payload.amountToBeFinanced = this.getMontoAFinanciar();
+      payload.amountToBeDelivered = this.getMontoAEntregar();
+      payload.projectRate = this.investmentProjectForm.get('projectRate')?.value;
+      payload.rate = this.investmentProjectForm.get('rate')?.value;
     }
-    payload['subCategories'] = JSON.stringify(payload['subCategories']);
-    payload['objectives'] = JSON.stringify(payload['objectives']);
+    // payload['subCategories'] = JSON.stringify(payload['subCategories']);
+    // payload['objectives'] = JSON.stringify(payload['objectives']);
 
     if (amount && amount > 0) {
-      payload['amount'] = amount;
+      payload.amount = amount;
     }
     if (rate && rate > 0) {
-      payload['projectRate'] = rate;
+      payload.projectRate = rate;
     }
     if (period && period > 0) {
-      payload['period'] = period;
+      payload.period = period;
     }
 
+    console.log('ASI VA', payload);
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe({
       next: (data) => {
         if (editCredit === true) {
