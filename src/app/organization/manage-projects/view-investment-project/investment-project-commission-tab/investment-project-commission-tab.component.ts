@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { AccountingService } from 'app/accounting/accounting.service';
 import { AlertService } from 'app/core/alert/alert.service';
 import { Dates } from 'app/core/utils/dates';
 import { LoansService } from 'app/loans/loans.service';
@@ -63,7 +64,8 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     private loanService: LoansService,
     private settingsService: SettingsService,
     private dateUtils: Dates,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: UntypedFormBuilder,
+    private accountingService: AccountingService
   ) {
     this.route.data.subscribe((data: { accountData: any }) => {
       this.projectData = data.accountData;
@@ -356,13 +358,14 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       const period = this.isFactoring === true ? this.projectData?.period / 30 : this.projectData?.period;
       const tipoITE = this.getCommissionByName('ITE');
       const percentage = this.getPercentageITEAcordingPeriod() / 100;
-      const prommisoryAmount = this.calculatePromissoryNote(percentage);
-      const total = period >= 12 ? prommisoryAmount * percentage : prommisoryAmount * percentage * period;
+      const percentageIte = period >= 12 ? percentage : percentage * period + percentage;
+      const prommisoryAmount = this.calculatePromissoryNote(percentageIte);
+      const total = prommisoryAmount * percentageIte;
       this.comisiones.data.push({
         commissionType: tipoITE,
         description: 'Impuesto de Timbres y Estampillas (ITE)',
         netAmount: prommisoryAmount,
-        vat: percentage,
+        vat: percentageIte * 100,
         total: total,
         uuid: uuidv4()
       });
@@ -453,8 +456,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       .filter((c) => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
       .reduce((acc, curr) => acc + (curr.total || 0), 0);
 
-    const pagaré =
-      (amount + montoAEF + montoIVAAEF + otrosGastos) / (1 - (period >= 12 ? percentage : percentage * period));
+    const pagaré = (amount + montoAEF + montoIVAAEF + otrosGastos) / (1 - percentage);
     return pagaré;
   }
 
