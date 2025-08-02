@@ -18,6 +18,8 @@ import { SettingsService } from 'app/settings/settings.service';
 import { OrganizationService } from '../organization.service';
 import { SavingsService } from 'app/savings/savings.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AccountingService } from 'app/accounting/accounting.service';
+import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-select-dialog',
@@ -43,6 +45,7 @@ export class SelectDialogComponent implements OnInit {
   /** Account Type Id */
   accountTypeId: number = 2;
 
+  currency: any;
   isInvestment: boolean = true;
   staffData: any;
   statusEmployees = 'active';
@@ -59,10 +62,13 @@ export class SelectDialogComponent implements OnInit {
     private clientsService: ClientsService,
     private orgService: OrganizationService,
     private alertService: AlertService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private systemService: SystemService,
+    private accountingService: AccountingService
   ) {}
 
   ngOnInit(): void {
+    this.getDefaultCurrency();
     this.maxDate = this.settingsService.businessDate;
     this.getTemplateAccountTransfer();
     this.getEmployyesActive();
@@ -130,7 +136,7 @@ export class SelectDialogComponent implements OnInit {
         toAccountType: this.accountTypeId,
         toOfficeId: formValues.toOfficeId,
 
-        transferAmount: formValues.transferAmount,
+        transferAmount: this.makeAccountTransferForm.controls['transferAmount']?.value,
         transferDate: this.dateUtils.formatDate(formValues.transferDate, this.settingsService.dateFormat),
         transferDescription: formValues.transferDescription,
         dateFormat: this.settingsService.dateFormat,
@@ -148,6 +154,17 @@ export class SelectDialogComponent implements OnInit {
     }
   }
 
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.accountingService.getCurrencies().subscribe((currencies) => {
+        const defaultCurrency = currencies?.selectedCurrencyOptions.find((c: any) => c.code === data.stringValue);
+        if (defaultCurrency) {
+          this.currency = defaultCurrency;
+        }
+      });
+    });
+  }
+
   /**
    * Creates the standing instruction form.
    */
@@ -162,7 +179,7 @@ export class SelectDialogComponent implements OnInit {
         Validators.required
       ],
       transferAmount: [
-        '',
+        this.data.amount + this.data.commission,
         [
           Validators.required,
           Validators.min(0.01)]
@@ -183,6 +200,7 @@ export class SelectDialogComponent implements OnInit {
         ''
       ]
     });
+    this.makeAccountTransferForm.controls['transferAmount'].disable();
   }
 
   /** Sets options value */
