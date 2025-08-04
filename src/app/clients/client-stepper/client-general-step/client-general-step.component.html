@@ -86,6 +86,15 @@
       </mat-error>
     </mat-form-field>
 
+    <mat-form-field fxFlex="48%" *ngIf="createClientForm.contains('clientNonPersonDetails')">
+      <mat-label>{{ 'labels.inputs.custom.Fancy Name' | translate }}</mat-label>
+      <input matInput required formControlName="fancyName" />
+      <mat-error *ngIf="createClientForm.controls.mnemonic.hasError('required')">
+        {{ 'labels.inputs.custom.Fancy Name' | translate }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+
     <mat-form-field fxFlex="48%" (click)="dateOfBirthDatePicker.open()">
       <mat-label>
         {{

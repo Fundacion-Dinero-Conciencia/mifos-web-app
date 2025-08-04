@@ -100,13 +100,11 @@ export class CreateClientComponent {
         areValids = areValids && clientDatatable.datatableForm.valid;
       });
     }
-    if (this.clientIdentifiersStep && this.clientIdentifiersStep.identifiers) {
-      console.log('this.clientIdentifiersStep.identifiers', this.clientIdentifiersStep.identifiers);
-    }
+    // if (this.clientIdentifiersStep && this.clientIdentifiersStep.identifiers) {
+    //   console.log('this.clientIdentifiersStep.identifiers', this.clientIdentifiersStep.identifiers);
+    // }
 
-    console.log('areValidsBefore: ', areValids);
     areValids = areValids && this.clientIdentifiersStep.identifiers.identifiers.length > 0;
-    console.log('areValids: ', areValids);
 
     return areValids;
   }
