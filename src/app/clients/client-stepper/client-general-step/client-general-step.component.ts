@@ -86,6 +86,7 @@ export class ClientGeneralStepComponent implements OnInit {
       active: [false],
       addSavings: [false],
       mnemonic: [''],
+      fancyName: [''],
       externalId: [''],
       genderId: [''],
       mobileNo: [''],
