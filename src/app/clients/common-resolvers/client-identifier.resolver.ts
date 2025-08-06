@@ -22,6 +22,6 @@ export class ClientIdentifierResolver implements Resolve<Object> {
    * @returns {Observable<any>}
    */
   resolve(): Observable<any> {
-    return this.clientsService.getClientIdentifiersCodes();
+    return this.clientsService.getCodeByName('Customer Identifier');
   }
 }

@@ -22,6 +22,6 @@ export class CustomerDocumentsResolver implements Resolve<Object> {
    * @returns {Observable<any>}
    */
   resolve(): Observable<any> {
-    return this.clientsService.getCustomerDocumentCodes();
+    return this.clientsService.getCodeByName('Customer Documents');
   }
 }

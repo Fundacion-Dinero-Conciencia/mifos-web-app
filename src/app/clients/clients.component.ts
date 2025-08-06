@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 /** Custom Services */
 import { environment } from 'environments/environment';
 import { ClientsService } from './clients.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'mifosx-clients',
@@ -16,6 +17,8 @@ import { ClientsService } from './clients.service';
 })
 export class ClientsComponent implements OnInit {
   @ViewChild('showClosedAccounts') showClosedAccounts: MatCheckbox;
+
+  clientTypeOptions: [];
 
   displayedColumns = [
     'displayName',
@@ -36,6 +39,7 @@ export class ClientsComponent implements OnInit {
   pageSize = 50;
   currentPage = 0;
   filterText = '';
+  clientTypeId: number;
 
   sortAttribute = '';
   sortDirection = '';
@@ -43,7 +47,14 @@ export class ClientsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private clientService: ClientsService) {}
+  constructor(
+    private clientService: ClientsService,
+    private route: ActivatedRoute
+  ) {
+    this.route.data.subscribe((data: { clientTypeOptions: any }) => {
+      this.clientTypeOptions = data.clientTypeOptions.codeValues;
+    });
+  }
 
   ngOnInit() {
     if (environment.preloadClients) {
@@ -63,7 +74,14 @@ export class ClientsComponent implements OnInit {
   private getClients() {
     this.isLoading = true;
     this.clientService
-      .searchByText(this.filterText, this.currentPage, this.pageSize, this.sortAttribute, this.sortDirection)
+      .searchByText(
+        this.filterText,
+        this.clientTypeId,
+        this.currentPage,
+        this.pageSize,
+        this.sortAttribute,
+        this.sortDirection
+      )
       .subscribe(
         (data: any) => {
           this.dataSource.data = data.content;
@@ -101,5 +119,10 @@ export class ClientsComponent implements OnInit {
   private resetPaginator() {
     this.currentPage = 0;
     this.paginator.firstPage();
+  }
+
+  applyClientTypeChange(clientType: any) {
+    this.clientTypeId = clientType.value;
+    this.getClients();
   }
 }
