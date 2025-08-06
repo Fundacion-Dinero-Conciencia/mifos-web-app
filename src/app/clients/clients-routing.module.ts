@@ -49,6 +49,7 @@ import { ClientCollateralResolver } from './common-resolvers/client-collateral.r
 import { ClientIdentifierResolver } from './common-resolvers/client-identifier.resolver';
 import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
 import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
+import { ClientTypeCodeResolver } from './client-type-code.resolver';
 
 const routes: Routes = [
   Route.withShell([
@@ -58,7 +59,10 @@ const routes: Routes = [
       children: [
         {
           path: '',
-          component: ClientsComponent
+          component: ClientsComponent,
+          resolve: {
+            clientTypeOptions: ClientTypeCodeResolver
+          }
         },
         {
           path: 'create',
@@ -315,7 +319,8 @@ const routes: Routes = [
     ClientCollateralResolver,
     ClientIdentifierResolver,
     CustomerDocumentsResolver,
-    DocumentTypesResolver
+    DocumentTypesResolver,
+    ClientTypeCodeResolver
   ]
 })
 export class ClientsRoutingModule {}

@@ -22,6 +22,6 @@ export class DocumentTypesResolver implements Resolve<Object> {
    * @returns {Observable<any>}
    */
   resolve(): Observable<any> {
-    return this.clientsService.getDocumentTypeCodes();
+    return this.clientsService.getCodeByName('DocumentTypes');
   }
 }

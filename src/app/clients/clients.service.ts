@@ -227,16 +227,8 @@ export class ClientsService {
     return this.http.get(`/clients/${clientId}/identifiers`);
   }
 
-  getClientIdentifiersCodes() {
-    return this.http.get(`/codes/name/Customer Identifier`);
-  }
-
-  getCustomerDocumentCodes() {
-    return this.http.get(`/codes/name/Customer Documents`);
-  }
-
-  getDocumentTypeCodes() {
-    return this.http.get(`/codes/name/DocumentTypes`);
+  getCodeByName(codeName: string): Observable<any> {
+    return this.http.get(`/codes/name/${codeName}`);
   }
 
   getClientIdentifierTemplate(clientId: string) {
@@ -416,10 +408,18 @@ export class ClientsService {
     return this.http.get(`/clients/${clientId}/collaterals/template`);
   }
 
-  searchByText(text: string, page: number, pageSize: number, sortAttribute: string = '', sortDirection: string = '') {
+  searchByText(
+    text: string,
+    clientTypeId: number,
+    page: number,
+    pageSize: number,
+    sortAttribute: string = '',
+    sortDirection: string = ''
+  ) {
     let request: any = {
       request: {
-        text
+        text,
+        clientTypeId
       },
       page,
       size: pageSize

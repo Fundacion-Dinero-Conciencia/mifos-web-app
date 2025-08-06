@@ -10,6 +10,18 @@
         />
       </mat-form-field>
     </div>
+
+    <div class="select-box m-r-10">
+      <mat-form-field>
+        <mat-label>{{ 'labels.inputs.Client Type' | translate }}</mat-label>
+        <mat-select (selectionChange)="applyClientTypeChange($event)">
+          <mat-option *ngFor="let clientType of clientTypeOptions" [value]="clientType.id">
+            {{ clientType.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
     <div class="filter-box" *ngIf="existsClientsToFilter">
       <mat-checkbox #showClosedAccounts labelPosition="after" class="m-r-10"
         >{{ 'labels.inputs.Show Closed Accounts' | translate }}
