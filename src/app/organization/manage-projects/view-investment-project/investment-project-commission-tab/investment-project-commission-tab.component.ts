@@ -102,19 +102,24 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
 
   loadTypesCommissions(): void {
     this.systemService.getCodeByName('CONFIG_COMMISSION_TAXES').subscribe((data) => {
-      this.commissionTypes = data?.codeValues?.filter((cv: any) => cv.active);
-      this.commissionToShow = this.commissionTypes.filter((cv: any) => [
+      this.commissionTypes = data?.codeValues?.filter((cv: any) => cv.active); // trae comisiones activas
+      this.commissionToShow = this.commissionTypes.filter((cv: any) =>
+        [
+          // filtra comisiones a mostrar
           'OTROS GASTOS',
           'ITE',
           this.isFactoring === true ? 'MONTO FACTURA' : ''
-        ].includes(cv.name?.trim().toUpperCase()));
+        ].includes(cv.name?.trim().toUpperCase())
+      );
+
       this.systemService.getCodeByName('COMMISSION_AEF').subscribe((data) => {
+        // obtiene las comisiones de la tabla AEF
         this.commissionAEF = data?.codeValues?.filter((cv: any) => cv.active);
         this.getAdditionalExpensesByProjectId();
         this.getMontoAEntregar();
+        this.getDataForEditLoan();
       });
     });
-    this.getDataForEditLoan();
   }
 
   async setupInvestmentProjectForm(id: any): Promise<void> {
@@ -177,7 +182,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
               Validators.required
             ],
             categoryId: [
-              data.category.id,
+              data.category?.id,
               Validators.required
             ],
             subCategories: [
@@ -185,7 +190,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
               Validators.required
             ],
             areaId: [
-              data.area.id,
+              data.area?.id,
               Validators.required
             ],
             objectives: [
@@ -281,19 +286,33 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   addCommissionAEF(baseAmount: number, percentage: number): void {
-    const montoSolicitado = baseAmount || this.projectData?.amount;
+    var montoSolicitado = baseAmount || this.projectData?.amount;
     const tasaAEF = percentage || this.getCommissionAcordingByPeriod();
     var tasaToApply = 0;
     if (this.isFactoring === true) {
       tasaToApply = tasaAEF / 360;
+
+      if (this.validateExistCommission('MONTO FACTURA')) {
+        montoSolicitado = this.updateAmountRequested();
+      } else {
+        return;
+      }
     } else {
       tasaToApply = tasaAEF / 12;
     }
 
     const period = this.projectData?.period;
 
-    const montoAEF = (montoSolicitado * tasaToApply * period) / 100;
-    const ivaAEF = (montoAEF * this.getIvaVigente()) / 100;
+    var montoAEF = null;
+    var ivaAEF = null;
+    if (this.isFactoring) {
+      const subtotalAef = (montoSolicitado * period * tasaToApply) / 100;
+      montoAEF = subtotalAef / (1 + this.getIvaVigente() / 100);
+      ivaAEF = subtotalAef - montoAEF;
+    } else {
+      montoAEF = (montoSolicitado * tasaToApply * period) / 100;
+      ivaAEF = (montoAEF * this.getIvaVigente()) / 100;
+    }
 
     const tipoAEF = this.getCommissionByName('AEF');
     const tipoIVAAEF = this.getCommissionByName('IVA-AEF');
@@ -313,6 +332,10 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         vat: tasaAEF,
         total: montoAEF
       };
+
+      if (!aefCommission.id && !aefCommission.uuid) {
+        aefCommission.uuid = uuidv4();
+      }
 
       if (indexAEF >= 0) {
         this.comisiones.data[indexAEF] = aefCommission;
@@ -337,6 +360,10 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         total: ivaAEF
       };
 
+      if (!ivaCommission.id && !ivaCommission.uuid) {
+        ivaCommission.uuid = uuidv4();
+      }
+
       if (indexIVAAEF >= 0) {
         this.comisiones.data[indexIVAAEF] = ivaCommission;
       } else {
@@ -345,6 +372,13 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     }
     this.getTotalCredit();
     this.comisiones._updateChangeSubscription();
+  }
+
+  updateAmountRequested() {
+    const existInvoice = this.comisiones.data.find((c) => c.commissionType?.name === 'MONTO FACTURA');
+    if (existInvoice) {
+      return existInvoice.total;
+    }
   }
 
   addCommissionITE() {
@@ -418,9 +452,11 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     } else {
       this.comisiones.data.push(invoiceCommission);
     }
+    this.comisiones._updateChangeSubscription();
+    this.getAdditionalExpensesByProjectId();
 
     this.adicionalForm.reset();
-    this.comisiones._updateChangeSubscription();
+
     this.getTotalCredit();
   }
 
@@ -440,13 +476,11 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   calculatePromissoryNote(percentage: any): number {
-    const amount = this.projectData?.amount || 0;
-    const period = this.isFactoring === true ? this.projectData?.period / 30 : this.projectData?.period;
+    var amount = this.projectData?.amount || 0;
 
     // Buscar comisión AEF
     const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
     const montoAEF = aef?.total || 0;
-
     // Buscar IVA sobre AEF
     const ivaAef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF');
     const montoIVAAEF = ivaAef?.total || 0;
@@ -456,7 +490,17 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       .filter((c) => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
       .reduce((acc, curr) => acc + (curr.total || 0), 0);
 
-    const pagaré = (amount + montoAEF + montoIVAAEF + otrosGastos) / (1 - percentage);
+    var subtotalAef = montoAEF + montoIVAAEF;
+
+    if (this.isFactoring) {
+      const tasaToApply =
+        this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.vat / 360; // tasa AEF por mes
+      const montoFinanciar = this.getMontoAFinanciar();
+      amount = this.updateAmountRequested() || 0;
+      subtotalAef = (montoFinanciar * this.projectData?.period * tasaToApply) / 100;
+    }
+
+    const pagaré = (amount + subtotalAef + otrosGastos) / (1 - percentage);
     return pagaré;
   }
 
@@ -538,7 +582,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       payload.period = period;
     }
 
-    console.log('ASI VA', payload);
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe({
       next: (data) => {
         if (editCredit === true) {
@@ -631,24 +674,23 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     const ite = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'ITE')?.total || 0;
 
     if (this.isFactoring) {
-      const amountInvoice =
-        this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'MONTO FACTURA')?.total || 0;
-      return amountInvoice + aef + ivaAef + otrosGastos;
+      // const amountInvoice =
+      //   this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'MONTO FACTURA')?.total || 0;
+      // return amountInvoice + aef + ivaAef + otrosGastos;
+      return this.updateAmountRequested();
     }
-
     return (this.projectData?.amount || 0) + aef + ivaAef + otrosGastos + ite;
   }
 
   getMontoAEntregar(): number {
     if (this.isFactoring) {
+      const tasaToApply =
+        this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.vat / 360;
       const montoFinanciar = this.getMontoAFinanciar();
-      const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.total || 0;
-      const ivaAef =
-        this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF')?.total || 0;
-      const otrosGastos = this.comisiones.data
-        .filter((c) => ['OTROS GASTOS'].includes(c.commissionType?.name?.trim().toUpperCase()))
-        .reduce((acc, curr) => acc + (curr.total || 0), 0);
-      return montoFinanciar - this.investorInterests - aef - ivaAef - otrosGastos;
+      const subtotalAef = (montoFinanciar * this.projectData?.period * tasaToApply) / 100;
+      this.investorInterests = montoFinanciar * (this.projectData?.rate / 360 / 100) * this.projectData?.period;
+      const ite = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'ITE')?.total || 0;
+      return montoFinanciar - subtotalAef - ite - this.investorInterests;
     }
 
     return this.projectData?.amount || 0;
@@ -687,6 +729,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   getAdditionalExpensesByProjectId(): void {
     this.organizationService.getAdditionalExpensesByProjectId(this.projectData.id).subscribe((data) => {
       if (data && Array.isArray(data)) {
+        // si no hay data o no existen las comisiones las carga
         const enriched = data.map((item) => {
           const tipo = this.commissionTypes.find((c) => c.id === item.commissionTypeId);
           return {
@@ -696,7 +739,9 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
           };
         });
 
-        this.comisiones.data = enriched;
+        if (enriched.length > 0) {
+          this.comisiones.data = enriched;
+        }
 
         const existeAEF = enriched.some((item) => item.commissionType?.name === 'AEF');
         if (!existeAEF) {
@@ -729,7 +774,9 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   deleteCommission(commission: any): void {
-    const isAEF = commission.commissionType?.name?.trim().toUpperCase() === 'AEF';
+    const isAEF =
+      commission.commissionType?.name?.trim().toUpperCase() === 'AEF' ||
+      commission.commissionType?.name?.trim().toUpperCase() === 'MONTO FACTURA';
     const toDelete: any[] = [];
 
     // Buscar el IVA-AEF solo si el que se elimina es AEF
@@ -737,6 +784,12 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       const ivaAEF = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF');
       if (ivaAEF) {
         toDelete.push(ivaAEF);
+      }
+      if (commission.commissionType?.name?.trim().toUpperCase() === 'MONTO FACTURA') {
+        const AEF = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
+        if (AEF) {
+          toDelete.push(AEF);
+        }
       }
     }
 
@@ -748,7 +801,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       const identifier = item.id ?? item.uuid;
 
       if (!identifier) return; // No se puede identificar la comisión
-
       // Eliminar del backend si tiene ID
       if (item.id) {
         this.organizationService.deleteAdditionalExpensesById(item.id, false).subscribe({
@@ -776,6 +828,9 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         this.removeCommissionFromTable(item);
       }
     });
+
+    this.comisiones._updateChangeSubscription();
+    this.getTotalCredit();
   }
 
   // Función para remover una comisión de la tabla por ID o UUID
@@ -783,8 +838,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     this.comisiones.data = this.comisiones.data.filter((c) =>
       c.id ? c.id !== commissionToRemove.id : c.uuid !== commissionToRemove.uuid
     );
-    this.comisiones._updateChangeSubscription();
-    this.getTotalCredit();
   }
 
   getDataForEditLoan() {
@@ -861,7 +914,6 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       ...this.loanTemplateEdit,
       ...this.form.value
     };
-
     this.loanService.updateLoansAccount(this.projectData?.loanId, modifiedData).subscribe({
       next: (data) => {
         const principal = this.form.get('principal').value;
@@ -952,6 +1004,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
   }
 
   getTotalCredit() {
+    const montoFinanciar = this.getMontoAFinanciar();
     const extractDate = (arr: any): string => {
       if (!arr || arr.length !== 3) return '';
 
@@ -966,7 +1019,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     const payload = {
       clientId: this.projectData?.ownerId,
       loanId: this.projectData?.loanId,
-      principal: this.getMontoAFinanciar(),
+      principal: montoFinanciar,
       submittedOnDate: extractDate(this.loanTemplate.timeline?.submittedOnDate),
       expectedDisbursementDate: extractDate(this.loanTemplate.timeline?.expectedDisbursementDate),
       loanTermFrequency: this.loanTemplate?.termFrequency,
@@ -991,13 +1044,14 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       locale: this.settingsService.language.code,
       loanType: this.loanTemplate?.loanType?.value.toLowerCase()
     };
-
-    this.loanService.calculateLoanSchedule(payload).subscribe((data: any) => {
-      this.getMontoAEntregar();
-      this.totalCredit = Math.round(data.totalRepaymentExpected);
-      this.investorInterests = Math.round(data.totalInterestCharged);
-      this.getCAE(data.periods);
-    });
+    if (montoFinanciar > 0) {
+      this.loanService.calculateLoanSchedule(payload).subscribe((data: any) => {
+        this.getMontoAEntregar();
+        this.totalCredit = Math.round(data.totalRepaymentExpected);
+        this.investorInterests = Math.round(data.totalInterestCharged);
+        this.getCAE(data.periods);
+      });
+    }
   }
 
   goToModifyApplication(): void {
@@ -1011,5 +1065,9 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       loanId,
       'edit-loans-account'
     ]);
+  }
+
+  validateExistCommission(name: string): boolean {
+    return this.comisiones.data.some((c) => c.commissionType?.name === name);
   }
 }
