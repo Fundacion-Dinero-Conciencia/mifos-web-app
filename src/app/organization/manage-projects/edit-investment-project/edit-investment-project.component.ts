@@ -76,8 +76,7 @@ export class EditInvestmentProjectComponent implements OnInit {
               Validators.required
             ],
             subtitle: [
-              data?.subtitle,
-              Validators.required
+              data?.subtitle
             ],
             mnemonic: [
               data?.mnemonic,
