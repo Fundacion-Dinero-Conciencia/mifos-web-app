@@ -100,7 +100,7 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Max Amount' | translate }}</mat-label>
+            <mat-label>{{ 'labels.inputs.custom.Max Amount' | translate }}</mat-label>
             <input type="number" matInput required formControlName="maxAmount" />
             <mat-error *ngIf="investmentProjectForm?.get('maxAmount')?.hasError('required')">
               {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
@@ -109,7 +109,7 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Min Amount' | translate }}</mat-label>
+            <mat-label>{{ 'labels.inputs.custom.Min Amount' | translate }}</mat-label>
             <input type="number" matInput required formControlName="minAmount" />
             <mat-error *ngIf="investmentProjectForm?.get('minAmount')?.hasError('required')">
               {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
