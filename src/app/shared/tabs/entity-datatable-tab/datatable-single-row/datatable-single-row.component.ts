@@ -191,4 +191,16 @@ export class DatatableSingleRowComponent implements OnInit {
   openSite(siteUrl: string) {
     window.open(siteUrl, '_blank');
   }
+
+  getCodeValueName(columnName: string, codeValueId: number): string {
+    var columnHeaders = this.dataObject?.columnHeaders;
+
+    const header = columnHeaders.find((col: any) => col.columnName === columnName);
+
+    const columnvalues = header?.columnValues;
+
+    const codeValue = columnvalues.find((col: any) => col.id === codeValueId);
+
+    return codeValue?.value;
+  }
 }
