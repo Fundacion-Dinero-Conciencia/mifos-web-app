@@ -1,5 +1,5 @@
 <div class="container">
-  <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper>
+  <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper [linear]="true">
     <ng-template matStepperIcon="number">
       <fa-icon icon="pencil-alt" size="sm"></fa-icon>
     </ng-template>
@@ -29,7 +29,13 @@
       ></mifosx-client-general-step>
     </mat-step>
 
-    <mat-step>
+    <mat-step
+      #identStep
+      [completed]="clientIdentifiersStep?.identifiers?.identifiers?.length > 0"
+      [hasError]="
+        !(clientIdentifiersStep?.identifiers?.identifiers?.length > 0) && clientStepper.selected !== identStep
+      "
+    >
       <ng-template matStepLabel>{{ 'labels.inputs.IDENTITIES' | translate }}</ng-template>
 
       <mifosx-client-identifiers-step

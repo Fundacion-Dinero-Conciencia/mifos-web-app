@@ -789,7 +789,8 @@
       "must be selected": "debe ser seleccionado",
       "must consist of 2 alphabetic characters": "debe constar de 2 caracteres alfabéticos",
       "numeral": "número",
-      "required": "requerido",
+      "required": "requerido/a",
+      "identification": "identificación",
       "required and cannot be negative": "requerido y no puede ser negativo",
       "should": "debería",
       "on": "en",
@@ -3123,6 +3124,7 @@
       "Products": "Productos",
       "Products Mix": "Mezcla de productos",
       "Profile": "Perfil",
+
       "Provisioning Criteria": "Criterios de aprovisionamiento",
       "Provisioning Entries": "Entradas de aprovisionamiento",
       "Provisioning criteria definitions": "Complete todas las definiciones de criterios de aprovisionamiento.",
