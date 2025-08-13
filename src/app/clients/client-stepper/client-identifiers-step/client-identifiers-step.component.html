@@ -35,13 +35,16 @@
       </p>
     </mat-expansion-panel>
   </mat-accordion>
-
+  <mat-error *ngIf="clientIdentifiers.length === 0" class="m-t-5">
+    {{ 'labels.commons.identification' | translate }} {{ 'labels.commons.is' | translate }}
+    <strong>{{ 'labels.commons.required' | translate }}</strong>
+  </mat-error>
   <div fxLayout="row" class="margin-t" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="2%">
     <button mat-raised-button matStepperPrevious>
       <fa-icon icon="arrow-left" class="m-r-10"></fa-icon>
       {{ 'labels.buttons.Previous' | translate }}
     </button>
-    <button mat-raised-button matStepperNext>
+    <button mat-raised-button matStepperNext [disabled]="clientIdentifiers.length === 0">
       {{ 'labels.buttons.Next' | translate }}
       <fa-icon icon="arrow-right" class="m-l-10"></fa-icon>
     </button>
