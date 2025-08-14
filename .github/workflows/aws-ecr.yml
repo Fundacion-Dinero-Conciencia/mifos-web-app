@@ -44,7 +44,7 @@ jobs:
       - name: Build and Push Docker Image (single-arch)
         run: |
           IMAGE_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
-          TAG="${GITHUB_RUN_NUMBER}"
+          TAG="${{ steps.extract_branch.outputs.branch }}-${GITHUB_RUN_NUMBER}"
           
           # Construir y pushear directamente (sin manifest list)
           docker build \
