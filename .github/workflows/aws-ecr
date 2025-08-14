@@ -1,0 +1,53 @@
+name: Publish Image in AWS ECR
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Get Git Hashes
+        run: |
+          echo "short_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "long_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        id: git_hashes
+
+      - name: Build and Push Multi-Arch Docker Image
+        run: |
+          IMAGE_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
+          TAGS="--tag $IMAGE_URI:${{ steps.extract_branch.outputs.branch }}"
+
+          if [ "${{ steps.extract_branch.outputs.branch }}" == "develop" ]; then
+            TAGS="$TAGS --tag $IMAGE_URI:${{ steps.git_hashes.outputs.short_hash }} --tag $IMAGE_URI:${{ steps.git_hashes.outputs.long_hash }}"
+          fi
+
+          docker buildx create --use
+          docker buildx build --push \
+            --platform linux/amd64,linux/arm64 \
+            --build-arg="PUPPETEER_SKIP_DOWNLOAD_ARG=true" \
+            $TAGS .
