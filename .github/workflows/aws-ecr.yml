@@ -33,25 +33,21 @@ jobs:
           branch="${branch//\//-}"  # reemplaza / por -
           branch=$(echo "$branch" | tr '[:upper:]' '[:lower:]') # minúsculas
           echo "branch=$branch" >> $GITHUB_OUTPUT
-
+          
       - name: Get Git Hashes
         id: git_hashes
         run: |
           echo "short_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "long_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Build and Push Multi-Arch Docker Image
+      - name: Build and Push Docker Image (single-arch)
         run: |
           IMAGE_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
-          TAGS="--tag $IMAGE_URI:${{ steps.extract_branch.outputs.branch }}"
-
-          if [ "${{ steps.extract_branch.outputs.branch }}" == "develop" ]; then
-            TAGS="$TAGS --tag $IMAGE_URI:${{ steps.git_hashes.outputs.short_hash }} --tag $IMAGE_URI:${{ steps.git_hashes.outputs.long_hash }}"
-          fi
-
-          docker buildx create --use
-          docker buildx build --push \
-            --platform linux/amd64 \
+          TAG="${{ steps.extract_branch.outputs.branch }}"
+          
+          # Construir y pushear directamente (sin manifest list)
+          docker build \
             --build-arg="PUPPETEER_SKIP_DOWNLOAD_ARG=true" \
-            $TAGS .
-
+            -t $IMAGE_URI:$TAG .
+          
+          docker push $IMAGE_URI:$TAG
