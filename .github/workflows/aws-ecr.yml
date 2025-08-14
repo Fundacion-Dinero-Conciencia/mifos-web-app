@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_ACCOUNT_ID_P: ${{ secrets.AWS_ACCOUNT_ID_P }}
       ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
 
     steps:
@@ -42,7 +42,7 @@ jobs:
 
       - name: Build and Push Docker Image (single-arch)
         run: |
-          IMAGE_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
+          IMAGE_URI="${AWS_ACCOUNT_ID_P}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
           TAG="${{ steps.extract_branch.outputs.branch }}"
           
           # Construir y pushear directamente (sin manifest list)
