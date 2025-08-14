@@ -1256,6 +1256,7 @@
       "Amortization": "Amortization",
       "Amortization Type": "Amortization Type",
       "Amount": "Amount",
+      "PaymentType": "Payment Type",
       "Amount Collected": "Amount Collected",
       "Amount Paid": "Amount Paid",
       "Amount Pending / Disbursed": "Amount Pending / Disbursed",
