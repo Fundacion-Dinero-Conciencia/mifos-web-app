@@ -27,15 +27,18 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+        run: |
+          branch="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          branch="${branch//\//-}"  # reemplaza / por -
+          branch=$(echo "$branch" | tr '[:upper:]' '[:lower:]') # minúsculas
+          echo "branch=$branch" >> $GITHUB_OUTPUT
 
       - name: Get Git Hashes
+        id: git_hashes
         run: |
           echo "short_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "long_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-        id: git_hashes
 
       - name: Build and Push Multi-Arch Docker Image
         run: |
@@ -51,3 +54,4 @@ jobs:
             --platform linux/amd64 \
             --build-arg="PUPPETEER_SKIP_DOWNLOAD_ARG=true" \
             $TAGS .
+
