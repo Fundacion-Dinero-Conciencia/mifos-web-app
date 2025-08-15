@@ -1177,6 +1177,9 @@
         "INCOME": "INGRESO",
         "EXPENSE": "EGRESO"
       },
+      "Client type": "Tipo de cliente",
+      "Juridic person": "Persona jurídica",
+      "Natural person": "Persona natural",
       "ACCOUNTING": "CONTABILIDAD",
       "ADDRESS": "DOMICILIO",
       "Above Changes are Effective from": "Los cambios anteriores son efectivos desde",
@@ -1582,7 +1585,7 @@
       "Enforce Minimum Balance": "Saldo mínimo requerido",
       "Enforce Minimum Required Balance": "Hacer cumplir el saldo mínimo requerido",
       "Entity": "Entidad",
-      "Entity Name": "Nombre de la entidad",
+      "Entity Name": "Razón social",
       "Entity SubType": "Subtipo de entidad",
       "Entity Type": "Tipo de entidad",
       "Entry ID": "Id de entrada",
