@@ -1184,6 +1184,9 @@
         "INCOME": "INCOME",
         "EXPENSE": "EXPENSE"
       },
+      "Client type": "Client type",
+      "Juridic person": "Juridic person",
+      "Natural person": "Natural person",
       "ACCOUNTING": "ACCOUNTING",
       "ADDRESS": "ADDRESS",
       "Above Changes are Effective from": "Above Changes are Effective from",

@@ -66,11 +66,6 @@
     <span fxFlex="60%">{{ client.savingsProductId | find: clientTemplate.savingProductOptions : 'id' : 'name' }}</span>
   </div>
 
-  <div fxFlexFill *ngIf="client.submittedOnDate">
-    <span fxFlex="40%">{{ 'labels.inputs.Submitted On Date' | translate }}</span>
-    <span fxFlex="60%">{{ client.submittedOnDate | dateFormat }}</span>
-  </div>
-
   <div fxFlexFill>
     <span fxFlex="40%">{{ 'labels.inputs.Active' | translate }}?</span>
     <span fxFlex="60%">{{ client.active | yesNo }}</span>
@@ -102,14 +97,6 @@
     <div fxFlexFill>
       <span fxFlex="40%">{{ 'labels.inputs.Incorportation Number' | translate }}</span>
       <span fxFlex="60%">{{ client.clientNonPersonDetails.incorpNumber || 'Not Provided' }}</span>
-    </div>
-
-    <div fxFlexFill *ngIf="client.clientNonPersonDetails.mainBusinessLineId">
-      <span fxFlex="40%">{{ 'labels.inputs.Main Business Line' | translate }}</span>
-      <span fxFlex="60%">{{
-        client.clientNonPersonDetails.mainBusinessLineId
-          | find: clientTemplate.clientNonPersonMainBusinessLineOptions : 'id' : 'name'
-      }}</span>
     </div>
 
     <div fxFlexFill *ngIf="client.clientNonPersonDetails.constitutionId">
