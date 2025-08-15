@@ -1,50 +1,89 @@
+/* Loader full-screen overlay */
 .loader-wrapper {
-  height: 100vh;
-  width: 100vw;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #f3f4f6; // gris claro (combina con bg-gray-100)
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0s;
 
-  .triangle {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    position: absolute;
-    animation: rotate 0.8s infinite 0.2s;
+  .loader-content {
+    display: grid;
+    place-items: center;
+    text-align: center;
   }
 
-  .bottom {
-    border-width: 0 90px 90px;
-    border-color: transparent transparent #1fb050;
-    bottom: calc(50% - 100px);
-    left: calc(50% - 90px);
+  .logo {
+    width: clamp(140px, 40vw, 1020px);
+    height: auto;
+    will-change: transform;
+    animation: belat-zoom 1.6s ease-in infinite;
   }
 
-  .top {
-    border-width: 90px 90px 0;
-    border-color: #b4d575 transparent transparent;
-    top: calc(50% - 100px);
-    left: calc(50% - 90px);
-  }
+  .dots {
+    display: inline-flex;
+    gap: 10px;
+    margin-top: 12px;
 
-  .left {
-    border-width: 90px 0 90px 90px;
-    border-color: transparent transparent transparent #1074b9;
-    top: calc(50% - 90px);
-    left: calc(50% - 100px);
-  }
+    span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgb(214 77 122);
+      opacity: 0.25;
+      animation: dot-fade 1.5s ease-in-out infinite;
 
-  .right {
-    border-width: 90px 90px 90px 0;
-    border-color: transparent #1daeec transparent transparent;
-    top: calc(50% - 90px);
-    right: calc(50% - 100px);
-  }
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+        background: rgb(21 170 149);
+      }
 
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+        background: rgb(4 42 90);
+      }
     }
+  }
+}
 
-    to {
-      transform: rotate(360deg);
-    }
+/* Ocultar loader cuando la app esté lista (sin flicker) */
+.app-loaded .loader-wrapper {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s; // oculta al final del fade
+}
+
+/* Animaciones */
+@keyframes belat-zoom {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dot-fade {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
   }
 }
