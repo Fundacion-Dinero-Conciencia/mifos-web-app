@@ -1,11 +1,11 @@
 /** Angular Imports */
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 /** Custom Services */
-import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
+import { SettingsService } from 'app/settings/settings.service';
 
 /**
  * Client Family Members Dialog
@@ -47,6 +47,10 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
         firstName: this.data.member.firstName,
         middleName: this.data.member.middleName,
         lastName: this.data.member.lastName,
+        email: this.data.member.email,
+        mobileNumber: this.data.member.mobileNumber,
+        documentTypeId: this.data.member.documentTypeId,
+        documentNumber: this.data.member.documentNumber,
         qualification: this.data.member.qualification,
         age: this.data.member.age,
         isDependent: this.data.member.isDependent,
@@ -54,6 +58,7 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
         genderId: this.data.member.genderId,
         professionId: this.data.member.professionId,
         maritalStatusId: this.data.member.maritalStatusId,
+        address: this.data.member.address,
         dateOfBirth: this.data.member.dateOfBirth && new Date(this.data.member.dateOfBirth)
       });
     }
