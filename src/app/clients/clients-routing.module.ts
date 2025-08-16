@@ -47,6 +47,9 @@ import { ClientTransactionPayResolver } from './common-resolvers/client-transact
 import { ClientDataAndTemplateResolver } from './common-resolvers/client-and-template.resolver';
 import { ClientCollateralResolver } from './common-resolvers/client-collateral.resolver';
 import { ClientIdentifierResolver } from './common-resolvers/client-identifier.resolver';
+import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
+import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
+import { ClientTypeCodeResolver } from './client-type-code.resolver';
 
 const routes: Routes = [
   Route.withShell([
@@ -56,7 +59,10 @@ const routes: Routes = [
       children: [
         {
           path: '',
-          component: ClientsComponent
+          component: ClientsComponent,
+          resolve: {
+            clientTypeOptions: ClientTypeCodeResolver
+          }
         },
         {
           path: 'create',
@@ -153,7 +159,9 @@ const routes: Routes = [
               component: DocumentsTabComponent,
               data: { title: 'Documents', breadcrumb: 'Documents', routeParamBreadcrumb: false },
               resolve: {
-                clientDocuments: ClientDocumentsResolver
+                clientDocuments: ClientDocumentsResolver,
+                customerDocumentOptions: CustomerDocumentsResolver,
+                documentTypeOptions: DocumentTypesResolver
               }
             },
             {
@@ -309,7 +317,10 @@ const routes: Routes = [
     ClientTransactionPayResolver,
     ClientDataAndTemplateResolver,
     ClientCollateralResolver,
-    ClientIdentifierResolver
+    ClientIdentifierResolver,
+    CustomerDocumentsResolver,
+    DocumentTypesResolver,
+    ClientTypeCodeResolver
   ]
 })
 export class ClientsRoutingModule {}

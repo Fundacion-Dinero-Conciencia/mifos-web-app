@@ -86,6 +86,11 @@
       </mat-error>
     </mat-form-field>
 
+    <mat-form-field fxFlex="48%" *ngIf="createClientForm.contains('clientNonPersonDetails')">
+      <mat-label>{{ 'labels.inputs.custom.Fancy Name' | translate }}</mat-label>
+      <input matInput formControlName="fancyName" />
+    </mat-form-field>
+
     <mat-form-field fxFlex="48%" (click)="dateOfBirthDatePicker.open()">
       <mat-label>
         {{
@@ -115,15 +120,6 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field fxFlex="48%">
-        <mat-label>{{ 'labels.inputs.Main Business Line' | translate }}</mat-label>
-        <mat-select formControlName="mainBusinessLineId">
-          <mat-option *ngFor="let business of businessLineOptions" [value]="business.id">
-            {{ business.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
       <mat-form-field fxFlex="48%" (click)="incorpValidityTillDateDatePicker.open()">
         <mat-label>{{ 'labels.inputs.Incorporation Validity Till Date' | translate }}</mat-label>
         <input
@@ -135,11 +131,6 @@
         />
         <mat-datepicker-toggle matSuffix [for]="incorpValidityTillDateDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #incorpValidityTillDateDatePicker></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field fxFlex="48%">
-        <mat-label>{{ 'labels.inputs.Incorporation Number' | translate }}</mat-label>
-        <input matInput formControlName="incorpNumber" />
       </mat-form-field>
 
       <mat-form-field fxFlex="98%">

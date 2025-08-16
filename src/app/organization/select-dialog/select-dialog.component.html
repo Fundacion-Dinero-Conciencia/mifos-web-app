@@ -35,6 +35,16 @@
     <mat-divider></mat-divider>
     <!-- campos en común-->
     <div fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+      <mifosx-input-amount
+        class="read-only-label"
+        [currency]="currency || ''"
+        [isRequired]="true"
+        fxFlex="100%"
+        [inputFormControl]="makeAccountTransferForm.controls.transferAmount"
+        [inputLabel]="'Amount'"
+      >
+      </mifosx-input-amount>
+
       <mat-form-field fxFlex="98%" (click)="transferDatePicker.open()">
         <mat-label>{{ 'labels.inputs.Transaction Date' | translate }}</mat-label>
         <input
@@ -102,19 +112,6 @@
       <mat-form-field fxFlex="98%">
         <mat-label>{{ 'labels.inputs.Percentage' | translate }}</mat-label>
         <input type="number" matInput formControlName="percentageInvestmentAgent" />
-      </mat-form-field>
-
-      <mat-form-field fxFlex="98%">
-        <mat-label>{{ 'labels.inputs.Amount' | translate }}</mat-label>
-        <input type="number" matInput required formControlName="transferAmount" />
-        <mat-error *ngIf="makeAccountTransferForm.controls.transferAmount.hasError('required')">
-          {{ 'labels.inputs.Amount' | translate }} {{ 'labels.commons.is' | translate }}
-          <strong>{{ 'labels.commons.required' | translate }}</strong>
-        </mat-error>
-        <mat-error *ngIf="makeAccountTransferForm.get('transferAmount')?.hasError('amountExceedsBalance')">
-          <fa-icon icon="exclamation-triangle" size="md"></fa-icon>
-          {{ 'errors.validation.msg.savingsproduct.insufficient.balance' | translate: { balance } }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field fxFlex="98%">

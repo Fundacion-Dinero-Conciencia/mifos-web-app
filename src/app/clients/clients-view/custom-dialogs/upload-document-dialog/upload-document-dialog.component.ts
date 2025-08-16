@@ -17,6 +17,9 @@ export class UploadDocumentDialogComponent implements OnInit {
   /** Entity Type */
   entityType: string;
 
+  documentClassOptions: any = [];
+  documentTypeOptions: any = [];
+
   /**
    * @param {MatDialogRef} dialogRef Dialog reference element
    * @param {FormBuilder} formBuilder Form Builder
@@ -29,6 +32,8 @@ export class UploadDocumentDialogComponent implements OnInit {
   ) {
     this.documentIdentifier = data.documentIdentifier;
     this.entityType = data.entityType;
+    this.documentClassOptions = data.documentClassOptions.codeValues;
+    this.documentTypeOptions = data.documentTypeOptions.codeValues;
   }
 
   ngOnInit() {
@@ -45,7 +50,9 @@ export class UploadDocumentDialogComponent implements OnInit {
         Validators.required
       ],
       description: [''],
-      file: ['']
+      file: [''],
+      documentClassId: [''],
+      documentTypeId: ['']
     });
   }
 

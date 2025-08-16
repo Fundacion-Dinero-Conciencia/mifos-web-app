@@ -21,6 +21,8 @@ export class EntityDocumentsTabComponent implements OnInit {
   @Input() entityId: string;
   @Input() entityType: string;
   @Input() entityDocuments: any;
+  @Input() customerDocumentOptions: any;
+  @Input() documentTypeOptions: any;
 
   @Input() callbackUpload: (documentData: FormData) => Observable<any>;
   @Input() callbackDownload: (documentId: string) => void;
@@ -36,6 +38,8 @@ export class EntityDocumentsTabComponent implements OnInit {
     'name',
     'description',
     'filename',
+    'documentClass',
+    'documentType',
     'actions'
   ];
   /** Data source for loan documents table. */
@@ -72,7 +76,12 @@ export class EntityDocumentsTabComponent implements OnInit {
 
   uploadDocument() {
     const uploadDocumentDialogRef = this.dialog.open(UploadDocumentDialogComponent, {
-      data: { documentIdentifier: false, entityType: '' }
+      data: {
+        documentIdentifier: false,
+        entityType: '',
+        documentClassOptions: this.customerDocumentOptions,
+        documentTypeOptions: this.documentTypeOptions
+      }
     });
     uploadDocumentDialogRef.afterClosed().subscribe((dialogResponse: any) => {
       if (dialogResponse) {
@@ -80,6 +89,8 @@ export class EntityDocumentsTabComponent implements OnInit {
         formData.append('name', dialogResponse.fileName);
         formData.append('file', dialogResponse.file);
         formData.append('description', dialogResponse.description);
+        formData.append('documentClassId', dialogResponse.documentClassId);
+        formData.append('documentTypeId', dialogResponse.documentTypeId);
         this.callbackUpload(formData).subscribe((res: any) => {
           this.entityDocuments.push({
             id: res.resourceId,
@@ -87,7 +98,9 @@ export class EntityDocumentsTabComponent implements OnInit {
             parentEntityId: this.entityId,
             name: dialogResponse.fileName,
             description: dialogResponse.description,
-            fileName: dialogResponse.file.name
+            fileName: dialogResponse.file.name,
+            documentClassId: dialogResponse.documentClassId,
+            documentTypeId: dialogResponse.documentTypeId
           });
           this.documentsTable.renderRows();
         });

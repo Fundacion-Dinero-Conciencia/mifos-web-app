@@ -53,6 +53,12 @@
           [innerHTML]="dataObject.data[0].row[i].value | prettyPrint"
         >
         </textarea>
+        <span *ngSwitchCase="'CODELOOKUP'">
+          {{ getCodeValueName(columnHeader.columnName, dataObject.data[0].row[i]) }}
+        </span>
+        <span *ngSwitchCase="'BOOLEAN'">
+          {{ dataObject.data[0].row[i] | yesNo }}
+        </span>
         <span *ngSwitchDefault>
           <span class="m-r-5" *ngIf="isValidUrl(dataObject.data[0].row[i])">
             <button

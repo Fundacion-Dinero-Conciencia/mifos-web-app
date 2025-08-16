@@ -16,6 +16,8 @@ export class SavingsDocumentsTabComponent {
   /** Stores the saving Account Id */
   entityId: string;
   entityType = 'savings';
+  customerDocumentOptions: [];
+  documentTypeOptions: [];
 
   /**
    * Retrieves the savings data from `resolve`.
@@ -27,9 +29,13 @@ export class SavingsDocumentsTabComponent {
     private settingsService: SettingsService,
     public dialog: MatDialog
   ) {
-    this.route.data.subscribe((data: { savingsDocuments: any }) => {
-      this.setSavingsDocumentsData(data.savingsDocuments);
-    });
+    this.route.data.subscribe(
+      (data: { savingsDocuments: any; customerDocumentOptions: any; documentTypeOptions: any }) => {
+        this.setSavingsDocumentsData(data.savingsDocuments);
+        this.customerDocumentOptions = data.customerDocumentOptions;
+        this.documentTypeOptions = data.documentTypeOptions;
+      }
+    );
     this.entityId = this.route.parent.snapshot.paramMap.get('savingAccountId');
   }
 

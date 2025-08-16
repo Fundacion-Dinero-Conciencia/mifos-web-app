@@ -13,6 +13,7 @@ import { ClientDatatableStepComponent } from '../client-stepper/client-datatable
 
 /** Custom Services */
 import { SettingsService } from 'app/settings/settings.service';
+import { ClientIdentifiersStepComponent } from '../client-stepper/client-identifiers-step/client-identifiers-step.component';
 
 /**
  * Create Client Component.
@@ -31,6 +32,8 @@ export class CreateClientComponent {
   @ViewChild('clientAddress') clientAddressStep: ClientAddressStepComponent;
   /** Get handle on dtclient tags in the template */
   @ViewChildren('dtclient') clientDatatables: QueryList<ClientDatatableStepComponent>;
+  /** Client Identifiers Step */
+  @ViewChild('clientIdentifier') clientIdentifiersStep: ClientIdentifiersStepComponent;
 
   datatables: any = [];
   legalFormType = 1;
@@ -75,12 +78,14 @@ export class CreateClientComponent {
       return {
         ...this.clientGeneralStep.clientGeneralDetails,
         ...this.clientFamilyMembersStep.familyMembers,
-        ...this.clientAddressStep.address
+        ...this.clientAddressStep.address,
+        ...this.clientIdentifiersStep.identifiers
       };
     } else {
       return {
         ...this.clientGeneralStep.clientGeneralDetails,
-        ...this.clientFamilyMembersStep.familyMembers
+        ...this.clientFamilyMembersStep.familyMembers,
+        ...this.clientIdentifiersStep.identifiers
       };
     }
   }
@@ -95,6 +100,11 @@ export class CreateClientComponent {
         areValids = areValids && clientDatatable.datatableForm.valid;
       });
     }
+    // if (this.clientIdentifiersStep && this.clientIdentifiersStep.identifiers) {
+    //   console.log('this.clientIdentifiersStep.identifiers', this.clientIdentifiersStep.identifiers);
+    // }
+
+    areValids = areValids && this.clientIdentifiersStep.identifiers.identifiers.length > 0;
 
     return areValids;
   }

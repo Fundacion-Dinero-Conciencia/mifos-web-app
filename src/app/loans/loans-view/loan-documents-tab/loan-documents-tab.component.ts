@@ -21,6 +21,8 @@ export class LoanDocumentsTabComponent {
   /** Loan account Id */
   entityId: string;
   entityType = 'loans';
+  customerDocumentOptions: [];
+  documentTypeOptions: [];
 
   /**
    * Retrieves the loans data from `resolve`.
@@ -33,9 +35,13 @@ export class LoanDocumentsTabComponent {
   ) {
     this.entityId = this.route.parent.snapshot.params['loanId'];
 
-    this.route.data.subscribe((data: { loanDocuments: any }) => {
-      this.getLoanDocumentsData(data.loanDocuments);
-    });
+    this.route.data.subscribe(
+      (data: { loanDocuments: any; customerDocumentOptions: any; documentTypeOptions: any }) => {
+        this.getLoanDocumentsData(data.loanDocuments);
+        this.customerDocumentOptions = data.customerDocumentOptions;
+        this.documentTypeOptions = data.documentTypeOptions;
+      }
+    );
   }
 
   getLoanDocumentsData(data: any) {

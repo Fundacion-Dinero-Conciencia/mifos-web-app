@@ -128,6 +128,8 @@ import { LoanProductResolver } from 'app/products/loan-products/loan-product.res
 import { LoanProducts } from 'app/products/loan-products/loan-products';
 import { LoanProductsResolver } from 'app/products/loan-products/loan-products.resolver';
 import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-investment-project/investment-project-commission-tab/investment-project-commission-tab.component';
+import { DataCodeCreditTypesResolver } from './manage-projects/data-code-credit-types.resolver';
+import { DataCodeLoanPurposeResolver } from './manage-projects/data-code-loan-purpose.resolver';
 
 /** Organization Routes */
 const routes: Routes = [
@@ -733,14 +735,15 @@ const routes: Routes = [
               component: CreateInvestmentProjectComponent,
               data: { title: 'Create Investment Project', breadcrumb: 'Create Investment Project' },
               resolve: {
-                //accountData: InvestmentProjectTemplateResolver,
                 countryData: DataCodeCountryResolver,
                 categoryData: DataCodeCategoryResolver,
                 subcategoryData: DataCodeSubCategoryResolver,
                 areaData: DataCodeAreaResolver,
                 objectivesData: DataCodeObjectiveResolver,
                 statusData: DataCodeStatusResolver,
-                loanProductsData: LoanProductsResolver
+                loanProductsData: LoanProductsResolver,
+                creditTypesData: DataCodeCreditTypesResolver,
+                loanPurposeData: DataCodeLoanPurposeResolver
               }
             },
             {
@@ -788,7 +791,9 @@ const routes: Routes = [
                     subcategoryData: DataCodeSubCategoryResolver,
                     areaData: DataCodeAreaResolver,
                     objectivesData: DataCodeObjectiveResolver,
-                    statusData: DataCodeStatusResolver
+                    statusData: DataCodeStatusResolver,
+                    creditTypesData: DataCodeCreditTypesResolver,
+                    loanPurposeData: DataCodeLoanPurposeResolver
                   }
                 },
                 {
@@ -897,7 +902,9 @@ const routes: Routes = [
     DataCodeStatusResolver,
     StatusHistoryProjectResolver,
     InvestmentProjectDocumentsResolver,
-    DataCodeObjectiveResolver
+    DataCodeObjectiveResolver,
+    DataCodeCreditTypesResolver,
+    DataCodeLoanPurposeResolver
   ]
 })
 export class OrganizationRoutingModule {}

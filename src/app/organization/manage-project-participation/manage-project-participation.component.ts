@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrganizationService } from '../organization.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
-import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
 import { AccountTransfersService } from 'app/account-transfers/account-transfers.service';
+import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
+import { OrganizationService } from '../organization.service';
+import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
 
 @Component({
   selector: 'mifosx-manage-project-participation',
@@ -21,6 +21,7 @@ export class ManageProjectParticipationComponent implements OnInit {
     'participant',
     'amount',
     'commission',
+    'paymentType',
     'date',
     'status',
     'actions',
@@ -58,9 +59,9 @@ export class ManageProjectParticipationComponent implements OnInit {
     const approveLoanRescheduleDialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         heading: `${this.translateService.instant('tooltips.' + command)} ${this.translateService.instant('labels.heading.Project Participation')}`,
-        dialogContext: `${this.translateService.instant('labels.dialogContext.Are you sure you want')} 
-           ${this.translateService.instant('tooltips.' + command)} 
-          ${this.translateService.instant('labels.text.the Project Participation')} 
+        dialogContext: `${this.translateService.instant('labels.dialogContext.Are you sure you want')}
+           ${this.translateService.instant('tooltips.' + command)}
+          ${this.translateService.instant('labels.text.the Project Participation')}
            ${request.participantName}`
       }
     });

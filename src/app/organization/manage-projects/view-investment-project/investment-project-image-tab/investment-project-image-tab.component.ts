@@ -13,6 +13,7 @@ import { SystemService } from 'app/system/system.service';
 })
 export class InvestmentProjectImageTabComponent {
   imageData: any;
+  coverImage: any;
   projectId: any;
 
   constructor(
@@ -28,11 +29,14 @@ export class InvestmentProjectImageTabComponent {
     }
     this.route.data.subscribe((data: { imageData: any }) => {
       this.imageData = data.imageData;
-      console.log(this.imageData);
     });
   }
 
-  uploadDocument() {
+  uploadCoverDocument() {
+    this.uploadDocument('Cover');
+  }
+
+  uploadDocument(description: any) {
     const uploadDocumentDialogRef = this.dialog.open(UploadImageDialogComponent, {
       data: { documentIdentifier: false, entityType: '' }
     });
@@ -42,6 +46,7 @@ export class InvestmentProjectImageTabComponent {
         formData.append('name', dialogResponse.name);
         formData.append('fileName', dialogResponse.name);
         formData.append('file', dialogResponse);
+        formData.append('description', description);
         this.organizationService.uploadProjectDocumentsImage(this.projectId, formData).subscribe((response: any) => {
           this.getProjectImages();
         });
@@ -49,10 +54,46 @@ export class InvestmentProjectImageTabComponent {
     });
   }
 
-  getProjectImages(): void {
-    this.systemService.getObjectDocuments('projects', this.projectId).subscribe((response: any) => {
-      this.imageData = response;
+  deleteDocument(imageId: string) {
+    this.organizationService.deleteProjectDocumentsImage(this.projectId, imageId).subscribe((response: any) => {
+      this.getProjectImages();
     });
+  }
+
+  async getProjectImages(): Promise<void> {
+    await this.systemService.getObjectDocuments('projects', this.projectId).subscribe((response: any) => {
+      if (this.imageData && this.imageData instanceof Array) {
+        this.imageData = response;
+
+        this.coverImage = this.imageData.find((img: any) => img.description === 'Cover') || null;
+
+        //Order images depends on position
+        this.imageData.sort((a: { description: string }, b: { description: string }) => {
+          const aNum = Number(a.description?.trim());
+          const bNum = Number(b.description?.trim());
+
+          if (isNaN(aNum) && !isNaN(bNum)) return 1;
+
+          if (!isNaN(aNum) && isNaN(bNum)) return -1;
+
+          if (isNaN(aNum) && isNaN(bNum)) return 0;
+
+          return aNum - bNum;
+        });
+      }
+    });
+  }
+
+  updateImageOrder(image: any) {
+    const formData: FormData = new FormData();
+    formData.append('name', image.name);
+    formData.append('fileName', image.fileName);
+    formData.append('description', image.description);
+    this.organizationService
+      .updateProjectDocumentsImage(this.projectId, image.id, formData)
+      .subscribe((response: any) => {
+        this.getProjectImages();
+      });
   }
 
   getImagePath(location: string): string {

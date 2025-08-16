@@ -153,6 +153,23 @@
                       ></mifosx-external-identifier>
                     </td>
                   </tr>
+
+                  <tr>
+                    <td>
+                      <b>{{ 'labels.inputs.Client type' | translate }}</b>
+                    </td>
+                    <td>
+                      <mifosx-external-identifier
+                        externalId="{{
+                          (clientViewData.legalForm.value === 'Entity'
+                            ? 'labels.inputs.Juridic person'
+                            : 'labels.inputs.Natural person'
+                          ) | translate
+                        }}"
+                        completed="true"
+                      ></mifosx-external-identifier>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

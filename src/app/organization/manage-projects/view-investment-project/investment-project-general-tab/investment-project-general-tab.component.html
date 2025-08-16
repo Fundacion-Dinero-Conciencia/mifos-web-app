@@ -45,7 +45,7 @@
           {{ 'labels.inputs.Country' | translate }}
         </div>
         <div fxFlex="70%">
-          {{ projectData.country.code }}
+          {{ projectData.country.name }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.Currency' | translate }}
@@ -88,6 +88,12 @@
         </div>
         <div fxFlex="70%">
           {{ shorten(projectData.detailedSocioEnvironmentalDescription, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Credit Type' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.creditType?.name }}
         </div>
         <div fxFlex="30%" class="mat-body-strong">
           {{ 'labels.inputs.Amount' | translate }}

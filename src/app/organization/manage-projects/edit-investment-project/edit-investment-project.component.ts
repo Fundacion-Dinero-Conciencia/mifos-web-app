@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { OrganizationService } from 'app/organization/organization.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
-import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-edit-investment-project',
@@ -27,6 +26,7 @@ export class EditInvestmentProjectComponent implements OnInit {
   idProject: any;
   projectData: any[] = [];
   public Editor = ClassicEditor;
+  creditTypesData: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +44,7 @@ export class EditInvestmentProjectComponent implements OnInit {
         areaData: any;
         statusData: any;
         objectivesData: any;
+        creditTypesData: any;
       }) => {
         this.filteredCategoryData = [];
         this.categoryData = data.categoryData.codeValues;
@@ -52,6 +53,7 @@ export class EditInvestmentProjectComponent implements OnInit {
         this.areaData = data.areaData.codeValues;
         this.statusData = data.statusData.codeValues;
         this.objectivesData = data.objectivesData.codeValues;
+        this.creditTypesData = data.creditTypesData.codeValues;
       }
     );
   }
@@ -65,82 +67,74 @@ export class EditInvestmentProjectComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.organizationService.getInvestmentProject(id).subscribe({
         next: (data) => {
-          this.setArea(data.area.id);
-          this.setCategory(data.category.id);
+          this.setArea(data?.area?.id);
+          this.setCategory(data?.category?.id);
 
           this.investmentProjectForm = this.formBuilder.group({
             name: [
-              data.name,
+              data?.name,
               Validators.required
             ],
             subtitle: [
-              data.subtitle,
-              Validators.required
+              data?.subtitle
             ],
             mnemonic: [
-              data.mnemonic,
+              data?.mnemonic,
               Validators.required
             ],
             impactDescription: [
-              data.impactDescription,
-              Validators.required
+              data?.impactDescription
             ],
             institutionDescription: [
-              data.institutionDescription,
-              Validators.required
+              data.institutionDescription
             ],
             teamDescription: [
-              data.teamDescription,
-              Validators.required
+              data?.teamDescription
             ],
             financingDescription: [
-              data.financingDescription,
-              Validators.required
+              data?.financingDescription
             ],
             littleSocioEnvironmentalDescription: [
-              data.littleSocioEnvironmentalDescription,
-              Validators.required
+              data?.littleSocioEnvironmentalDescription
             ],
             detailedSocioEnvironmentalDescription: [
-              data.detailedSocioEnvironmentalDescription,
-              Validators.required
+              data?.detailedSocioEnvironmentalDescription
             ],
             maxAmount: [
-              data.maxAmount,
+              data?.maxAmount,
               Validators.required
             ],
             minAmount: [
-              data.minAmount,
+              data?.minAmount,
               Validators.required
             ],
             projectRate: [
-              data.rate,
+              data?.rate,
               Validators.required
             ],
             position: [
-              data.position,
+              data?.position,
               Validators.required
             ],
             categoryId: [
-              data.category.id,
-              Validators.required
+              data?.category?.id
             ],
             subCategories: [
-              data.subCategories?.map((o: any) => o.id) || [],
-              Validators.required
+              data?.subCategories?.map((o: any) => o.category.id) || []
             ],
             areaId: [
-              data.area.id,
-              Validators.required
+              data?.area?.id
             ],
             objectives: [
-              data.objectives?.map((o: any) => o.id) || [],
-              Validators.required
+              data?.objectives?.map((o: any) => o.objective.id) || []
             ],
             isActive: [data.isActive],
             statusId: [
-              data.status?.statusValue?.id,
+              data?.status?.statusValue?.id,
               Validators.required
+            ],
+            creditTypeId: [
+              data?.creditType?.id
             ]
           });
 
@@ -158,9 +152,12 @@ export class EditInvestmentProjectComponent implements OnInit {
     const payload = {
       ...this.investmentProjectForm.getRawValue()
     };
-    payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
-    payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
-    console.log(payload);
+    if (payload['subCategories'] && Array.isArray(payload['subCategories']) && payload['subCategories'].length > 0) {
+      payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
+    }
+    if (payload['objectives'] && Array.isArray(payload['objectives']) && payload['objectives'].length > 0) {
+      payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
+    }
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe((response: any) => {
       this.router.navigate(['../'], { relativeTo: this.route });
     });
