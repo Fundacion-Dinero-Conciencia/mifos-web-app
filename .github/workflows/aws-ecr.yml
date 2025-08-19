@@ -43,12 +43,12 @@ jobs:
 
       - name: Build and Push Docker Image (single-arch)
         run: |
-          IMAGE_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
+          IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}"
           TAG="${{ steps.extract_branch.outputs.branch }}-${GITHUB_RUN_NUMBER}"
-          
-          # Construir y pushear directamente (sin manifest list)
+    
           docker build \
             --build-arg="PUPPETEER_SKIP_DOWNLOAD_ARG=true" \
+            --build-arg="APIM_VERSION=4.3.2" \
             -t $IMAGE_URI:$TAG .
-          
+    
           docker push $IMAGE_URI:$TAG
