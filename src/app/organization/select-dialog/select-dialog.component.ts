@@ -135,7 +135,7 @@ export class SelectDialogComponent implements OnInit {
         toClientId: this.data?.project?.ownerId,
         toAccountType: this.accountTypeId,
         toOfficeId: formValues.toOfficeId,
-
+        projectParticipationId: this.data.id,
         transferAmount: this.makeAccountTransferForm.controls['transferAmount']?.value,
         transferDate: this.dateUtils.formatDate(formValues.transferDate, this.settingsService.dateFormat),
         transferDescription: formValues.transferDescription,
