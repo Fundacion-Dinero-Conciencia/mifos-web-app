@@ -37,8 +37,10 @@
         {{ 'labels.inputs.Email' | translate }} {{ 'labels.commons.is' | translate }}
         <strong>{{ 'labels.commons.required' | translate }}</strong>
       </mat-error>
+      <mat-error *ngIf="familyMemberForm.controls.email.hasError('email')">
+        {{ 'errors.Email not valid' | translate }}
+      </mat-error>
     </mat-form-field>
-
     <mat-form-field fxFlex="calc(50% - 25px)">
       <mat-label>{{ 'labels.inputs.Mobile No' | translate }}</mat-label>
       <input formControlName="mobileNumber" required matInput type="number" />

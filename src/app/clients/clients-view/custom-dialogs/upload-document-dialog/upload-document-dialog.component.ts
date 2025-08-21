@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UntypedFormGroup, UntypedFormBuilder, Validators, FormControl } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'mifosx-upload-document-dialog',
@@ -30,10 +30,11 @@ export class UploadDocumentDialogComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+    console.log(data);
     this.documentIdentifier = data.documentIdentifier;
     this.entityType = data.entityType;
-    this.documentClassOptions = data.documentClassOptions.codeValues;
-    this.documentTypeOptions = data.documentTypeOptions.codeValues;
+    // this.documentClassOptions = data.documentClassOptions.codeValues;
+    // this.documentTypeOptions = data.documentTypeOptions.codeValues;
   }
 
   ngOnInit() {
@@ -50,9 +51,7 @@ export class UploadDocumentDialogComponent implements OnInit {
         Validators.required
       ],
       description: [''],
-      file: [''],
-      documentClassId: [''],
-      documentTypeId: ['']
+      file: ['']
     });
   }
 
