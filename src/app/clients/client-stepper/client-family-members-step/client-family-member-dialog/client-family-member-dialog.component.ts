@@ -96,7 +96,10 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
       maritalStatusId: [''],
       email: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          Validators.email
+        ]
       ],
       mobileNumber: [
         '',
