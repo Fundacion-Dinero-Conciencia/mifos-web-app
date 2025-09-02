@@ -275,6 +275,7 @@
     "validation.msg.savingsproduct.withdrawalFeeType.is.not.one.of.expected.enumerations": "Withdrawal fee period type is mandatory."
   },
   "labels": {
+    "Term": "Plazo",
     "accounting": {
       "Accrual (periodic)": "Accrual (periodic)",
       "Accrual (upfront)": "Accrual (upfront)",
@@ -294,6 +295,7 @@
       "Home": "Home"
     },
     "buttons": {
+      "Select definitive simulation": "Select definitive simulation",
       "Accept Transfer": "Accept Transfer",
       "Actions": "Actions",
       "Activate": "Activate",
@@ -803,6 +805,26 @@
       "Password validation": "Password should contain minimum {{minchar}} characters, that should income 1 uppercase, lowercase and special character and should not consists of repeated characters or white-spaces"
     },
     "heading": {
+      "Investor": "Investor",
+      "Value invested": "Value invested",
+      "Investment status": "Investment status",
+      "Watch order": "Watch order",
+      "Watch promissory note": "Watch promissory note",
+      "Debtor client": "Debtor client",
+      "Proyect name": "Proyect name",
+      "Finantial value": "Finantial value",
+      "Finantial value date": "Finantial value date",
+      "Reservation date": "Reservation date",
+      "Mimum investment": "Mimum investment",
+      "Maximum investment": "Maximum investment",
+      "Start investments date": "Start investments date",
+      "End investments date": "End investments date",
+      "investments": "investments",
+      "Impact": "Impact",
+      "Portrait image": "Portrait image",
+      "Carrousel images": "Imágenes de carrusel",
+      "Publication": "publication",
+      "Simulations": "Simulations",
       "Account Linked Financial": "List of accounts linked to different financial activities. To know more click:",
       "Account Name": "Account Name",
       "Account Number Preferences": "Account Number Preferences",
@@ -1184,6 +1206,10 @@
         "INCOME": "INCOME",
         "EXPENSE": "EXPENSE"
       },
+      "Creation date": " Creation date",
+      "Total interest": "Total interest",
+      "Total credit": "Total credit",
+      "Watch more": "Watch more",
       "Client type": "Client type",
       "Juridic person": "Juridic person",
       "Natural person": "Natural person",
@@ -1395,6 +1421,8 @@
       "Client last name": "Client last name",
       "Client middle name": "Client middle name",
       "Client name": "Client name",
+      "Project Name": "Project name",
+      "Proyect": "Proyect",
       "Clients": "Clients",
       "Closed (obligations met)": "Closed (obligations met)",
       "Closed (written-off)": "Closed (written-off)",
@@ -2524,7 +2552,13 @@
         "Fancy Name": "Fancy Name",
         "Position": "Position",
         "Socio Environmental Description": "Socio Environmental Description",
-        "Detailed Socio Environmental Description": "Detailed Socio Environmental Description"
+        "Detailed Socio Environmental Description": "Detailed Socio Environmental Description",
+        "Sector": "Sector",
+        "Subsector": "SubSector",
+        "sustainable development goals": "sustainable development goals",
+        "project execution management": "project execution management",
+        "Positive impact": "Positive impact",
+        "Environmental Impact": "Environmental Impact"
       }
     },
     "links": {

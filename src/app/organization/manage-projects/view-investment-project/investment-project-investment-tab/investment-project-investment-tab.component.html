@@ -1,0 +1,122 @@
+<!-- "Proyect name":"Nombre del proyecto",
+"Finantial value": "Valor a financiar",
+"Finantial value date": "Valor a financiar",
+"Reservation date":"Valor en reserva a la fecha",
+"Mimum investment":"Inversión mínima",
+"Maximum investment":"Inversión máxima",
+"Start investments date":"Fecha de inicio de la inversiónes",
+"End investments date":"Fecha de termino de la inversiónes", -->
+
+<section class="tab-container mat-typography mt-10">
+  <div class="m-l-10 m-t-20">
+    <div class="content m-b-20">
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Proyect name' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.name }}
+        </div>
+      </div>
+
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Finantial value' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.amount }}
+        </div>
+      </div>
+
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Finantial value date' | translate }}
+        </div>
+        <div fxFlex="70%">TODO</div>
+      </div>
+
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Reservation date' | translate }}
+        </div>
+        <div fxFlex="70%">TODO</div>
+      </div>
+
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Mimum investment' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.minAmount }}
+        </div>
+      </div>
+
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Maximum investment' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.maxAmount }}
+        </div>
+      </div>
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Start investments date' | translate }}
+        </div>
+        <div fxFlex="70%">TODO</div>
+      </div>
+      <div fxLayout="row wrap" class="m-b-15">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.End investments date' | translate }}
+        </div>
+        <div fxFlex="70%">TODO</div>
+      </div>
+    </div>
+  </div>
+  <table mat-table #documentsTable [dataSource]="dataSource" matSort class="m-t-25">
+    <ng-container matColumnDef="Investor">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Investor' | translate }}</th>
+      <td mat-cell *matCellDef="let document">-</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Value invested">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Value invested' | translate }}</th>
+      <td mat-cell *matCellDef="let document">-</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Investment status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Investment status' | translate }}</th>
+      <td mat-cell *matCellDef="let document">{{ document.fileName }}</td>
+    </ng-container>
+    <ng-container matColumnDef="Watch promissory note">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ 'labels.heading.Watch promissory note' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let document">{{ document.fileName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Watch order">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Watch order' | translate }}</th>
+      <td mat-cell *matCellDef="let document; let index">
+        <button
+          class="document-action-button"
+          mat-raised-button
+          color="primary"
+          (click)="downloadDocument(document.id)"
+        >
+          <fa-icon icon="cloud-download-alt"></fa-icon>
+        </button>
+        <button
+          class="document-action-button"
+          mat-raised-button
+          color="warn"
+          (click)="deleteDocument(document.id, document.name)"
+        >
+          <fa-icon icon="times"></fa-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</section>

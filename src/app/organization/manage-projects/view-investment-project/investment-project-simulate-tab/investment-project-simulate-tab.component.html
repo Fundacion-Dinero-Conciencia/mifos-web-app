@@ -1,0 +1,87 @@
+<div class="tab-container mat-typography">
+  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
+    <button mat-raised-button color="primary" (click)="addAddress()" *mifosxHasPermission="'CREATE_ADDRESS'">
+      {{ 'labels.buttons.Select definitive simulation' | translate }}
+    </button>
+    <button mat-raised-button color="primary" (click)="generateSimulationPdf()">
+      <fa-icon icon="plus" class="m-r-10"></fa-icon>
+      Generar simulación
+    </button>
+  </div>
+  <section class="container">
+    <table mat-table #documentsTable [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="Mnemonic">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
+        <td mat-cell *matCellDef="let document">-</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Creation date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Creation date' | translate }}</th>
+        <td mat-cell *matCellDef="let document">-</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Amount to be Financed">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'labels.inputs.Amount to be Financed' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let document">{{ document.fileName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Total interest">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total interest' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.documentClass }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Total credit">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total credit' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.documentType }}</td>
+      </ng-container>
+      <ng-container matColumnDef="CAE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>CAE</th>
+        <td mat-cell *matCellDef="let document">{{ document.documentType }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Rate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Rate' | translate }}</th>
+        <td mat-cell *matCellDef="let document">-</td>
+      </ng-container>
+      <ng-container matColumnDef="Term">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.Term' | translate }}</th>
+        <td mat-cell *matCellDef="let document">-</td>
+      </ng-container>
+      <ng-container matColumnDef="Credit Type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Credit Type' | translate }}</th>
+        <td mat-cell *matCellDef="let document">-</td>
+      </ng-container>
+
+      <ng-container matColumnDef="showMore">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total credit' | translate }}</th>
+        <td mat-cell *matCellDef="let document; let index">
+          <button
+            class="document-action-button"
+            mat-raised-button
+            color="primary"
+            (click)="downloadDocument(document.id)"
+          >
+            <fa-icon icon="cloud-download-alt"></fa-icon>
+          </button>
+          <button
+            class="document-action-button"
+            mat-raised-button
+            color="warn"
+            (click)="deleteDocument(document.id, document.name)"
+          >
+            <fa-icon icon="times"></fa-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </section>
+  <!-- <mat-paginator
+    *ngIf="InvestmentDocuments && InvestmentDocuments.length > 10"
+    [pageSizeOptions]="[10, 25, 50]"
+    showFirstLastButtons
+  ></mat-paginator> -->
+</div>
