@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { UploadDocumentDialogComponent } from 'app/clients/clients-view/custom-dialogs/upload-document-dialog/upload-document-dialog.component';
 import { UploadImageDialogComponent } from 'app/clients/clients-view/custom-dialogs/upload-image-dialog/upload-image-dialog.component';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
@@ -15,6 +14,7 @@ export class InvestmentProjectImageTabComponent {
   imageData: any;
   coverImage: any;
   projectId: any;
+  projectData: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,9 +27,15 @@ export class InvestmentProjectImageTabComponent {
     if (this.projectId) {
       this.getProjectImages();
     }
-    this.route.data.subscribe((data: { imageData: any }) => {
+    this.route.data.subscribe((data: { accountData: any; imageData: any }) => {
+      this.projectData = data.accountData;
       this.imageData = data.imageData;
     });
+  }
+
+  shorten(content: string, length: number = 100): string {
+    const plain = content?.replace(/<[^>]+>/g, '').replace(/\n+/g, ' ') || '';
+    return plain.length > length ? plain.slice(0, length) + '...' : plain;
   }
 
   uploadCoverDocument() {

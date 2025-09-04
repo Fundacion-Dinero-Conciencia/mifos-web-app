@@ -2,93 +2,98 @@
 import { NgModule } from '@angular/core';
 
 /** Custom Modules */
+import { DirectivesModule } from 'app/directives/directives.module';
+import { PipesModule } from 'app/pipes/pipes.module';
 import { SharedModule } from '../shared/shared.module';
 import { OrganizationRoutingModule } from './organization-routing.module';
-import { PipesModule } from 'app/pipes/pipes.module';
-import { DirectivesModule } from 'app/directives/directives.module';
 
 /** Custom Components */
-import { OrganizationComponent } from './organization.component';
-import { LoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/loan-provisioning-criteria.component';
-import { OfficesComponent } from './offices/offices.component';
-import { EmployeesComponent } from './employees/employees.component';
-import { CurrenciesComponent } from './currencies/currencies.component';
-import { SmsCampaignsComponent } from './sms-campaigns/sms-campaigns.component';
-import { AdhocQueryComponent } from './adhoc-query/adhoc-query.component';
-import { ViewAdhocQueryComponent } from './adhoc-query/view-adhoc-query/view-adhoc-query.component';
-import { TellersComponent } from './tellers/tellers.component';
-import { ViewTellerComponent } from './tellers/view-teller/view-teller.component';
-import { PaymentTypesComponent } from './payment-types/payment-types.component';
-import { EditPaymentTypeComponent } from './payment-types/edit-payment-type/edit-payment-type.component';
-import { PasswordPreferencesComponent } from './password-preferences/password-preferences.component';
-import { EntityDataTableChecksComponent } from './entity-data-table-checks/entity-data-table-checks.component';
-import { WorkingDaysComponent } from './working-days/working-days.component';
-import { CreateOfficeComponent } from './offices/create-office/create-office.component';
-import { CreateEmployeeComponent } from './employees/create-employee/create-employee.component';
-import { CreatePaymentTypeComponent } from './payment-types/create-payment-type/create-payment-type.component';
-import { ViewEmployeeComponent } from './employees/view-employee/view-employee.component';
-import { EditOfficeComponent } from './offices/edit-office/edit-office.component';
-import { CreateAdhocQueryComponent } from './adhoc-query/create-adhoc-query/create-adhoc-query.component';
-import { HolidaysComponent } from './holidays/holidays.component';
-import { EditEmployeeComponent } from './employees/edit-employee/edit-employee.component';
-import { CreateTellerComponent } from './tellers/create-teller/create-teller.component';
-import { EditTellerComponent } from './tellers/edit-teller/edit-teller.component';
-import { ViewLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/view-loan-provisioning-criteria/view-loan-provisioning-criteria.component';
-import { ViewCashierComponent } from './tellers/cashiers/view-cashier/view-cashier.component';
-import { ViewHolidaysComponent } from './holidays/view-holidays/view-holidays.component';
-import { ViewOfficeComponent } from './offices/view-office/view-office.component';
-import { GeneralTabComponent } from './offices/view-office/general-tab/general-tab.component';
-import { DatatableTabsComponent } from './offices/view-office/datatable-tabs/datatable-tabs.component';
-import { ViewCampaignComponent } from './sms-campaigns/view-campaign/view-campaign.component';
-import { ManageFundsComponent } from './manage-funds/manage-funds.component';
-import { ManageCurrenciesComponent } from './currencies/manage-currencies/manage-currencies.component';
-import { CashiersComponent } from './tellers/cashiers/cashiers.component';
-import { TransactionsComponent } from './tellers/cashiers/transactions/transactions.component';
-import { SettleCashComponent } from './tellers/cashiers/settle-cash/settle-cash.component';
-import { AllocateCashComponent } from './tellers/cashiers/allocate-cash/allocate-cash.component';
-import { EditCashierComponent } from './tellers/cashiers/edit-cashier/edit-cashier.component';
-import { CreateCashierComponent } from './tellers/cashiers/create-cashier/create-cashier.component';
-import { EditHolidayComponent } from './holidays/edit-holiday/edit-holiday.component';
-import { EditAdhocQueryComponent } from './adhoc-query/edit-adhoc-query/edit-adhoc-query.component';
 import { BulkImportComponent } from './/bulk-import/bulk-import.component';
+import { AdhocQueryComponent } from './adhoc-query/adhoc-query.component';
+import { CreateAdhocQueryComponent } from './adhoc-query/create-adhoc-query/create-adhoc-query.component';
+import { EditAdhocQueryComponent } from './adhoc-query/edit-adhoc-query/edit-adhoc-query.component';
+import { ViewAdhocQueryComponent } from './adhoc-query/view-adhoc-query/view-adhoc-query.component';
 import { ViewBulkImportComponent } from './bulk-import/view-bulk-import/view-bulk-import.component';
-import { CreateCampaignComponent } from './sms-campaigns/create-campaign/create-campaign.component';
-import { SmsCampaignStepComponent } from './sms-campaigns/sms-campaign-stepper/sms-campaign-step/sms-campaign-step.component';
-import { CampaignMessageStepComponent } from './sms-campaigns/sms-campaign-stepper/campaign-message-step/campaign-message-step.component';
-import { CampaignPreviewStepComponent } from './sms-campaigns/sms-campaign-stepper/campaign-preview-step/campaign-preview-step.component';
-import { BusinessRuleParametersComponent } from './sms-campaigns/sms-campaign-stepper/sms-campaign-step/business-rule-parameters/business-rule-parameters.component';
-import { EditCampaignComponent } from './sms-campaigns/edit-campaign/edit-campaign.component';
-import { EditSmsCampaignStepComponent } from './sms-campaigns/sms-campaign-stepper/edit-sms-campaign-step/edit-sms-campaign-step.component';
-import { EditBusinessRuleParametersComponent } from './sms-campaigns/sms-campaign-stepper/edit-sms-campaign-step/edit-business-rule-parameters/edit-business-rule-parameters.component';
-import { CreateEnityDataTableChecksComponent } from './entity-data-table-checks/create-enity-data-table-checks/create-enity-data-table-checks.component';
 import { BulkLoanReassignmnetComponent } from './bulk-loan-reassignmnet/bulk-loan-reassignmnet.component';
-import { CreateLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/create-loan-provisioning-criteria/create-loan-provisioning-criteria.component';
-import { EditLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/edit-loan-provisioning-criteria/edit-loan-provisioning-criteria.component';
-import { StandingInstructionsHistoryComponent } from './standing-instructions-history/standing-instructions-history.component';
+import { CurrenciesComponent } from './currencies/currencies.component';
+import { ManageCurrenciesComponent } from './currencies/manage-currencies/manage-currencies.component';
+import { CreateEmployeeComponent } from './employees/create-employee/create-employee.component';
+import { EditEmployeeComponent } from './employees/edit-employee/edit-employee.component';
+import { EmployeesComponent } from './employees/employees.component';
+import { ViewEmployeeComponent } from './employees/view-employee/view-employee.component';
+import { CreateEnityDataTableChecksComponent } from './entity-data-table-checks/create-enity-data-table-checks/create-enity-data-table-checks.component';
+import { EntityDataTableChecksComponent } from './entity-data-table-checks/entity-data-table-checks.component';
 import { FundMappingComponent } from './fund-mapping/fund-mapping.component';
 import { CreateHolidayComponent } from './holidays/create-holiday/create-holiday.component';
+import { EditHolidayComponent } from './holidays/edit-holiday/edit-holiday.component';
+import { HolidaysComponent } from './holidays/holidays.component';
+import { ViewHolidaysComponent } from './holidays/view-holidays/view-holidays.component';
+import { CreateLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/create-loan-provisioning-criteria/create-loan-provisioning-criteria.component';
+import { EditLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/edit-loan-provisioning-criteria/edit-loan-provisioning-criteria.component';
+import { LoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/loan-provisioning-criteria.component';
+import { ViewLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/view-loan-provisioning-criteria/view-loan-provisioning-criteria.component';
+import { ManageFundsComponent } from './manage-funds/manage-funds.component';
+import { CreateOfficeComponent } from './offices/create-office/create-office.component';
+import { EditOfficeComponent } from './offices/edit-office/edit-office.component';
+import { OfficesComponent } from './offices/offices.component';
+import { DatatableTabsComponent } from './offices/view-office/datatable-tabs/datatable-tabs.component';
+import { GeneralTabComponent } from './offices/view-office/general-tab/general-tab.component';
+import { ViewOfficeComponent } from './offices/view-office/view-office.component';
+import { OrganizationComponent } from './organization.component';
+import { PasswordPreferencesComponent } from './password-preferences/password-preferences.component';
+import { CreatePaymentTypeComponent } from './payment-types/create-payment-type/create-payment-type.component';
+import { EditPaymentTypeComponent } from './payment-types/edit-payment-type/edit-payment-type.component';
+import { PaymentTypesComponent } from './payment-types/payment-types.component';
+import { CreateCampaignComponent } from './sms-campaigns/create-campaign/create-campaign.component';
+import { EditCampaignComponent } from './sms-campaigns/edit-campaign/edit-campaign.component';
+import { CampaignMessageStepComponent } from './sms-campaigns/sms-campaign-stepper/campaign-message-step/campaign-message-step.component';
+import { CampaignPreviewStepComponent } from './sms-campaigns/sms-campaign-stepper/campaign-preview-step/campaign-preview-step.component';
+import { EditBusinessRuleParametersComponent } from './sms-campaigns/sms-campaign-stepper/edit-sms-campaign-step/edit-business-rule-parameters/edit-business-rule-parameters.component';
+import { EditSmsCampaignStepComponent } from './sms-campaigns/sms-campaign-stepper/edit-sms-campaign-step/edit-sms-campaign-step.component';
+import { BusinessRuleParametersComponent } from './sms-campaigns/sms-campaign-stepper/sms-campaign-step/business-rule-parameters/business-rule-parameters.component';
+import { SmsCampaignStepComponent } from './sms-campaigns/sms-campaign-stepper/sms-campaign-step/sms-campaign-step.component';
+import { SmsCampaignsComponent } from './sms-campaigns/sms-campaigns.component';
+import { ViewCampaignComponent } from './sms-campaigns/view-campaign/view-campaign.component';
+import { StandingInstructionsHistoryComponent } from './standing-instructions-history/standing-instructions-history.component';
+import { AllocateCashComponent } from './tellers/cashiers/allocate-cash/allocate-cash.component';
+import { CashiersComponent } from './tellers/cashiers/cashiers.component';
+import { CreateCashierComponent } from './tellers/cashiers/create-cashier/create-cashier.component';
+import { EditCashierComponent } from './tellers/cashiers/edit-cashier/edit-cashier.component';
+import { SettleCashComponent } from './tellers/cashiers/settle-cash/settle-cash.component';
+import { TransactionsComponent } from './tellers/cashiers/transactions/transactions.component';
+import { ViewCashierComponent } from './tellers/cashiers/view-cashier/view-cashier.component';
+import { CreateTellerComponent } from './tellers/create-teller/create-teller.component';
+import { EditTellerComponent } from './tellers/edit-teller/edit-teller.component';
+import { TellersComponent } from './tellers/tellers.component';
+import { ViewTellerComponent } from './tellers/view-teller/view-teller.component';
+import { WorkingDaysComponent } from './working-days/working-days.component';
 
 /** Custom Service */
-import { OfficeItemNode } from './holidays/create-holiday/office-item.class';
-import { OfficeItemFlatNode } from './holidays/create-holiday/office-flat-item.class';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ChecklistDatabase } from './holidays/create-holiday/checklist-db.class';
 import { CreateHoliday } from './holidays/create-holiday/create-holiday.service';
+import { OfficeItemFlatNode } from './holidays/create-holiday/office-flat-item.class';
+import { OfficeItemNode } from './holidays/create-holiday/office-item.class';
+import { InvestorsComponent } from './investors/investors.component';
 import { CreateFundComponent } from './manage-funds/create-fund/create-fund.component';
 import { EditFundComponent } from './manage-funds/edit-fund/edit-fund.component';
 import { ViewFundComponent } from './manage-funds/view-fund/view-fund.component';
-import { InvestorsComponent } from './investors/investors.component';
-import { ManageProjectsComponent } from './manage-projects/manage-projects.component';
+import { CreateProjectParticipationComponent } from './manage-project-participation/create-project-participation/create-project-participation.component';
+import { ManageProjectParticipationComponent } from './manage-project-participation/manage-project-participation.component';
 import { CreateInvestmentProjectComponent } from './manage-projects/create-investment-project/create-investment-project.component';
 import { EditInvestmentProjectComponent } from './manage-projects/edit-investment-project/edit-investment-project.component';
-import { ManageProjectParticipationComponent } from './manage-project-participation/manage-project-participation.component';
-import { ViewInvestmentProjectComponent } from './manage-projects/view-investment-project/view-investment-project.component';
-import { ViewStatusHistoryComponent } from './manage-projects/view-status-history/view-status-history.component';
+import { ManageProjectsComponent } from './manage-projects/manage-projects.component';
+import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-investment-project/investment-project-commission-tab/investment-project-commission-tab.component';
+import { InvestmentProjectTabComponent } from './manage-projects/view-investment-project/investment-project-documents-tab/investment-project-documents-tab.component';
 import { InvestmentProjectGeneralTabComponent } from './manage-projects/view-investment-project/investment-project-general-tab/investment-project-general-tab.component';
 import { InvestmentProjectImageTabComponent } from './manage-projects/view-investment-project/investment-project-image-tab/investment-project-image-tab.component';
-import { CreateProjectParticipationComponent } from './manage-project-participation/create-project-participation/create-project-participation.component';
+import { ViewInvestmentProjectComponent } from './manage-projects/view-investment-project/view-investment-project.component';
+import { ViewStatusHistoryComponent } from './manage-projects/view-status-history/view-status-history.component';
 import { SelectDialogComponent } from './select-dialog/select-dialog.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-investment-project/investment-project-commission-tab/investment-project-commission-tab.component';
+import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-investment-project/investment-project-simulate-tab/investment-project-simulate-tab.component';
+import { InvestmentProjectImpactTabComponent } from './manage-projects/view-investment-project/investment-project-impact-tab/investment-project-impact-tab.component';
+import { InvestmentProjectInvestmentTabComponent } from './manage-projects/view-investment-project/investment-project-investment-tab/investment-project-investment-tab.component';
+import { InvestmentProjectNotesTabComponent } from './manage-projects/view-investment-project/investment-project-notes-tab/investment-project-notes-tab.component';
 
 /**
  * Organization Module
@@ -177,7 +182,12 @@ import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-
     InvestmentProjectImageTabComponent,
     CreateProjectParticipationComponent,
     SelectDialogComponent,
-    InvestmentProjectCommissionTabComponent
+    InvestmentProjectCommissionTabComponent,
+    InvestmentProjectTabComponent,
+    InvestmentProjectSimulateTabComponent,
+    InvestmentProjectImpactTabComponent,
+    InvestmentProjectInvestmentTabComponent,
+    InvestmentProjectNotesTabComponent
   ],
   providers: [
     CreateHoliday,

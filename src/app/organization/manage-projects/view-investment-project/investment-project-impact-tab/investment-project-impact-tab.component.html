@@ -1,0 +1,88 @@
+<section class="tab-container mat-typography">
+  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
+    <button mat-raised-button color="primary" [routerLink]="['../edit']" *mifosxHasPermission="'UPDATE_FUND'">
+      <fa-icon icon="edit" class="m-r-10"></fa-icon>
+      {{ 'labels.buttons.Edit' | translate }}
+    </button>
+  </div>
+
+  <div class="container">
+    <mat-card class="mainCard">
+      <mat-card-content>
+        <div class="content m-b-20">
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.custom.Impact Description' | translate }}
+            </div>
+            <div fxFlex="70%">
+              {{ shorten(projectData.impactDescription, 100) }}
+            </div>
+          </div>
+
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.custom.Area' | translate }}
+            </div>
+            <div fxFlex="70%">
+              {{ shorten(projectData.area.name, 100) }}
+            </div>
+          </div>
+
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.Sector' | translate }}
+            </div>
+            <div fxFlex="70%">
+              {{ shorten(projectData.category.name, 100) }}
+            </div>
+          </div>
+
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.Subsector' | translate }}
+            </div>
+            <div fxFlex="70%">
+              <span *ngFor="let subCategory of projectData.subCategories">
+                {{ subCategory.category.name }}
+              </span>
+              <br />
+            </div>
+          </div>
+
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.sustainable development goals' | translate }}
+            </div>
+            <div fxFlex="70%">
+              <span *ngFor="let objectiveD of projectData.objectives">
+                {{ objectiveD.objective.name }}
+              </span>
+              <br />
+            </div>
+          </div>
+
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.project execution management' | translate }}
+            </div>
+            <div fxFlex="70%">TODO</div>
+          </div>
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.Positive impact' | translate }}
+            </div>
+            <div fxFlex="70%">TODO</div>
+          </div>
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.Environmental Impact' | translate }}
+            </div>
+            <div fxFlex="70%">
+              <p [innerHTML]="projectData.littleSocioEnvironmentalDescription"></p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</section>
