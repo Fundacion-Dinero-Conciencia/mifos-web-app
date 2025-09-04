@@ -1,5 +1,4 @@
-import { getTreeControlFunctionsMissingError } from '@angular/cdk/tree';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -276,8 +275,10 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(FormDialogComponent, { data });
 
     dialogRef.afterClosed().subscribe((response: any) => {
-      if (response?.data?.value?.[fieldName]) {
-        this.investmentProjectForm.controls[fieldName].setValue(response.data.value[fieldName]);
+      const responseField = response?.data?.value?.[fieldName];
+      if (responseField) {
+        const responseFieldFormatted = responseField.replace(/&nbsp;/g, ' ').trim();
+        this.investmentProjectForm.controls[fieldName].setValue(responseFieldFormatted);
       }
     });
   }
