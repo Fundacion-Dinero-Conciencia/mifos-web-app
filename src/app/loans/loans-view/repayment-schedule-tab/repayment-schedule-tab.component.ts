@@ -71,8 +71,7 @@ export class RepaymentScheduleTabComponent implements OnInit, OnChanges {
     'principalDue',
     'interest',
     'fees',
-    'due',
-    'actions'
+    'due'
   ];
 
   /** Form functions event */

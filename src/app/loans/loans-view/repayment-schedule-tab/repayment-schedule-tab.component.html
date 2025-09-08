@@ -246,8 +246,10 @@
     </ng-container>
 
     <ng-container matColumnDef="due">
-      <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Installment Amount' | translate }}</th>
-      <td mat-cell class="r-amount" *matCellDef="let item">
+      <th mat-header-cell class="r-amount" class="center" *matHeaderCellDef>
+        {{ 'labels.inputs.Installment Amount' | translate }}
+      </th>
+      <td mat-cell class="r-amount" *matCellDef="let item" class="center">
         <span *ngIf="!item.changed">
           {{ item.totalDueForPeriod | formatNumber }}
         </span>
@@ -255,37 +257,6 @@
           <b>{{ item.totalDueForPeriod | formatNumber }}</b>
         </span>
       </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>
-      <td mat-cell class="center" *matCellDef="let item">
-        <span *ngIf="item.period && item.period + 1 < repaymentScheduleDetails.periods.length">
-          <ng-container>
-            <button
-              type="button"
-              color="primary"
-              mat-icon-button
-              matTooltip="{{ 'tooltips.Edit' | translate }}"
-              matTooltipPosition="above"
-              (click)="editInstallment(item)"
-            >
-              <fa-icon icon="edit" size="lg"></fa-icon>
-            </button>
-            <button
-              type="button"
-              color="warn"
-              mat-icon-button
-              matTooltip="{{ 'tooltips.Delete' | translate }}"
-              matTooltipPosition="above"
-              (click)="startEdit(item.period)"
-            >
-              <fa-icon icon="trash" size="lg"></fa-icon>
-            </button>
-          </ng-container>
-        </span>
-      </td>
-      <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumnsEdit"></tr>
