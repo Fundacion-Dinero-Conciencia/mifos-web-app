@@ -50,7 +50,9 @@ export class UploadDocumentDialogComponent implements OnInit {
         Validators.required
       ],
       description: [''],
-      file: ['']
+      file: [''],
+      documentClassId: [''],
+      documentTypeId: ['']
     });
   }
 
