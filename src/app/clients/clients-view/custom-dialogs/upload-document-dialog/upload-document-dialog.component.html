@@ -19,6 +19,24 @@
 
     <mifosx-file-upload flex="60%" (change)="onFileSelect($event)"></mifosx-file-upload>
 
+    <mat-form-field fxFlex="23%">
+      <mat-label>{{ 'labels.inputs.Document Class' | translate }}</mat-label>
+      <mat-select formControlName="documentClassId">
+        <mat-option *ngFor="let documentClass of documentClassOptions" [value]="documentClass.id">
+          {{ documentClass.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="23%">
+      <mat-label>{{ 'labels.inputs.Document Type' | translate }}</mat-label>
+      <mat-select formControlName="documentTypeId">
+        <mat-option *ngFor="let documentType of documentTypeOptions" [value]="documentType.id">
+          {{ documentType.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <mat-dialog-actions align="end">
       <button mat-raised-button mat-dialog-close>{{ 'labels.buttons.Cancel' | translate }}</button>
       <button
