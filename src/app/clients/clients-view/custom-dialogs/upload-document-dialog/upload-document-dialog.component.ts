@@ -33,8 +33,8 @@ export class UploadDocumentDialogComponent implements OnInit {
     console.log(data);
     this.documentIdentifier = data.documentIdentifier;
     this.entityType = data.entityType;
-    // this.documentClassOptions = data.documentClassOptions.codeValues;
-    // this.documentTypeOptions = data.documentTypeOptions.codeValues;
+    this.documentClassOptions = data.documentClassOptions.codeValues;
+    this.documentTypeOptions = data.documentTypeOptions.codeValues;
   }
 
   ngOnInit() {
@@ -51,7 +51,9 @@ export class UploadDocumentDialogComponent implements OnInit {
         Validators.required
       ],
       description: [''],
-      file: ['']
+      file: [''],
+      documentClassId: [''],
+      documentTypeId: ['']
     });
   }
 
