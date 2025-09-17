@@ -294,7 +294,6 @@
       "Home": "Inicio"
     },
     "buttons": {
-      "Select definitive simulation": "Seleccionar simulación definitiva",
       "Accept Transfer": "Aceptar transferencia",
       "Actions": "Acciones",
       "Activate": "Activar",
@@ -755,7 +754,6 @@
       "Feb 29 Period Only": "Solo periodo del 29 de febrero"
     },
     "commons": {
-      "Of client": "De cliente",
       "50 characters long": "50 caracteres de largo",
       "12 characters long": "12 caracteres de largo",
       "Amount must be": "La cantidad debe ser",
@@ -801,12 +799,6 @@
       "Password validation": "La contraseña debe contener un mínimo de {{minchar}} caracteres, que deben incluir 1 carácter mayúscula, minúscula y especial y no debe constar de caracteres repetidos ni espacios en blanco."
     },
     "heading": {
-      "investments": "inversiones",
-      "Impact": "Impacto",
-      "Portrait image": "Imagen de portada",
-      "Carrousel images": "Imágenes de carrusel",
-      "Publication": "Publicacion",
-      "Simulations": "Simulaciones",
       "Account Linked Financial": "Listado de cuentas vinculadas a diferentes actividades financieras. Para saber más haga clic en:",
       "Account Name": "Nombre de la cuenta",
       "Account Number Preferences": "Preferencias de número de cuenta",
@@ -1178,23 +1170,9 @@
       "Grace On Principal": "Gracia al director",
       "Insert Installment": "Insertar cuota",
       "Interest Rate": "Tasa de interés",
-      "Principal Amount": "Monto principal",
-      "Investor": "Inversionista",
-      "Value invested": "Valor invertido",
-      "Investment status": "Estado de la inversión",
-      "Watch order": "Ver mandato",
-      "Watch promissory note": "Ver pagaré"
+      "Principal Amount": "Monto principal"
     },
     "inputs": {
-      "Debtor client": "Cliente deudor",
-      "Proyect name": "Nombre del proyecto",
-      "Finantial value": "Valor a financiar",
-      "Finantial value date": "Valor a financiar",
-      "Reservation date": "Valor en reserva a la fecha",
-      "Mimum investment": "Inversión mínima",
-      "Maximum investment": "Inversión máxima",
-      "Start investments date": "Fecha de inicio de la inversiónes",
-      "End investments date": "Fecha de termino de la inversiónes",
       "accounting": {
         "ASSET": "ACTIVO",
         "LIABILITY": "PASIVO",
@@ -1202,10 +1180,6 @@
         "INCOME": "INGRESO",
         "EXPENSE": "EGRESO"
       },
-      "Creation date": " Fecha de creacion",
-      "Total interest": "Interes total",
-      "Total credit": "Credito total",
-      "Watch more": "Ver mas",
       "Client type": "Tipo de cliente",
       "Person Type": "Tipo de persona",
       "Juridic person": "Persona jurídica",
@@ -1224,7 +1198,6 @@
       "Account Type": "Tipo de cuenta",
       "Account Usage": "Uso de la cuenta",
       "Account action": "Acción de cuenta",
-      "Proyect": "Proyecto",
       "Account moves out of NPA only after all arrears have been cleared": "La cuenta sale del NPA solo después de que se hayan liquidado todos los atrasos",
       "Account to Credit": "Cuenta para acreditar",
       "Account to Debit": "Cuenta a Débito",
@@ -1419,7 +1392,6 @@
       "Client last name": "Apellido Materno del cliente",
       "Client middle name": "Apellido Paterno del cliente",
       "Client name": "Nombre del cliente",
-      "Project Name": "Nombre de proyecto",
       "Clients": "Clientes",
       "Closed (obligations met)": "Cerrado (obligaciones cumplidas)",
       "Closed (written-off)": "Cerrado (amortizado)",
@@ -2531,12 +2503,6 @@
       "Password must contain at least one special character (@$!%*?&)": "La contraseña debe contener al menos un carácter especial (@$!%*?&)",
       "Password minimun length must be": "La longitud mínima de la contraseña debe ser",
       "Passwords do not match": "Las contraseñas no coinciden",
-      "Sector": "Sector",
-      "Subsector": "SubSector",
-      "sustainable development goals": " Objetivos de desarrollo sostenible",
-      "project execution management": " Dirección de ejecución de proyectos",
-      "Positive impact": "Impacto positivo",
-      "Environmental Impact": "Resultado socio ambiental",
       "custom": {
         "Subtitle": "Subtitulo",
         "Institution Description": "Descripción de Institución",
@@ -2549,7 +2515,7 @@
         "Objectives": "ODS",
         "Max Amount": "Monto Máximo",
         "Min Amount": "Monto Mínimo",
-        "Mnemonic": "Mnemotécnico",
+        "Mnemonic": "Clave",
         "Fancy Name": "Nombre de Fantasía",
         "Position": "Posición",
         "Socio Environmental Description": "Descripción Socio Ambiental",
@@ -3383,8 +3349,7 @@
       "Dashboard": "Tableros",
       "Home": "Inicio",
       "Login": "Acceso"
-    },
-    "Term": "Plazo"
+    }
   },
   "languages": {
     "cs-CS": "Čeština (Checo)",
@@ -3401,7 +3366,6 @@
     "pt-PT": "Português (Portugués)",
     "sw-SW": "Kiswahili (Swahili)"
   },
-  "Credit Type": "Tipo de crédito",
   "not_found_subtitle": "Vaya... Parece que esta página no existe.",
   "tooltips": {
     "A borrower loan counter (cycle)": "Se utiliza un contador (ciclo) de Créditos del prestatario para rastrear cuántas veces el cliente ha tomado este producto en particular.",

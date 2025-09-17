@@ -9,48 +9,8 @@
     >
       {{ 'labels.heading.General' | translate }}
     </a>
-    <a
-      mat-tab-link
-      [routerLink]="['./documents']"
-      routerLinkActive
-      #documents="routerLinkActive"
-      [active]="documents.isActive"
-    >
-      {{ 'labels.heading.Documents' | translate }}
-    </a>
-    <a
-      mat-tab-link
-      [routerLink]="['./simulaciones']"
-      routerLinkActive
-      #simulaciones="routerLinkActive"
-      [active]="simulaciones.isActive"
-    >
-      {{ 'labels.heading.Simulations' | translate }}
-    </a>
-
-    <a
-      mat-tab-link
-      [routerLink]="['./publicacion']"
-      routerLinkActive
-      #publication="routerLinkActive"
-      [active]="publication.isActive"
-    >
-      {{ 'labels.heading.Publication' | translate }}
-    </a>
-    <a mat-tab-link [routerLink]="['./impacto']" routerLinkActive #impact="routerLinkActive" [active]="impact.isActive">
-      {{ 'labels.heading.Impact' | translate }}
-    </a>
-    <a
-      mat-tab-link
-      [routerLink]="['./inversiones']"
-      routerLinkActive
-      #investments="routerLinkActive"
-      [active]="investments.isActive"
-    >
-      {{ 'labels.heading.investments' | translate }}
-    </a>
-    <a mat-tab-link [routerLink]="['./notas']" routerLinkActive #notes="routerLinkActive" [active]="notes.isActive">
-      {{ 'labels.heading.Notes' | translate }}
+    <a mat-tab-link [routerLink]="['./images']" routerLinkActive #images="routerLinkActive" [active]="images.isActive">
+      {{ 'labels.heading.Images' | translate }}
     </a>
     <a
       mat-tab-link
