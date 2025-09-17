@@ -1,47 +1,153 @@
-<section class="tab-container mat-typography">
-  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
-    <button mat-raised-button color="primary" [routerLink]="['../edit']" *mifosxHasPermission="'UPDATE_FUND'">
-      <fa-icon icon="edit" class="m-r-10"></fa-icon>
-      {{ 'labels.buttons.Edit' | translate }}
-    </button>
-  </div>
+<div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
+  <button mat-raised-button color="primary" [routerLink]="['../edit']" *mifosxHasPermission="'UPDATE_FUND'">
+    <fa-icon icon="edit" class="m-r-10"></fa-icon>
+    {{ 'labels.buttons.Edit' | translate }}
+  </button>
+  <button mat-raised-button color="primary" (click)="addAddress()" *mifosxHasPermission="'CREATE_ADDRESS'">
+    <fa-icon icon="plus" class="m-r-10"></fa-icon>
+    {{ 'labels.inputs.Add or update address' | translate }}
+  </button>
+  <button mat-raised-button color="primary" (click)="generateSimulationPdf()">
+    <fa-icon icon="plus" class="m-r-10"></fa-icon>
+    Generar simulación
+  </button>
+</div>
 
-  <div class="container">
-    <mat-card>
-      <mat-card-content>
-        <div fxLayout="row wrap" class="content">
-          <div fxFlex="30%" class="mat-body-strong">RUT {{ 'labels.commons.Of client' | translate }}</div>
-          <div fxFlex="70%">TODO</div>
-          <div fxFlex="30%" class="mat-body-strong">
-            {{ 'labels.inputs.Client Name' | translate }}
-          </div>
-          <div fxFlex="70%">
-            {{ shorten(projectData.ownerName, 100) }}
-          </div>
-          <div fxFlex="30%" class="mat-body-strong">ID {{ 'labels.inputs.Proyect' | translate }}</div>
-          <div fxFlex="70%">
-            {{ projectData.id }}
-          </div>
-          <div fxFlex="30%" class="mat-body-strong">
-            {{ 'labels.inputs.Project Name' | translate }}
-          </div>
-          <div fxFlex="70%">
-            {{ projectData.name }}
-          </div>
-          <div fxFlex="30%" class="mat-body-strong">
-            {{ 'labels.inputs.custom.Mnemonic' | translate }}
-          </div>
-          <div fxFlex="70%">
-            {{ projectData.mnemonic }}
-          </div>
-          <div fxFlex="30%" class="mat-body-strong">
-            {{ 'labels.inputs.Status' | translate }}
-          </div>
-          <div fxFlex="70%">
-            {{ projectData.status?.statusValue?.name }}
-          </div>
+<div class="container">
+  <mat-card>
+    <mat-card-content>
+      <div fxLayout="row wrap" class="content">
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Client Name' | translate }}
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</section>
+        <div fxFlex="70%">
+          {{ shorten(projectData.ownerName, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.name' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.name }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Subtitle' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.subtitle }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Mnemonic' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.mnemonic }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Country' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.country.name }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Currency' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.currencyCode }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Financial Description' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ shorten(projectData.financingDescription, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Impact Description' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ shorten(projectData.impactDescription, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Institution Description' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ shorten(projectData.institutionDescription, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Team Description' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ shorten(projectData.teamDescription, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Socio Environmental Description' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ shorten(projectData.littleSocioEnvironmentalDescription, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ shorten(projectData.detailedSocioEnvironmentalDescription, 100) }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Credit Type' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.creditType?.name }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Amount' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.amount | currency: projectData.currencyCode }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Interest Rate' | translate }}
+        </div>
+        <div fxFlex="70%">{{ projectData.rate | formatNumber }} %</div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Number of Installments' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.period }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Portal Position' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.position }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Min Amount' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.minAmount | currency: projectData.currencyCode }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.custom.Max Amount' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.maxAmount | currency: projectData.currencyCode }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Visible On Portal' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.isActive | yesNo }}
+        </div>
+        <div fxFlex="30%" class="mat-body-strong">
+          {{ 'labels.inputs.Status' | translate }}
+        </div>
+        <div fxFlex="70%">
+          {{ projectData.status?.statusValue?.name }}
+        </div>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="2%" fxLayout.lt-md="column">
+        <button type="button" mat-raised-button color="primary" [routerLink]="['../../']">
+          {{ 'labels.buttons.Back' | translate }}
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
