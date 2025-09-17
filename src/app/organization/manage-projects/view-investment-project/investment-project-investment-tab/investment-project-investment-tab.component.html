@@ -8,91 +8,49 @@
 "End investments date":"Fecha de termino de la inversiónes", -->
 
 <section class="tab-container mat-typography mt-10">
-  <div class="m-l-10 m-t-20">
-    <div class="content m-b-20">
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.Proyect name' | translate }}
-        </div>
-        <div fxFlex="70%">
-          {{ projectData.name }}
-        </div>
-      </div>
+  <form [formGroup]="filters">
+    <mat-form-field fxFlex="25%" class="inputSearch">
+      <mat-label>{{ 'labels.text.Search by Text' | translate }}</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field fxFlex="15%" class="inputSearch m-l-25 m-b-10">
+      <mat-select required formControlName="accountType" placeholder="Tipo de inversionista">
+        <mat-option *ngFor="let toAccountType of []" [value]="toAccountType.id">
+          {{ toAccountType.value }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
 
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.Finantial value' | translate }}
-        </div>
-        <div fxFlex="70%">
-          {{ projectData.amount }}
-        </div>
-      </div>
-
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.Finantial value date' | translate }}
-        </div>
-        <div fxFlex="70%">TODO</div>
-      </div>
-
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.Reservation date' | translate }}
-        </div>
-        <div fxFlex="70%">TODO</div>
-      </div>
-
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.Mimum investment' | translate }}
-        </div>
-        <div fxFlex="70%">
-          {{ projectData.minAmount }}
-        </div>
-      </div>
-
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.Maximum investment' | translate }}
-        </div>
-        <div fxFlex="70%">
-          {{ projectData.maxAmount }}
-        </div>
-      </div>
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.Start investments date' | translate }}
-        </div>
-        <div fxFlex="70%">TODO</div>
-      </div>
-      <div fxLayout="row wrap" class="m-b-15">
-        <div fxFlex="30%" class="mat-body-strong">
-          {{ 'labels.inputs.End investments date' | translate }}
-        </div>
-        <div fxFlex="70%">TODO</div>
-      </div>
-    </div>
-  </div>
   <table mat-table #documentsTable [dataSource]="dataSource" matSort class="m-t-25">
     <ng-container matColumnDef="Investor">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Investor' | translate }}</th>
-      <td mat-cell *matCellDef="let document">-</td>
+      <td mat-cell *matCellDef="let investment">{{ investment.participantId }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Value invested">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Value invested' | translate }}</th>
-      <td mat-cell *matCellDef="let document">-</td>
+      <td mat-cell *matCellDef="let investment">$ {{ investment.participationAmount }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Investment status">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Investment status' | translate }}</th>
-      <td mat-cell *matCellDef="let document">{{ document.fileName }}</td>
+      <td mat-cell *matCellDef="let investment">{{ codeToState(investment.participationStatus) }}</td>
     </ng-container>
     <ng-container matColumnDef="Watch promissory note">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>
         {{ 'labels.heading.Watch promissory note' | translate }}
       </th>
-      <td mat-cell *matCellDef="let document">{{ document.fileName }}</td>
+      <td mat-cell *matCellDef="let document; let index">
+        <button
+          class="document-action-button"
+          mat-raised-button
+          color="primary"
+          (click)="downloadPromissoryNote(document.participationId)"
+        >
+          <fa-icon icon="eye"></fa-icon>
+        </button>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="Watch order">
@@ -102,21 +60,14 @@
           class="document-action-button"
           mat-raised-button
           color="primary"
-          (click)="downloadDocument(document.id)"
+          (click)="downloadMandate(document.participantId, document.participationAmount, document.projectId)"
         >
-          <fa-icon icon="cloud-download-alt"></fa-icon>
-        </button>
-        <button
-          class="document-action-button"
-          mat-raised-button
-          color="warn"
-          (click)="deleteDocument(document.id, document.name)"
-        >
-          <fa-icon icon="times"></fa-icon>
+          <fa-icon icon="eye"></fa-icon>
         </button>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
 </section>

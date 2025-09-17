@@ -1,21 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
+import { UploadImageDialogComponent } from 'app/clients/clients-view/custom-dialogs/upload-image-dialog/upload-image-dialog.component';
+import { ClientsService } from 'app/clients/clients.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
+import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-edit-investment-project',
   templateUrl: './edit-investment-project.component.html',
-  styleUrls: ['./edit-investment-project.component.scss']
+  styleUrls: ['./edit-investment-project.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class EditInvestmentProjectComponent implements OnInit {
   /** New Investment Project form */
   investmentProjectForm: UntypedFormGroup;
+  investmentProjectFormGeneral: UntypedFormGroup;
+  investmentProjectPublication: UntypedFormGroup;
+  investmentProjectImpact: UntypedFormGroup;
   filteredCategoryData: any[] = [];
   categoryData: any[] = [];
   filteredSubcategoryData: any[] = [];
@@ -27,14 +34,27 @@ export class EditInvestmentProjectComponent implements OnInit {
   projectData: any[] = [];
   public Editor = ClassicEditor;
   creditTypesData: any[] = [];
-
+  countryData: any[] = [];
+  clientsData: any[] = [];
+  imageData: any;
+  coverImage: any;
+  imagesOrder: any[] = [];
+  validExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'webp'
+  ];
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     private router: Router,
     private organizationService: OrganizationService,
     private translateService: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private clientsService: ClientsService,
+    private systemService: SystemService
   ) {
     this.route.data.subscribe(
       (data: {
@@ -45,6 +65,9 @@ export class EditInvestmentProjectComponent implements OnInit {
         statusData: any;
         objectivesData: any;
         creditTypesData: any;
+        countryData: any;
+        clientsData: any;
+        imageData: any;
       }) => {
         this.filteredCategoryData = [];
         this.categoryData = data.categoryData.codeValues;
@@ -54,13 +77,34 @@ export class EditInvestmentProjectComponent implements OnInit {
         this.statusData = data.statusData.codeValues;
         this.objectivesData = data.objectivesData.codeValues;
         this.creditTypesData = data.creditTypesData.codeValues;
+        this.countryData = data.countryData.codeValues;
+        this.clientsData = data.clientsData;
+        this.projectData = data.accountData;
+        this.imageData = data.imageData;
+        this.imageData.forEach((img: any) => {
+          this.imagesOrder.push({
+            number: this.imageData.description,
+            hasChanges: false
+          });
+        });
       }
     );
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.idProject = this.route.parent?.snapshot.paramMap.get('id');
+    this.getProjectImages();
     this.setupInvestmentProjectForm(this.idProject);
+  }
+
+  displayClient(client: any): string | undefined {
+    return client ? client.displayName : undefined;
+  }
+
+  isValidImage(path: string): boolean {
+    if (!path) return false;
+    const ext = path.split('.').pop()?.toLowerCase();
+    return this.validExtensions.includes(ext ?? '');
   }
 
   async setupInvestmentProjectForm(id: any): Promise<void> {
@@ -137,7 +181,80 @@ export class EditInvestmentProjectComponent implements OnInit {
               data?.creditType?.id
             ]
           });
-
+          this.investmentProjectFormGeneral = this.formBuilder.group({
+            countryId: [
+              data.country?.id,
+              Validators.required
+            ],
+            ownerId: [
+              data.ownerName,
+              Validators.required
+            ],
+            name: [
+              data?.name,
+              Validators.required
+            ],
+            mnemonic: [
+              data?.mnemonic,
+              Validators.required
+            ],
+            statusId: [
+              data?.status?.statusValue?.id,
+              Validators.required
+            ]
+          });
+          this.investmentProjectPublication = this.formBuilder.group({
+            institutionDescription: [
+              data.institutionDescription,
+              Validators.required
+            ],
+            teamDescription: [
+              data?.teamDescription,
+              Validators.required
+            ],
+            financingDescription: [
+              data?.financingDescription
+            ],
+            position: [
+              data?.position
+            ],
+            maxAmount: [
+              data?.maxAmount,
+              [
+                Validators.required,
+                Validators.min(0)]
+            ],
+            minAmount: [
+              data?.minAmount,
+              [
+                Validators.required,
+                Validators.min(0)]
+            ],
+            isActive: [data.isActive]
+          });
+          this.investmentProjectImpact = this.formBuilder.group({
+            impactDescription: [
+              data?.impactDescription,
+              Validators.required
+            ],
+            areaId: [
+              data?.area?.id,
+              Validators.required
+            ],
+            categoryId: [
+              data?.category?.id,
+              Validators.required
+            ],
+            subCategories: [
+              data?.subCategories?.map((o: any) => o.category.id) || []
+            ],
+            objectives: [
+              data?.objectives?.map((o: any) => o.objective.id) || []
+            ]
+          });
+          this.investmentProjectFormGeneral.get('ownerId')?.disable();
+          this.investmentProjectFormGeneral.get('mnemonic')?.disable();
+          this.investmentProjectFormGeneral.get('countryId')?.disable();
           resolve();
         },
         error: (err) => {
@@ -149,9 +266,32 @@ export class EditInvestmentProjectComponent implements OnInit {
   }
 
   submit() {
-    const payload = {
-      ...this.investmentProjectForm.getRawValue()
-    };
+    const rawGeneralFormValues = this.investmentProjectFormGeneral.getRawValue();
+    const rawPublicationFormValues = this.investmentProjectPublication.getRawValue();
+    const rawImpactFormValues = this.investmentProjectImpact.getRawValue();
+    // const payload = {
+    //   ...this.investmentProjectForm.getRawValue()
+    // };
+    const payload = Object.entries({
+      name: rawGeneralFormValues.name,
+      statusId: rawGeneralFormValues.statusId,
+      mnemonic: rawGeneralFormValues.mnemonic,
+      ...rawPublicationFormValues,
+      ...rawImpactFormValues,
+      projectRate: 10
+    }).reduce(
+      (acc, [
+          key,
+          value
+        ]) => {
+        if (value !== null && value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {} as any
+    );
+
     if (payload['subCategories'] && Array.isArray(payload['subCategories']) && payload['subCategories'].length > 0) {
       payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
     }
@@ -159,10 +299,65 @@ export class EditInvestmentProjectComponent implements OnInit {
       payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
     }
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe((response: any) => {
-      this.router.navigate(['../'], { relativeTo: this.route });
+      this.router.navigate(['../general'], { relativeTo: this.route });
+    });
+  }
+  uploadCoverDocument() {
+    this.uploadDocument('Cover');
+  }
+
+  deleteDocument(imageId: string) {
+    this.organizationService.deleteProjectDocumentsImage(this.idProject, imageId).subscribe((response: any) => {
+      this.getProjectImages();
     });
   }
 
+  async getProjectImages(): Promise<void> {
+    await this.systemService.getObjectDocuments('projects', this.idProject).subscribe((response: any) => {
+      if (this.imageData && this.imageData instanceof Array) {
+        this.imageData = response;
+        this.imageData.forEach((img: any) => {
+          this.imagesOrder.push({
+            number: this.imageData.description,
+            hasChanges: false
+          });
+        });
+        this.coverImage = this.imageData.find((img: any) => img.description === 'Cover') || null;
+
+        //Order images depends on position
+        this.imageData.sort((a: { description: string }, b: { description: string }) => {
+          const aNum = Number(a.description?.trim());
+          const bNum = Number(b.description?.trim());
+
+          if (isNaN(aNum) && !isNaN(bNum)) return 1;
+
+          if (!isNaN(aNum) && isNaN(bNum)) return -1;
+
+          if (isNaN(aNum) && isNaN(bNum)) return 0;
+
+          return aNum - bNum;
+        });
+      }
+    });
+  }
+
+  uploadDocument(description: any) {
+    const uploadDocumentDialogRef = this.dialog.open(UploadImageDialogComponent, {
+      data: { documentIdentifier: false, entityType: '' }
+    });
+    uploadDocumentDialogRef.afterClosed().subscribe((dialogResponse: any) => {
+      if (dialogResponse) {
+        const formData: FormData = new FormData();
+        formData.append('name', dialogResponse.name);
+        formData.append('fileName', dialogResponse.name);
+        formData.append('file', dialogResponse);
+        formData.append('description', description);
+        this.organizationService.uploadProjectDocumentsImage(this.idProject, formData).subscribe((response: any) => {
+          this.getProjectImages();
+        });
+      }
+    });
+  }
   setArea(areaValue: any) {
     const filtered = this.categoryData.filter((a) => {
       try {
@@ -232,6 +427,30 @@ export class EditInvestmentProjectComponent implements OnInit {
         return 'Detailed Socio Environmental Description';
       default:
         return fieldName;
+    }
+  }
+
+  updateImageOrder(index: number) {
+    const image = this.imageData[index];
+    const formData: FormData = new FormData();
+    formData.append('name', image.name);
+    formData.append('fileName', image.fileName);
+    formData.append('description', this.imagesOrder[index].number);
+    this.organizationService
+      .updateProjectDocumentsImage(this.idProject, image.id, formData)
+      .subscribe((response: any) => {
+        this.getProjectImages();
+      });
+  }
+
+  getImagePath(location: string): string {
+    return 'https://bucketfinedev.s3.amazonaws.com/' + location;
+  }
+  inputOrderChange(e: InputEvent, index: number) {
+    const value = (e.target as HTMLInputElement).value;
+    const numberValue = Number(value);
+    if (!isNaN(numberValue)) {
+      this.imagesOrder[index].number = numberValue;
     }
   }
 }

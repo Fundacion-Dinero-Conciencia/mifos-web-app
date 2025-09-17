@@ -1,6 +1,6 @@
 /** Angular Imports */
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 /** rxjs Imports */
 import { Observable } from 'rxjs';
@@ -830,6 +830,18 @@ export class OrganizationService {
     return this.http.post(`/investmentProjectAddress/${projectId}`, payload);
   }
 
+  addNote(id: number, payload: any): Observable<any> {
+    return this.http.post(`/investmentprojects/${id}/notes`, payload);
+  }
+  editNote(id: number, noteId: string, payload: any): Observable<any> {
+    console.log('wat');
+    return this.http.put(`/investmentprojects/${id}/notes/${noteId}`, payload);
+  }
+  deleteNote(id: number, noteId: string): Observable<any> {
+    console.log('que pasa');
+    return this.http.delete(`/investmentprojects/${id}/notes/${noteId}`);
+  }
+
   getStatusHistoryProjects(projectId: any): Observable<any> {
     return this.http.get(`/investmentproject/historyStatus?id=${projectId}`);
   }
@@ -873,13 +885,37 @@ export class OrganizationService {
   uploadProjectDocumentsImage(projectId: string, formData: FormData) {
     return this.http.post(`/projects/${projectId}/documents`, formData);
   }
+  getRetailMandate(formData: string) {
+    return this.http.post(`/generatepdf/retailmandate`, formData, {
+      headers: { 'Content-Type': 'application/json' },
+      responseType: 'text'
+    });
+  }
+  getFundMandate(formData: string) {
+    return this.http.post(`/generatepdf/fundmandate`, formData, {
+      headers: { 'Content-Type': 'application/json' },
+      responseType: 'text'
+    });
+  }
 
   deleteProjectDocumentsImage(projectId: string, imageId: string) {
     return this.http.delete(`/projects/${projectId}/documents/${imageId}`);
   }
+  downladProjectDocumentsImage(projectId: string, imageId: string) {
+    return this.http.get(`/projects/${projectId}/documents/${imageId}/attachment`, { responseType: 'blob' });
+  }
+  downloadPromissoryNote(participationId: string) {
+    return this.http.get(`/projectparticipation/${participationId}/attachment`, { responseType: 'blob' });
+  }
 
   updateProjectDocumentsImage(projectId: string, imageId: string, formData: FormData) {
     return this.http.put(`/projects/${projectId}/documents/${imageId}`, formData);
+  }
+  getProjectDocuments(projectId: string) {
+    return this.http.get(`/projects/${projectId}/documents`);
+  }
+  addProjectDocuments(projectId: string, formData: FormData) {
+    return this.http.post(`/projects/${projectId}/documents`, formData);
   }
 
   saveAdditionalExpenses(formData: any) {
@@ -904,5 +940,33 @@ export class OrganizationService {
 
   getCae(data: number[]) {
     return this.http.post(`/additionalExpenses/getTir`, data);
+  }
+
+  getProjectParticipationPageable(filters: {
+    participantId?: string;
+    projectId?: string;
+    statusCode?: string;
+    page?: number;
+    size?: number;
+  }) {
+    let params = new HttpParams();
+
+    if (filters.participantId) {
+      params = params.set('participantId', filters.participantId);
+    }
+    if (filters.projectId) {
+      params = params.set('projectId', filters.projectId);
+    }
+    if (filters.statusCode) {
+      params = params.set('statusCode', filters.statusCode);
+    }
+    if (filters.page !== undefined) {
+      params = params.set('page', filters.page.toString());
+    }
+    if (filters.size !== undefined) {
+      params = params.set('size', filters.size.toString());
+    }
+
+    return this.http.get(`/projectparticipation/search/pageable`, { params });
   }
 }

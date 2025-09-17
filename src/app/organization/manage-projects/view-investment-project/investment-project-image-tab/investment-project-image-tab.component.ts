@@ -15,7 +15,13 @@ export class InvestmentProjectImageTabComponent {
   coverImage: any;
   projectId: any;
   projectData: any;
-
+  validExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'webp'
+  ];
   constructor(
     private route: ActivatedRoute,
     private dialog: MatDialog,
@@ -65,7 +71,11 @@ export class InvestmentProjectImageTabComponent {
       this.getProjectImages();
     });
   }
-
+  isValidImage(path: string): boolean {
+    if (!path) return false;
+    const ext = path.split('.').pop()?.toLowerCase();
+    return this.validExtensions.includes(ext ?? '');
+  }
   async getProjectImages(): Promise<void> {
     await this.systemService.getObjectDocuments('projects', this.projectId).subscribe((response: any) => {
       if (this.imageData && this.imageData instanceof Array) {

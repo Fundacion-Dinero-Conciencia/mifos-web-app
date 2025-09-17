@@ -1,201 +1,506 @@
-<div class="container">
-  <form *ngIf="investmentProjectForm" [formGroup]="investmentProjectForm" (ngSubmit)="submit()">
-    <mat-card>
-      <mat-card-content>
-        <div fxLayout="column">
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Name' | translate }}</mat-label>
-            <input matInput autofocus formControlName="name" />
-            <mat-error *ngIf="investmentProjectForm?.get('name')?.hasError('required')">
-              {{ 'labels.inputs.Name' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+<main>
+  <div class="container" id="manageProjectsView">
+    <!-- <form *ngIf="investmentProjectForm" [formGroup]="investmentProjectForm" (ngSubmit)="submit()">
+      <mat-card>
+        <mat-card-content>
+          <div fxLayout="column">
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.Name' | translate }}</mat-label>
+              <input matInput autofocus formControlName="name" />
+              <mat-error *ngIf="investmentProjectForm?.get('name')?.hasError('required')">
+                {{ 'labels.inputs.Name' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Subtitle' | translate }}</mat-label>
-            <input matInput autofocus formControlName="subtitle" />
-            <mat-error *ngIf="investmentProjectForm?.get('subtitle')?.hasError('required')">
-              {{ 'labels.inputs.custom.Subtitle' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Subtitle' | translate }}</mat-label>
+              <input matInput autofocus formControlName="subtitle" />
+              <mat-error *ngIf="investmentProjectForm?.get('subtitle')?.hasError('required')">
+                {{ 'labels.inputs.custom.Subtitle' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
-            <input matInput autofocus formControlName="mnemonic" />
-            <mat-error *ngIf="investmentProjectForm?.get('mnemonic')?.hasError('required')">
-              {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
+              <input matInput autofocus formControlName="mnemonic" />
+              <mat-error *ngIf="investmentProjectForm?.get('mnemonic')?.hasError('required')">
+                {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Impact Description' | translate }}</mat-label>
-            <input
-              matInput
-              [value]="shorten(investmentProjectForm.controls['impactDescription'].value)"
-              readonly
-              (click)="openRichTextEditor('impactDescription')"
-            />
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Impact Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['impactDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('impactDescription')"
+              />
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Institution Description' | translate }}</mat-label>
-            <input
-              matInput
-              [value]="shorten(investmentProjectForm.controls['institutionDescription'].value)"
-              readonly
-              (click)="openRichTextEditor('institutionDescription')"
-            />
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Institution Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['institutionDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('institutionDescription')"
+              />
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Team Description' | translate }}</mat-label>
-            <input
-              matInput
-              [value]="shorten(investmentProjectForm.controls['teamDescription'].value)"
-              readonly
-              (click)="openRichTextEditor('teamDescription')"
-            />
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Team Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['teamDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('teamDescription')"
+              />
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Financial Description' | translate }}</mat-label>
-            <input
-              matInput
-              [value]="shorten(investmentProjectForm.controls['financingDescription'].value)"
-              readonly
-              (click)="openRichTextEditor('financingDescription')"
-            />
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Financial Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['financingDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('financingDescription')"
+              />
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Socio Environmental Description' | translate }}</mat-label>
-            <input
-              matInput
-              [value]="shorten(investmentProjectForm.controls['littleSocioEnvironmentalDescription'].value)"
-              readonly
-              (click)="openRichTextEditor('littleSocioEnvironmentalDescription')"
-            />
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Socio Environmental Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['littleSocioEnvironmentalDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('littleSocioEnvironmentalDescription')"
+              />
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}</mat-label>
-            <input
-              matInput
-              [value]="shorten(investmentProjectForm.controls['detailedSocioEnvironmentalDescription'].value)"
-              readonly
-              (click)="openRichTextEditor('detailedSocioEnvironmentalDescription')"
-            />
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Detailed Socio Environmental Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['detailedSocioEnvironmentalDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('detailedSocioEnvironmentalDescription')"
+              />
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
-            <mat-select formControlName="creditTypeId">
-              <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
-                {{ creditType.name + ' - ' + creditType.description }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
+              <mat-select formControlName="creditTypeId">
+                <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
+                  {{ creditType.name + ' - ' + creditType.description }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Max Amount' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="maxAmount" />
-            <mat-error *ngIf="investmentProjectForm?.get('maxAmount')?.hasError('required')">
-              {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Max Amount' | translate }}</mat-label>
+              <input type="number" matInput required formControlName="maxAmount" />
+              <mat-error *ngIf="investmentProjectForm?.get('maxAmount')?.hasError('required')">
+                {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Min Amount' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="minAmount" />
-            <mat-error *ngIf="investmentProjectForm?.get('minAmount')?.hasError('required')">
-              {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Min Amount' | translate }}</mat-label>
+              <input type="number" matInput required formControlName="minAmount" />
+              <mat-error *ngIf="investmentProjectForm?.get('minAmount')?.hasError('required')">
+                {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Interest Rate' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="projectRate" />
-            <mat-error *ngIf="investmentProjectForm?.get('projectRate')?.hasError('required')">
-              {{ 'labels.inputs.Interest Rate' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.Interest Rate' | translate }}</mat-label>
+              <input type="number" matInput required formControlName="projectRate" />
+              <mat-error *ngIf="investmentProjectForm?.get('projectRate')?.hasError('required')">
+                {{ 'labels.inputs.Interest Rate' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Portal Position' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="position" />
-            <mat-error *ngIf="investmentProjectForm?.get('position')?.hasError('required')">
-              {{ 'labels.inputs.Portal Position' | translate }} {{ 'labels.commons.is' | translate }}
-              <strong>{{ 'labels.commons.required' | translate }}</strong>
-            </mat-error>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.Portal Position' | translate }}</mat-label>
+              <input type="number" matInput required formControlName="position" />
+              <mat-error *ngIf="investmentProjectForm?.get('position')?.hasError('required')">
+                {{ 'labels.inputs.Portal Position' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Status' | translate }}</mat-label>
-            <mat-select required formControlName="statusId">
-              <mat-option *ngFor="let status of statusData" [value]="status.id">
-                {{ status.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.Status' | translate }}</mat-label>
+              <mat-select required formControlName="statusId">
+                <mat-option *ngFor="let status of statusData" [value]="status.id">
+                  {{ status.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Area' | translate }}</mat-label>
-            <mat-select formControlName="areaId" (ngModelChange)="setArea($event)">
-              <mat-option *ngFor="let area of areaData" [value]="area.id">
-                {{ area.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Area' | translate }}</mat-label>
+              <mat-select formControlName="areaId" (ngModelChange)="setArea($event)">
+                <mat-option *ngFor="let area of areaData" [value]="area.id">
+                  {{ area.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Category' | translate }}</mat-label>
-            <mat-select formControlName="categoryId" (ngModelChange)="setCategory($event)">
-              <mat-option *ngFor="let category of filteredCategoryData" [value]="category.id">
-                {{ category.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Category' | translate }}</mat-label>
+              <mat-select formControlName="categoryId" (ngModelChange)="setCategory($event)">
+                <mat-option *ngFor="let category of filteredCategoryData" [value]="category.id">
+                  {{ category.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Subcategory' | translate }}</mat-label>
-            <mat-select formControlName="subCategories" multiple>
-              <mat-option *ngFor="let subcategory of filteredSubcategoryData" [value]="subcategory.id">
-                {{ subcategory.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Subcategory' | translate }}</mat-label>
+              <mat-select formControlName="subCategories" multiple>
+                <mat-option *ngFor="let subcategory of filteredSubcategoryData" [value]="subcategory.id">
+                  {{ subcategory.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.custom.Objectives' | translate }}</mat-label>
-            <mat-select formControlName="objectives" multiple>
-              <mat-option *ngFor="let objectives of objectivesData" [value]="objectives.id">
-                {{ objectives.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Objectives' | translate }}</mat-label>
+              <mat-select formControlName="objectives" multiple>
+                <mat-option *ngFor="let objectives of objectivesData" [value]="objectives.id">
+                  {{ objectives.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-          <div class="filter-box">
-            <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive"
-              >{{ 'labels.inputs.Visible On Portal' | translate }}
-            </mat-checkbox>
+            <div class="filter-box">
+              <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive"
+                >{{ 'labels.inputs.Visible On Portal' | translate }}
+              </mat-checkbox>
+            </div>
           </div>
-        </div>
-      </mat-card-content>
+        </mat-card-content>
 
-      <mat-card-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px">
-        <button type="button" mat-raised-button [routerLink]="['../']">
-          {{ 'labels.buttons.Cancel' | translate }}
-        </button>
-        <button mat-raised-button color="primary" [disabled]="!investmentProjectForm.valid">
-          {{ 'labels.buttons.Submit' | translate }}
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </form>
-</div>
+        <mat-card-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px">
+          <button type="button" mat-raised-button [routerLink]="['../']">
+            {{ 'labels.buttons.Cancel' | translate }}
+          </button>
+          <button mat-raised-button color="primary" [disabled]="!investmentProjectForm.valid">
+            {{ 'labels.buttons.Submit' | translate }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form> -->
+
+    <section class="container" *ngIf="investmentProjectFormGeneral">
+      <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper>
+        <ng-template matStepperIcon="number">
+          <fa-icon icon="pencil-alt" size="sm"></fa-icon>
+        </ng-template>
+
+        <ng-template matStepperIcon="edit">
+          <fa-icon icon="pencil-alt" size="sm"></fa-icon>
+        </ng-template>
+
+        <ng-template matStepperIcon="done">
+          <fa-icon icon="check" size="sm"></fa-icon>
+        </ng-template>
+
+        <ng-template matStepperIcon="error">
+          <fa-icon icon="exclamation-triangle" size="lg"></fa-icon>
+        </ng-template>
+
+        <ng-template matStepperIcon="preview">
+          <fa-icon icon="eye" size="sm"></fa-icon>
+        </ng-template>
+
+        <mat-step [stepControl]="investmentProjectFormGeneral">
+          <ng-template matStepLabel>{{ 'labels.inputs.GENERAL' | translate }}</ng-template>
+          <form [formGroup]="investmentProjectFormGeneral" class="generalForm" fxLayout="row wrap" fxLayoutGap="16px">
+            <mat-form-field fxFlex="47%">
+              <mat-label>{{ 'labels.inputs.Country' | translate }}</mat-label>
+              <mat-select required formControlName="countryId" disabled>
+                <mat-option *ngFor="let country of countryData" [value]="country.id">
+                  {{ country.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="47%">
+              <mat-label>{{ 'labels.inputs.Client name' | translate }}</mat-label>
+              <input matInput formControlName="ownerId" [readonly]="true" />
+              <mat-error *ngIf="investmentProjectFormGeneral?.controls.ownerId.hasError('required')">
+                {{ 'labels.inputs.Client' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-autocomplete
+              autoActiveFirstOption
+              #clientsAutocomplete="matAutocomplete"
+              [displayWith]="displayClient"
+            >
+              <mat-option *ngFor="let client of clientsData" [value]="client">
+                {{ client.id }} - {{ client.displayName }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-form-field fxFlex="47%">
+              <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
+              <input matInput autofocus formControlName="mnemonic" [readonly]="true" />
+              <mat-error *ngIf="investmentProjectFormGeneral?.get('mnemonic')?.hasError('required')">
+                {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+              <mat-error *ngIf="investmentProjectFormGeneral?.get('mnemonic')?.hasError('maxlength')">
+                {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{
+                  'errors.validation.msg.savingsproduct.name.exceeds.max.length' | translate: { length: 3 }
+                }}</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex="47%">
+              <mat-label>{{ 'labels.inputs.Proyect name' | translate }}</mat-label>
+              <input matInput autofocus formControlName="name" />
+              <mat-error *ngIf="investmentProjectFormGeneral?.get('name')?.hasError('required')">
+                {{ 'labels.inputs.Client name' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+              <mat-error *ngIf="investmentProjectFormGeneral?.get('name')?.hasError('maxlength')">
+                {{ 'labels.inputs.Client name' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{
+                  'errors.validation.msg.savingsproduct.name.exceeds.max.length' | translate: { length: 30 }
+                }}</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex="47%">
+              <mat-label>{{ 'labels.inputs.Status' | translate }}</mat-label>
+              <mat-select required formControlName="statusId">
+                <mat-option *ngFor="let status of statusData" [value]="status.id">
+                  {{ status.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <div class="fullW">
+            <button type="button" mat-raised-button [routerLink]="['../general']">
+              {{ 'labels.buttons.Cancel' | translate }}
+            </button>
+            <button mat-raised-button color="primary" matStepperNext [disabled]="!investmentProjectFormGeneral.valid">
+              {{ 'labels.buttons.Submit' | translate }}
+            </button>
+          </div>
+        </mat-step>
+        <mat-step [stepControl]="investmentProjectPublication">
+          <ng-template matStepLabel>{{ 'labels.heading.Publication' | translate }}</ng-template>
+          <form [formGroup]="investmentProjectPublication" class="generalForm" fxLayout="row wrap" fxLayoutGap="16px">
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Institution Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['institutionDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('institutionDescription')"
+              />
+            </mat-form-field>
+
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Team Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['teamDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('teamDescription')"
+              />
+            </mat-form-field>
+
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Financial Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['financingDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('financingDescription')"
+              />
+            </mat-form-field>
+            <mat-form-field fxFlex="48%">
+              <mat-label>{{ 'labels.inputs.custom.Min Amount' | translate }}</mat-label>
+              <input type="number" matInput required formControlName="minAmount" />
+              <mat-error *ngIf="investmentProjectForm?.get('minAmount')?.hasError('required')">
+                {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex="48%">
+              <mat-label>{{ 'labels.inputs.custom.Max Amount' | translate }}</mat-label>
+              <input type="number" matInput required formControlName="maxAmount" />
+              <mat-error *ngIf="investmentProjectForm?.get('maxAmount')?.hasError('required')">
+                {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="48%">
+              <mat-label>{{ 'labels.inputs.Portal Position' | translate }}</mat-label>
+              <input type="number" matInput required formControlName="position" />
+              <mat-error *ngIf="investmentProjectForm?.get('position')?.hasError('required')">
+                {{ 'labels.inputs.Portal Position' | translate }} {{ 'labels.commons.is' | translate }}
+                <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+            </mat-form-field>
+            <div class="filter-box">
+              <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive"
+                >{{ 'labels.inputs.Visible On Portal' | translate }}
+              </mat-checkbox>
+            </div>
+
+            <h3 fxFlex="90%" class="mat-body-strong">{{ 'labels.heading.Portrait image' | translate }}</h3>
+            <div class="m-b-15">
+              <mat-card class="thumbnail-card cover">
+                <img
+                  mat-card-image
+                  *ngIf="coverImage"
+                  [src]="getImagePath(coverImage.location)"
+                  alt="Image"
+                  class="project-img"
+                />
+                <button mat-icon-button *ngIf="coverImage" class="delete-btn" (click)="deleteDocument(coverImage.id)">
+                  <mat-icon>close</mat-icon>
+                </button>
+                <button *ngIf="!coverImage" class="addImageButton" (click)="uploadCoverDocument()">
+                  <fa-icon icon="plus" class="m-r-5"></fa-icon>
+                </button>
+              </mat-card>
+            </div>
+            <h3 fxFlex="100%" class="mat-body-strong">{{ 'labels.heading.Carrousel images' | translate }}</h3>
+            <div fxLayout="row" fxLayoutWrap class="thumbnail-gallery">
+              <ng-container *ngFor="let image of imageData; let i = index">
+                <div
+                  class="thumbnail-wrapper"
+                  *ngIf="image.description !== 'Cover' && isValidImage(image.location) && !image.documentClass"
+                >
+                  <mat-card class="thumbnail-card">
+                    <img mat-card-image [src]="getImagePath(image.location)" alt="Image" class="project-img" />
+
+                    <button mat-icon-button class="delete-btn deleteCustom" (click)="deleteDocument(image.id)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </mat-card>
+                  {{ index }}
+
+                  <mat-form-field appearance="fill" class="order-field m-t-10" *ngIf="imagesOrder[i]!!">
+                    <mat-label>{{ 'labels.inputs.Order' | translate }}</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      (change)="inputOrderChange($event, i)"
+                      (input)="imagesOrder[i].hasChanges = true"
+                    />
+                    <button
+                      mat-icon-button
+                      matSuffix
+                      color="accent"
+                      (click)="updateImageOrder(i)"
+                      [disabled]="!imagesOrder[i].hasChanges"
+                    >
+                      <mat-icon>save</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+              </ng-container>
+              <button class="addImageButton" (click)="uploadDocument(null)">
+                <fa-icon icon="plus" class="m-r-5"></fa-icon>
+              </button>
+            </div>
+          </form>
+          <div class="fullW">
+            <button type="button" mat-raised-button matStepperPrevious>
+              {{ 'labels.buttons.Cancel' | translate }}
+            </button>
+            <button mat-raised-button color="primary" matStepperNext [disabled]="!investmentProjectPublication.valid">
+              {{ 'labels.buttons.Submit' | translate }}
+            </button>
+          </div>
+        </mat-step>
+        <mat-step [stepControl]="investmentProjectImpact">
+          <ng-template matStepLabel>{{ 'labels.heading.Impact' | translate }}</ng-template>
+          <form [formGroup]="investmentProjectImpact" class="generalForm" fxLayout="row wrap" fxLayoutGap="16px">
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Impact Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['impactDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('impactDescription')"
+              />
+            </mat-form-field>
+            <mat-form-field fxFlex="30%">
+              <mat-label>{{ 'labels.inputs.custom.Area' | translate }}</mat-label>
+              <mat-select formControlName="areaId" (ngModelChange)="setArea($event)">
+                <mat-option *ngFor="let area of areaData" [value]="area.id">
+                  {{ area.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="30%">
+              <mat-label>{{ 'labels.inputs.custom.Category' | translate }}</mat-label>
+              <mat-select formControlName="categoryId" (ngModelChange)="setCategory($event)">
+                <mat-option *ngFor="let category of filteredCategoryData" [value]="category.id">
+                  {{ category.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="30%">
+              <mat-label>{{ 'labels.inputs.custom.Subcategory' | translate }}</mat-label>
+              <mat-select formControlName="subCategories" multiple>
+                <mat-option *ngFor="let subcategory of filteredSubcategoryData" [value]="subcategory.id">
+                  {{ subcategory.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="30%">
+              <mat-label>{{ 'labels.inputs.custom.Objectives' | translate }}</mat-label>
+              <mat-select formControlName="objectives" multiple>
+                <mat-option *ngFor="let objectives of objectivesData" [value]="objectives.id">
+                  {{ objectives.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="98%">
+              <mat-label>{{ 'labels.inputs.custom.Socio Environmental Description' | translate }}</mat-label>
+              <input
+                matInput
+                [value]="shorten(investmentProjectForm.controls['littleSocioEnvironmentalDescription'].value)"
+                readonly
+                (click)="openRichTextEditor('littleSocioEnvironmentalDescription')"
+              />
+            </mat-form-field>
+          </form>
+          <div class="fullW">
+            <button type="button" mat-raised-button matStepperPrevious>
+              {{ 'labels.buttons.Cancel' | translate }}
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="submit()"
+              [disabled]="
+                !investmentProjectFormGeneral?.valid ||
+                !investmentProjectImpact.valid ||
+                !investmentProjectPublication.valid
+              "
+            >
+              {{ 'labels.buttons.Submit' | translate }}
+            </button>
+          </div>
+        </mat-step>
+      </mat-horizontal-stepper>
+    </section>
+  </div>
+</main>

@@ -100,6 +100,7 @@ import { DataCodeStatusResolver } from './manage-projects/data-code-status.resol
 import { DataCodeSubCategoryResolver } from './manage-projects/data-code-subcategory.resolver';
 import { EditInvestmentProjectComponent } from './manage-projects/edit-investment-project/edit-investment-project.component';
 import { InvestmentProjectDocumentsResolver } from './manage-projects/investment-project-documents.resolver';
+import { ProjectNotesResolver } from './manage-projects/investment-project-notes.resolver';
 import { InvestmentProjectTemplateResolver } from './manage-projects/investment-project-template.resolver';
 import { ManageProjectResolver } from './manage-projects/manage-project.resolver';
 import { ManageProjectsComponent } from './manage-projects/manage-projects.component';
@@ -111,8 +112,8 @@ import { InvestmentProjectGeneralTabComponent } from './manage-projects/view-inv
 import { InvestmentProjectImageTabComponent } from './manage-projects/view-investment-project/investment-project-image-tab/investment-project-image-tab.component';
 import { InvestmentProjectImpactTabComponent } from './manage-projects/view-investment-project/investment-project-impact-tab/investment-project-impact-tab.component';
 import { InvestmentProjectInvestmentTabComponent } from './manage-projects/view-investment-project/investment-project-investment-tab/investment-project-investment-tab.component';
-import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-investment-project/investment-project-simulate-tab/investment-project-simulate-tab.component';
 import { InvestmentProjectNotesTabComponent } from './manage-projects/view-investment-project/investment-project-notes-tab/investment-project-notes-tab.component';
+import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-investment-project/investment-project-simulate-tab/investment-project-simulate-tab.component';
 import { ViewInvestmentProjectComponent } from './manage-projects/view-investment-project/view-investment-project.component';
 import { ViewStatusHistoryComponent } from './manage-projects/view-status-history/view-status-history.component';
 import { EditOfficeResolver } from './offices/common-resolvers/edit-office.resolver';
@@ -133,7 +134,8 @@ import { CashierTransactionTemplateResolver } from './tellers/common-resolvers/t
 import { TellerResolver } from './tellers/common-resolvers/teller.resolver';
 import { TellersResolver } from './tellers/common-resolvers/tellers.resolver';
 import { WorkingDaysResolver } from './working-days/working-days.resolver';
-
+import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
+import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 /** Organization Routes */
 const routes: Routes = [
   Route.withShell([
@@ -780,7 +782,10 @@ const routes: Routes = [
                   component: InvestmentProjectTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'Documents', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    InvestmentDocuments: InvestmentProjectDocumentsResolver,
+                    customerDocumentOptions: CustomerDocumentsResolver,
+                    documentTypeOptions: DocumentTypesResolver
                   }
                 },
                 {
@@ -804,7 +809,8 @@ const routes: Routes = [
                   component: InvestmentProjectNotesTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'Notes', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    notes: ProjectNotesResolver
                   }
                 },
                 {
@@ -837,7 +843,9 @@ const routes: Routes = [
                     objectivesData: DataCodeObjectiveResolver,
                     statusData: DataCodeStatusResolver,
                     creditTypesData: DataCodeCreditTypesResolver,
-                    loanPurposeData: DataCodeLoanPurposeResolver
+                    loanPurposeData: DataCodeLoanPurposeResolver,
+                    imageData: InvestmentProjectDocumentsResolver,
+                    accountData: ManageProjectResolver
                   }
                 },
                 {
@@ -946,6 +954,7 @@ const routes: Routes = [
     DataCodeStatusResolver,
     StatusHistoryProjectResolver,
     InvestmentProjectDocumentsResolver,
+    ProjectNotesResolver,
     DataCodeObjectiveResolver,
     DataCodeCreditTypesResolver,
     DataCodeLoanPurposeResolver

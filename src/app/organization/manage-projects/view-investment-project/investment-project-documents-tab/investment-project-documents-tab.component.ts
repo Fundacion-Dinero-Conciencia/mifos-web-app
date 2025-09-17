@@ -1,12 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { UploadDocumentDialogComponent } from 'app/clients/clients-view/custom-dialogs/upload-document-dialog/upload-document-dialog.component';
+import { OrganizationService } from 'app/organization/organization.service';
 import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'mifosx-investment-project-documents-tab',
@@ -19,10 +20,7 @@ export class InvestmentProjectTabComponent implements OnInit {
   @Input() InvestmentType: string;
   @Input() InvestmentDocuments: any;
 
-  @Input() callbackUpload: (documentData: FormData) => Observable<any>;
-  @Input() callbackDownload: (documentId: string) => void;
-  @Input() callbackDelete: (documentId: string) => void;
-
+  searchText = new UntypedFormControl('');
   projectData: any;
   InvestmentId: string;
   customerDocumentOptions: any = [];
@@ -59,12 +57,37 @@ export class InvestmentProjectTabComponent implements OnInit {
    */
   constructor(
     private route: ActivatedRoute,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private organizationService: OrganizationService
   ) {
-    this.route.data.subscribe((data: { accountData: any }) => {
-      this.projectData = data.accountData;
-      this.InvestmentId = data.accountData.id;
-    });
+    this.route.data.subscribe(
+      (data: {
+        accountData: any;
+        InvestmentDocuments: any;
+        documentTypeOptions: any;
+        customerDocumentOptions: any;
+      }) => {
+        this.projectData = data.accountData;
+        this.InvestmentId = data.accountData.id;
+        this.InvestmentDocuments = data.InvestmentDocuments.filter((doc: any) => !!doc.documentClass);
+        this.customerDocumentOptions = data.customerDocumentOptions;
+        this.documentTypeOptions = data.documentTypeOptions;
+      }
+    );
+  }
+
+  validExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'webp'
+  ];
+
+  isImage(path: string): boolean {
+    if (!path) return false;
+    const ext = path.split('.').pop()?.toLowerCase();
+    return this.validExtensions.includes(ext ?? '');
   }
 
   ngOnInit() {
@@ -74,7 +97,10 @@ export class InvestmentProjectTabComponent implements OnInit {
   }
 
   downloadDocument(documentId: string) {
-    this.callbackDownload(documentId);
+    this.organizationService.downladProjectDocumentsImage(this.InvestmentId, documentId).subscribe((res) => {
+      const url = window.URL.createObjectURL(res as Blob);
+      return window.open(url);
+    });
   }
 
   uploadDocument() {
@@ -83,18 +109,20 @@ export class InvestmentProjectTabComponent implements OnInit {
         documentIdentifier: false,
         entityType: '',
         documentClassOptions: this.customerDocumentOptions,
-        documentTypeOptions: this.documentTypeOptions
+        documentTypeOptions: this.documentTypeOptions,
+        description: 'Documento'
       }
     });
     uploadDocumentDialogRef.afterClosed().subscribe((dialogResponse: any) => {
       if (dialogResponse) {
+        console.log(dialogResponse);
         const formData: FormData = new FormData();
         formData.append('name', dialogResponse.fileName);
         formData.append('file', dialogResponse.file);
         formData.append('description', dialogResponse.description);
         formData.append('documentClassId', dialogResponse.documentClassId);
         formData.append('documentTypeId', dialogResponse.documentTypeId);
-        this.callbackUpload(formData).subscribe((res: any) => {
+        this.organizationService.addProjectDocuments(this.InvestmentId, formData).subscribe((res: any) => {
           this.InvestmentDocuments.push({
             id: res.resourceId,
             parentEntityType: this.InvestmentType,
@@ -117,7 +145,7 @@ export class InvestmentProjectTabComponent implements OnInit {
     });
     deleteDocumentDialogRef.afterClosed().subscribe((response: any) => {
       if (response.delete) {
-        this.callbackDelete(documentId);
+        this.organizationService.deleteProjectDocumentsImage(this.InvestmentId, documentId);
         for (let i = 0; i < this.InvestmentDocuments.length; i++) {
           if (this.InvestmentDocuments[i].id === documentId) {
             this.InvestmentDocuments.splice(i, 1);
@@ -126,5 +154,13 @@ export class InvestmentProjectTabComponent implements OnInit {
         this.documentsTable.renderRows();
       }
     });
+  }
+
+  filter(e: InputEvent) {
+    const filterValue = (e.target as HTMLInputElement).value.toLowerCase();
+
+    this.dataSource.data = this.InvestmentDocuments.filter((doc: any) =>
+      doc.fileName.toLowerCase().includes(filterValue)
+    );
   }
 }

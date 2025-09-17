@@ -44,7 +44,23 @@
               {{ projectData.name }}
             </div>
           </div>
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.Mimum investment' | translate }}
+            </div>
+            <div fxFlex="70%">
+              {{ projectData.minAmount }}
+            </div>
+          </div>
 
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.Maximum investment' | translate }}
+            </div>
+            <div fxFlex="70%">
+              {{ projectData.maxAmount }}
+            </div>
+          </div>
           <div fxLayout="row wrap" class="m-b-15">
             <div fxFlex="30%" class="mat-body-strong">
               {{ 'labels.inputs.Portal Position' | translate }}
@@ -86,7 +102,10 @@
         <h3 fxFlex="90%" class="mat-body-strong">{{ 'labels.heading.Carrousel images' | translate }}</h3>
         <div fxLayout="row" fxLayoutWrap class="thumbnail-gallery">
           <ng-container *ngFor="let image of imageData">
-            <div class="thumbnail-wrapper" *ngIf="image.description !== 'Cover'">
+            <div
+              class="thumbnail-wrapper"
+              *ngIf="image.description !== 'Cover' && isValidImage(image.location) && !image.documentClass"
+            >
               <mat-card class="thumbnail-card">
                 <img mat-card-image [src]="getImagePath(image.location)" alt="Image" class="project-img" />
 

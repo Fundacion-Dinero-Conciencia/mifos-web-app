@@ -1,5 +1,5 @@
 <div class="container">
-  <nav mat-tab-nav-bar class="navigation-tabs">
+  <nav mat-tab-nav-bar class="navigation-tabs" *ngIf="!router.url.includes('edit')">
     <a
       mat-tab-link
       [routerLink]="['./general']"
@@ -62,6 +62,5 @@
       {{ 'labels.heading.Credit Data' | translate }}
     </a>
   </nav>
-
   <router-outlet></router-outlet>
 </div>
