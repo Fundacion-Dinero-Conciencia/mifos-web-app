@@ -105,6 +105,7 @@
                 matInput
                 [value]="shorten(investmentProjectPublication.controls['institutionDescription'].value)"
                 readonly
+                formControlName="institutionDescription"
                 (click)="openRichTextEditor('institutionDescription')"
               />
             </mat-form-field>
@@ -114,7 +115,7 @@
               <input
                 matInput
                 [value]="shorten(investmentProjectPublication.controls['teamDescription'].value)"
-                readonly
+                formControlName="teamDescription"
                 (click)="openRichTextEditor('teamDescription')"
               />
             </mat-form-field>
@@ -124,7 +125,7 @@
               <input
                 matInput
                 [value]="shorten(investmentProjectPublication.controls['financingDescription'].value)"
-                readonly
+                formControlName="financingDescription"
                 (click)="openRichTextEditor('financingDescription')"
               />
             </mat-form-field>
@@ -172,7 +173,12 @@
                 <button mat-icon-button *ngIf="coverImage" class="delete-btn" (click)="deleteDocument(coverImage.id)">
                   <mat-icon>close</mat-icon>
                 </button>
-                <button *ngIf="!coverImage" class="addImageButton" (click)="uploadCoverDocument()">
+                <button
+                  *ngIf="!coverImage"
+                  class="addImageButton"
+                  (click)="uploadCoverDocument()"
+                  [disabled]="!canEdit()"
+                >
                   <fa-icon icon="plus" class="m-r-5"></fa-icon>
                 </button>
               </mat-card>
@@ -213,7 +219,7 @@
                   </mat-form-field>
                 </div>
               </ng-container>
-              <button class="addImageButton" (click)="uploadDocument(null)">
+              <button class="addImageButton" (click)="uploadDocument(null)" [disabled]="!canEdit()">
                 <fa-icon icon="plus" class="m-r-5"></fa-icon>
               </button>
             </div>
@@ -235,7 +241,7 @@
               <input
                 matInput
                 [value]="shorten(investmentProjectImpact.controls['impactDescription'].value)"
-                readonly
+                formControlName="impactDescription"
                 (click)="openRichTextEditor('impactDescription')"
               />
             </mat-form-field>
@@ -277,7 +283,7 @@
               <input
                 matInput
                 [value]="shorten(investmentProjectImpact.controls['littleSocioEnvironmentalDescription'].value)"
-                readonly
+                formControlName="littleSocioEnvironmentalDescription"
                 (click)="openRichTextEditor('littleSocioEnvironmentalDescription')"
               />
             </mat-form-field>
@@ -291,9 +297,11 @@
               color="primary"
               (click)="submit()"
               [disabled]="
-                !investmentProjectFormGeneral?.valid ||
-                !investmentProjectImpact.valid ||
-                !investmentProjectPublication.valid
+                canEdit()
+                  ? !investmentProjectFormGeneral?.valid ||
+                    !investmentProjectImpact?.valid ||
+                    !investmentProjectPublication?.valid
+                  : false
               "
             >
               {{ 'labels.buttons.Submit' | translate }}

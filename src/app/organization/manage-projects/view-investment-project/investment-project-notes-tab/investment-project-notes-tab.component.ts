@@ -88,9 +88,7 @@ export class InvestmentProjectNotesTabComponent implements OnInit {
       ) {
         this.entityNotes[index].note = response.data.value.note;
         this.entityNotes[index].active = response.data.value.active;
-        this.organizationService.editNote(this.idProject, noteId, response.data.value).subscribe((res: any) => {
-          console.log('que pasa');
-        });
+        this.organizationService.editNote(this.idProject, noteId, response.data.value).subscribe((res: any) => {});
       }
     });
   }

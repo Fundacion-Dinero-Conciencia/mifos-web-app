@@ -13,6 +13,7 @@ import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { SystemService } from 'app/system/system.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'mifosx-investment-project-simulate-tab',
@@ -68,6 +69,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private organizationService: OrganizationService,
     private formBuilder: UntypedFormBuilder,
     private alertService: AlertService,
@@ -552,6 +554,19 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         }
       }
     });
+  }
+
+  goToModifyApplication(): void {
+    const clientId = this.projectData?.ownerId;
+    const loanId = this.projectData?.loanId;
+
+    this.router.navigate([
+      '/clients',
+      clientId,
+      'loans-accounts',
+      loanId,
+      'edit-loans-account'
+    ]);
   }
 
   editSimulation() {

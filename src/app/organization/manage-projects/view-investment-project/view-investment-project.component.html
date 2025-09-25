@@ -60,15 +60,6 @@
     <a mat-tab-link [routerLink]="['./notas']" routerLinkActive #notes="routerLinkActive" [active]="notes.isActive">
       {{ 'labels.heading.Notes' | translate }}
     </a>
-    <a
-      mat-tab-link
-      [routerLink]="['./commissions']"
-      routerLinkActive
-      #commissions="routerLinkActive"
-      [active]="commissions.isActive"
-    >
-      {{ 'labels.heading.Credit Data' | translate }}
-    </a>
   </nav>
   <router-outlet></router-outlet>
 </div>

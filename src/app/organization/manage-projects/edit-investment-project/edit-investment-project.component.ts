@@ -6,11 +6,11 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadImageDialogComponent } from 'app/clients/clients-view/custom-dialogs/upload-image-dialog/upload-image-dialog.component';
 import { ClientsService } from 'app/clients/clients.service';
+import { AlertService } from 'app/core/alert/alert.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
 import { SystemService } from 'app/system/system.service';
-import { AlertService } from 'app/core/alert/alert.service';
 
 @Component({
   selector: 'mifosx-edit-investment-project',
@@ -31,7 +31,7 @@ export class EditInvestmentProjectComponent implements OnInit {
   statusData: any[] = [];
   objectivesData: any[] = [];
   idProject: any;
-  projectData: any[] = [];
+  projectData: any;
   public Editor = ClassicEditor;
   creditTypesData: any[] = [];
   countryData: any[] = [];
@@ -192,6 +192,18 @@ export class EditInvestmentProjectComponent implements OnInit {
           this.investmentProjectFormGeneral.get('ownerId')?.disable();
           this.investmentProjectFormGeneral.get('mnemonic')?.disable();
           this.investmentProjectFormGeneral.get('countryId')?.disable();
+          if (this.projectData?.status?.statusValue?.name.includes('En Financiamiento')) {
+            this.investmentProjectFormGeneral.disable();
+            this.investmentProjectFormGeneral.get('name')?.enable();
+            this.investmentProjectFormGeneral.get('statusId')?.enable();
+            this.investmentProjectPublication.disable();
+            this.investmentProjectImpact.disable();
+          } else if (!this.canEdit()) {
+            this.investmentProjectFormGeneral.disable();
+            this.investmentProjectFormGeneral.get('statusId')?.enable();
+            this.investmentProjectPublication.disable();
+            this.investmentProjectImpact.disable();
+          }
           resolve();
         },
         error: (err) => {
@@ -387,6 +399,18 @@ export class EditInvestmentProjectComponent implements OnInit {
       .subscribe((response: any) => {
         this.getProjectImages();
       });
+  }
+
+  canEdit(): boolean {
+    const status = this.projectData?.status?.statusValue?.name;
+    return (
+      status !== 'Cerrado' &&
+      status !== 'Cancelado' &&
+      status !== 'Anulado' &&
+      status !== 'En curso' &&
+      status !== 'En Formalización' &&
+      status !== 'En Financiamiento'
+    );
   }
 
   getImagePath(location: string): string {

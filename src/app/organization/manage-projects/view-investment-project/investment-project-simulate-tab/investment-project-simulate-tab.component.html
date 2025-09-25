@@ -10,7 +10,7 @@
     <!-- <button mat-raised-button color="primary" (click)="addAddress()" *mifosxHasPermission="'CREATE_ADDRESS'">
       {{ 'labels.buttons.Select definitive simulation' | translate }}
     </button> -->
-    <button
+    <!-- <button
       mat-raised-button
       color="primary"
       (click)="switchCreatingSimulation()"
@@ -18,7 +18,7 @@
     >
       <fa-icon icon="plus" class="m-r-10"></fa-icon>
       Generar simulación
-    </button>
+    </button> -->
   </div>
   <div
     fxLayout="row"
@@ -67,6 +67,14 @@
       (click)="switchAllowEditing()"
       *ngIf="isEditingSimulation && !allowEditingForm"
       [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+    >
+      Editar simulación
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="goToModifyApplication()"
+      *ngIf="isEditingSimulation && !allowEditingForm"
     >
       Editar simulación
     </button>
@@ -322,7 +330,7 @@
       <ng-container matColumnDef="showMore">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.buttons.Download' | translate }}</th>
         <td mat-cell *matCellDef="let document; let index">
-          <button class="document-action-button" mat-raised-button color="primary">
+          <button class="document-action-button" mat-raised-button color="primary" (click)="generateSimulationPdf()">
             <fa-icon icon="cloud-download-alt"></fa-icon>
           </button>
         </td>
