@@ -16,14 +16,16 @@ export class InvestmentProjectNotesTabComponent implements OnInit {
   noteForm: UntypedFormGroup;
   entityNotes: any[] = [];
   idProject: any;
+  projectData: any;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     private organizationService: OrganizationService,
     private dialog: MatDialog
   ) {
-    this.route.data.subscribe((data: { notes: any }) => {
+    this.route.data.subscribe((data: { notes: any; accountData: any }) => {
       this.entityNotes = data.notes;
+      this.projectData = data.accountData;
     });
   }
 
@@ -91,6 +93,10 @@ export class InvestmentProjectNotesTabComponent implements OnInit {
         });
       }
     });
+  }
+  get canEdit() {
+    const status = this.projectData?.status?.statusValue?.name;
+    return true;
   }
 
   deleteNote(noteId: string, index: number) {

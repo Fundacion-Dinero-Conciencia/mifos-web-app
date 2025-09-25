@@ -3,9 +3,12 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { ClientsService } from 'app/clients/clients.service';
 import { AlertService } from 'app/core/alert/alert.service';
 import { OrganizationService } from 'app/organization/organization.service';
-import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'mifosx-investment-project-investment-tab',
   templateUrl: './investment-project-investment-tab.component.html',
@@ -13,23 +16,31 @@ import { catchError } from 'rxjs/operators';
 })
 export class InvestmentProjectInvestmentTabComponent implements OnInit {
   projectData: any;
-  investments: any;
+  clientClassificationTypeOptions: any;
+  investorTypes: any[];
+  filesvg = faFileAlt;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     private organizationService: OrganizationService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private clientsService: ClientsService
   ) {
-    this.route.data.subscribe((data: { accountData: any; investments: any }) => {
+    this.route.data.subscribe((data: { accountData: any; investments: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
+      this.clientClassificationTypeOptions = data.clientTemplate.clientClassificationOptions;
     });
     this.filters = this.formBuilder.group({
-      accountType: [
+      clientClassificationId: [
         ''
       ],
       name: [
         ''
       ]
+    });
+    this.filters.valueChanges.pipe(debounceTime(300)).subscribe((values) => {
+      this.paginator.firstPage();
+      this.loadInvestments(0, this.paginator.pageSize, values);
     });
   }
   filters: UntypedFormGroup;
@@ -67,7 +78,17 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       });
   }
 
-  downloadMandate(clientId: string, amount: string, projectId: string) {
+  getMandate(clientId: string, amount: string, projectId: string) {
+    this.clientsService.getClientData(clientId).subscribe((response: any) => {
+      if (response.legalForm.value === 'Entity') {
+        this.downloadFundMandate(clientId, amount);
+      } else {
+        this.downloadRetailMandate(clientId, amount, projectId);
+      }
+    });
+  }
+
+  downloadRetailMandate(clientId: string, amount: string, projectId: string) {
     const jsonData = {
       clientId: clientId,
       amount: amount,
@@ -97,19 +118,35 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
     });
   }
 
-  loadInvestments(page: number, size: number) {
+  loadInvestments(page: number, size: number, filters?: any) {
+    console.log(filters);
+
     this.requestParams = {
       projectId: this.projectData?.id,
-      statusCode: 100,
       page,
-      size
+      size,
+      name: filters?.name || undefined,
+      classificationId: filters?.clientClassificationId || undefined
     };
 
-    this.organizationService.getProjectParticipationPageable(this.requestParams).subscribe((response: any) => {
-      this.dataSource.data = response.content || response;
-      this.paginator.length = response.total;
-      this.dataSource.paginator = this.paginator;
-    });
+    this.organizationService
+      .getProjectParticipationPageable(this.requestParams)
+      .pipe(
+        catchError((error) => {
+          this.alertService.alert({
+            type: 'error',
+            message: 'Ocurrió un error al cargar las inversiones'
+          });
+
+          return of({ content: [] as any[], total: 0 });
+        })
+      )
+      .subscribe((response: any) => {
+        console.log(response);
+        this.dataSource.data = response.content || response;
+        this.paginator.length = response.total;
+        this.dataSource.paginator = this.paginator;
+      });
   }
 
   codeToState(code: number): string {

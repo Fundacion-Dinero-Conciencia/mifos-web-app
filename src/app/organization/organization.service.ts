@@ -899,6 +899,7 @@ export class OrganizationService {
   }
 
   deleteProjectDocumentsImage(projectId: string, imageId: string) {
+    console.log('?');
     return this.http.delete(`/projects/${projectId}/documents/${imageId}`);
   }
   downladProjectDocumentsImage(projectId: string, imageId: string) {
@@ -925,6 +926,11 @@ export class OrganizationService {
   generateSimulationPdf(formData: any) {
     return this.http.post(`/generatepdf/simulation`, formData);
   }
+  generateSimulation(projectId: string, formData: string) {
+    return this.http.post(`/investmentproject/${projectId}/simulation`, formData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
   generateFundPromissoryPdf(formData: any) {
     return this.http.post(`/generatepdf/fundpromissorynote`, formData);
@@ -941,11 +947,16 @@ export class OrganizationService {
   getCae(data: number[]) {
     return this.http.post(`/additionalExpenses/getTir`, data);
   }
+  getSimulations(id: string) {
+    return this.http.get(`/investmentproject/${id}/all-simulations`);
+  }
 
   getProjectParticipationPageable(filters: {
     participantId?: string;
     projectId?: string;
     statusCode?: string;
+    name?: string;
+    classificationId?: string;
     page?: number;
     size?: number;
   }) {
@@ -953,6 +964,12 @@ export class OrganizationService {
 
     if (filters.participantId) {
       params = params.set('participantId', filters.participantId);
+    }
+    if (filters.name) {
+      params = params.set('name', filters.name);
+    }
+    if (filters.classificationId) {
+      params = params.set('classificationId', filters.classificationId);
     }
     if (filters.projectId) {
       params = params.set('projectId', filters.projectId);

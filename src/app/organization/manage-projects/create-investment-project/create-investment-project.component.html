@@ -155,14 +155,7 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Based in Loan Product' | translate }}</mat-label>
-            <mat-select formControlName="basedInLoanProductId">
-              <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
-                {{ loanProduct.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
@@ -301,6 +294,7 @@
 
     <mat-step [stepControl]="" completed="false">
       <ng-template matStepLabel>{{ 'labels.inputs.GENERAL' | translate }}</ng-template>
+
       <form
         [formGroup]="investmentProjectForm"
         class="generalForm"

@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Create Simulation": "Crear Simulación",
       "Select definitive simulation": "Seleccionar simulación definitiva",
       "Accept Transfer": "Aceptar transferencia",
       "Actions": "Acciones",
@@ -1212,6 +1213,7 @@
       "Juridic person": "Persona jurídica",
       "Natural person": "Persona natural",
       "ACCOUNTING": "CONTABILIDAD",
+      "Loan Type": "Tipo de Crédito",
       "ADDRESS": "DOMICILIO",
       "Above Changes are Effective from": "Los cambios anteriores son efectivos desde",
       "Absent": "Ausente",

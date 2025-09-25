@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Create Simulation": "Crear simulación",
       "Select definitive simulation": "Seleccionar simulación definitiva",
       "Accept Transfer": "Aceptar transferencia",
       "Actions": "Acciones",
@@ -1224,6 +1225,7 @@
       "Account Number Preferences": "Preferencias de número de cuenta",
       "Account Type": "Tipo de cuenta",
       "Account Usage": "Uso de la cuenta",
+      "Loan Type": "Tipo de Crédito",
       "Account action": "Acción de cuenta",
       "Account moves out of NPA only after all arrears have been cleared": "La cuenta sale del NPA solo después de que se hayan liquidado todos los atrasos",
       "Account to Credit": "Cuenta para acreditar",

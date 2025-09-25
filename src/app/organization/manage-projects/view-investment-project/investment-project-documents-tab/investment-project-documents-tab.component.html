@@ -9,7 +9,7 @@
     </h4>
     <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20 m-r-0">
       <div fxFlex="10%" *mifosxHasPermission="'CREATE_DOCUMENT'">
-        <button mat-raised-button class="f-right" color="primary" (click)="uploadDocument()">
+        <button mat-raised-button class="f-right" color="primary" (click)="uploadDocument()" [disabled]="!canEdit">
           <fa-icon icon="plus" class="m-r-10"></fa-icon>{{ 'labels.buttons.Add' | translate }}
         </button>
       </div>
@@ -57,6 +57,7 @@
               mat-raised-button
               color="warn"
               (click)="deleteDocument(document.id, document.name)"
+              [disabled]="!canEdit"
             >
               <fa-icon icon="times"></fa-icon>
             </button>

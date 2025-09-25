@@ -10,6 +10,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
 import { SystemService } from 'app/system/system.service';
+import { AlertService } from 'app/core/alert/alert.service';
 
 @Component({
   selector: 'mifosx-edit-investment-project',
@@ -19,7 +20,6 @@ import { SystemService } from 'app/system/system.service';
 })
 export class EditInvestmentProjectComponent implements OnInit {
   /** New Investment Project form */
-  investmentProjectForm: UntypedFormGroup;
   investmentProjectFormGeneral: UntypedFormGroup;
   investmentProjectPublication: UntypedFormGroup;
   investmentProjectImpact: UntypedFormGroup;
@@ -54,7 +54,8 @@ export class EditInvestmentProjectComponent implements OnInit {
     private translateService: TranslateService,
     private dialog: MatDialog,
     private clientsService: ClientsService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private alertService: AlertService
   ) {
     this.route.data.subscribe(
       (data: {
@@ -113,74 +114,6 @@ export class EditInvestmentProjectComponent implements OnInit {
         next: (data) => {
           this.setArea(data?.area?.id);
           this.setCategory(data?.category?.id);
-
-          this.investmentProjectForm = this.formBuilder.group({
-            name: [
-              data?.name,
-              Validators.required
-            ],
-            subtitle: [
-              data?.subtitle
-            ],
-            mnemonic: [
-              data?.mnemonic,
-              Validators.required
-            ],
-            impactDescription: [
-              data?.impactDescription
-            ],
-            institutionDescription: [
-              data.institutionDescription
-            ],
-            teamDescription: [
-              data?.teamDescription
-            ],
-            financingDescription: [
-              data?.financingDescription
-            ],
-            littleSocioEnvironmentalDescription: [
-              data?.littleSocioEnvironmentalDescription
-            ],
-            detailedSocioEnvironmentalDescription: [
-              data?.detailedSocioEnvironmentalDescription
-            ],
-            maxAmount: [
-              data?.maxAmount,
-              Validators.required
-            ],
-            minAmount: [
-              data?.minAmount,
-              Validators.required
-            ],
-            projectRate: [
-              data?.rate,
-              Validators.required
-            ],
-            position: [
-              data?.position,
-              Validators.required
-            ],
-            categoryId: [
-              data?.category?.id
-            ],
-            subCategories: [
-              data?.subCategories?.map((o: any) => o.category.id) || []
-            ],
-            areaId: [
-              data?.area?.id
-            ],
-            objectives: [
-              data?.objectives?.map((o: any) => o.objective.id) || []
-            ],
-            isActive: [data.isActive],
-            statusId: [
-              data?.status?.statusValue?.id,
-              Validators.required
-            ],
-            creditTypeId: [
-              data?.creditType?.id
-            ]
-          });
           this.investmentProjectFormGeneral = this.formBuilder.group({
             countryId: [
               data.country?.id,
@@ -235,6 +168,10 @@ export class EditInvestmentProjectComponent implements OnInit {
           this.investmentProjectImpact = this.formBuilder.group({
             impactDescription: [
               data?.impactDescription,
+              Validators.required
+            ],
+            littleSocioEnvironmentalDescription: [
+              data?.littleSocioEnvironmentalDescription,
               Validators.required
             ],
             areaId: [
@@ -299,6 +236,10 @@ export class EditInvestmentProjectComponent implements OnInit {
       payload['objectives'] = '[' + payload['objectives'].join(',') + ']';
     }
     this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe((response: any) => {
+      this.alertService.alert({
+        type: 'Success',
+        message: this.translateService.instant('labels.heading.Saved Successfully')
+      });
       this.router.navigate(['../general'], { relativeTo: this.route });
     });
   }
@@ -388,7 +329,10 @@ export class EditInvestmentProjectComponent implements OnInit {
         new RichTextBase({
           controlName: fieldName,
           label: this.translateService.instant(`labels.inputs.custom.${this.toLabelKey(fieldName)}`),
-          value: this.investmentProjectForm.controls[fieldName].value,
+          value:
+            this.investmentProjectFormGeneral?.controls?.[fieldName]?.value ||
+            this.investmentProjectPublication?.controls?.[fieldName]?.value ||
+            this.investmentProjectImpact?.controls?.[fieldName]?.value,
           required: true,
           order: 1
         })
@@ -401,7 +345,9 @@ export class EditInvestmentProjectComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((response: any) => {
       if (response?.data?.value?.[fieldName]) {
-        this.investmentProjectForm.controls[fieldName].setValue(response.data.value[fieldName]);
+        this.investmentProjectFormGeneral.controls?.[fieldName]?.setValue(response.data.value[fieldName]);
+        this.investmentProjectPublication.controls?.[fieldName]?.setValue(response.data.value[fieldName]);
+        this.investmentProjectImpact.controls?.[fieldName]?.setValue(response.data.value[fieldName]);
       }
     });
   }

@@ -115,4 +115,14 @@ export class InvestmentProjectImageTabComponent {
   getImagePath(location: string): string {
     return 'https://bucketfinedev.s3.amazonaws.com/' + location;
   }
+  get canEdit() {
+    const status = this.projectData?.status?.statusValue?.name;
+    return (
+      status !== 'Cerrado' &&
+      status !== 'Cancelado' &&
+      status !== 'Anulado' &&
+      status !== 'En curso' &&
+      status !== 'En Formalización'
+    );
+  }
 }

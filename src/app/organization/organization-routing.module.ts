@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { Route } from '../core/route/route.service';
 
 /** Custom Components */
+import { ClientTemplateResolver } from 'app/clients/common-resolvers/client-template.resolver';
 import { AdhocQueryComponent } from './adhoc-query/adhoc-query.component';
 import { CreateAdhocQueryComponent } from './adhoc-query/create-adhoc-query/create-adhoc-query.component';
 import { EditAdhocQueryComponent } from './adhoc-query/edit-adhoc-query/edit-adhoc-query.component';
@@ -793,7 +794,9 @@ const routes: Routes = [
                   component: InvestmentProjectSimulateTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'Simulations', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    loanPurposeData: DataCodeLoanPurposeResolver,
+                    loanProductsData: LoanProductsResolver
                   }
                 },
                 {
@@ -818,7 +821,8 @@ const routes: Routes = [
                   component: InvestmentProjectInvestmentTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'investments', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    clientTemplate: ClientTemplateResolver
                   }
                 },
                 {

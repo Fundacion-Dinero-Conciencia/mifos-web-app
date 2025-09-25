@@ -145,22 +145,26 @@ export class InvestmentProjectTabComponent implements OnInit {
     });
     deleteDocumentDialogRef.afterClosed().subscribe((response: any) => {
       if (response.delete) {
-        this.organizationService.deleteProjectDocumentsImage(this.InvestmentId, documentId);
-        for (let i = 0; i < this.InvestmentDocuments.length; i++) {
-          if (this.InvestmentDocuments[i].id === documentId) {
-            this.InvestmentDocuments.splice(i, 1);
+        this.organizationService.deleteProjectDocumentsImage(this.InvestmentId, documentId).subscribe((res: any) => {
+          for (let i = 0; i < this.InvestmentDocuments.length; i++) {
+            if (this.InvestmentDocuments[i].id === documentId) {
+              this.InvestmentDocuments.splice(i, 1);
+            }
           }
-        }
-        this.documentsTable.renderRows();
+          this.documentsTable.renderRows();
+        });
       }
     });
   }
 
   filter(e: InputEvent) {
     const filterValue = (e.target as HTMLInputElement).value.toLowerCase();
-
     this.dataSource.data = this.InvestmentDocuments.filter((doc: any) =>
-      doc.fileName.toLowerCase().includes(filterValue)
+      doc.name.toLowerCase().includes(filterValue.toLowerCase())
     );
+  }
+  get canEdit() {
+    const status = this.projectData?.status?.statusValue?.name;
+    return true;
   }
 }

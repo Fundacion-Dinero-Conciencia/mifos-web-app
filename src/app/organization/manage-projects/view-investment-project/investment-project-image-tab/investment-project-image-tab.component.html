@@ -1,10 +1,4 @@
 <div class="tab-container mat-typography">
-  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20 m-r-0">
-    <button mat-raised-button color="primary" [routerLink]="['../edit']" *mifosxHasPermission="'UPDATE_FUND'">
-      <fa-icon icon="edit"></fa-icon>
-      {{ 'labels.buttons.Edit' | translate }}
-    </button>
-  </div>
   <section class="container">
     <mat-card class="mainCard">
       <mat-card-content fxLayout="column" class="m-t-10">
@@ -94,7 +88,7 @@
             <button mat-icon-button *ngIf="coverImage" class="delete-btn" (click)="deleteDocument(coverImage.id)">
               <mat-icon>close</mat-icon>
             </button>
-            <button *ngIf="!coverImage" class="addImageButton" (click)="uploadCoverDocument()">
+            <button *ngIf="!coverImage" class="addImageButton" (click)="uploadCoverDocument()" [disabled]="!canEdit">
               <fa-icon icon="plus" class="m-r-5"></fa-icon>
             </button>
           </mat-card>
@@ -130,7 +124,7 @@
               </mat-form-field>
             </div>
           </ng-container>
-          <button class="addImageButton" (click)="uploadDocument(null)">
+          <button class="addImageButton" (click)="uploadDocument(null)" [disabled]="!canEdit">
             <fa-icon icon="plus" class="m-r-5"></fa-icon>
           </button>
         </div>

@@ -1,82 +1,348 @@
 <div class="tab-container mat-typography">
-  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
-    <button mat-raised-button color="primary" (click)="addAddress()" *mifosxHasPermission="'CREATE_ADDRESS'">
+  <div
+    fxLayout="row"
+    fxLayoutAlign="end"
+    fxLayoutGap="2%"
+    fxLayout.lt-md="column"
+    class="container m-b-20"
+    *ngIf="!isCreatingSimulation"
+  >
+    <!-- <button mat-raised-button color="primary" (click)="addAddress()" *mifosxHasPermission="'CREATE_ADDRESS'">
       {{ 'labels.buttons.Select definitive simulation' | translate }}
-    </button>
-    <button mat-raised-button color="primary" (click)="generateSimulationPdf()">
+    </button> -->
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="switchCreatingSimulation()"
+      [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+    >
       <fa-icon icon="plus" class="m-r-10"></fa-icon>
       Generar simulación
     </button>
   </div>
-  <section class="container">
+  <div
+    fxLayout="row"
+    fxLayoutAlign="end"
+    fxLayoutGap="2%"
+    fxLayout.lt-md="column"
+    class="container m-b-20"
+    *ngIf="isCreatingSimulation"
+  >
+    <button mat-raised-button (click)="backToTable()" class="outlinedButton">Volver a simulaciones</button>
+  </div>
+  <section class="container createForm" *ngIf="isCreatingSimulation">
+    <form [formGroup]="createForm">
+      <mat-form-field fxFlex="20%">
+        <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
+        <mat-select formControlName="loanPurposeId">
+          <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
+            {{ loanPurpose.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="20%">
+        <mat-label>{{ 'labels.inputs.Loan Type' | translate }} </mat-label>
+        <mat-select formControlName="basedInLoanProductId">
+          <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
+            {{ loanProduct.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="20%">
+        <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
+        <input matInput formControlName="amount" type="number" />
+      </mat-form-field>
+      <mat-form-field fxFlex="20%">
+        <mat-label>{{ 'labels.Term' | translate }} ({{ 'labels.catalogs.Months' | translate }})</mat-label>
+        <input matInput formControlName="period" type="number" />
+      </mat-form-field>
+      <mat-form-field fxFlex="20%">
+        <mat-label>{{ 'labels.inputs.Interest Rate' | translate }} (%)</mat-label>
+        <input matInput formControlName="interestRate" type="number" />
+      </mat-form-field>
+    </form>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="switchAllowEditing()"
+      *ngIf="isEditingSimulation && !allowEditingForm"
+      [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+    >
+      Editar simulación
+    </button>
+    <div
+      fxLayout="row"
+      fxLayoutAlign="end"
+      fxLayoutGap="2%"
+      fxLayout.lt-md="column"
+      class="container m-b-20"
+      *ngIf="isEditingSimulation && allowEditingForm"
+    >
+      <button mat-raised-button color="primary" (click)="cancelEditingForm()">
+        {{ 'labels.buttons.Cancel' | translate }}
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="sendEdit()"
+        [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+      >
+        Editar simulación
+      </button>
+    </div>
+    <form
+      *ngIf="adicionalForm && isEditingSimulation"
+      [formGroup]="adicionalForm"
+      fxLayout="column"
+      fxLayoutGap="16px"
+      class="m-t-25"
+    >
+      <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="start center">
+        <mat-form-field appearance="fill" fxFlex style="margin-top: 16px">
+          <mat-label>{{ 'labels.inputs.Charge Type' | translate }}</mat-label>
+          <mat-select formControlName="commissionTypeId" required (selectionChange)="isITESelected()">
+            <mat-option *ngFor="let type of commissionToShow" [value]="type.id">
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>{{ 'labels.inputs.Description' | translate }}</mat-label>
+          <input matInput formControlName="description" required />
+        </mat-form-field>
+
+        <mifosx-input-amount
+          [currency]="currency || ''"
+          [isRequired]="true"
+          [inputFormControl]="adicionalForm.controls.netAmount"
+          [inputLabel]="'Base Price'"
+        >
+        </mifosx-input-amount>
+
+        <!-- <mat-form-field appearance="fill" fxFlex>
+        <mat-label>{{ 'labels.inputs.Base Price' | translate }}</mat-label>
+        <input matInput type="number" formControlName="netAmount" required />
+      </mat-form-field> -->
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>{{ 'labels.inputs.Base Percentage' | translate }}</mat-label>
+          <input matInput type="number" formControlName="vat" />
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="calculateCommission()"
+          [disabled]="!isITESelected() && adicionalForm.invalid"
+        >
+          {{ selectedCommission ? ('labels.buttons.Refresh' | translate) : ('labels.buttons.Add' | translate) }}
+        </button>
+
+        <button *ngIf="selectedCommission" mat-stroked-button color="warn" (click)="cancelEdit()">
+          {{ 'labels.buttons.Cancel' | translate }}
+        </button>
+      </div>
+    </form>
+
+    <table
+      mat-table
+      [dataSource]="comisiones"
+      class="mat-elevation-z8"
+      style="margin-top: 16px"
+      *ngIf="isEditingSimulation"
+    >
+      <ng-container matColumnDef="commissionType">
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Charge Type' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.commissionType?.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Description' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="netAmount">
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Base Price' | translate }}</th>
+        <td mat-cell *matCellDef="let element">${{ element.netAmount | currency: currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="vat">
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Base Percentage' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.vat }} %</td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>Total</th>
+        <td mat-cell *matCellDef="let element">${{ element.total | currency: currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell class="center" *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>
+        <td mat-cell class="center" *matCellDef="let element">
+          <a
+            *ngIf="
+              !['IVA-AEF', 'ITE'].includes(element.commissionType?.name.trim().toUpperCase()) &&
+              projectData?.status?.statusValue?.name === 'En Borrador'
+            "
+            class="document-action-button custom-button"
+            mat-raised-button
+            color="primary"
+            (click)="editCommission(element)"
+          >
+            <i [matTooltip]="'labels.buttons.Edit' | translate" class="fa fa-edit"></i>
+          </a>
+
+          <a
+            *ngIf="
+              !['IVA-AEF', 'AEF'].includes(element.commissionType?.name.trim().toUpperCase()) &&
+              projectData?.status?.statusValue?.name === 'En Borrador'
+            "
+            class="document-action-button custom-button"
+            mat-raised-button
+            color="primary"
+            (click)="deleteCommission(element)"
+          >
+            <i class="fa fa-trash" [matTooltip]="'labels.buttons.Delete' | translate"></i>
+          </a>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsCommisions"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsCommisions"></tr>
+    </table>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
+      <button
+        *ngIf="isEditingSimulation"
+        mat-raised-button
+        color="primary"
+        (click)="submitCommisions()"
+        [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+      >
+        guardar cambios en comisiones
+      </button>
+    </div>
+    <div fxLayout="column" style="margin-top: 24px" *ngIf="isEditingSimulation">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
+        <div>
+          <strong>{{ 'labels.inputs.Amount to be Financed' | translate }}:</strong> ${{
+            getMontoAFinanciar | currency: currency
+          }}
+        </div>
+        <div>
+          <strong>{{ 'labels.inputs.Amount to be Delivered' | translate }}:</strong> ${{
+            getMontoAEntregar | currency: currency
+          }}
+        </div>
+        <div><strong>CAE:</strong> {{ getCaeValue() }}%</div>
+        <div>
+          <strong>{{ 'labels.inputs.Credit' | translate }}:</strong> {{ loanTemplate?.loanProductName }}
+        </div>
+      </div>
+      <br />
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
+        <div>
+          <strong>{{ 'labels.inputs.Amount Requested' | translate }}:</strong> ${{
+            projectData?.amount | currency: currency
+          }}
+        </div>
+        <div>
+          <strong>{{ 'labels.inputs.Loan Term' | translate }}:</strong>
+          {{ projectData?.period }}
+        </div>
+        <div>
+          <strong>{{ 'labels.inputs.Interest Rate' | translate }}:</strong> {{ projectData?.rate }}%
+        </div>
+        <div>
+          <strong>{{ 'labels.inputs.Investor Interest' | translate }}:</strong> ${{
+            investorInterests | currency: currency
+          }}
+        </div>
+        <div>
+          <strong>{{ 'labels.inputs.Total Credit' | translate }}:</strong> ${{ totalCredit | currency: currency }}
+        </div>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="createSimulation()"
+        *ngIf="isCreatingSimulation && !isEditingSimulation"
+        [disabled]="!createForm.valid || projectData?.status?.statusValue?.name !== 'En Borrador'"
+      >
+        {{ 'labels.buttons.Create Simulation' | translate }}
+      </button>
+    </div>
+  </section>
+  <section class="container" *ngIf="!isCreatingSimulation">
     <table mat-table #documentsTable [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="Mnemonic">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
-        <td mat-cell *matCellDef="let document">-</td>
+        <td mat-cell *matCellDef="let document">{{ document.noAccount }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Creation date">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Creation date' | translate }}</th>
-        <td mat-cell *matCellDef="let document">-</td>
+        <td mat-cell *matCellDef="let document">{{ document.creationDate | dateFormat }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Amount to be Financed">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{ 'labels.inputs.Amount to be Financed' | translate }}
         </th>
-        <td mat-cell *matCellDef="let document">{{ document.fileName }}</td>
+        <td mat-cell *matCellDef="let document">{{ document.amountToBeFinanced | currency: currency }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Total interest">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total interest' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.documentClass }}</td>
+        <td mat-cell *matCellDef="let document">{{ document.totalInterest | currency: currency }}</td>
       </ng-container>
 
       <ng-container matColumnDef="Total credit">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total credit' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.documentType }}</td>
+        <td mat-cell *matCellDef="let document">{{ document.total | currency: currency }}</td>
       </ng-container>
       <ng-container matColumnDef="CAE">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>CAE</th>
-        <td mat-cell *matCellDef="let document">{{ document.documentType }}</td>
+        <td mat-cell *matCellDef="let document">{{ document.cae }} %</td>
       </ng-container>
       <ng-container matColumnDef="Rate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Rate' | translate }}</th>
-        <td mat-cell *matCellDef="let document">-</td>
+        <td mat-cell *matCellDef="let document">{{ document.rate }} %</td>
       </ng-container>
       <ng-container matColumnDef="Term">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.Term' | translate }}</th>
-        <td mat-cell *matCellDef="let document">-</td>
+        <td mat-cell *matCellDef="let document">{{ document.period }} {{ document.frecuency }}</td>
       </ng-container>
       <ng-container matColumnDef="Credit Type">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Credit Type' | translate }}</th>
-        <td mat-cell *matCellDef="let document">-</td>
+        <td mat-cell *matCellDef="let document">{{ document.creditType }}</td>
       </ng-container>
-
       <ng-container matColumnDef="showMore">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total credit' | translate }}</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.buttons.Download' | translate }}</th>
         <td mat-cell *matCellDef="let document; let index">
-          <button
-            class="document-action-button"
-            mat-raised-button
-            color="primary"
-            (click)="downloadDocument(document.id)"
-          >
+          <button class="document-action-button" mat-raised-button color="primary">
             <fa-icon icon="cloud-download-alt"></fa-icon>
-          </button>
-          <button
-            class="document-action-button"
-            mat-raised-button
-            color="warn"
-            (click)="deleteDocument(document.id, document.name)"
-          >
-            <fa-icon icon="times"></fa-icon>
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="projectData?.status?.statusValue?.name === 'En Borrador' && switchEditingSimulation(row)"
+      ></tr>
+      <tr class="mat-row noContentTable" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="empty-state">
+            <fa-icon [icon]="filesvg" size="3x"></fa-icon>
+            <p>Aun no existen simulaciones para este proyecto</p>
+            <button mat-raised-button color="primary" (click)="switchCreatingSimulation()">Crear simulación</button>
+          </div>
+        </td>
+      </tr>
     </table>
   </section>
   <!-- <mat-paginator
