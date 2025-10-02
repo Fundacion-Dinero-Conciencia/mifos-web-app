@@ -55,8 +55,7 @@ jobs:
             --build-arg="MIFOS_DEFAULT_CHAR_DELIMITER=," \
             --build-arg="MIFOS_DEFAULT_LANGUAGE=es" \
             --build-arg="MIFOS_DEFAULT_DATE_FORMAT=dd MMMM yyyy" \
-            --build-arg="MIFOS_OAUTH_SERVER_ENABLED=false" 
-
+            --build-arg="MIFOS_OAUTH_SERVER_ENABLED=false" \
             -t $IMAGE_URI:$TAG .
     
           docker push $IMAGE_URI:$TAG
