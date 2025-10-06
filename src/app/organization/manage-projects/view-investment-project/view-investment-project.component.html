@@ -57,6 +57,16 @@
     >
       {{ 'labels.heading.investments' | translate }}
     </a>
+
+    <a
+      mat-tab-link
+      [routerLink]="['./grupos-pagare']"
+      routerLinkActive
+      #grupos="routerLinkActive"
+      [active]="grupos.isActive"
+    >
+      Pagarés
+    </a>
     <a mat-tab-link [routerLink]="['./notas']" routerLinkActive #notes="routerLinkActive" [active]="notes.isActive">
       {{ 'labels.heading.Notes' | translate }}
     </a>

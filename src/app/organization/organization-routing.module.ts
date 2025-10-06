@@ -32,6 +32,7 @@ import { EditLoanProvisioningCriteriaComponent } from './loan-provisioning-crite
 import { LoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/loan-provisioning-criteria.component';
 import { ViewLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/view-loan-provisioning-criteria/view-loan-provisioning-criteria.component';
 import { ManageFundsComponent } from './manage-funds/manage-funds.component';
+import { PromissoryNoteGroupsResolver } from './manage-projects/investment-project-promissory-notes.resolver';
 import { CreateOfficeComponent } from './offices/create-office/create-office.component';
 import { EditOfficeComponent } from './offices/edit-office/edit-office.component';
 import { OfficesComponent } from './offices/offices.component';
@@ -63,6 +64,8 @@ import { WorkingDaysComponent } from './working-days/working-days.component';
 
 /** Custom Resolvers */
 import { LoanProductsResolver } from 'app/products/loan-products/loan-products.resolver';
+import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
+import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 import { AdhocQueryTemplateResolver } from './adhoc-query/adhoc-query-template.resolver';
 import { AdhocQueriesResolver } from './adhoc-query/common-resolvers/adhoc-queries.resolver';
 import { AdhocQueryAndTemplateResolver } from './adhoc-query/common-resolvers/adhoc-query-and-template.resolver';
@@ -114,6 +117,7 @@ import { InvestmentProjectImageTabComponent } from './manage-projects/view-inves
 import { InvestmentProjectImpactTabComponent } from './manage-projects/view-investment-project/investment-project-impact-tab/investment-project-impact-tab.component';
 import { InvestmentProjectInvestmentTabComponent } from './manage-projects/view-investment-project/investment-project-investment-tab/investment-project-investment-tab.component';
 import { InvestmentProjectNotesTabComponent } from './manage-projects/view-investment-project/investment-project-notes-tab/investment-project-notes-tab.component';
+import { InvestmentProjectPromissoryNoteTabComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/investment-project-promissory-note-tab.component';
 import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-investment-project/investment-project-simulate-tab/investment-project-simulate-tab.component';
 import { ViewInvestmentProjectComponent } from './manage-projects/view-investment-project/view-investment-project.component';
 import { ViewStatusHistoryComponent } from './manage-projects/view-status-history/view-status-history.component';
@@ -135,8 +139,6 @@ import { CashierTransactionTemplateResolver } from './tellers/common-resolvers/t
 import { TellerResolver } from './tellers/common-resolvers/teller.resolver';
 import { TellersResolver } from './tellers/common-resolvers/tellers.resolver';
 import { WorkingDaysResolver } from './working-days/working-days.resolver';
-import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
-import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 /** Organization Routes */
 const routes: Routes = [
   Route.withShell([
@@ -823,6 +825,16 @@ const routes: Routes = [
                   resolve: {
                     accountData: ManageProjectResolver,
                     clientTemplate: ClientTemplateResolver
+                  }
+                },
+                {
+                  path: 'grupos-pagare',
+                  component: InvestmentProjectPromissoryNoteTabComponent,
+                  data: { title: 'Investment Project', breadcrumb: 'pagaré', routeParamBreadcrumb: false },
+                  resolve: {
+                    accountData: ManageProjectResolver,
+                    clientTemplate: ClientTemplateResolver,
+                    PromissoryNoteGroups: PromissoryNoteGroupsResolver
                   }
                 },
                 {

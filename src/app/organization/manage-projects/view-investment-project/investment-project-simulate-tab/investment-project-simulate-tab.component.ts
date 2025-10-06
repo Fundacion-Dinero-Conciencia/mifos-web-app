@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from 'app/core/alert/alert.service';
@@ -12,8 +12,9 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { SystemService } from 'app/system/system.service';
+import { forkJoin } from 'rxjs';
+import { finalize, map, switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'mifosx-investment-project-simulate-tab',
@@ -470,13 +471,81 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     });
   }
 
+  deleteCommission(commission: any): void {
+    const isAEF =
+      commission.commissionType?.name?.trim().toUpperCase() === 'AEF' ||
+      commission.commissionType?.name?.trim().toUpperCase() === 'MONTO FACTURA';
+    const toDelete: any[] = [];
+
+    // Buscar el IVA-AEF solo si el que se elimina es AEF
+    if (isAEF) {
+      const ivaAEF = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF');
+      if (ivaAEF) {
+        toDelete.push(ivaAEF);
+      }
+      if (commission.commissionType?.name?.trim().toUpperCase() === 'MONTO FACTURA') {
+        const AEF = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
+        if (AEF) {
+          toDelete.push(AEF);
+        }
+      }
+    }
+
+    // Agregar el AEF o cualquier otra comisión a eliminar
+    toDelete.push(commission);
+
+    // Procesar eliminaciones
+    toDelete.forEach((item) => {
+      const identifier = item.id ?? item.uuid;
+
+      if (!identifier) return; // No se puede identificar la comisión
+      // Eliminar del backend si tiene ID
+      if (item.id) {
+        this.organizationService.deleteAdditionalExpensesById(item.id, false).subscribe({
+          next: () => {
+            this.removeCommissionFromTable(item);
+            if (item === commission) {
+              this.alertService.alert({
+                type: 'Success',
+                message: this.translateService.instant('labels.inputs.Deleted')
+              });
+            }
+          },
+          error: (error) => {
+            if (error?.error?.defaultUserMessage) {
+              const message = error.error.defaultUserMessage;
+              this.alertService.alert({
+                type: 'Error',
+                message: this.translateService.instant(message)
+              });
+            }
+          }
+        });
+      } else {
+        // Eliminar solo localmente (por UUID)
+        this.removeCommissionFromTable(item);
+      }
+    });
+
+    this.comisiones._updateChangeSubscription();
+    this.getTotalCredit();
+  }
+
+  private removeCommissionFromTable(commissionToRemove: any): void {
+    this.comisiones.data = this.comisiones.data.filter((c) =>
+      c.id ? c.id !== commissionToRemove.id : c.uuid !== commissionToRemove.uuid
+    );
+  }
+
   sendEdit() {
     const modifiedData = {
       ...this.loanTemplateEdit,
-      ...this.form.value,
       principal: this.createForm.get('amount').value,
       interestRatePerPeriod: this.createForm.get('interestRate').value,
-      numberOfRepayments: this.createForm.get('period').value
+      numberOfRepayments: this.createForm.get('period').value,
+      amount: undefined,
+      interestRate: undefined,
+      period: undefined
     };
     this.loanService.updateLoansAccount(this.projectData?.loanId, modifiedData).subscribe({
       next: (data) => {
@@ -593,7 +662,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       total: c.total,
       id: c.id
     }));
-    this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {});
+    this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
+      window.location.reload();
+    });
   }
 
   submitCommisions() {
@@ -660,26 +731,118 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     return amount;
   }
 
-  loadTypesCommissions(): void {
-    this.systemService.getCodeByName('CONFIG_COMMISSION_TAXES').subscribe((data) => {
-      this.commissionTypes = data?.codeValues?.filter((cv: any) => cv.active); // trae comisiones activas
-      this.commissionToShow = this.commissionTypes.filter((cv: any) =>
-        [
-          // filtra comisiones a mostrar
-          'OTROS GASTOS',
-          'ITE',
-          this.isFactoring === true ? 'MONTO FACTURA' : ''
-        ].includes(cv.name?.trim().toUpperCase())
-      );
+  loadingCommissions = false; //
 
-      this.systemService.getCodeByName('COMMISSION_AEF').subscribe((data) => {
-        // obtiene las comisiones de la tabla AEF
-        this.commissionAEF = data?.codeValues?.filter((cv: any) => cv.active);
-        this.getAdditionalExpensesByProjectId();
-        this.getMontoAEntregar;
-        this.getDataForEditLoan();
+  loadTypesCommissions(): void {
+    this.loadingCommissions = true; //
+
+    // Primer paso: obtener CONFIG_COMMISSION_TAXES
+    this.systemService
+      .getCodeByName('CONFIG_COMMISSION_TAXES')
+      .pipe(
+        map((data) => {
+          this.commissionTypes = data?.codeValues?.filter((cv: any) => cv.active) || [];
+
+          this.commissionToShow = this.commissionTypes.filter((cv: any) => [
+              'OTROS GASTOS',
+              'ITE',
+              this.isFactoring === true ? 'MONTO FACTURA' : ''
+            ].includes(cv.name?.trim().toUpperCase()));
+
+          return true;
+        }),
+        // Segundo paso: obtener COMMISSION_AEF
+        switchMap(() => this.systemService.getCodeByName('COMMISSION_AEF')),
+        map((data) => {
+          this.commissionAEF = data?.codeValues?.filter((cv: any) => cv.active) || [];
+        }),
+        // Tercer paso: cuando las dos peticiones terminen, ejecutar en paralelo los métodos dependientes
+        switchMap(() =>
+          forkJoin([
+            this.organizationService.getAdditionalExpensesByProjectId(this.projectData.id),
+            this.loanService.getLoansAccountAndTemplateResource(this.projectData?.loanId)])
+        ),
+        finalize(() => {
+          this.loadingCommissions = false; // ✅ termina loading siempre
+        })
+      )
+      .subscribe({
+        next: ([
+          additionalExpenses,
+          loanTemplateEdit
+        ]) => {
+          // Procesar los resultados una vez todo haya cargado
+          console.log(additionalExpenses);
+          this.processAdditionalExpenses(additionalExpenses);
+          this.loanTemplateEdit = this.buildLoanTemplateEdit(loanTemplateEdit);
+
+          this.getMontoAEntregar;
+          this.getTotalCredit();
+        },
+        error: (err) => {
+          console.error('Error cargando comisiones:', err);
+          this.loadingCommissions = false;
+        }
       });
-    });
+  }
+
+  private processAdditionalExpenses(data: any): void {
+    if (data && Array.isArray(data)) {
+      const enriched = data.map((item) => {
+        const tipo = this.commissionTypes.find((c) => c.id === item.commissionTypeId);
+        return { ...item, id: item.id, commissionType: tipo };
+      });
+      console.log(enriched);
+      if (enriched.length > 0) {
+        this.comisiones.data = enriched;
+      }
+
+      const existeAEF = enriched.some((item) => item.commissionType?.name === 'AEF');
+      if (!existeAEF) {
+        this.addCommissionAEF(null, null);
+      }
+    } else {
+      this.addCommissionAEF(null, null);
+    }
+
+    this.getTotalCredit();
+  }
+
+  private buildLoanTemplateEdit(data: any): any {
+    return {
+      productId: data.product.id,
+      submittedOnDate: this.dateUtils.formatDate(
+        data.timeline.expectedDisbursementDate,
+        SettingsService.businessDateFormat
+      ),
+      expectedDisbursementDate: this.dateUtils.formatDate(
+        data.timeline.expectedDisbursementDate,
+        SettingsService.businessDateFormat
+      ),
+      loanTermFrequency: data.termFrequency,
+      loanTermFrequencyType: data.termPeriodFrequencyType.id,
+      numberOfRepayments: data.numberOfRepayments,
+      repaymentEvery: data.repaymentEvery,
+      repaymentFrequencyType: data.repaymentFrequencyType.id,
+      interestType: data.interestType.id,
+      isEqualAmortization: data.isEqualAmortization,
+      amortizationType: data.amortizationType.id,
+      interestCalculationPeriodType: data.interestCalculationPeriodType.id,
+      graceOnArrearsAgeing: data.graceOnArrearsAgeing,
+      transactionProcessingStrategyCode: data.transactionProcessingStrategyCode,
+      interestRateFrequencyType: data.interestRateFrequencyType.id,
+      interestRatePerPeriod: data.interestRatePerPeriod,
+      enableInstallmentLevelDelinquency: data.enableInstallmentLevelDelinquency,
+      charges: data.charges || [],
+      collateral: data.collateral || [],
+      disbursementData: data.disbursementData || [],
+      clientId: data.clientId,
+      dateFormat: SettingsService.businessDateFormat,
+      locale: this.settingsService.language.code,
+      loanType: data?.loanType?.value.toLowerCase(),
+      principal: data.principal,
+      allowPartialPeriodInterestCalcualtion: data.allowPartialPeriodInterestCalculation
+    };
   }
 
   getDataForEditLoan() {
@@ -888,6 +1051,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   getAdditionalExpensesByProjectId(): void {
     this.organizationService.getAdditionalExpensesByProjectId(this.projectData.id).subscribe((data) => {
+      console.log(data);
       if (data && Array.isArray(data)) {
         // si no hay data o no existen las comisiones las carga
         const enriched = data.map((item) => {
@@ -983,6 +1147,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   getLoanTemplate() {
+    this.loadingCommissions = true;
     this.loanService.getLoanAccountAssociationDetails(this.projectData.loanId).subscribe((data) => {
       this.loanTemplate = data;
       this.isFactoring = this.loanTemplate?.shortName === 'FACT';

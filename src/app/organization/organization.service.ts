@@ -950,6 +950,20 @@ export class OrganizationService {
   getSimulations(id: string) {
     return this.http.get(`/investmentproject/${id}/all-simulations`);
   }
+  getPromissoryNoteGroups(id: string) {
+    return this.http.get(`/investmentgroup/all/project/${id} `);
+  }
+  createPromissoryNoteGroup(data: {
+    projectId: string;
+    creationDate: string;
+    dateFormat: string;
+    locale: string;
+    signators?: number[];
+  }) {
+    return this.http.post(`/investmentgroup`, JSON.stringify(data), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
   getProjectParticipationPageable(filters: {
     participantId?: string;

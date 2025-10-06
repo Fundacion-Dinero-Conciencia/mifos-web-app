@@ -7,11 +7,12 @@
   gap: 1rem;
 }
 
-.container button.outlinedButton {
+button.outlinedButton {
   background-color: transparent;
   color: #1074b9;
   border: 1px solid #1074b9;
   box-shadow: unset;
+  max-height: 3rem;
 }
 
 .empty-state {
@@ -30,9 +31,10 @@
   margin-top: 1rem;
 }
 
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.filtersRow {
+  min-width: 100%;
+}
+
+.fullWidth {
   min-width: 100%;
 }
