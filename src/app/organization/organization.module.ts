@@ -94,6 +94,7 @@ import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-in
 import { InvestmentProjectImpactTabComponent } from './manage-projects/view-investment-project/investment-project-impact-tab/investment-project-impact-tab.component';
 import { InvestmentProjectInvestmentTabComponent } from './manage-projects/view-investment-project/investment-project-investment-tab/investment-project-investment-tab.component';
 import { InvestmentProjectNotesTabComponent } from './manage-projects/view-investment-project/investment-project-notes-tab/investment-project-notes-tab.component';
+import { InvestmentProjectPromissoryNoteTabComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/investment-project-promissory-note-tab.component';
 
 /**
  * Organization Module
@@ -187,7 +188,8 @@ import { InvestmentProjectNotesTabComponent } from './manage-projects/view-inves
     InvestmentProjectSimulateTabComponent,
     InvestmentProjectImpactTabComponent,
     InvestmentProjectInvestmentTabComponent,
-    InvestmentProjectNotesTabComponent
+    InvestmentProjectNotesTabComponent,
+    InvestmentProjectPromissoryNoteTabComponent
   ],
   providers: [
     CreateHoliday,

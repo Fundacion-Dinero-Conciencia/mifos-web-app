@@ -2,14 +2,14 @@
   window['env'] = window['env'] || {};
 
   // BackEnd Environment variables
-  window['env']['fineractApiUrls'] = 'https://fineract-mifos-dev.up.railway.app';
-  window['env']['fineractApiUrl'] = 'https://fineract-mifos-dev.up.railway.app';
+  window['env']['fineractApiUrls'] = 'https://fineract-mifos-test-dev.up.railway.app';
+  window['env']['fineractApiUrl'] = 'https://fineract-mifos-test-dev.up.railway.app';
 
   window['env']['apiProvider'] = '';
   window['env']['apiVersion'] = '';
 
   window['env']['fineractPlatformTenantId'] = '';
-  window['env']['fineractPlatformTenantIds'] = '';
+  window['env']['fineractPlatformTenantIds'] = 'default, migration';
 
   // Language Environment variables
   window['env']['defaultLanguage'] = '';

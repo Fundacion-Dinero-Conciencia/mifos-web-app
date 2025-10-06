@@ -888,6 +888,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   getAdditionalExpensesByProjectId(): void {
     this.organizationService.getAdditionalExpensesByProjectId(this.projectData.id).subscribe((data) => {
+      console.log(data);
       if (data && Array.isArray(data)) {
         // si no hay data o no existen las comisiones las carga
         const enriched = data.map((item) => {

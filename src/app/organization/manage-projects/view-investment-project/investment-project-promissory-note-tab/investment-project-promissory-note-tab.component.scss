@@ -1,0 +1,40 @@
+.tab-container {
+  padding: 1%;
+  margin: 1%;
+}
+
+.container form {
+  gap: 1rem;
+}
+
+button.outlinedButton {
+  background-color: transparent;
+  color: #1074b9;
+  border: 1px solid #1074b9;
+  box-shadow: unset;
+  max-height: 3rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.empty-state fa-icon {
+  display: block;
+  margin: 0 auto 1rem;
+  color: #999;
+}
+
+.empty-state button {
+  margin-top: 1rem;
+}
+
+.filtersRow {
+  min-width: 100%;
+}
+
+.fullWidth {
+  min-width: 100%;
+}

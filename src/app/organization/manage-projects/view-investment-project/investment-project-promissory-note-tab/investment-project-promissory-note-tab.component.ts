@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -7,18 +7,22 @@ import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { ClientsService } from 'app/clients/clients.service';
 import { AlertService } from 'app/core/alert/alert.service';
 import { OrganizationService } from 'app/organization/organization.service';
-import { of } from 'rxjs';
 import { catchError, debounceTime } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 @Component({
-  selector: 'mifosx-investment-project-investment-tab',
-  templateUrl: './investment-project-investment-tab.component.html',
-  styleUrls: ['./investment-project-investment-tab.component.scss']
+  selector: 'mifosx-investment-project-promissory-note-tab',
+  templateUrl: './investment-project-promissory-note-tab.component.html',
+  styleUrls: ['./investment-project-promissory-note-tab.component.scss']
 })
-export class InvestmentProjectInvestmentTabComponent implements OnInit {
+export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
+  isCreatingPromissoryNoteGroup = false;
   projectData: any;
   clientClassificationTypeOptions: any;
   investorTypes: any[];
   filesvg = faFileAlt;
+  PromissoryNoteGroups: any[];
+  investorInGroup: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
@@ -26,9 +30,10 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
     private alertService: AlertService,
     private clientsService: ClientsService
   ) {
-    this.route.data.subscribe((data: { accountData: any; investments: any; clientTemplate: any }) => {
+    this.route.data.subscribe((data: { accountData: any; PromissoryNoteGroups: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
       this.clientClassificationTypeOptions = data.clientTemplate.clientClassificationOptions;
+      this.PromissoryNoteGroups = data.PromissoryNoteGroups;
     });
     this.filters = this.formBuilder.group({
       clientClassificationId: [
@@ -43,20 +48,58 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       this.loadInvestments(0, this.paginator.pageSize, values);
     });
   }
+  clientForm: UntypedFormGroup;
   filters: UntypedFormGroup;
+  displayedColumnsGroups: string[] = [
+    'Number',
+    'Mnemotécnico',
+    'InvestmentNumber',
+    'Amount',
+    'State',
+    'Process',
+    'Actions'
+  ];
   displayedColumns: string[] = [
     'Investor',
+    'Date',
     'Value invested',
-    'Investment status',
-    'Watch promissory note',
-    'Watch order'
+    'Group'
+  ];
+  displayedColumnsLegal: string[] = [
+    'add',
+    'name',
+    'lastName'
+  ];
+  displayedColumnsAval: string[] = [
+    'add',
+    'name',
+    'lastName',
+    'adress'
   ];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+  dataSourceGroups: MatTableDataSource<any> = new MatTableDataSource<any>();
+  dataSourceLegal: MatTableDataSource<any> = new MatTableDataSource<any>();
+  dataSourceAval: MatTableDataSource<any> = new MatTableDataSource<any>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   requestParams = {};
   ngOnInit(): void {
     this.loadInvestments(0, 10);
+    this.dataSourceGroups.data = this.PromissoryNoteGroups;
+    this.clientForm = this.formBuilder.group({
+      documentNumber: [
+        '',
+        Validators.required
+      ],
+      date: [
+        '',
+        Validators.required
+      ],
+      mnemonic: [
+        '',
+        Validators.required
+      ]
+    });
   }
 
   downloadPromissoryNote(id: string) {
@@ -103,6 +146,7 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       window.open(url);
     });
   }
+
   downloadFundMandate(clientId: string, amount: string) {
     const jsonData = {
       clientId: clientId,
@@ -115,6 +159,48 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       const blob = new Blob([byteArray], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       window.open(url);
+    });
+  }
+
+  codeToState(code: number): string {
+    switch (code) {
+      case 100:
+        return 'Aceptada';
+      case 200:
+        return 'Pendiente';
+      case 300:
+        return 'Rechazada';
+      case 400:
+        return 'Reservado';
+
+      default:
+        'Pendiente';
+        break;
+    }
+  }
+
+  onSubmitClient() {}
+
+  onInvestorSelected(event: { checked: boolean }, client: any) {
+    if (event.checked) {
+      this.investorInGroup.push(client.participationId);
+    } else {
+      const index = this.investorInGroup.indexOf(client.participationId);
+      if (index > -1) {
+        this.investorInGroup.splice(index, 1);
+      }
+    }
+  }
+
+  shorten(content: string, length: number = 100): string {
+    const plain = content?.replace(/<[^>]+>/g, '').replace(/\n+/g, ' ') || '';
+    return plain.length > length ? plain.slice(0, length) + '...' : plain;
+  }
+  startCreatingPromissoryNoteGroup() {
+    this.isCreatingPromissoryNoteGroup = true;
+    this.clientForm = this.formBuilder.group({
+      name: [''],
+      clientClassificationId: ['']
     });
   }
 
@@ -140,36 +226,15 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
         })
       )
       .subscribe((response: any) => {
-        console.log(response);
         this.dataSource.data = response.content || response;
         this.paginator.length = response.total;
         this.dataSource.paginator = this.paginator;
       });
   }
 
-  codeToState(code: number): string {
-    switch (code) {
-      case 100:
-        return 'Aceptada';
-      case 200:
-        return 'Pendiente';
-      case 300:
-        return 'Rechazada';
-      case 400:
-        return 'Reservado';
-
-      default:
-        'Pendiente';
-        break;
-    }
-  }
-
   onPageChange(event: any) {
     this.loadInvestments(event.pageIndex, event.pageSize);
   }
 
-  shorten(content: string, length: number = 100): string {
-    const plain = content?.replace(/<[^>]+>/g, '').replace(/\n+/g, ' ') || '';
-    return plain.length > length ? plain.slice(0, length) + '...' : plain;
-  }
+  onSubmitClients() {}
 }
