@@ -29,3 +29,10 @@
 .empty-state button {
   margin-top: 1rem;
 }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100%;
+}

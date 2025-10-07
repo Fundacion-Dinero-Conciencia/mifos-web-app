@@ -30,7 +30,78 @@
   >
     <button mat-raised-button (click)="backToTable()" class="outlinedButton">Volver a simulaciones</button>
   </div>
-  <section class="container createForm" *ngIf="isCreatingSimulation">
+
+  <section class="container" *ngIf="!isCreatingSimulation">
+    <table mat-table #documentsTable [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="Mnemonic">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.noAccount }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Creation date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Creation date' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.creationDate | dateFormat }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Amount to be Financed">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'labels.inputs.Amount to be Financed' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let document">{{ document.amountToBeFinanced | currency: currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Total interest">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total interest' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.totalInterest | currency: currency }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Total credit">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total credit' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.total | currency: currency }}</td>
+      </ng-container>
+      <ng-container matColumnDef="CAE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>CAE</th>
+        <td mat-cell *matCellDef="let document">{{ document.cae }} %</td>
+      </ng-container>
+      <ng-container matColumnDef="Rate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Rate' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.rate }} %</td>
+      </ng-container>
+      <ng-container matColumnDef="Term">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.Term' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.period }} {{ document.frecuency }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Credit Type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Credit Type' | translate }}</th>
+        <td mat-cell *matCellDef="let document">{{ document.creditType }}</td>
+      </ng-container>
+      <ng-container matColumnDef="showMore">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.buttons.Download' | translate }}</th>
+        <td mat-cell *matCellDef="let document; let index">
+          <button class="document-action-button" mat-raised-button color="primary" (click)="generateSimulationPdf()">
+            <fa-icon icon="cloud-download-alt"></fa-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="projectData?.status?.statusValue?.name === 'En Borrador' && switchEditingSimulation(row)"
+      ></tr>
+      <tr class="mat-row noContentTable" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="empty-state">
+            <fa-icon [icon]="filesvg" size="3x"></fa-icon>
+            <p>Aun no existen simulaciones para este proyecto</p>
+            <button mat-raised-button color="primary" (click)="switchCreatingSimulation()">Crear simulación</button>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </section>
+  <section class="container createForm" *ngIf="isCreatingSimulation && !loadingCommissions">
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="20%">
         <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
@@ -130,9 +201,9 @@
         </mifosx-input-amount>
 
         <!-- <mat-form-field appearance="fill" fxFlex>
-        <mat-label>{{ 'labels.inputs.Base Price' | translate }}</mat-label>
-        <input matInput type="number" formControlName="netAmount" required />
-      </mat-form-field> -->
+          <mat-label>{{ 'labels.inputs.Base Price' | translate }}</mat-label>
+          <input matInput type="number" formControlName="netAmount" required />
+        </mat-form-field> -->
 
         <mat-form-field appearance="fill" fxFlex>
           <mat-label>{{ 'labels.inputs.Base Percentage' | translate }}</mat-label>
@@ -252,15 +323,15 @@
       <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
         <div>
           <strong>{{ 'labels.inputs.Amount Requested' | translate }}:</strong> ${{
-            projectData?.amount | currency: currency
+            loanTemplate?.principal | currency: currency
           }}
         </div>
         <div>
           <strong>{{ 'labels.inputs.Loan Term' | translate }}:</strong>
-          {{ projectData?.period }}
+          {{ selectedSimulation?.period }}
         </div>
         <div>
-          <strong>{{ 'labels.inputs.Interest Rate' | translate }}:</strong> {{ projectData?.rate }}%
+          <strong>{{ 'labels.inputs.Interest Rate' | translate }}:</strong> {{ selectedSimulation?.rate }}%
         </div>
         <div>
           <strong>{{ 'labels.inputs.Investor Interest' | translate }}:</strong> ${{
@@ -284,76 +355,9 @@
       </button>
     </div>
   </section>
-  <section class="container" *ngIf="!isCreatingSimulation">
-    <table mat-table #documentsTable [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="Mnemonic">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.noAccount }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="Creation date">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Creation date' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.creationDate | dateFormat }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="Amount to be Financed">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          {{ 'labels.inputs.Amount to be Financed' | translate }}
-        </th>
-        <td mat-cell *matCellDef="let document">{{ document.amountToBeFinanced | currency: currency }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="Total interest">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total interest' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.totalInterest | currency: currency }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="Total credit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Total credit' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.total | currency: currency }}</td>
-      </ng-container>
-      <ng-container matColumnDef="CAE">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>CAE</th>
-        <td mat-cell *matCellDef="let document">{{ document.cae }} %</td>
-      </ng-container>
-      <ng-container matColumnDef="Rate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Rate' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.rate }} %</td>
-      </ng-container>
-      <ng-container matColumnDef="Term">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.Term' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.period }} {{ document.frecuency }}</td>
-      </ng-container>
-      <ng-container matColumnDef="Credit Type">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Credit Type' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.creditType }}</td>
-      </ng-container>
-      <ng-container matColumnDef="showMore">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.buttons.Download' | translate }}</th>
-        <td mat-cell *matCellDef="let document; let index">
-          <button class="document-action-button" mat-raised-button color="primary" (click)="generateSimulationPdf()">
-            <fa-icon icon="cloud-download-alt"></fa-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-        (click)="projectData?.status?.statusValue?.name === 'En Borrador' && switchEditingSimulation(row)"
-      ></tr>
-      <tr class="mat-row noContentTable" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-          <div class="empty-state">
-            <fa-icon [icon]="filesvg" size="3x"></fa-icon>
-            <p>Aun no existen simulaciones para este proyecto</p>
-            <button mat-raised-button color="primary" (click)="switchCreatingSimulation()">Crear simulación</button>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </section>
+  <div class="flex justify-center items-center py-8 loader" *ngIf="loadingCommissions">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
   <!-- <mat-paginator
     *ngIf="InvestmentDocuments && InvestmentDocuments.length > 10"
     [pageSizeOptions]="[10, 25, 50]"
