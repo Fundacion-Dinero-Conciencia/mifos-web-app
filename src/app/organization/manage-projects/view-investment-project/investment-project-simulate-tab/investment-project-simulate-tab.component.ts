@@ -476,8 +476,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       ...this.form.value,
       principal: this.createForm.get('amount').value,
       interestRatePerPeriod: this.createForm.get('interestRate').value,
-      numberOfRepayments: this.createForm.get('period').value
+      numberOfRepayments: this.createForm.get('period').value,
+      loanTermFrequency: this.createForm.get('period').value
     };
+
     this.loanService.updateLoansAccount(this.projectData?.loanId, modifiedData).subscribe({
       next: (data) => {
         const principal = this.createForm.get('amount').value;
