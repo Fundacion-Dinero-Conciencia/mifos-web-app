@@ -479,7 +479,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       this.organizationService.getSimulations(this.projectData.id).subscribe((response: any) => {
         this.dataSource.data = response || [];
         this.addQueryParam(0);
-        // window.location.reload()
+        window.location.reload();
       });
       this.switchCreatingSimulation();
     });
@@ -582,16 +582,11 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   submitProjectData(editCredit: boolean, amount?: any, rate?: any, period?: any) {
     var payload: any = {};
-    payload.mnemonic = this.projectData.mnemonic;
-    payload.name = this.projectData.name;
-    payload.position = this.projectData.position || 0;
-
-    if (editCredit === false) {
-      payload.amountToBeFinanced = this.getMontoAFinanciar;
-      payload.amountToBeDelivered = this.getMontoAEntregar;
-      payload.creditTypeId = this.selectedSimulation.loanPurposeId;
-      payload.projectRate = this.projectData.rate;
-    }
+    payload.amountToBeFinanced = this.getMontoAFinanciar;
+    payload.amountToBeDelivered = this.getMontoAEntregar;
+    payload.creditTypeId = this.selectedSimulation.loanPurposeId;
+    payload.projectRate = this.projectData.rate;
+    payload.onlyAmounts = true;
 
     if (amount && amount > 0) {
       payload.amount = amount;
@@ -603,12 +598,12 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       payload.period = period;
     }
 
-    this.organizationService.updateInvestmentProjects(this.idProject, payload).subscribe({
+    this.organizationService.updateInvestmentProjectAmounts(this.idProject, payload).subscribe({
       next: (data) => {
         if (editCredit === true) {
           this.organizationService.deleteAdditionalExpensesById(this.idProject as string, true).subscribe({
             next: (dataX) => {
-              window.location.reload();
+              // window.location.reload();
             }
           });
         } else {
@@ -679,7 +674,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       id: c.id
     }));
     this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
-      window.location.reload();
+      // window.location.reload();
     });
   }
 
@@ -693,7 +688,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     });
     warningtDialogRef.afterClosed().subscribe((response: any) => {
       if (response.confirm) {
-        this.submitProjectData(false);
+        const principal = this.createForm.get('amount').value;
+        const numberOfRepayments = this.createForm.get('period').value;
+        const interestRatePerPeriod = this.createForm.get('interestRate').value;
+        this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments);
         this.saveCommissions();
       }
     });

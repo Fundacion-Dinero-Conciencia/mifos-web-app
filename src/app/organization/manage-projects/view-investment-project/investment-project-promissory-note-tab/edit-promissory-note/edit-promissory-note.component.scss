@@ -45,3 +45,32 @@ button.outlinedButton {
   align-items: center;
   min-width: 100%;
 }
+
+.moveInvestmentsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem 1rem 2rem;
+  min-width: 100%;
+  border-radius: 4px;
+  background-color: #1074b933;
+  border: solid 1px rgb(0 0 0 / 12.2%);
+}
+
+.moveInvestmentsContainer p {
+  font-weight: bold;
+  font-size: 1rem;
+  margin: unset;
+}
+
+.moveInvestmentsContainer p .icon {
+  color: #1074b9;
+  margin-right: 1rem;
+}
+
+button.clearFilters {
+  text-decoration: underline;
+  margin-left: 1rem;
+  font-weight: 500;
+}

@@ -1,0 +1,197 @@
+<div class="flex justify-center items-center py-8 loader" *ngIf="loading">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>
+<section class="tab-container mat-typography mt-10 createGroup" *ngIf="!loading">
+  <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper [linear]="true">
+    <ng-template matStepperIcon="number">
+      <fa-icon icon="pencil-alt" size="sm"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="edit">
+      <fa-icon icon="pencil-alt" size="sm"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="done">
+      <fa-icon icon="check" size="sm"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="error">
+      <fa-icon icon="exclamation-triangle" size="lg"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="preview">
+      <fa-icon icon="eye" size="sm"></fa-icon>
+    </ng-template>
+
+    <mat-step [stepControl]="">
+      <ng-template matStepLabel>CONSOLIDACIÓN DE GRUPO</ng-template>
+      <form
+        [formGroup]="clientForm"
+        class="generalForm"
+        fxLayout="row wrap"
+        fxLayoutGap="16px"
+        (ngSubmit)="onSubmitClient()"
+      >
+        <form [formGroup]="filters" class="filtersRow">
+          <mat-form-field fxFlex="25%" class="inputSearch">
+            <mat-label>{{ 'labels.text.Search by Text' | translate }}</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+          <mat-form-field fxFlex="15%" class="inputSearch m-l-25 m-b-10">
+            <mat-label>{{ 'labels.inputs.Client Classification' | translate }}</mat-label>
+            <mat-select formControlName="clientClassificationId">
+              <mat-option
+                *ngFor="let clientClassification of clientClassificationTypeOptions"
+                [value]="clientClassification.id"
+              >
+                {{ clientClassification.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-button class="clearFilters" (click)="resetFilters()">Limpiar filtros</button>
+        </form>
+        <div class="moveInvestmentsContainer" *ngIf="selectedInvestments.length > 0">
+          <p>
+            <fa-icon icon="circle-check" class="icon" size="lg"></fa-icon>
+            <span>
+              {{ selectedInvestments.length }}
+            </span>
+            inversiones seleccionadas de un total de
+            <span>
+              {{ amountOfInvestorsSelected | currency: currency }}
+            </span>
+          </p>
+          <button mat-raised-button color="primary">Asignar a grupo</button>
+        </div>
+        <table mat-table #documentsTable [dataSource]="dataSource" matSort class="m-t-25">
+          <ng-container matColumnDef="Investor">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Investor' | translate }}</th>
+            <td mat-cell *matCellDef="let investment">{{ investment.participantName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="Date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Date' | translate }}</th>
+            <td mat-cell *matCellDef="let investment">{{ investment.createdOnDate | dateFormat }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="Value invested">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Value invested' | translate }}</th>
+            <td mat-cell *matCellDef="let investment">$ {{ investment.amount | currency: currency }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="Group">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Cambiar de grupo</th>
+            <td mat-cell *matCellDef="let document; let index">
+              <mat-checkbox labelPosition="after" class="m-r-10" (change)="onInvestorSelected($event, document)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr class="mat-row noContentTable" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <div class="empty-state">
+                <fa-icon [icon]="filesvg" size="3x"></fa-icon>
+                <p>No hay inversiones relacionados a este proyecto</p>
+                <a [routerLink]="'../../../project-participation/' + 'projectData.id'">
+                  <button mat-raised-button color="primary">Ir a participaciones</button>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem" class="m-t-10 fullWidth">
+          <button mat-raised-button class="outlinedButton" (click)="onSubmitClients()">
+            <fa-icon icon="plus" size="sm"></fa-icon>
+            Agregar inversión
+          </button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem" class="m-t-15 fullWidth" color="secondary">
+          <button mat-raised-button>Cancelar</button>
+          <button mat-raised-button class="outlinedButton">Aceptar</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="clientForm">
+      <ng-template matStepLabel>DOCUMENTO</ng-template>
+      <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2rem" class="m-t-10 fullWidth">
+        <button mat-raised-button class="outlinedButton" (click)="onSubmitClients()">Generar pagaré</button>
+      </div>
+      <form [formGroup]="clientForm">
+        <mat-form-field fxFlex="47%" class="inputSearch m-r-10">
+          <mat-label>N°</mat-label>
+          <input matInput formControlName="documentNumber" />
+        </mat-form-field>
+        <mat-form-field fxFlex="47%" class="inputSearch">
+          <mat-label>Fecha de emisión </mat-label>
+          <input matInput formControlName="date" />
+        </mat-form-field>
+        <mat-form-field fxFlex="47%" class="inputSearch">
+          <mat-label>Mnemotécnico</mat-label>
+          <input matInput formControlName="mnemonic" />
+        </mat-form-field>
+      </form>
+
+      <!-- <table mat-table #documentsTable [dataSource]="dataSourceLegal" matSort class="m-t-25">
+        <ng-container matColumnDef="add">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>N° de pagaré</th>
+          <td mat-cell *matCellDef="let investment">
+            <mat-checkbox labelPosition="after" class="m-r-10" (change)="onSignatorSelected($event, investment)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
+          <td mat-cell *matCellDef="let investment">{{ '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>'N° de inversiones'</th>
+          <td mat-cell *matCellDef="let investment">{{ '-' }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsLegal"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsLegal"></tr>
+        <tr class="mat-row noContentTable" *matNoDataRow></tr>
+      </table>
+
+      <table mat-table #documentsTable [dataSource]="dataSourceAval" matSort class="m-t-25">
+        <ng-container matColumnDef="add">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>N° de pagaré</th>
+          <td mat-cell *matCellDef="let investment">
+            <mat-checkbox labelPosition="after" class="m-r-10" (change)="onSignatorSelected($event, investment)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
+          <td mat-cell *matCellDef="let investment">{{ '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>'N° de inversiones'</th>
+          <td mat-cell *matCellDef="let investment">{{ '-' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="adress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>'N° de inversiones'</th>
+          <td mat-cell *matCellDef="let investment">{{ '-' }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="dataSourceAval"></tr>
+        <tr mat-row *matRowDef="let row; columns: dataSourceAval"></tr>
+        <tr class="mat-row noContentTable" *matNoDataRow></tr>
+      </table> -->
+    </mat-step>
+
+    <mat-step [stepControl]="">
+      <ng-template matStepLabel>RESUMEN</ng-template>
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem" class="m-t-10 fullWidth">
+        <span> N° de pagaré </span>
+        <span> numerito </span>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem" class="m-t-10 fullWidth">
+        <span> Cantidad de inversiones </span>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</section>

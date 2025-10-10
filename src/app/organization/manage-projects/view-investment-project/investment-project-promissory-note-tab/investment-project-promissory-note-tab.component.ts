@@ -2,13 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { ClientsService } from 'app/clients/clients.service';
 import { AlertService } from 'app/core/alert/alert.service';
 import { OrganizationService } from 'app/organization/organization.service';
-import { catchError, debounceTime } from 'rxjs/operators';
+import { SettingsService } from 'app/settings/settings.service';
+import { getInvestmentGroupLabel, getInvestmentProcessGroupStatusLabel } from 'app/shared/helpers/states';
+import { SystemService } from 'app/system/system.service';
 import { of } from 'rxjs';
+import { catchError, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'mifosx-investment-project-promissory-note-tab',
@@ -23,12 +26,16 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
   filesvg = faFileAlt;
   PromissoryNoteGroups: any[];
   investorInGroup: any[] = [];
+  loading = false;
+  selectedNote: any = null;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     private organizationService: OrganizationService,
     private alertService: AlertService,
-    private clientsService: ClientsService
+    private clientsService: ClientsService,
+    private systemService: SystemService,
+    private router: Router
   ) {
     this.route.data.subscribe((data: { accountData: any; PromissoryNoteGroups: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
@@ -43,11 +50,10 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
         ''
       ]
     });
-    this.filters.valueChanges.pipe(debounceTime(300)).subscribe((values) => {
-      this.paginator.firstPage();
-      this.loadInvestments(0, this.paginator.pageSize, values);
-    });
+    this.filters.valueChanges.pipe(debounceTime(300)).subscribe((values) => {});
   }
+  currency: string;
+
   clientForm: UntypedFormGroup;
   filters: UntypedFormGroup;
   displayedColumnsGroups: string[] = [
@@ -84,8 +90,8 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
 
   requestParams = {};
   ngOnInit(): void {
-    this.loadInvestments(0, 10);
     this.dataSourceGroups.data = this.PromissoryNoteGroups;
+    this.getDefaultCurrency();
     this.clientForm = this.formBuilder.group({
       documentNumber: [
         '',
@@ -100,6 +106,67 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
         Validators.required
       ]
     });
+  }
+
+  getTodayFormatted(): string {
+    const today = new Date();
+
+    const day = today.getDate().toString().padStart(2, '0'); // 2 dígitos
+    const month = today.toLocaleString('es-ES', { month: 'long' }).toLowerCase();
+    const year = today.getFullYear();
+
+    return `${day} ${month} ${year}`;
+  }
+
+  getStateLabel(state: string) {
+    return getInvestmentGroupLabel(state as any);
+  }
+  getStateProcessLabel(state: string) {
+    if (!state) {
+      return '-';
+    }
+    return getInvestmentProcessGroupStatusLabel(state as any);
+  }
+
+  deletePromissoryNoteGroup(groupId: string) {
+    this.loading = true;
+    this.organizationService.deletePromissoryNoteGroup(groupId).subscribe((response: any) => {
+      this.loading = false;
+      this.reloadComponent();
+    });
+  }
+
+  createGroup() {
+    this.loading = true;
+    this.organizationService
+      .createPromissoryNoteGroup({
+        projectId: this.projectData.id,
+        creationDate: this.getTodayFormatted(),
+        dateFormat: 'dd MMMM yyyy',
+        locale: 'es'
+      })
+      .subscribe((response: any) => {
+        this.loading = false;
+        this.reloadComponent();
+      });
+  }
+
+  reloadComponent() {
+    window.location.reload();
+  }
+
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
+    });
+  }
+
+  getMontoTotal(investments: any[]): number {
+    let total = 0;
+    investments.forEach((invest) => {
+      total += invest.amount;
+    });
+    return total;
   }
 
   downloadPromissoryNote(id: string) {
@@ -196,44 +263,14 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     const plain = content?.replace(/<[^>]+>/g, '').replace(/\n+/g, ' ') || '';
     return plain.length > length ? plain.slice(0, length) + '...' : plain;
   }
-  startCreatingPromissoryNoteGroup() {
-    this.isCreatingPromissoryNoteGroup = true;
-    this.clientForm = this.formBuilder.group({
-      name: [''],
-      clientClassificationId: ['']
-    });
-  }
-
-  loadInvestments(page: number, size: number, filters?: any) {
-    this.requestParams = {
-      projectId: this.projectData?.id,
-      page,
-      size,
-      name: filters?.name || undefined,
-      classificationId: filters?.clientClassificationId || undefined
-    };
-
-    this.organizationService
-      .getProjectParticipationPageable(this.requestParams)
-      .pipe(
-        catchError((error) => {
-          this.alertService.alert({
-            type: 'error',
-            message: 'Ocurrió un error al cargar las inversiones'
-          });
-
-          return of({ content: [] as any[], total: 0 });
-        })
-      )
-      .subscribe((response: any) => {
-        this.dataSource.data = response.content || response;
-        this.paginator.length = response.total;
-        this.dataSource.paginator = this.paginator;
-      });
-  }
-
-  onPageChange(event: any) {
-    this.loadInvestments(event.pageIndex, event.pageSize);
+  startEditingPromissoryNoteGroup(id: any) {
+    this.router.navigate(
+      [
+        'edit',
+        id
+      ],
+      { relativeTo: this.route }
+    );
   }
 
   onSubmitClients() {}

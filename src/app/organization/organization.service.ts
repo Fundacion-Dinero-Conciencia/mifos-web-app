@@ -881,6 +881,9 @@ export class OrganizationService {
   updateInvestmentProjectParticipations(itemId: number, payload: any): Observable<any> {
     return this.http.put(`/projectparticipation/${itemId}`, payload);
   }
+  updateInvestmentProjectAmounts(projectId: number | string, payload: any): Observable<any> {
+    return this.http.put(`/investmentproject/amounts/${projectId}`, payload);
+  }
 
   uploadProjectDocumentsImage(projectId: string, formData: FormData) {
     return this.http.post(`/projects/${projectId}/documents`, formData);
@@ -951,7 +954,13 @@ export class OrganizationService {
     return this.http.get(`/investmentproject/${id}/all-simulations`);
   }
   getPromissoryNoteGroups(id: string) {
-    return this.http.get(`/investmentgroup/all/project/${id} `);
+    return this.http.get(`/investmentgroup/all/project/${id}`);
+  }
+  getPromissoryNoteGroup(id: string) {
+    return this.http.get(`/investmentgroup/${id}`);
+  }
+  deletePromissoryNoteGroup(groupId: string) {
+    return this.http.delete(`/investmentgroup/${groupId}`);
   }
   createPromissoryNoteGroup(data: {
     projectId: string;

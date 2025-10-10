@@ -105,6 +105,7 @@ import { DataCodeSubCategoryResolver } from './manage-projects/data-code-subcate
 import { EditInvestmentProjectComponent } from './manage-projects/edit-investment-project/edit-investment-project.component';
 import { InvestmentProjectDocumentsResolver } from './manage-projects/investment-project-documents.resolver';
 import { ProjectNotesResolver } from './manage-projects/investment-project-notes.resolver';
+import { PromissoryNoteGroupResolver } from './manage-projects/investment-project-promissory-note-by-id.resolver';
 import { InvestmentProjectTemplateResolver } from './manage-projects/investment-project-template.resolver';
 import { ManageProjectResolver } from './manage-projects/manage-project.resolver';
 import { ManageProjectsComponent } from './manage-projects/manage-projects.component';
@@ -117,6 +118,7 @@ import { InvestmentProjectImageTabComponent } from './manage-projects/view-inves
 import { InvestmentProjectImpactTabComponent } from './manage-projects/view-investment-project/investment-project-impact-tab/investment-project-impact-tab.component';
 import { InvestmentProjectInvestmentTabComponent } from './manage-projects/view-investment-project/investment-project-investment-tab/investment-project-investment-tab.component';
 import { InvestmentProjectNotesTabComponent } from './manage-projects/view-investment-project/investment-project-notes-tab/investment-project-notes-tab.component';
+import { EditPromissoryNoteComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/edit-promissory-note/edit-promissory-note.component';
 import { InvestmentProjectPromissoryNoteTabComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/investment-project-promissory-note-tab.component';
 import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-investment-project/investment-project-simulate-tab/investment-project-simulate-tab.component';
 import { ViewInvestmentProjectComponent } from './manage-projects/view-investment-project/view-investment-project.component';
@@ -835,6 +837,16 @@ const routes: Routes = [
                     accountData: ManageProjectResolver,
                     clientTemplate: ClientTemplateResolver,
                     PromissoryNoteGroups: PromissoryNoteGroupsResolver
+                  }
+                },
+                {
+                  path: 'grupos-pagare/edit/:noteId',
+                  component: EditPromissoryNoteComponent,
+                  data: { title: 'Investment Project', breadcrumb: 'editar pagaré', routeParamBreadcrumb: false },
+                  resolve: {
+                    accountData: ManageProjectResolver,
+                    clientTemplate: ClientTemplateResolver,
+                    PromissoryNoteGroup: PromissoryNoteGroupResolver
                   }
                 },
                 {
