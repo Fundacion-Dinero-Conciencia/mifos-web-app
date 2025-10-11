@@ -2,11 +2,12 @@ name: Publish Image in AWS ECR
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: pro
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
@@ -42,12 +43,19 @@ jobs:
 
       - name: Build and Push Docker Image (single-arch)
         run: |
-          IMAGE_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
-          TAG="${{ steps.extract_branch.outputs.branch }}"
-          
-          # Construir y pushear directamente (sin manifest list)
+          IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}"
+          TAG="${{ steps.extract_branch.outputs.branch }}-${GITHUB_RUN_NUMBER}"
+    
           docker build \
-            --build-arg="PUPPETEER_SKIP_DOWNLOAD_ARG=true" \
-            -t $IMAGE_URI:$TAG .
-          
+              --build-arg="PUPPETEER_SKIP_DOWNLOAD_ARG=true" \
+              --build-arg="APIM_VERSION=4.3.2" \
+              --build-arg="FINERACT_API_URLS=https://fineract.belat.com" \
+              --build-arg="FINERACT_API_URL=https://fineract.belat.com" \
+              --build-arg="FINERACT_PLATFORM_TENANT_IDENTIFIER=default" \
+              --build-arg="MIFOS_DEFAULT_CHAR_DELIMITER=," \
+              --build-arg="MIFOS_DEFAULT_LANGUAGE=es" \
+              --build-arg="MIFOS_DEFAULT_DATE_FORMAT=dd MMMM yyyy" \
+              --build-arg="MIFOS_OAUTH_SERVER_ENABLED=false" \
+              -t $IMAGE_URI:$TAG .
+    
           docker push $IMAGE_URI:$TAG
