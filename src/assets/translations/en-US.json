@@ -295,6 +295,7 @@
       "Home": "Home"
     },
     "buttons": {
+      "Assign": "Assign",
       "Create Simulation": "Create Simulation",
       "Select definitive simulation": "Select definitive simulation",
       "Accept Transfer": "Accept Transfer",
