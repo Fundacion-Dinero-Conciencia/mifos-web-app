@@ -1,9 +1,9 @@
-import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { FormfieldBase } from './formfield/model/formfield-base';
 import { FormGroupService } from './form-group.service';
+import { FormfieldBase } from './formfield/model/formfield-base';
 
 const layoutGap = 2;
 declare var google: any;
@@ -21,6 +21,7 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
     gap?: number;
     cancelButtonText?: string;
     addButtonText?: string;
+    descriptionHtml?: string;
   } = {
     columns: 1,
     columnWidth: 400,

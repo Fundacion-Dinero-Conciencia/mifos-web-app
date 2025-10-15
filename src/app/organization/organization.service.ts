@@ -902,7 +902,6 @@ export class OrganizationService {
   }
 
   deleteProjectDocumentsImage(projectId: string, imageId: string) {
-    console.log('?');
     return this.http.delete(`/projects/${projectId}/documents/${imageId}`);
   }
   downladProjectDocumentsImage(projectId: string, imageId: string) {
@@ -929,12 +928,38 @@ export class OrganizationService {
   generateSimulationPdf(formData: any) {
     return this.http.post(`/generatepdf/simulation`, formData);
   }
+
   generateSimulation(projectId: string, formData: string) {
     return this.http.post(`/investmentproject/${projectId}/simulation`, formData, {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-
+  assignInsvestmentsToGroup(groupId: string, formData: string) {
+    return this.http.post(`/investmentgroup/assign/${groupId}`, formData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  assignSignatorToGroup(groupId: string, signatorId: string) {
+    return this.http.post(
+      `/investmentgroup/signator/${groupId}`,
+      {
+        signatorId
+      },
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+  removeSignatorToGroup(signatorId: string) {
+    return this.http.delete(`/investmentgroup/signator/${signatorId}`, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  editInsvestmentGroup(groupId: string, formData: string) {
+    return this.http.put(`/investmentgroup/${groupId}`, formData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   generateFundPromissoryPdf(formData: any) {
     return this.http.post(`/generatepdf/fundpromissorynote`, formData);
   }
@@ -957,7 +982,7 @@ export class OrganizationService {
     return this.http.get(`/investmentgroup/all/project/${id}`);
   }
   getPromissoryNoteGroup(id: string) {
-    return this.http.get(`/investmentgroup/${id}`);
+    return this.http.get(`/investmentgroup/signator/all/${id}`);
   }
   deletePromissoryNoteGroup(groupId: string) {
     return this.http.delete(`/investmentgroup/${groupId}`);
