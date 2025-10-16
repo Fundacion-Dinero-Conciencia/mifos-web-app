@@ -121,12 +121,6 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
   getStateLabel(state: string) {
     return getInvestmentGroupLabel(state as any);
   }
-  getStateProcessLabel(state: string) {
-    if (!state) {
-      return '-';
-    }
-    return getInvestmentProcessGroupStatusLabel(state as any);
-  }
 
   deletePromissoryNoteGroup(groupId: string) {
     this.loading = true;
@@ -273,5 +267,21 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     );
   }
 
-  onSubmitClients() {}
+  getInvestmentProcessGroupStatusLabel(key: keyof typeof getInvestmentProcessGroupStatusLabel) {
+    if (!key) {
+      return '-';
+    }
+    return getInvestmentProcessGroupStatusLabel(key);
+  }
+  getToolTipInfo(state: any): string {
+    const status = state?.status;
+    const errorMessage = state?.errorMessage;
+    const info: Record<string, string> = {
+      INVALID: 'el proceso se invalido por ' + (errorMessage || 'un error desconocido.'),
+      RUNNING: 'Proceso de aprobación en curso.',
+      SUCCESS: 'Proceso finalizado con éxito',
+      ERROR: 'el proceso se suspendió por ' + (errorMessage || 'un error desconocido.')
+    };
+    return info[status] || null;
+  }
 }

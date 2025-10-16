@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,6 +11,7 @@ import { SettingsService } from 'app/settings/settings.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { SystemService } from 'app/system/system.service';
 import { debounceTime, finalize } from 'rxjs/operators';
+import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'mifosx-edit-promissory-note',
@@ -73,6 +74,23 @@ export class EditPromissoryNoteComponent implements OnInit {
       this.PromissoryNoteGroup = data.PromissoryNoteGroup;
       this.dataSource.data = this.PromissoryNoteGroup.investmentList;
       this.selectedSignators = data.PromissoryNoteGroup.signatorList.map((signator: any) => signator.memberId);
+    });
+  }
+
+  openApproveDialog() {
+    const warningtDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        heading: 'Convertir a pagaré',
+        dialogContext:
+          'Al consolidar este grupo ya no podrás editar ni mover inversionistas. El grupo pasará a estado Aprobado y deberás revisar y generar el pagaré asociado. Deseas continuar',
+        type: 'Mild',
+        confirmButtonText: 'Consolidar y continuar'
+      }
+    });
+    warningtDialogRef.afterClosed().subscribe((response: any) => {
+      if (response.confirm) {
+        this.approvePromissoryNote();
+      }
     });
   }
 
@@ -194,9 +212,9 @@ export class EditPromissoryNoteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(
-      `${this.PromissoryNoteGroup.creationDate[0]}-${this.PromissoryNoteGroup.creationDate[1]}-${this.PromissoryNoteGroup.creationDate[2]}`
-    );
+    this.organizationService.getGroupStatus(this.PromissoryNoteGroup.id).subscribe((data: any) => {
+      console.log(data);
+    });
     this.getSignators();
     this.getGroupsList();
     this.filters = this.formBuilder.group({
@@ -351,6 +369,21 @@ export class EditPromissoryNoteComponent implements OnInit {
         this.loading = false;
       });
   }
+  approvePromissoryNote() {
+    this.loading = true;
+    this.organizationService
+      .aprobeGroup(this.PromissoryNoteGroup.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((response) => {
+        this.router.navigate(['../..'], { relativeTo: this.route });
+        this.loading = false;
+      });
+  }
+
   generateFundPromissoryPdf() {
     this.clientService.getClientAccountData(this.projectData.ownerId).subscribe((data: any) => {
       const payload = { fundId: data.savingsAccounts[0].id };

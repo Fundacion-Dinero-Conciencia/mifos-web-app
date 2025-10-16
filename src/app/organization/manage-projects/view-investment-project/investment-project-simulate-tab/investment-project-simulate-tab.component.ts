@@ -674,7 +674,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       id: c.id
     }));
     this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
-      // window.location.reload();
+      window.location.reload();
     });
   }
 

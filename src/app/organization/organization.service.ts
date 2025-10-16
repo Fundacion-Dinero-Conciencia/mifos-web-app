@@ -917,6 +917,15 @@ export class OrganizationService {
   getProjectDocuments(projectId: string) {
     return this.http.get(`/projects/${projectId}/documents`);
   }
+
+  getGroupStatus(groupId: string) {
+    return this.http.get(`/investmentprocessgroup/${groupId}`);
+  }
+
+  aprobeGroup(groupId: string) {
+    return this.http.post(`/investmentprocessgroup/${groupId}`, null);
+  }
+
   addProjectDocuments(projectId: string, formData: FormData) {
     return this.http.post(`/projects/${projectId}/documents`, formData);
   }

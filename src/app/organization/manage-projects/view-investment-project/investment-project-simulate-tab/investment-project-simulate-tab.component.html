@@ -124,7 +124,13 @@
         <input matInput formControlName="amount" type="number" />
       </mat-form-field>
       <mat-form-field fxFlex="20%">
-        <mat-label>{{ 'labels.Term' | translate }} ({{ 'labels.catalogs.Months' | translate }})</mat-label>
+        <mat-label
+          >{{ 'labels.Term' | translate }} (
+          {{
+            (createForm.get('basedInLoanProductId').value == 1 ? 'labels.catalogs.Months' : 'labels.catalogs.Days')
+              | translate
+          }})</mat-label
+        >
         <input matInput formControlName="period" type="number" />
       </mat-form-field>
       <mat-form-field fxFlex="20%">
@@ -329,6 +335,10 @@
         <div>
           <strong>{{ 'labels.inputs.Loan Term' | translate }}:</strong>
           {{ selectedSimulation?.period }}
+          {{
+            (createForm.get('basedInLoanProductId').value == 1 ? 'labels.catalogs.Months' : 'labels.catalogs.Days')
+              | translate
+          }}
         </div>
         <div>
           <strong>{{ 'labels.inputs.Interest Rate' | translate }}:</strong> {{ selectedSimulation?.rate }}%
