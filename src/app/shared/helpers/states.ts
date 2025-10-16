@@ -35,7 +35,7 @@ export function getInvestmentProcessGroupStatusLabel(key: InvestmentProcessGroup
   const labels: Record<InvestmentProcessGroupStatusKey, string> = {
     INVALID: 'Inválido',
     RUNNING: 'En ejecución',
-    SUCCESS: 'Completado',
+    SUCCESS: 'Aprobado',
     ERROR: 'Error'
   };
 

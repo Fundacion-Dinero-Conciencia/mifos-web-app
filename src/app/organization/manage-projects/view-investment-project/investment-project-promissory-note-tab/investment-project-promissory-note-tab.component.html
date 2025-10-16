@@ -41,7 +41,29 @@
     </ng-container>
     <ng-container matColumnDef="Process">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Proceso</th>
-      <td mat-cell *matCellDef="let note">{{ getStateProcessLabel(note.process) }}</td>
+
+      <td mat-cell *matCellDef="let note">
+        <section class="statusProcessContainer">
+          <div
+            [ngClass]="{
+              circle: true,
+              'in-progress': note.process?.status === 'RUNNING',
+              approved: note.process?.status === 'SUCCESS',
+              rejected: note.process?.status === 'ERROR',
+              none: !note.process?.status
+            }"
+          ></div>
+          {{ getInvestmentProcessGroupStatusLabel(note.process?.status) }}
+          <button
+            *ngIf="!!getToolTipInfo(note.process)"
+            class="xs-button"
+            mat-icon-button
+            [matTooltip]="getToolTipInfo(note.process)"
+          >
+            ⓘ
+          </button>
+        </section>
+      </td>
     </ng-container>
     <ng-container matColumnDef="Actions">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -58,7 +80,7 @@
           <fa-icon icon="eye"></fa-icon>
         </button>
         <button
-          *ngIf="note.status?.value != 'APROBADO'"
+          *ngIf="note.status?.value != 'SIGNED'"
           class="document-action-button"
           mat-raised-button
           color="primary"
@@ -67,7 +89,7 @@
           <fa-icon icon="edit"></fa-icon>
         </button>
         <button
-          *ngIf="note.status?.value != 'APROBADO' && note.investmentList.length === 0"
+          *ngIf="note.status?.value != 'SIGNED' && note.investmentList.length === 0"
           class="document-action-button"
           mat-raised-button
           color="primary"
