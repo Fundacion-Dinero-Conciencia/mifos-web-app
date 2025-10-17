@@ -45,7 +45,6 @@ RUN ng build --output-path=/dist $BUILD_ENVIRONMENT_OPTIONS
 ###############
 FROM $NGINX_IMAGE
 
-RUN cat /usr/share/nginx/html/assets/env.template.js
 
 COPY --from=builder /dist /usr/share/nginx/html
 
