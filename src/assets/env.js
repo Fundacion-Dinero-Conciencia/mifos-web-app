@@ -2,8 +2,8 @@
   window['env'] = window['env'] || {};
 
   // BackEnd Environment variables
-  window['env']['fineractApiUrls'] = 'https://fineract.belat.com';
-  window['env']['fineractApiUrl'] = 'https://fineract.belat.com/';
+  window['env']['fineractApiUrls'] = '';
+  window['env']['fineractApiUrl'] = '';
 
   window['env']['apiProvider'] = '';
   window['env']['apiVersion'] = '';
