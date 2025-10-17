@@ -603,7 +603,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         if (editCredit === true) {
           this.organizationService.deleteAdditionalExpensesById(this.idProject as string, true).subscribe({
             next: (dataX) => {
-              // window.location.reload();
+              window.location.reload();
             }
           });
         } else {
