@@ -2,8 +2,10 @@
   window['env'] = window['env'] || {};
 
   // BackEnd Environment variables
-  window['env']['fineractApiUrls'] = 'https://fineract-mifos-test-dev.up.railway.app';
-  window['env']['fineractApiUrl'] = 'https://fineract-mifos-test-dev.up.railway.app';
+
+  window['env']['fineractApiUrls'] = '';
+  window['env']['fineractApiUrl'] = '';
+
 
   window['env']['apiProvider'] = '';
   window['env']['apiVersion'] = '';

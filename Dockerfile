@@ -5,6 +5,7 @@ ARG BUILDER_IMAGE=node:22.9.0-alpine
 ARG NGINX_IMAGE=nginx:1.27.4-alpine3.21-slim
 
 FROM $BUILDER_IMAGE as builder
+
 ARG NPM_REGISTRY_URL=https://registry.npmjs.org/
 ARG BUILD_ENVIRONMENT_OPTIONS="--configuration production"
 ARG PUPPETEER_DOWNLOAD_HOST_ARG=https://storage.googleapis.com
@@ -43,6 +44,7 @@ RUN ng build --output-path=/dist $BUILD_ENVIRONMENT_OPTIONS
 ### STAGE 2: Serve app with nginx ###
 ###############
 FROM $NGINX_IMAGE
+
 
 COPY --from=builder /dist /usr/share/nginx/html
 
