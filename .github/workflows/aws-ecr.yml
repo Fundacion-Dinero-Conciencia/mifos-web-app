@@ -51,7 +51,7 @@ jobs:
                 --build-arg APIM_VERSION=4.3.2 \
                 --build-arg FINERACT_API_URLS=https://fineract.belat.com \
                 --build-arg FINERACT_API_URL=https://fineract.belat.com \
-                --build-arg FINERACT_PLATFORM_TENANT_IDENTIFIER=default,fineract_default \
+                --build-arg FINERACT_PLATFORM_TENANT_IDENTIFIER=default \
                 --build-arg MIFOS_DEFAULT_CHAR_DELIMITER="," \
                 --build-arg MIFOS_DEFAULT_LANGUAGE=es \
                 --build-arg MIFOS_DEFAULT_DATE_FORMAT="dd MMMM yyyy" \
