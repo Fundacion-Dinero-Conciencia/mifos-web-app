@@ -73,7 +73,9 @@
       </ng-container>
       <ng-container matColumnDef="Credit Type">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Credit Type' | translate }}</th>
-        <td mat-cell *matCellDef="let document">{{ document.creditType }}</td>
+        <td mat-cell *matCellDef="let document">
+          {{ getLoanPurposeById(document.basedInLoanProductId)?.name || '-' }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="showMore">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.buttons.Download' | translate }}</th>
@@ -103,15 +105,7 @@
   </section>
   <section class="container createForm" *ngIf="isCreatingSimulation && !loadingCommissions">
     <form [formGroup]="createForm">
-      <mat-form-field fxFlex="20%">
-        <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
-        <mat-select formControlName="loanPurposeId">
-          <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
-            {{ loanPurpose.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field fxFlex="20%">
+      <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Loan Type' | translate }} </mat-label>
         <mat-select formControlName="basedInLoanProductId">
           <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
@@ -119,11 +113,11 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field fxFlex="20%">
+      <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
         <input matInput formControlName="amount" type="number" />
       </mat-form-field>
-      <mat-form-field fxFlex="20%">
+      <mat-form-field fxFlex="24%">
         <mat-label
           >{{ 'labels.Term' | translate }} (
           {{
@@ -133,7 +127,7 @@
         >
         <input matInput formControlName="period" type="number" />
       </mat-form-field>
-      <mat-form-field fxFlex="20%">
+      <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Interest Rate' | translate }} (%)</mat-label>
         <input matInput formControlName="interestRate" type="number" />
       </mat-form-field>
