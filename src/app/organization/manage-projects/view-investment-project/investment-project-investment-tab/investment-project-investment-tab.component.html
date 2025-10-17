@@ -34,7 +34,7 @@
 
     <ng-container matColumnDef="Value invested">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Value invested' | translate }}</th>
-      <td mat-cell *matCellDef="let investment">$ {{ investment.participationAmount }}</td>
+      <td mat-cell *matCellDef="let investment">{{ investment.participationAmount | currency: currency }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Investment status">
