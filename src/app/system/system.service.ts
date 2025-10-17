@@ -678,6 +678,9 @@ export class SystemService {
   getObjectDocuments(entityType: string, entityId: any): Observable<any> {
     return this.http.get(`/${entityType}/${entityId}/documents`);
   }
+  getObjectNotes(entityType: string, entityId: any): Observable<any> {
+    return this.http.get(`/${entityType}/${entityId}/notes`);
+  }
 
   /**
    * @returns {Observable<any>} Saving products data

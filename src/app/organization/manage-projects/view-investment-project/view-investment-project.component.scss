@@ -1,5 +1,8 @@
 .container {
   max-width: 77rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 
   .content {
     div {
@@ -7,4 +10,10 @@
       word-wrap: break-word;
     }
   }
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.35;
+  cursor: not-allowed;
 }

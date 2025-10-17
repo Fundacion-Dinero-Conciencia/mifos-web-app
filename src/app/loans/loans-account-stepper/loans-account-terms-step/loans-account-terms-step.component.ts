@@ -168,7 +168,7 @@ export class LoansAccountTermsStepComponent implements OnInit, OnChanges {
       this.setAdvancedPaymentStrategyControls();
 
       // disabled fields
-      this.setupChangesFields();
+      //this.setupChangesFields();
 
       if (this.loansAccountTermsData.loanScheduleType.code == LoanProducts.LOAN_SCHEDULE_TYPE_CUMULATIVE) {
         this.loansAccountTermsForm.removeControl('interestRecognitionOnDisbursementDate');

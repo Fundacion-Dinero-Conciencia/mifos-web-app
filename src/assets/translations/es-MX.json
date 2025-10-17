@@ -263,7 +263,7 @@
     "validation.msg.savingsproduct.lockinPeriodFrequencyType.cannot.be.blank": "Es obligatorio bloquear el tipo de período.",
     "validation.msg.savingsproduct.minRequiredOpeningBalance.not.zero.or.greater": "El saldo mínimo de apertura debe ser mayor o igual a cero, si se proporciona.",
     "validation.msg.savingsproduct.name.cannot.be.blank": "El nombre es obligatorio.",
-    "validation.msg.savingsproduct.name.exceeds.max.length": "El nombre no puede tener más de {{params[0].value}} caracteres.",
+    "validation.msg.savingsproduct.name.exceeds.max.length": "El nombre no puede tener más de {{length}} caracteres.",
     "validation.msg.savingsproduct.nominalAnnualInterestRate.cannot.be.blank": "El tipo de interés nominal anual es obligatorio.",
     "validation.msg.savingsproduct.nominalAnnualInterestRate.not.zero.or.greater": "El tipo de interés nominal anual debe ser cero o superior.",
     "validation.msg.savingsproduct.savingsControlAccountId.cannot.be.blank": "La Cuenta de Control de Ahorro es obligatoria",
@@ -294,6 +294,8 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Assign": "Asignar",
+      "Create Simulation": "Crear Simulación",
       "Select definitive simulation": "Seleccionar simulación definitiva",
       "Accept Transfer": "Aceptar transferencia",
       "Actions": "Acciones",
@@ -1186,6 +1188,7 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Public": "Publico",
       "Debtor client": "Cliente deudor",
       "Proyect name": "Nombre del proyecto",
       "Finantial value": "Valor a financiar",
@@ -1211,6 +1214,7 @@
       "Juridic person": "Persona jurídica",
       "Natural person": "Persona natural",
       "ACCOUNTING": "CONTABILIDAD",
+      "Loan Type": "Tipo de Crédito",
       "ADDRESS": "DOMICILIO",
       "Above Changes are Effective from": "Los cambios anteriores son efectivos desde",
       "Absent": "Ausente",
@@ -2541,7 +2545,7 @@
         "Subtitle": "Subtitulo",
         "Institution Description": "Descripción de Institución",
         "Team Description": "Descripción de Equipo",
-        "Financial Description": "Descripción Fianciera",
+        "Financial Description": "Descripción Financiera",
         "Impact Description": "Descripción de Impacto",
         "Category": "Categoría",
         "Subcategory": "Subcategoría",

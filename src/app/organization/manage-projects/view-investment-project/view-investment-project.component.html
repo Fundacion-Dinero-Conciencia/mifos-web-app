@@ -1,5 +1,13 @@
 <div class="container">
-  <nav mat-tab-nav-bar class="navigation-tabs">
+  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
+    <a [routerLink]="['./edit']" *ngIf="!router.url.includes('edit')">
+      <button mat-raised-button color="primary" *mifosxHasPermission="'UPDATE_FUND'" [disabled]="!canEdit">
+        <fa-icon icon="edit" class="m-r-10"></fa-icon>
+        {{ 'labels.buttons.Edit' | translate }} {{ 'labels.inputs.Proyect' | translate }}
+      </button>
+    </a>
+  </div>
+  <nav mat-tab-nav-bar class="navigation-tabs" *ngIf="!router.url.includes('edit')">
     <a
       mat-tab-link
       [routerLink]="['./general']"
@@ -49,19 +57,19 @@
     >
       {{ 'labels.heading.investments' | translate }}
     </a>
+
+    <a
+      mat-tab-link
+      [routerLink]="['./grupos-pagare']"
+      routerLinkActive
+      #grupos="routerLinkActive"
+      [active]="grupos.isActive"
+    >
+      Pagarés
+    </a>
     <a mat-tab-link [routerLink]="['./notas']" routerLinkActive #notes="routerLinkActive" [active]="notes.isActive">
       {{ 'labels.heading.Notes' | translate }}
     </a>
-    <a
-      mat-tab-link
-      [routerLink]="['./commissions']"
-      routerLinkActive
-      #commissions="routerLinkActive"
-      [active]="commissions.isActive"
-    >
-      {{ 'labels.heading.Credit Data' | translate }}
-    </a>
   </nav>
-
   <router-outlet></router-outlet>
 </div>

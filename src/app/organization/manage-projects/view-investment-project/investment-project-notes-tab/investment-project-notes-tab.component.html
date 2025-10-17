@@ -1,4 +1,4 @@
-<div class="tab-container mat-typography">
+<div class="tab-container mat-typography" id="investment-project-notes">
   <mat-card class="mainCard">
     <div>
       <form
@@ -9,7 +9,7 @@
         fxLayoutGap="20px"
         (ngSubmit)="addNote()"
       >
-        <mat-form-field fxFlex="calc(85%-20px)">
+        <mat-form-field fxFlex="calc(70%-15px)">
           <textarea
             required
             formControlName="note"
@@ -19,7 +19,11 @@
             cdkAutosizeMinRows="2"
           ></textarea>
         </mat-form-field>
-        <button mat-raised-button fxFlex color="primary" [disabled]="!noteForm.valid">
+
+        <mat-checkbox labelPosition="before" formControlName="active">
+          {{ 'labels.inputs.Public' | translate }}
+        </mat-checkbox>
+        <button mat-raised-button fxFlex color="primary" [disabled]="!noteForm.valid || !canEdit">
           <fa-icon icon="plus" class="m-r-10"></fa-icon>{{ 'labels.buttons.Add' | translate }}
         </button>
       </form>
@@ -36,12 +40,16 @@
           <span
             ><b>{{ 'labels.inputs.Date' | translate }}:</b> {{ entityNote.createdOn | dateFormat }}</span
           >
+          <br />
+          <span
+            ><b>{{ 'labels.inputs.Public' | translate }}:</b> {{ entityNote.active | yesNo }}</span
+          >
         </p>
         <div fxLayout="row" fxLayoutAlign="flex-start">
-          <button mat-button color="primary" (click)="editNote(entityNote.id, entityNote.note, i)">
+          <button mat-button color="primary" (click)="editNote(entityNote.id, entityNote, i)" [disabled]="!canEdit">
             <fa-icon icon="edit"></fa-icon>
           </button>
-          <button mat-button color="warn" (click)="deleteNote(entityNote.id, i)">
+          <button mat-button color="warn" (click)="deleteNote(entityNote.id, i)" [disabled]="!canEdit">
             <fa-icon icon="trash"></fa-icon>
           </button>
         </div>

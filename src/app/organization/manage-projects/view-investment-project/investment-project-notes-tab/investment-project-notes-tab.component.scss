@@ -1,4 +1,10 @@
-.tab-container {
-  padding: 1%;
-  margin: 1%;
+#investment-project-notes {
+  &.tab-container {
+    padding: 1%;
+    margin: 1%;
+  }
+
+  .mat-list-item {
+    min-height: 6rem;
+  }
 }

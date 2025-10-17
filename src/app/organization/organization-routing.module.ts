@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { Route } from '../core/route/route.service';
 
 /** Custom Components */
+import { ClientTemplateResolver } from 'app/clients/common-resolvers/client-template.resolver';
 import { AdhocQueryComponent } from './adhoc-query/adhoc-query.component';
 import { CreateAdhocQueryComponent } from './adhoc-query/create-adhoc-query/create-adhoc-query.component';
 import { EditAdhocQueryComponent } from './adhoc-query/edit-adhoc-query/edit-adhoc-query.component';
@@ -31,6 +32,7 @@ import { EditLoanProvisioningCriteriaComponent } from './loan-provisioning-crite
 import { LoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/loan-provisioning-criteria.component';
 import { ViewLoanProvisioningCriteriaComponent } from './loan-provisioning-criteria/view-loan-provisioning-criteria/view-loan-provisioning-criteria.component';
 import { ManageFundsComponent } from './manage-funds/manage-funds.component';
+import { PromissoryNoteGroupsResolver } from './manage-projects/investment-project-promissory-notes.resolver';
 import { CreateOfficeComponent } from './offices/create-office/create-office.component';
 import { EditOfficeComponent } from './offices/edit-office/edit-office.component';
 import { OfficesComponent } from './offices/offices.component';
@@ -62,6 +64,8 @@ import { WorkingDaysComponent } from './working-days/working-days.component';
 
 /** Custom Resolvers */
 import { LoanProductsResolver } from 'app/products/loan-products/loan-products.resolver';
+import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
+import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 import { AdhocQueryTemplateResolver } from './adhoc-query/adhoc-query-template.resolver';
 import { AdhocQueriesResolver } from './adhoc-query/common-resolvers/adhoc-queries.resolver';
 import { AdhocQueryAndTemplateResolver } from './adhoc-query/common-resolvers/adhoc-query-and-template.resolver';
@@ -100,6 +104,8 @@ import { DataCodeStatusResolver } from './manage-projects/data-code-status.resol
 import { DataCodeSubCategoryResolver } from './manage-projects/data-code-subcategory.resolver';
 import { EditInvestmentProjectComponent } from './manage-projects/edit-investment-project/edit-investment-project.component';
 import { InvestmentProjectDocumentsResolver } from './manage-projects/investment-project-documents.resolver';
+import { ProjectNotesResolver } from './manage-projects/investment-project-notes.resolver';
+import { PromissoryNoteGroupResolver } from './manage-projects/investment-project-promissory-note-by-id.resolver';
 import { InvestmentProjectTemplateResolver } from './manage-projects/investment-project-template.resolver';
 import { ManageProjectResolver } from './manage-projects/manage-project.resolver';
 import { ManageProjectsComponent } from './manage-projects/manage-projects.component';
@@ -111,8 +117,10 @@ import { InvestmentProjectGeneralTabComponent } from './manage-projects/view-inv
 import { InvestmentProjectImageTabComponent } from './manage-projects/view-investment-project/investment-project-image-tab/investment-project-image-tab.component';
 import { InvestmentProjectImpactTabComponent } from './manage-projects/view-investment-project/investment-project-impact-tab/investment-project-impact-tab.component';
 import { InvestmentProjectInvestmentTabComponent } from './manage-projects/view-investment-project/investment-project-investment-tab/investment-project-investment-tab.component';
-import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-investment-project/investment-project-simulate-tab/investment-project-simulate-tab.component';
 import { InvestmentProjectNotesTabComponent } from './manage-projects/view-investment-project/investment-project-notes-tab/investment-project-notes-tab.component';
+import { EditPromissoryNoteComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/edit-promissory-note/edit-promissory-note.component';
+import { InvestmentProjectPromissoryNoteTabComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/investment-project-promissory-note-tab.component';
+import { InvestmentProjectSimulateTabComponent } from './manage-projects/view-investment-project/investment-project-simulate-tab/investment-project-simulate-tab.component';
 import { ViewInvestmentProjectComponent } from './manage-projects/view-investment-project/view-investment-project.component';
 import { ViewStatusHistoryComponent } from './manage-projects/view-status-history/view-status-history.component';
 import { EditOfficeResolver } from './offices/common-resolvers/edit-office.resolver';
@@ -133,7 +141,6 @@ import { CashierTransactionTemplateResolver } from './tellers/common-resolvers/t
 import { TellerResolver } from './tellers/common-resolvers/teller.resolver';
 import { TellersResolver } from './tellers/common-resolvers/tellers.resolver';
 import { WorkingDaysResolver } from './working-days/working-days.resolver';
-
 /** Organization Routes */
 const routes: Routes = [
   Route.withShell([
@@ -780,7 +787,10 @@ const routes: Routes = [
                   component: InvestmentProjectTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'Documents', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    InvestmentDocuments: InvestmentProjectDocumentsResolver,
+                    customerDocumentOptions: CustomerDocumentsResolver,
+                    documentTypeOptions: DocumentTypesResolver
                   }
                 },
                 {
@@ -788,7 +798,9 @@ const routes: Routes = [
                   component: InvestmentProjectSimulateTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'Simulations', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    loanPurposeData: DataCodeLoanPurposeResolver,
+                    loanProductsData: LoanProductsResolver
                   }
                 },
                 {
@@ -804,7 +816,8 @@ const routes: Routes = [
                   component: InvestmentProjectNotesTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'Notes', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    notes: ProjectNotesResolver
                   }
                 },
                 {
@@ -812,7 +825,28 @@ const routes: Routes = [
                   component: InvestmentProjectInvestmentTabComponent,
                   data: { title: 'Investment Project', breadcrumb: 'investments', routeParamBreadcrumb: false },
                   resolve: {
-                    accountData: ManageProjectResolver
+                    accountData: ManageProjectResolver,
+                    clientTemplate: ClientTemplateResolver
+                  }
+                },
+                {
+                  path: 'grupos-pagare',
+                  component: InvestmentProjectPromissoryNoteTabComponent,
+                  data: { title: 'Investment Project', breadcrumb: 'pagaré', routeParamBreadcrumb: false },
+                  resolve: {
+                    accountData: ManageProjectResolver,
+                    clientTemplate: ClientTemplateResolver,
+                    PromissoryNoteGroups: PromissoryNoteGroupsResolver
+                  }
+                },
+                {
+                  path: 'grupos-pagare/edit/:noteId',
+                  component: EditPromissoryNoteComponent,
+                  data: { title: 'Investment Project', breadcrumb: 'editar pagaré', routeParamBreadcrumb: false },
+                  resolve: {
+                    accountData: ManageProjectResolver,
+                    clientTemplate: ClientTemplateResolver,
+                    PromissoryNoteGroup: PromissoryNoteGroupResolver
                   }
                 },
                 {
@@ -837,7 +871,9 @@ const routes: Routes = [
                     objectivesData: DataCodeObjectiveResolver,
                     statusData: DataCodeStatusResolver,
                     creditTypesData: DataCodeCreditTypesResolver,
-                    loanPurposeData: DataCodeLoanPurposeResolver
+                    loanPurposeData: DataCodeLoanPurposeResolver,
+                    imageData: InvestmentProjectDocumentsResolver,
+                    accountData: ManageProjectResolver
                   }
                 },
                 {
@@ -946,6 +982,7 @@ const routes: Routes = [
     DataCodeStatusResolver,
     StatusHistoryProjectResolver,
     InvestmentProjectDocumentsResolver,
+    ProjectNotesResolver,
     DataCodeObjectiveResolver,
     DataCodeCreditTypesResolver,
     DataCodeLoanPurposeResolver

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup, UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -586,9 +586,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       next: (data) => {
         if (editCredit === true) {
           this.organizationService.deleteAdditionalExpensesById(this.idProject, true).subscribe({
-            next: (dataX) => {
-              this.router.navigate(['../'], { relativeTo: this.route });
-            }
+            next: (dataX) => {}
           });
         } else {
           const modifiedData = {

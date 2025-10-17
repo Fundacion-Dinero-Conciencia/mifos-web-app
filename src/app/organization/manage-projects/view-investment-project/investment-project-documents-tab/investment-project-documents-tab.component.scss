@@ -13,4 +13,9 @@ table {
 .tab-container {
   padding: 1%;
   margin: 1%;
+  flex-direction: column;
+}
+
+.inputSearch {
+  width: 40%;
 }

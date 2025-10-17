@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <form [formGroup]="investmentProjectForm" (ngSubmit)="submit()">
     <mat-card>
       <mat-card-content>
@@ -148,21 +148,14 @@
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Interest Rate' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="projectRate" />
+            <input type="number" matInput formControlName="projectRate" />
             <mat-error *ngIf="investmentProjectForm.controls.projectRate.hasError('required')">
               {{ 'labels.inputs.Interest Rate' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
-            <mat-label>{{ 'labels.inputs.Based in Loan Product' | translate }}</mat-label>
-            <mat-select required formControlName="basedInLoanProductId">
-              <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
-                {{ loanProduct.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
@@ -182,7 +175,7 @@
             </mat-select>
           </mat-form-field>
 
-          <!-- <mat-form-field fxFlex="23%">
+           <mat-form-field fxFlex="23%">
             <mat-label>{{ 'labels.inputs.Frequency' | translate }}</mat-label>
             <mat-select required formControlName="loanTermFrequencyType">
               <mat-option *ngFor="let type of termFrequencyTypeData" [value]="type.id">
@@ -195,9 +188,9 @@
             </mat-error>
           </mat-form-field> -->
 
-          <mat-form-field fxFlex="98%">
+<!-- <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Number of Installments' | translate }}</mat-label>
-            <input type="number" matInput required formControlName="period" />
+            <input type="number" matInput formControlName="period" />
             <mat-error *ngIf="investmentProjectForm.controls.period.hasError('required')">
               {{ 'labels.inputs.Number of Installments' | translate }} {{ 'labels.commons.is' | translate }}
               <strong>{{ 'labels.commons.required' | translate }}</strong>
@@ -276,4 +269,115 @@
       </mat-card-actions>
     </mat-card>
   </form>
-</div>
+</div>  -->
+<section class="container">
+  <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper [linear]="true">
+    <ng-template matStepperIcon="number">
+      <fa-icon icon="pencil-alt" size="sm"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="edit">
+      <fa-icon icon="pencil-alt" size="sm"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="done">
+      <fa-icon icon="check" size="sm"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="error">
+      <fa-icon icon="exclamation-triangle" size="lg"></fa-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="preview">
+      <fa-icon icon="eye" size="sm"></fa-icon>
+    </ng-template>
+
+    <mat-step [stepControl]="" completed="false">
+      <ng-template matStepLabel>{{ 'labels.inputs.GENERAL' | translate }}</ng-template>
+
+      <form
+        [formGroup]="investmentProjectForm"
+        class="generalForm"
+        fxLayout="row wrap"
+        fxLayoutGap="16px"
+        (ngSubmit)="submit()"
+      >
+        <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'labels.inputs.Country' | translate }}</mat-label>
+          <mat-select required formControlName="countryId">
+            <mat-option *ngFor="let country of countryData" [value]="country.id">
+              {{ country.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'labels.inputs.Client name' | translate }}</mat-label>
+          <input matInput formControlName="ownerId" [matAutocomplete]="clientsAutocomplete" />
+          <mat-error *ngIf="investmentProjectForm.controls.ownerId.hasError('required')">
+            {{ 'labels.inputs.Client' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.commons.required' | translate }}</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-autocomplete autoActiveFirstOption #clientsAutocomplete="matAutocomplete" [displayWith]="displayClient">
+          <mat-option *ngFor="let client of clientsData" [value]="client">
+            {{ client.id }} - {{ client.displayName }}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-form-field fxFlex="47%">
+          <input matInput [value]="investmentProjectForm.controls.ownerId.value?.mnemonic || ''" disabled />
+        </mat-form-field>
+        <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'labels.inputs.custom.Mnemonic' | translate }}</mat-label>
+          <input matInput autofocus formControlName="mnemonic" />
+          <mat-error *ngIf="investmentProjectForm?.get('mnemonic')?.hasError('required')">
+            {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.commons.required' | translate }}</strong>
+          </mat-error>
+          <mat-error *ngIf="investmentProjectForm?.get('mnemonic')?.hasError('maxlength')">
+            {{ 'labels.inputs.custom.Mnemonic' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{
+              'errors.validation.msg.savingsproduct.name.exceeds.max.length' | translate: { length: 3 }
+            }}</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'labels.inputs.Proyect name' | translate }}</mat-label>
+          <input matInput autofocus formControlName="name" />
+          <mat-error *ngIf="investmentProjectForm?.get('name')?.hasError('required')">
+            {{ 'labels.inputs.Client name' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.commons.required' | translate }}</strong>
+          </mat-error>
+          <mat-error *ngIf="investmentProjectForm?.get('name')?.hasError('maxlength')">
+            {{ 'labels.inputs.Client name' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{
+              'errors.validation.msg.savingsproduct.name.exceeds.max.length' | translate: { length: 30 }
+            }}</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'labels.inputs.Status' | translate }}</mat-label>
+          <mat-select required formControlName="statusId" disabled>
+            <mat-option *ngFor="let status of statusData" [value]="status.id">
+              {{ status.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="fullW">
+          <button type="button" mat-raised-button [routerLink]="['../']">
+            {{ 'labels.buttons.Cancel' | translate }}
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!investmentProjectForm.valid">
+            {{ 'labels.buttons.Submit' | translate }}
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="" [editable]="false">
+      <ng-template matStepLabel>{{ 'labels.heading.Publication' | translate }}</ng-template>
+    </mat-step>
+    <mat-step [stepControl]="" [editable]="false">
+      <ng-template matStepLabel>{{ 'labels.heading.Impact' | translate }}</ng-template>
+    </mat-step>
+  </mat-horizontal-stepper>
+</section>

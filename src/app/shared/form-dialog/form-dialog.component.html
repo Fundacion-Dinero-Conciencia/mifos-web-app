@@ -10,6 +10,7 @@
   fxLayoutGap.lt-md="0%"
   style="max-height: 350px; overflow-y: auto"
 >
+  <div [innerHTML]="layout.descriptionHtml" *ngIf="layout.descriptionHtml" class="m-b-10"></div>
   <div *ngFor="let formfield of formfields" [fxFlex]="layout.flex + '%'" fxFlex.lt-md="100%">
     <mifosx-formfield [formfield]="formfield" [form]="form" fxFlexFill></mifosx-formfield>
   </div>

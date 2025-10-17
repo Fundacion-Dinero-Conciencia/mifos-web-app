@@ -6,7 +6,7 @@ import { OrganizationService } from '../organization.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ManageProjectResolver implements Resolve<boolean> {
+export class PromissoryNoteGroupsResolver implements Resolve<boolean> {
   /**
    * @param {OrganizationService} organizationService Organization service.
    */
@@ -17,10 +17,7 @@ export class ManageProjectResolver implements Resolve<boolean> {
    * @returns {Observable<any>}
    */
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    let projectId = route.parent.paramMap.get('id');
-    if (!projectId) {
-      projectId = route.parent?.parent?.paramMap.get('id');
-    }
-    return this.organizationService.getInvestmentProject(projectId);
+    const projectId = route.parent.paramMap.get('id');
+    return this.organizationService.getPromissoryNoteGroups(projectId);
   }
 }

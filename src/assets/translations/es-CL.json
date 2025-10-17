@@ -294,6 +294,8 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Assign": "Asignar",
+      "Create Simulation": "Crear simulación",
       "Select definitive simulation": "Seleccionar simulación definitiva",
       "Accept Transfer": "Aceptar transferencia",
       "Actions": "Acciones",
@@ -1185,6 +1187,7 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Public": "Publico",
       "Debtor client": "Cliente deudor",
       "Proyect name": "Nombre del proyecto",
       "Finantial value": "Valor a financiar",
@@ -1223,6 +1226,7 @@
       "Account Number Preferences": "Preferencias de número de cuenta",
       "Account Type": "Tipo de cuenta",
       "Account Usage": "Uso de la cuenta",
+      "Loan Type": "Tipo de Crédito",
       "Account action": "Acción de cuenta",
       "Account moves out of NPA only after all arrears have been cleared": "La cuenta sale del NPA solo después de que se hayan liquidado todos los atrasos",
       "Account to Credit": "Cuenta para acreditar",
@@ -2538,7 +2542,7 @@
         "Subtitle": "Subtitulo",
         "Institution Description": "Descripción de Institución",
         "Team Description": "Descripción de Equipo",
-        "Financial Description": "Descripción Fianciera",
+        "Financial Description": "Descripción Financiera",
         "Impact Description": "Descripción de Impacto",
         "Category": "Categoría",
         "Subcategory": "Subcategoría",

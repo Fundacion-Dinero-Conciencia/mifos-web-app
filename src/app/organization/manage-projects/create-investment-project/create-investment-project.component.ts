@@ -72,8 +72,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
         this.loanProductsData = data.loanProductsData;
         this.creditTypesData = data.creditTypesData.codeValues;
         this.loanPurposeData = data.loanPurposeData.codeValues;
-        console.log('loanPurposeData: ', this.loanPurposeData);
-        console.log('data.loanPurposeData: ', data.loanPurposeData);
       }
     );
   }
@@ -117,81 +115,90 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       ],
       name: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          Validators.maxLength(30)]
       ],
-      subtitle: [
-        ''
-      ],
+      // RUT: [
+      //   '',
+      //   Validators.required
+      // ],
+      // subtitle: [
+      //   ''
+      // ],
       mnemonic: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          Validators.maxLength(3)]
       ],
-      impactDescription: [
-        ''
-      ],
-      institutionDescription: [
-        ''
-      ],
-      teamDescription: [
-        ''
-      ],
-      financingDescription: [
-        ''
-      ],
-      littleSocioEnvironmentalDescription: [
-        ''
-      ],
-      detailedSocioEnvironmentalDescription: [
-        ''
-      ],
-      amount: [
-        0,
-        Validators.required
-      ],
-      projectRate: [
-        '',
-        Validators.required
-      ],
-      period: [
-        '',
-        Validators.required
-      ],
-      categoryId: [
-        ''
-      ],
-      subCategories: [
-        ''
-      ],
-      areaId: [
-        ''
-      ],
-      isActive: [false],
+      // impactDescription: [
+      //   ''
+      // ],
+      // institutionDescription: [
+      //   ''
+      // ],
+      // teamDescription: [
+      //   ''
+      // ],
+      // financingDescription: [
+      //   ''
+      // ],
+      // littleSocioEnvironmentalDescription: [
+      //   ''
+      // ],
+      // detailedSocioEnvironmentalDescription: [
+      //   ''
+      // ],
+      // amount: [
+      //   0
+      // ],
+      // projectRate: [
+      //   ''
+      // ],
+      // period: [
+      //   ''
+      // ],
+      // categoryId: [
+      //   ''
+      // ],
+      // subCategories: [
+      //   ''
+      // ],
+      // areaId: [
+      //   ''
+      // ],
+      // isActive: [false],
       statusId: [
-        ''
-      ],
-      objectives: [
-        ''
-      ],
-      basedInLoanProductId: [
         '',
         Validators.required
-      ],
-      maxAmount: [
-        0
-      ],
-      minAmount: [
-        0
-      ],
-      position: [
-        1
-      ],
-      creditTypeId: [
-        ''
-      ],
-      loanPurposeId: [
-        ''
       ]
+      // objectives: [
+      //   ''
+      // ],
+      // basedInLoanProductId: [
+      //   ''
+      // ],
+      // maxAmount: [
+      //   0
+      // ],
+      // minAmount: [
+      //   0
+      // ],
+      // position: [
+      //   1
+      // ],
+      // creditTypeId: [
+      //   ''
+      // ],
+      // loanPurposeId: [
+      //   ''
+      // ]
     });
+    const defaultStatus = this.statusData.find((s) => s.name === 'En Borrador');
+    if (defaultStatus) {
+      this.investmentProjectForm.patchValue({ statusId: defaultStatus.id });
+    }
   }
 
   /**
@@ -204,15 +211,15 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   }
 
   submit() {
-    const currencyCode: string = this.currency;
+    // const currencyCode: string = this.currency;
 
     const payload = {
-      ...this.investmentProjectForm.getRawValue(),
-      currencyCode
+      ...this.investmentProjectForm.getRawValue()
+      // currencyCode
     };
     const owner: any = payload['ownerId'];
     payload['ownerId'] = owner['id'];
-    payload['amount'] = payload['amount'] * 1;
+    // payload['amount'] = payload['amount'] * 1;
     if (Array.isArray(payload['subCategories']) && payload['subCategories'].length > 0) {
       payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
     }
@@ -223,7 +230,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
 
     payload['mnemonic'] = this.investmentProjectForm.controls.ownerId.value?.mnemonic + payload['mnemonic'];
     this.organizationService.createInvestmentProjects(payload).subscribe((response: any) => {
-      this.router.navigate(['../'], { relativeTo: this.route });
+      this.router.navigate([`../${response.resourceId}/general`], { relativeTo: this.route });
     });
   }
 
