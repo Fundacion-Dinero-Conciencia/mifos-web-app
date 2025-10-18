@@ -49,13 +49,13 @@ jobs:
           docker build \
                 --build-arg PUPPETEER_SKIP_DOWNLOAD=true \
                 --build-arg APIM_VERSION=4.3.2 \
-                --build-arg FINERACT_API_URLS=$FINERACT_API_URLS \
-                --build-arg FINERACT_API_URL=$FINERACT_API_URL \
-                --build-arg FINERACT_PLATFORM_TENANT_IDENTIFIER=$FINERACT_PLATFORM_TENANT_IDENTIFIER \
-                --build-arg MIFOS_DEFAULT_CHAR_DELIMITER="$MIFOS_DEFAULT_CHAR_DELIMITER" \
-                --build-arg MIFOS_DEFAULT_LANGUAGE=$MIFOS_DEFAULT_LANGUAGE \
-                --build-arg MIFOS_DEFAULT_DATE_FORMAT="$MIFOS_DEFAULT_DATE_FORMAT" \
-                --build-arg MIFOS_OAUTH_SERVER_ENABLED=$MIFOS_OAUTH_SERVER_ENABLED \
+                --build-arg FINERACT_API_URLS=https://fineract.belat.com/fineract-provider \
+                --build-arg FINERACT_API_URL=https://fineract.belat.com/fineract-provider \
+                --build-arg FINERACT_PLATFORM_TENANT_IDENTIFIER=fineract_default \
+                --build-arg MIFOS_OAUTH_SERVER_ENABLED=false \
+                --build-arg MIFOS_DEFAULT_CHAR_DELIMITER="," \
+                --build-arg MIFOS_DEFAULT_LANGUAGE=es \
+                --build-arg MIFOS_DEFAULT_DATE_FORMAT="dd MMMM yyyy" \
                 -t $IMAGE_URI:$TAG .
     
           docker push $IMAGE_URI:$TAG
