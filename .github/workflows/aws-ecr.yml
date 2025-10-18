@@ -49,8 +49,8 @@ jobs:
           docker build \
                 --build-arg PUPPETEER_SKIP_DOWNLOAD=true \
                 --build-arg APIM_VERSION=4.3.2 \
-                --build-arg FINERACT_API_URLS=https://fineract.belat.com/fineract-provider \
-                --build-arg FINERACT_API_URL=https://fineract.belat.com/fineract-provider \
+                --build-arg FINERACT_API_URLS=https://fineract.belat.com \
+                --build-arg FINERACT_API_URL=https://fineract.belat.com \
                 --build-arg FINERACT_PLATFORM_TENANT_IDENTIFIER=fineract_default \
                 --build-arg MIFOS_OAUTH_SERVER_ENABLED=false \
                 --build-arg MIFOS_DEFAULT_CHAR_DELIMITER="," \
