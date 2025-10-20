@@ -235,7 +235,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         message: this.translateService.instant('errors.error.msg.charge.duplicate.name')
       });
     } else {
-      const period = this.isFactoring === true ? this.projectData?.period / 30 : this.projectData?.period;
+      const period = this.isFactoring === true ? this.selectedSimulation?.period / 30 : this.selectedSimulation?.period;
       const tipoITE = this.getCommissionByName('ITE');
       const percentage = this.getPercentageITEAcordingPeriod() / 100;
       const percentageIte = period >= 12 ? percentage : percentage * period + percentage;
@@ -255,7 +255,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   getPercentageITEAcordingPeriod(): number {
     const ite = this.getCommissionByName('ITE');
-    const period = this.isFactoring === true ? this.projectData?.period / 30 : this.projectData?.period;
+    const period = this.isFactoring === true ? this.selectedSimulation?.period / 30 : this.selectedSimulation?.period;
 
     if (!ite?.description || period == null) return null;
 
