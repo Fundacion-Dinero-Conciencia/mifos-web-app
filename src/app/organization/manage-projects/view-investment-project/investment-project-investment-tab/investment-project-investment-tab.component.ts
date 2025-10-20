@@ -51,10 +51,11 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   filters: UntypedFormGroup;
   displayedColumns: string[] = [
     'Investor',
+    'date',
     'Value invested',
     'Investment status',
-    'Watch promissory note',
-    'Watch order'
+    'Watch order',
+    'Watch promissory note'
   ];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
