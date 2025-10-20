@@ -86,8 +86,8 @@
               <td class="mat-cell" [attr.colspan]="displayedColumns.length">
                 <div class="empty-state">
                   <fa-icon [icon]="filesvg" size="3x"></fa-icon>
-                  <p>No hay inversiones relacionados a este proyecto</p>
-                  <a [routerLink]="'../../../project-participation/' + 'projectData.id'">
+                  <p>No hay inversiones sin grupo asignado relacionadas a este proyecto</p>
+                  <a [routerLink]="'../../../../../project-participation/' + projectData.id">
                     <button mat-raised-button color="primary">Ir a participaciones</button>
                   </a>
                 </div>
@@ -121,9 +121,18 @@
             <mat-label>N°</mat-label>
             <input matInput formControlName="documentNumber" />
           </mat-form-field>
-          <mat-form-field fxFlex="47%" class="inputSearch">
-            <mat-label>Fecha de emisión </mat-label>
-            <input matInput formControlName="date" type="date" />
+          <mat-form-field fxFlex="47%" (click)="creationDatePicker.open()">
+            <mat-label>Fecha de emisión</mat-label>
+            <input
+              formControlName="date"
+              matInput
+              [min]="minDate"
+              [max]="maxDate"
+              [matDatepicker]="creationDatePicker"
+              required
+            />
+            <mat-datepicker-toggle matSuffix [for]="creationDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #creationDatePicker></mat-datepicker>
           </mat-form-field>
           <mat-form-field fxFlex="47%" class="inputSearch">
             <mat-label>Mnemotécnico</mat-label>
@@ -239,7 +248,7 @@
       </div>
       <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="2rem" class="m-t-10 fullWidth">
         <span> Fecha de emisión </span>
-        <b> {{ clientForm.get('date')?.value }}</b>
+        <b> {{ clientForm.get('date')?.value | dateFormat }}</b>
       </div>
       <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem" class="m-t-30 fullWidth" color="secondary">
         <button mat-raised-button matStepperPrevious>Volver</button>
