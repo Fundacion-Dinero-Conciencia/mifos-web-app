@@ -139,8 +139,7 @@ export class EditInvestmentProjectComponent implements OnInit {
               Validators.required
             ],
             loanPurposeId: [
-              data?.loanPurposeId,
-              Validators.required
+              data?.projectGeneralPurpose?.id || ''
             ]
           });
           this.investmentProjectPublication = this.formBuilder.group({

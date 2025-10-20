@@ -88,7 +88,7 @@
             </mat-form-field>
             <mat-form-field fxFlex="47%">
               <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
-              <mat-select formControlName="loanPurposeId">
+              <mat-select formControlName="loanPurposeId" disabled>
                 <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
                   {{ loanPurpose.name }}
                 </mat-option>

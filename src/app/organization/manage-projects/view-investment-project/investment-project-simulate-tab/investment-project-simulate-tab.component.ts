@@ -84,7 +84,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     this.route.data.subscribe((data: { accountData: any; loanProductsData: any; loanPurposeData: any }) => {
       this.projectData = data.accountData;
       this.loanProductsData = data.loanProductsData;
-      console.log(this.loanProductsData);
+      this.loanPurposeData = data.loanPurposeData.codeValues;
     });
     this.createForm = this.formBuilder.group({
       basedInLoanProductId: [
@@ -469,8 +469,27 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     this.setFormValuesToEdit();
     this.createForm.disable();
   }
+
+  get generalPurposeprojectId(): string {
+    if (this.projectData.projectGeneralPurposeId) {
+      const generalPurpose = this.loanPurposeData.find((purpose: any) => {
+        if (purpose.id === this.projectData.projectGeneralPurposeId) {
+          return true;
+        }
+      });
+      return generalPurpose ? generalPurpose.id : '';
+    } else {
+      const noIdea = this.loanPurposeData.find((purpose: any) => {
+        if (purpose.name === 'No especificada') {
+          return true;
+        }
+      });
+      return noIdea ? noIdea.id : '';
+    }
+  }
+
   createSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.projectData.loanPurposeId });
+    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
@@ -584,7 +603,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     var payload: any = {};
     payload.amountToBeFinanced = this.getMontoAFinanciar;
     payload.amountToBeDelivered = this.getMontoAEntregar;
-    payload.creditTypeId = this.projectData.loanPurposeId;
+    payload.creditTypeId = this.generalPurposeprojectId;
     payload.projectRate = this.projectData.rate;
     payload.onlyAmounts = true;
 
@@ -650,7 +669,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   editSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.projectData.loanPurposeId });
+    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
