@@ -39,6 +39,7 @@ export class EditInvestmentProjectComponent implements OnInit {
   imageData: any;
   coverImage: any;
   imagesOrder: any[] = [];
+  loanPurposeData: any[] = [];
   validExtensions = [
     'jpg',
     'jpeg',
@@ -69,7 +70,9 @@ export class EditInvestmentProjectComponent implements OnInit {
         countryData: any;
         clientsData: any;
         imageData: any;
+        loanPurposeData: any;
       }) => {
+        this.loanPurposeData = data.loanPurposeData.codeValues;
         this.filteredCategoryData = [];
         this.categoryData = data.categoryData.codeValues;
         this.filteredSubcategoryData = [];
@@ -134,6 +137,9 @@ export class EditInvestmentProjectComponent implements OnInit {
             statusId: [
               data?.status?.statusValue?.id,
               Validators.required
+            ],
+            loanPurposeId: [
+              data?.projectGeneralPurpose?.id || ''
             ]
           });
           this.investmentProjectPublication = this.formBuilder.group({
@@ -225,6 +231,7 @@ export class EditInvestmentProjectComponent implements OnInit {
       name: rawGeneralFormValues.name,
       statusId: rawGeneralFormValues.statusId,
       mnemonic: rawGeneralFormValues.mnemonic,
+      loanPurposeId: rawGeneralFormValues.loanPurposeId,
       ...rawPublicationFormValues,
       ...rawImpactFormValues,
       projectRate: 10

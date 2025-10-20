@@ -87,10 +87,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       this.loanPurposeData = data.loanPurposeData.codeValues;
     });
     this.createForm = this.formBuilder.group({
-      loanPurposeId: [
-        '',
-        Validators.required
-      ],
       basedInLoanProductId: [
         '',
         Validators.required
@@ -115,6 +111,14 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
       this.currency = data.stringValue;
     });
+  }
+
+  getLoanPurposeById(id: any) {
+    if (!id) {
+      return null;
+    }
+
+    return this.loanProductsData.find((lp: any) => lp.id === id);
   }
 
   addQueryParam(id: string | number) {
@@ -342,7 +346,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   cancelEditingForm() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      loanPurposeId: this.selectedSimulation.loanPurposeId,
       amount: this.selectedSimulation.amountToBeFinanced,
       interestRate: this.selectedSimulation?.rate,
       period: this.selectedSimulation?.period
@@ -377,11 +380,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   switchAllowEditing() {
     this.allowEditingForm = !this.allowEditingForm;
     this.createForm.get('basedInLoanProductId').disable();
-    this.createForm.get('loanPurposeId').disable();
     if (this.allowEditingForm) {
       this.createForm.enable();
       this.createForm.get('basedInLoanProductId').disable();
-      this.createForm.get('loanPurposeId').disable();
     } else {
       this.createForm.disable();
     }
@@ -451,7 +452,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   setFormValuesToEdit() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      loanPurposeId: this.selectedSimulation.loanPurposeId,
       amount: this.selectedSimulation.amountToBeFinanced,
       interestRate: this.selectedSimulation.rate,
       period: this.selectedSimulation.period
@@ -469,8 +469,27 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     this.setFormValuesToEdit();
     this.createForm.disable();
   }
+
+  get generalPurposeprojectId(): string {
+    if (this.projectData.projectGeneralPurposeId) {
+      const generalPurpose = this.loanPurposeData.find((purpose: any) => {
+        if (purpose.id === this.projectData.projectGeneralPurposeId) {
+          return true;
+        }
+      });
+      return generalPurpose ? generalPurpose.id : '';
+    } else {
+      const noIdea = this.loanPurposeData.find((purpose: any) => {
+        if (purpose.name === 'No especificada') {
+          return true;
+        }
+      });
+      return noIdea ? noIdea.id : '';
+    }
+  }
+
   createSimulation() {
-    const payloadJSON = JSON.stringify(this.createForm.value);
+    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
@@ -584,7 +603,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     var payload: any = {};
     payload.amountToBeFinanced = this.getMontoAFinanciar;
     payload.amountToBeDelivered = this.getMontoAEntregar;
-    payload.creditTypeId = this.selectedSimulation.loanPurposeId;
+    payload.creditTypeId = this.generalPurposeprojectId;
     payload.projectRate = this.projectData.rate;
     payload.onlyAmounts = true;
 
@@ -650,7 +669,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   editSimulation() {
-    const payloadJSON = JSON.stringify(this.createForm.value);
+    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',

@@ -172,11 +172,8 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       statusId: [
         '',
         Validators.required
-      ]
+      ],
       // objectives: [
-      //   ''
-      // ],
-      // basedInLoanProductId: [
       //   ''
       // ],
       // maxAmount: [
@@ -191,9 +188,10 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       // creditTypeId: [
       //   ''
       // ],
-      // loanPurposeId: [
-      //   ''
-      // ]
+      loanPurposeId: [
+        '',
+        Validators.required
+      ]
     });
     const defaultStatus = this.statusData.find((s) => s.name === 'En Borrador');
     if (defaultStatus) {
