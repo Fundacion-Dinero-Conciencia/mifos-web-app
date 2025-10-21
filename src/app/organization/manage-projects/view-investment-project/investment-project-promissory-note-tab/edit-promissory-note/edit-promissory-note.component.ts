@@ -72,7 +72,7 @@ export class EditPromissoryNoteComponent implements OnInit {
     private clientService: ClientsService,
     private router: Router,
     private settingsService: SettingsService,
-    private datePipe: DatePipe
+    public datePipe: DatePipe
   ) {
     this.route.data.subscribe((data: { accountData: any; PromissoryNoteGroup: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
@@ -374,7 +374,8 @@ export class EditPromissoryNoteComponent implements OnInit {
       signators: this.selectedSignatorsArray.value,
       creationDate: this.getDateFormatted(this.clientForm.get('date')?.value),
       dateFormat: 'dd MMMM yyyy',
-      locale: 'es'
+      locale: 'es',
+      signedDate: this.datePipe.transform(new Date(), 'dd MMMM yyyy', '', 'es')
     };
     this.organizationService
       .editInsvestmentGroup(this.PromissoryNoteGroup.id, JSON.stringify(data))
