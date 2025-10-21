@@ -9,6 +9,8 @@ import { AlertService } from 'app/core/alert/alert.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { of } from 'rxjs';
 import { catchError, debounceTime } from 'rxjs/operators';
+import { SettingsService } from 'app/settings/settings.service';
+import { SystemService } from 'app/system/system.service';
 @Component({
   selector: 'mifosx-investment-project-investment-tab',
   templateUrl: './investment-project-investment-tab.component.html',
@@ -19,12 +21,15 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   clientClassificationTypeOptions: any;
   investorTypes: any[];
   filesvg = faFileAlt;
+  currency: string;
+
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     private organizationService: OrganizationService,
     private alertService: AlertService,
-    private clientsService: ClientsService
+    private clientsService: ClientsService,
+    private systemService: SystemService
   ) {
     this.route.data.subscribe((data: { accountData: any; investments: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
@@ -46,19 +51,25 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   filters: UntypedFormGroup;
   displayedColumns: string[] = [
     'Investor',
+    'date',
     'Value invested',
     'Investment status',
-    'Watch promissory note',
-    'Watch order'
+    'Watch order',
+    'Watch promissory note'
   ];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   requestParams = {};
   ngOnInit(): void {
+    this.getDefaultCurrency();
     this.loadInvestments(0, 10);
   }
-
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
+    });
+  }
   downloadPromissoryNote(id: string) {
     this.organizationService
       .downloadPromissoryNote(id)

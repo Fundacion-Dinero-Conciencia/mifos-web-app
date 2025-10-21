@@ -8,10 +8,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClientsService } from 'app/clients/clients.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
+import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { SystemService } from 'app/system/system.service';
 import { debounceTime, finalize } from 'rxjs/operators';
-import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'mifosx-edit-promissory-note',
@@ -36,6 +37,9 @@ export class EditPromissoryNoteComponent implements OnInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   dataSourceLegal: MatTableDataSource<any> = new MatTableDataSource<any>();
   dataSourceAval: MatTableDataSource<any> = new MatTableDataSource<any>();
+
+  minDate = new Date(2000, 0, 1);
+  maxDate = new Date();
 
   displayedColumns: string[] = [
     'Investor',
@@ -66,7 +70,9 @@ export class EditPromissoryNoteComponent implements OnInit {
     private dialog: MatDialog,
     private currencyPipe: CurrencyPipe,
     private clientService: ClientsService,
-    private router: Router
+    private router: Router,
+    private settingsService: SettingsService,
+    public datePipe: DatePipe
   ) {
     this.route.data.subscribe((data: { accountData: any; PromissoryNoteGroup: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
@@ -203,18 +209,16 @@ export class EditPromissoryNoteComponent implements OnInit {
     });
   }
 
-  formatDateForInput(date: string | Date): string {
+  formatDateForInput(date: any): string {
     const d = new Date(date);
-    const year = d.getFullYear();
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const day = d.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const corrected = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+    console.log(corrected.toISOString().split('T')[0]);
+    return corrected.toISOString().split('T')[0];
   }
-
   ngOnInit(): void {
-    this.organizationService.getGroupStatus(this.PromissoryNoteGroup.id).subscribe((data: any) => {
-      console.log(data);
-    });
+    this.minDate = this.settingsService.minAllowedDate;
+    this.maxDate = this.settingsService.businessDate;
+    this.organizationService.getGroupStatus(this.PromissoryNoteGroup.id).subscribe((data: any) => {});
     this.getSignators();
     this.getGroupsList();
     this.filters = this.formBuilder.group({
@@ -244,7 +248,7 @@ export class EditPromissoryNoteComponent implements OnInit {
         Validators.required
       ],
       date: [
-        this.formatDateForInput(this.PromissoryNoteGroup.creationDate),
+        new Date(this.PromissoryNoteGroup.creationDate),
         Validators.required
       ],
       mnemonic: [
@@ -313,8 +317,6 @@ export class EditPromissoryNoteComponent implements OnInit {
           }
         });
     }
-
-    console.log('Signators actuales:', formArray.value);
   }
 
   get promissoryNoteQuantity() {
@@ -326,12 +328,7 @@ export class EditPromissoryNoteComponent implements OnInit {
   }
 
   getDateFormatted(date: any): string {
-    const [
-      year,
-      month,
-      day
-    ] = date.split('-').map(Number);
-    const localDate = new Date(year, month - 1, day);
+    const localDate = new Date(date);
 
     const formatter = new Intl.DateTimeFormat('es', {
       day: '2-digit',
@@ -371,16 +368,29 @@ export class EditPromissoryNoteComponent implements OnInit {
   }
   approvePromissoryNote() {
     this.loading = true;
+    const documetNumber = this.clientForm.get('documentNumber')?.value;
+    const data = {
+      documentNumber: documetNumber === this.PromissoryNoteGroup.documentNumber ? undefined : documetNumber,
+      signators: this.selectedSignatorsArray.value,
+      creationDate: this.getDateFormatted(this.clientForm.get('date')?.value),
+      dateFormat: 'dd MMMM yyyy',
+      locale: 'es',
+      signedDate: this.datePipe.transform(new Date(), 'dd MMMM yyyy', '', 'es')
+    };
     this.organizationService
-      .aprobeGroup(this.PromissoryNoteGroup.id)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
+      .editInsvestmentGroup(this.PromissoryNoteGroup.id, JSON.stringify(data))
       .subscribe((response) => {
-        this.router.navigate(['../..'], { relativeTo: this.route });
-        this.loading = false;
+        this.organizationService
+          .aprobeGroup(this.PromissoryNoteGroup.id)
+          .pipe(
+            finalize(() => {
+              this.loading = false;
+            })
+          )
+          .subscribe((response) => {
+            this.router.navigate(['../..'], { relativeTo: this.route });
+            this.loading = false;
+          });
       });
   }
 

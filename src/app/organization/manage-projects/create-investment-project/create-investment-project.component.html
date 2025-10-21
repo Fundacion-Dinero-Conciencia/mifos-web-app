@@ -342,6 +342,14 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
+          <mat-select formControlName="loanPurposeId">
+            <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
+              {{ loanPurpose.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="47%">
           <mat-label>{{ 'labels.inputs.Proyect name' | translate }}</mat-label>
           <input matInput autofocus formControlName="name" />
           <mat-error *ngIf="investmentProjectForm?.get('name')?.hasError('required')">

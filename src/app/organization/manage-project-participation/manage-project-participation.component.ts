@@ -24,8 +24,7 @@ export class ManageProjectParticipationComponent implements OnInit {
     'paymentType',
     'date',
     'status',
-    'actions',
-    'select'
+    'actions'
   ];
   selectedItems: any[] = [];
 
