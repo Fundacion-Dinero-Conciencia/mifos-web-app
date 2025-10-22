@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,7 +12,6 @@ import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/conf
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { SystemService } from 'app/system/system.service';
 import { debounceTime, finalize } from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'mifosx-edit-promissory-note',
@@ -105,6 +104,7 @@ export class EditPromissoryNoteComponent implements OnInit {
       this.PromissoryNoteGroup = data;
       this.dataSource.data = this.PromissoryNoteGroup.investmentList;
       this.loading = false;
+      this.selectedSignators = this.PromissoryNoteGroup.signatorList.map((signator: any) => signator.memberId);
     });
   }
 
@@ -298,6 +298,7 @@ export class EditPromissoryNoteComponent implements OnInit {
           }
         });
     } else {
+      this.loading = true;
       const signator = this.PromissoryNoteGroup.signatorList.filter(
         (signator: any) => signator.memberId === signatorId
       );
@@ -309,11 +310,13 @@ export class EditPromissoryNoteComponent implements OnInit {
           })
         )
         .subscribe((response) => {
-          this.loading = true;
-
           const index = formArray.value.indexOf(signatorId);
+          const index2 = this.selectedSignators.indexOf(signatorId);
           if (index > -1) {
             formArray.removeAt(index);
+          }
+          if (index2 > -1) {
+            this.selectedSignators.splice(index2, 1);
           }
         });
     }
