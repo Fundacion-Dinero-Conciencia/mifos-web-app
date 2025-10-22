@@ -151,11 +151,14 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
         })
       )
       .subscribe((response: any) => {
-        console.log(response);
         this.dataSource.data = response.content || response;
         this.paginator.length = response.total;
         this.dataSource.paginator = this.paginator;
       });
+  }
+
+  resetFilters() {
+    this.filters.reset();
   }
 
   codeToState(code: number): string {

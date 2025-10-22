@@ -1,6 +1,9 @@
 <main>
   <div class="container" id="manageProjectsView">
-    <section class="container" *ngIf="investmentProjectFormGeneral">
+    <section
+      class="container"
+      *ngIf="investmentProjectFormGeneral && investmentProjectPublication && investmentProjectImpact"
+    >
       <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper>
         <ng-template matStepperIcon="number">
           <fa-icon icon="pencil-alt" size="sm"></fa-icon>
@@ -140,16 +143,32 @@
             <mat-form-field fxFlex="48%">
               <mat-label>{{ 'labels.inputs.custom.Min Amount' | translate }}</mat-label>
               <input type="number" matInput required formControlName="minAmount" />
-              <mat-error *ngIf="investmentProjectForm?.get('minAmount')?.hasError('required')">
-                {{ 'labels.inputs.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
+              <mat-error *ngIf="investmentProjectPublication?.get('minAmount')?.hasError('required')">
+                {{ 'labels.inputs.custom.Min Amount' | translate }} {{ 'labels.commons.is' | translate }}
                 <strong>{{ 'labels.commons.required' | translate }}</strong>
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  investmentProjectPublication.get('minAmount')?.hasError('maxLessThanMin') &&
+                  investmentProjectPublication?.errors.maxLessThanMin
+                "
+              >
+                <strong>valor minimo no puede ser mayor al mínimo</strong>
               </mat-error>
             </mat-form-field>
             <mat-form-field fxFlex="48%">
               <mat-label>{{ 'labels.inputs.custom.Max Amount' | translate }}</mat-label>
               <input type="number" matInput required formControlName="maxAmount" />
-              <mat-error *ngIf="investmentProjectForm?.get('maxAmount')?.hasError('required')">
-                {{ 'labels.inputs.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
+              <mat-error
+                *ngIf="
+                  investmentProjectPublication.get('maxAmount')?.hasError('maxLessThanMin') &&
+                  investmentProjectPublication?.errors.maxLessThanMin
+                "
+              >
+                <strong>valor máximo no puede ser menor al mínimo</strong>
+              </mat-error>
+              <mat-error *ngIf="investmentProjectPublication?.get('maxAmount')?.hasError('required')">
+                {{ 'labels.inputs.custom.Max Amount' | translate }} {{ 'labels.commons.is' | translate }}
                 <strong>{{ 'labels.commons.required' | translate }}</strong>
               </mat-error>
             </mat-form-field>
@@ -157,7 +176,7 @@
             <mat-form-field fxFlex="48%">
               <mat-label>{{ 'labels.inputs.Portal Position' | translate }}</mat-label>
               <input type="number" matInput required formControlName="position" />
-              <mat-error *ngIf="investmentProjectForm?.get('position')?.hasError('required')">
+              <mat-error *ngIf="investmentProjectPublication?.get('position')?.hasError('required')">
                 {{ 'labels.inputs.Portal Position' | translate }} {{ 'labels.commons.is' | translate }}
                 <strong>{{ 'labels.commons.required' | translate }}</strong>
               </mat-error>
@@ -236,7 +255,7 @@
             <button type="button" mat-raised-button matStepperPrevious>
               {{ 'labels.buttons.Cancel' | translate }}
             </button>
-            <button mat-raised-button color="primary" matStepperNext [disabled]="!investmentProjectPublication.valid">
+            <button mat-raised-button color="primary" matStepperNext>
               {{ 'labels.buttons.Submit' | translate }}
             </button>
           </div>

@@ -24,6 +24,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <button mat-button class="clearFilters" type="button" (click)="resetFilters()">Limpiar filtros</button>
   </form>
 
   <table mat-table #documentsTable [dataSource]="dataSource" matSort class="m-t-25">

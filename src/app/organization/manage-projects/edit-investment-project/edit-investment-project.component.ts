@@ -11,7 +11,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
 import { SystemService } from 'app/system/system.service';
-
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 @Component({
   selector: 'mifosx-edit-investment-project',
   templateUrl: './edit-investment-project.component.html',
@@ -111,6 +111,32 @@ export class EditInvestmentProjectComponent implements OnInit {
     return this.validExtensions.includes(ext ?? '');
   }
 
+  minMaxValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const minControl = group.get('minAmount');
+      const maxControl = group.get('maxAmount');
+      const min = minControl?.value;
+      const max = maxControl?.value;
+
+      if (min != null && max != null && max < min) {
+        maxControl?.setErrors(null);
+        minControl?.setErrors(null);
+        maxControl?.setErrors({ maxLessThanMin: true });
+        minControl?.setErrors({ maxLessThanMin: true });
+
+        return { maxLessThanMin: true };
+      } else {
+        if (minControl?.hasError('maxLessThanMin')) {
+          minControl.setErrors(null);
+        }
+        if (maxControl?.hasError('maxLessThanMin')) {
+          maxControl.setErrors(null);
+        }
+      }
+
+      return null;
+    };
+  }
   async setupInvestmentProjectForm(id: any): Promise<void> {
     return new Promise((resolve, reject) => {
       this.organizationService.getInvestmentProject(id).subscribe({
@@ -142,35 +168,48 @@ export class EditInvestmentProjectComponent implements OnInit {
               data?.projectGeneralPurpose?.id || ''
             ]
           });
-          this.investmentProjectPublication = this.formBuilder.group({
-            institutionDescription: [
-              data.institutionDescription,
-              Validators.required
-            ],
-            teamDescription: [
-              data?.teamDescription,
-              Validators.required
-            ],
-            financingDescription: [
-              data?.financingDescription
-            ],
-            position: [
-              data?.position
-            ],
-            maxAmount: [
-              data?.maxAmount,
-              [
-                Validators.required,
-                Validators.min(0)]
-            ],
-            minAmount: [
-              data?.minAmount,
-              [
-                Validators.required,
-                Validators.min(0)]
-            ],
-            isActive: [data.isActive]
+          this.investmentProjectPublication = this.formBuilder.group(
+            {
+              institutionDescription: [
+                data.institutionDescription,
+                Validators.required
+              ],
+              teamDescription: [
+                data?.teamDescription,
+                Validators.required
+              ],
+              financingDescription: [
+                data?.financingDescription
+              ],
+              position: [
+                data?.position
+              ],
+              maxAmount: [
+                data?.maxAmount,
+                [
+                  Validators.required,
+                  Validators.min(0)]
+              ],
+              minAmount: [
+                data?.minAmount,
+                [
+                  Validators.required,
+                  Validators.min(0)]
+              ],
+              isActive: [data.isActive]
+            },
+            {
+              validators: [this.minMaxValidator()]
+            }
+          );
+
+          this.investmentProjectPublication.get('minAmount')?.valueChanges.subscribe(() => {
+            this.investmentProjectPublication.updateValueAndValidity();
           });
+          this.investmentProjectPublication.get('maxAmount')?.valueChanges.subscribe(() => {
+            this.investmentProjectPublication.updateValueAndValidity();
+          });
+
           this.investmentProjectImpact = this.formBuilder.group({
             impactDescription: [
               data?.impactDescription,

@@ -18,3 +18,9 @@
 .empty-state button {
   margin-top: 1rem;
 }
+
+button.clearFilters {
+  text-decoration: underline;
+  margin-left: 1rem;
+  font-weight: 500;
+}
