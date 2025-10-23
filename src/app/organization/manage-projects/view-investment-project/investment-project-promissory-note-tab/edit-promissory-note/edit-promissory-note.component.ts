@@ -398,28 +398,26 @@ export class EditPromissoryNoteComponent implements OnInit {
   }
 
   generateFundPromissoryPdf() {
-    this.clientService.getClientAccountData(this.projectData.ownerId).subscribe((data: any) => {
-      const payload = { fundId: data.savingsAccounts[0].id };
-      this.organizationService.generateFundPromissoryPdf(payload).subscribe((data: any) => {
-        const byteCharacters = atob(data.pdfBase64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: 'application/pdf' });
+    const payload = { groupId: this.PromissoryNoteGroup.id };
+    this.organizationService.generateFundPromissoryPdf(payload).subscribe((data: any) => {
+      const byteCharacters = atob(data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
 
-        const blobUrl = URL.createObjectURL(blob);
+      const blobUrl = URL.createObjectURL(blob);
 
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = 'PagareFondo.pdf';
-        document.body.appendChild(link);
-        link.click();
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'PagareFondo.pdf';
+      document.body.appendChild(link);
+      link.click();
 
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      });
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
     });
   }
 }
