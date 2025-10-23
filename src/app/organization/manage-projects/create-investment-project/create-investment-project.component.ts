@@ -104,13 +104,21 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   }
 
   setupInvestmentProjectForm() {
+    const ownerId = history.state?.ownerId;
+    const ownerName = history.state?.ownerName;
+    const ownerMnemonic = history.state?.mnemonic;
+    const owner = {
+      id: ownerId,
+      displayName: ownerName,
+      mnemonic: ownerMnemonic
+    };
     this.investmentProjectForm = this.formBuilder.group({
       countryId: [
         '',
         Validators.required
       ],
       ownerId: [
-        0,
+        owner || 0,
         Validators.required
       ],
       name: [

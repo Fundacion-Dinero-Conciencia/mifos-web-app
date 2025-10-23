@@ -127,6 +127,15 @@ export class ClientsViewComponent implements OnInit {
           state: { ownerId: this.clientViewData.id }
         });
         break;
+      case 'create Project':
+        this.router.navigate(['/organization/projects/create'], {
+          state: {
+            ownerId: this.clientViewData.id,
+            ownerName: this.clientViewData.displayName,
+            mnemonic: this.clientViewData.mnemonic
+          }
+        });
+        break;
     }
   }
 
