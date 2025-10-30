@@ -40,6 +40,8 @@ export class EditPromissoryNoteComponent implements OnInit {
   minDate = new Date(2000, 0, 1);
   maxDate = new Date();
 
+  allowToEdit = true;
+
   displayedColumns: string[] = [
     'Investor',
     'Date',
@@ -79,6 +81,9 @@ export class EditPromissoryNoteComponent implements OnInit {
       this.PromissoryNoteGroup = data.PromissoryNoteGroup;
       this.dataSource.data = this.PromissoryNoteGroup.investmentList;
       this.selectedSignators = data.PromissoryNoteGroup.signatorList.map((signator: any) => signator.memberId);
+      if (data.PromissoryNoteGroup?.status?.value === 'SIGNED') {
+        this.allowToEdit = false;
+      }
     });
   }
 

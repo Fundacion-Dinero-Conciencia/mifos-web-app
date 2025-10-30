@@ -76,7 +76,12 @@
             <ng-container matColumnDef="Group">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Cambiar de grupo</th>
               <td mat-cell *matCellDef="let document; let index">
-                <mat-checkbox labelPosition="after" class="m-r-10" (change)="onInvestorSelected($event, document)">
+                <mat-checkbox
+                  labelPosition="after"
+                  class="m-r-10"
+                  (change)="onInvestorSelected($event, document)"
+                  [disabled]="!allowToEdit"
+                >
                 </mat-checkbox>
               </td>
             </ng-container>
@@ -119,7 +124,7 @@
         <form [formGroup]="clientForm" fxLayout="row wrap" fxLayoutGap="2%">
           <mat-form-field fxFlex="47%" class="inputSearch m-r-10">
             <mat-label>N°</mat-label>
-            <input matInput formControlName="documentNumber" />
+            <input matInput formControlName="documentNumber" [readonly]="!allowToEdit" />
           </mat-form-field>
           <mat-form-field fxFlex="47%" (click)="creationDatePicker.open()">
             <mat-label>Fecha de emisión</mat-label>
@@ -128,10 +133,16 @@
               matInput
               [min]="minDate"
               [max]="maxDate"
-              [matDatepicker]="creationDatePicker"
+              [matDatepicker]="allowToEdit ? creationDatePicker : null"
               required
+              [readonly]="!allowToEdit"
             />
-            <mat-datepicker-toggle matSuffix [for]="creationDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="creationDatePicker"
+              [disabled]="!allowToEdit"
+              *ngIf="!allowToEdit"
+            ></mat-datepicker-toggle>
             <mat-datepicker #creationDatePicker></mat-datepicker>
           </mat-form-field>
           <mat-form-field fxFlex="47%" class="inputSearch">
@@ -149,6 +160,7 @@
                 class="m-r-10"
                 (change)="onSignatorSelected($event, signator.id)"
                 [checked]="selectedSignators.includes(signator.id)"
+                [disabled]="!allowToEdit"
               >
               </mat-checkbox>
             </td>
@@ -183,6 +195,7 @@
                 class="m-r-10"
                 (change)="onSignatorSelected($event, signator.id)"
                 [checked]="selectedSignators.includes(signator.id)"
+                [disabled]="!allowToEdit"
               >
               </mat-checkbox>
             </td>
@@ -252,10 +265,18 @@
       </div>
       <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem" class="m-t-30 fullWidth" color="secondary">
         <button mat-raised-button matStepperPrevious>Volver</button>
-        <button mat-raised-button color="primary" matStepperNext (click)="saveGroup()" [disabled]="!haveLegalSelected">
+        <button
+          *ngIf="allowToEdit"
+          mat-raised-button
+          color="primary"
+          matStepperNext
+          (click)="saveGroup()"
+          [disabled]="!haveLegalSelected"
+        >
           Aceptar
         </button>
         <button
+          *ngIf="allowToEdit"
           mat-raised-button
           color="primary"
           class="aprobeButton"

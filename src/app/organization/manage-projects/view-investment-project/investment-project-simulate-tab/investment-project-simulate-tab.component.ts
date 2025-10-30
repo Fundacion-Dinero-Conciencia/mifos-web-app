@@ -693,6 +693,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       id: c.id
     }));
     this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
+      const principal = this.createForm.get('amount').value;
+      const numberOfRepayments = this.createForm.get('period').value;
+      const interestRatePerPeriod = this.createForm.get('interestRate').value;
+      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments);
       window.location.reload();
     });
   }
@@ -707,10 +711,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     });
     warningtDialogRef.afterClosed().subscribe((response: any) => {
       if (response.confirm) {
-        const principal = this.createForm.get('amount').value;
-        const numberOfRepayments = this.createForm.get('period').value;
-        const interestRatePerPeriod = this.createForm.get('interestRate').value;
-        this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments);
         this.saveCommissions();
       }
     });
