@@ -241,8 +241,6 @@ export class EditInvestmentProjectComponent implements OnInit {
             this.investmentProjectFormGeneral.disable();
             this.investmentProjectFormGeneral.get('name')?.enable();
             this.investmentProjectFormGeneral.get('statusId')?.enable();
-            this.investmentProjectPublication.disable();
-            this.investmentProjectImpact.disable();
           } else if (!this.canEdit()) {
             this.investmentProjectFormGeneral.disable();
             this.investmentProjectFormGeneral.get('statusId')?.enable();
