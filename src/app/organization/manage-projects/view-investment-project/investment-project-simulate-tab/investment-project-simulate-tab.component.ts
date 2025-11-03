@@ -199,7 +199,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   calculatePromissoryNote(percentage: any): number {
-    var amount = this.projectData?.amount || 0;
+    var amount = this.selectedSimulation?.amountToBeFinanced || 0;
 
     // Buscar comisión AEF
     const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
@@ -220,7 +220,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.vat / 360; // tasa AEF por mes
       const montoFinanciar = this.getMontoAFinanciar;
       amount = this.updateAmountRequested() || 0;
-      subtotalAef = (montoFinanciar * this.projectData?.period * tasaToApply) / 100;
+      subtotalAef = (montoFinanciar * this.selectedSimulation?.period * tasaToApply) / 100;
     }
 
     const pagaré = (amount + subtotalAef + otrosGastos) / (1 - percentage);
