@@ -129,7 +129,7 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
   ngAfterViewInit() {
     this.projectParticipationForm.controls.projectId.valueChanges.subscribe((value: string) => {
       if (value.length >= 2) {
-        this.projectsService.getFilteredProjects(value).subscribe((data: any) => {
+        this.projectsService.getFilteredProjects(value, 'En Financiamiento').subscribe((data: any) => {
           this.projectsData = data;
         });
       }
