@@ -270,8 +270,7 @@ export class EditInvestmentProjectComponent implements OnInit {
       mnemonic: rawGeneralFormValues.mnemonic,
       loanPurposeId: rawGeneralFormValues.loanPurposeId,
       ...rawPublicationFormValues,
-      ...rawImpactFormValues,
-      projectRate: 10
+      ...rawImpactFormValues
     }).reduce(
       (acc, [
           key,
