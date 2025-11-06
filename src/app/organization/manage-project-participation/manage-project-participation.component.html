@@ -1,22 +1,31 @@
 <div class="container m-b-20" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="20px">
-  <div #fundFormRef class="in-block">
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="navigateToCreate()"
-      *mifosxHasPermission="'CREATE_PROJECT_PARTICIPATION'"
-    >
-      <fa-icon icon="plus" class="m-r-10"></fa-icon>
-      {{ 'labels.buttons.Create Reserve Participation' | translate }}
-    </button>
-  </div>
+  <div #fundFormRef class="in-block"></div>
 </div>
 <div class="container">
   <div #filter fxLayout="row" fxLayoutGap="20px">
-    <mat-form-field fxFlex>
+    <mat-form-field fxFlex="40%">
       <mat-label>{{ 'labels.inputs.Filter' | translate }}</mat-label>
       <input matInput (keyup)="applyFilter($event.target.value)" />
     </mat-form-field>
+    <mat-form-field fxFlex="15%">
+      <mat-label>Estado</mat-label>
+      <mat-select (selectionChange)="applySelectFilter($event.value)">
+        <mat-option *ngFor="let status of statuses" [value]="status.id">
+          {{ 'labels.text.' + statusLabel(status.id) | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div fxLayoutAlign="end center" fxFlex="42%">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="navigateToCreate()"
+        *mifosxHasPermission="'CREATE_PROJECT_PARTICIPATION'"
+      >
+        <fa-icon icon="plus" class="m-r-10"></fa-icon>
+        {{ 'labels.buttons.Create Reserve Participation' | translate }}
+      </button>
+    </div>
   </div>
 
   <div #projectsTable class="mat-elevation-z8 table-container">
@@ -89,6 +98,17 @@
             >
               <fa-icon icon="clock"></fa-icon>
             </button>
+            <button
+              *ngIf="item.status.value === 400"
+              class="action-button"
+              mat-raised-button
+              color="primary"
+              matTooltip="{{ 'Asignar transferencias bancarias' }}"
+              matTooltipPosition="left"
+              (click)="assignBankTransfers(item)"
+            >
+              $
+            </button>
           </span>
         </td>
       </ng-container>
@@ -114,3 +134,14 @@
     <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
   </div>
 </div>
+<mifosx-custom-dialog
+  [open]="showDialog"
+  [heading]="'Asignar transferencias a la reserva'"
+  color="primary"
+  (confirm)="onDialogConfirm($event)"
+  (dismiss)="onDialogCancel()"
+  (closed)="showDialog = false"
+>
+  <h1>prueba de concepto</h1>
+  <!-- Aquí puedes poner formularios, selects o cualquier contenido dinámico -->
+</mifosx-custom-dialog>

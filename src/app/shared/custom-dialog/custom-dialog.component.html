@@ -1,0 +1,30 @@
+<!-- Renderiza solo cuando open=true -->
+<div *ngIf="open" class="cx-backdrop" (click)="onBackdropClick()"></div>
+
+<div
+  *ngIf="open"
+  class="cx-panel"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cx-title"
+  (click)="$event.stopPropagation()"
+>
+  <header class="cx-header">
+    <h1 id="cx-title">{{ heading }}</h1>
+    <button mat-icon-button aria-label="Cerrar" (click)="onCancel()">✕</button>
+  </header>
+
+  <main class="cx-content">
+    <!-- CHILDREN: contenido proyectado -->
+    <ng-content></ng-content>
+  </main>
+
+  <footer class="cx-actions">
+    <button mat-raised-button (click)="onCancel()">
+      {{ 'labels.buttons.Cancel' | translate }}
+    </button>
+    <button mat-raised-button [color]="color" (click)="onConfirm()">
+      {{ 'labels.buttons.Confirm' | translate }}
+    </button>
+  </footer>
+</div>

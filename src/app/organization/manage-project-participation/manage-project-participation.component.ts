@@ -27,7 +27,31 @@ export class ManageProjectParticipationComponent implements OnInit {
     'actions'
   ];
   selectedItems: any[] = [];
+  filterStatus: string = '';
+  filterText: string = '';
 
+  showDialog = false;
+
+  onDialogConfirm(result: { confirm: true }) {
+    this.showDialog = false;
+  }
+
+  onDialogCancel() {
+    this.showDialog = false;
+  }
+
+  statusId: Record<number, string> = {
+    100: 'Accepted',
+    200: 'Pending',
+    300: 'Canceled',
+    400: 'Reserved'
+  };
+
+  statuses = [
+    { id: 100 },
+    { id: 200 },
+    { id: 300 },
+    { id: 400 }];
   constructor(
     private route: ActivatedRoute,
     private organizationservice: OrganizationService,
@@ -48,10 +72,32 @@ export class ManageProjectParticipationComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+    this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
+      const parsedFilter = JSON.parse(filter);
+      const matchesStatus = !parsedFilter.status || data.status?.value === parsedFilter.status;
+      const matchesText =
+        !parsedFilter.text || data.projectName.toLowerCase().includes(parsedFilter.text.toLowerCase());
+      return matchesStatus && matchesText;
+    };
   }
 
   applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.filterText = filterValue.trim().toLowerCase();
+    this.dataSource.filter = JSON.stringify({
+      status: this.filterStatus,
+      text: this.filterText
+    });
+  }
+  applySelectFilter(filterValue: string) {
+    this.filterStatus = filterValue;
+    this.dataSource.filter = JSON.stringify({
+      status: this.filterStatus,
+      text: this.filterText
+    });
+  }
+
+  assignBankTransfers(item: any) {
+    this.showDialog = true;
   }
 
   manageRequest(request: any, command: string): void {
@@ -98,15 +144,7 @@ export class ManageProjectParticipationComponent implements OnInit {
   }
 
   statusLabel(status: number) {
-    if (status === 200) {
-      return 'Pending';
-    } else if (status === 100) {
-      return 'Accepted';
-    } else if (status === 300) {
-      return 'Canceled';
-    } else if (status === 400) {
-      return 'Reserved';
-    }
+    return this.statusId[status];
   }
 
   reload() {
