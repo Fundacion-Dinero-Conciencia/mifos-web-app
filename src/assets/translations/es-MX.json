@@ -3378,9 +3378,9 @@
       "Voluntary": "Voluntario",
       "Write a note": "Escribe una nota",
       "“Maker-Checker” principle requires every tasks": "El principio \"Maker-Checker\" requiere que dos personas completen cada tarea para reducir la posibilidad de errores y uso indebido. Una persona inicia el proceso y la segunda lo completa.",
-      "Accepted": "Aceptada",
-      "Rejected": "Rechazada",
-      "Pending": "Pendiente",
+      "Accepted": "Aceptado",
+      "Received": "Recibido",
+      "Assigned": "Asignado",
       "Reserved": "Reservado"
     },
     "titles": {
