@@ -104,7 +104,6 @@
     </table>
   </section>
   <section class="container createForm" *ngIf="isCreatingSimulation && !loadingCommissions">
-    {{ generalPurposeprojectId }}
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Loan Type' | translate }} </mat-label>

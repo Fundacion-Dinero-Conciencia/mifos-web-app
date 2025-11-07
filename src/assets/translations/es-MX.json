@@ -1188,6 +1188,7 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Year": "Año",
       "Public": "Publico",
       "Debtor client": "Cliente deudor",
       "Proyect name": "Nombre del proyecto",
@@ -2585,6 +2586,7 @@
       "Add Loan Charge": "Agregar cargo de Crédito",
       "Admin": "Administración",
       "All": "Todo",
+      "Certificates": "Certificados",
       "App Configuration": "Configuración de la aplicación",
       "Application Menu": "Menú de aplicaciones",
       "Approve": "Aprobar",
