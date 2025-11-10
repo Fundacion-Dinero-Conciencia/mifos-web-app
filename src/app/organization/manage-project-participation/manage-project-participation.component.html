@@ -105,7 +105,7 @@
               color="primary"
               matTooltip="{{ 'Asignar transferencias bancarias' }}"
               matTooltipPosition="left"
-              (click)="assignBankTransfers(item)"
+              (click)="openAssignTransfersDialog(item)"
             >
               $
             </button>
@@ -141,7 +141,93 @@
   (confirm)="onDialogConfirm($event)"
   (dismiss)="onDialogCancel()"
   (closed)="showDialog = false"
+  [confirmText]="'Assign Transfer'"
 >
-  <h1>prueba de concepto</h1>
-  <!-- Aquí puedes poner formularios, selects o cualquier contenido dinámico -->
+  <section class="fullWidth" *ngIf="reservationSelected">
+    <p>
+      <span>
+        {{ reservationSelected.participantName }}
+      </span>
+      -
+      <span> TODO </span>
+    </p>
+    <p>
+      <span> Proyecto: </span>
+      <span>
+        {{ reservationSelected?.projectName }}
+      </span>
+    </p>
+    <p>
+      <span> Monto total reservado: </span>
+      <span>
+        {{ reservationSelected.amount | currency: currency }}
+      </span>
+    </p>
+    <p>
+      <span> Monto asignado: </span>
+      <span>
+        {{ 0 | currency: currency }}
+      </span>
+      <span> (0%) </span>
+    </p>
+    <div>
+      <div class="loadingBar">
+        <div class="bar" [ngStyle]="{ width: '50%' }"></div>
+      </div>
+    </div>
+
+    <table mat-table #documentsTable [dataSource]="dataSourceInvestSelection" matSort class="m-t-25">
+      <ng-container matColumnDef="Date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+        <td mat-cell *matCellDef="let invest">
+          {{ '' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Bank">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Banco</th>
+        <td mat-cell *matCellDef="let invest">{{ '' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Amount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Amount' | translate }}</th>
+        <td mat-cell *matCellDef="let invest">{{ 0 | currency: currency }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Transactions">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>N° de transacción</th>
+        <td mat-cell *matCellDef="let invest">{{ signator.address || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Add">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Asignar</th>
+        <td mat-cell *matCellDef="let invest">
+          <mat-checkbox
+            labelPosition="after"
+            class="m-r-10"
+            (change)="onInvestSelected($event, invest.id)"
+            [checked]="selectedInvests.includes(invest.id)"
+          >
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsInvestSelection"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsInvestSelection"></tr>
+      <tr class="mat-row noContentTable" *matNoDataRow></tr>
+    </table>
+
+    <p>
+      <span> Monto restante por asignar: </span>
+      <span>
+        {{ reservationSelected.amount | currency: currency }}
+      </span>
+    </p>
+    <p>
+      <span> Monto seleccionado: </span>
+      <span>
+        {{ 0 | currency: currency }}
+      </span>
+    </p>
+    <h6>
+      <fa-icon icon="check-circle" size="lg"></fa-icon>
+      <span> El monto seleccionado es válido. Puedes asignar la(s) transferencia(s) a la reserva. </span>
+    </h6>
+  </section>
 </mifosx-custom-dialog>

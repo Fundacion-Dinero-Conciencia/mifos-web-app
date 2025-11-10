@@ -20,11 +20,11 @@
   </main>
 
   <footer class="cx-actions">
-    <button mat-raised-button (click)="onCancel()">
-      {{ 'labels.buttons.Cancel' | translate }}
+    <button mat-raised-button (click)="onCancel()" class="outlineButton">
+      {{ 'labels.buttons.' + cancelText | translate }}
     </button>
     <button mat-raised-button [color]="color" (click)="onConfirm()">
-      {{ 'labels.buttons.Confirm' | translate }}
+      {{ 'labels.buttons.' + confirmText | translate }}
     </button>
   </footer>
 </div>

@@ -11,6 +11,8 @@ export class CustomDialogComponent {
 
   @Input() heading = '';
   @Input() color: 'primary' | 'accent' | 'warn' | string = 'primary';
+  @Input() confirmText = 'Confirm';
+  @Input() cancelText = 'Cancel';
 
   @Output() confirm = new EventEmitter<{ confirm: true }>();
   @Output() dismiss = new EventEmitter<void>();

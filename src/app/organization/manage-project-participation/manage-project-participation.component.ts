@@ -7,7 +7,8 @@ import { AccountTransfersService } from 'app/account-transfers/account-transfers
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
-
+import { SystemService } from 'app/system/system.service';
+import { SettingsService } from 'app/settings/settings.service';
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
@@ -16,6 +17,8 @@ import { SelectDialogComponent } from '../select-dialog/select-dialog.component'
 export class ManageProjectParticipationComponent implements OnInit {
   projectParticipationsData: any[] = [];
   dataSource: MatTableDataSource<any>;
+  currency: string;
+
   displayedColumns: string[] = [
     'project',
     'participant',
@@ -27,10 +30,20 @@ export class ManageProjectParticipationComponent implements OnInit {
     'actions'
   ];
   selectedItems: any[] = [];
+  selectedInvests: any[] = [];
   filterStatus: string = '';
   filterText: string = '';
-
+  reservationSelected: any;
   showDialog = false;
+  dataSourceInvestSelection: MatTableDataSource<any> = new MatTableDataSource<any>();
+
+  displayedColumnsInvestSelection: string[] = [
+    'Date',
+    'Bank',
+    'Amount',
+    'Transactions',
+    'Add'
+  ];
 
   onDialogConfirm(result: { confirm: true }) {
     this.showDialog = false;
@@ -38,6 +51,11 @@ export class ManageProjectParticipationComponent implements OnInit {
 
   onDialogCancel() {
     this.showDialog = false;
+  }
+
+  openAssignTransfersDialog(reservation: any) {
+    this.reservationSelected = reservation;
+    this.showDialog = true;
   }
 
   statusId: Record<number, string> = {
@@ -58,7 +76,8 @@ export class ManageProjectParticipationComponent implements OnInit {
     public dialog: MatDialog,
     private router: Router,
     private translateService: TranslateService,
-    private accountTransfersService: AccountTransfersService
+    private accountTransfersService: AccountTransfersService,
+    private systemService: SystemService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.projectParticipationsData = [];
@@ -70,8 +89,17 @@ export class ManageProjectParticipationComponent implements OnInit {
     });
   }
 
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
+    });
+  }
+
   ngOnInit(): void {
+    this.getDefaultCurrency();
     this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+    this.dataSourceInvestSelection = new MatTableDataSource([]);
+
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
       const parsedFilter = JSON.parse(filter);
       const matchesStatus = !parsedFilter.status || data.status?.value === parsedFilter.status;
@@ -94,10 +122,6 @@ export class ManageProjectParticipationComponent implements OnInit {
       status: this.filterStatus,
       text: this.filterText
     });
-  }
-
-  assignBankTransfers(item: any) {
-    this.showDialog = true;
   }
 
   manageRequest(request: any, command: string): void {
@@ -192,5 +216,8 @@ export class ManageProjectParticipationComponent implements OnInit {
 
   navigateToCreate() {
     this.router.navigate(['/organization/project-participation/create']);
+  }
+  onInvestSelected(event: any, invest: any) {
+    console.log(invest);
   }
 }

@@ -9,7 +9,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.1rem;
+  padding: 1.1rem 2rem;
   min-width: 100%;
   box-sizing: border-box;
 }
@@ -47,7 +47,6 @@ header button {
 /* Panel */
 .cx-panel {
   position: fixed;
-  inset: 0;
   display: grid;
   place-items: center;
   pointer-events: auto;
@@ -67,15 +66,16 @@ header button {
 }
 
 .cx-content {
-  padding: 16px; /* si quieres cero padding, pon 0 */
+  padding: 16px 2rem;
+  min-width: 100%;
+  box-sizing: border-box;
 }
 
 .cx-actions {
   display: flex;
-  gap: 8px;
+  gap: 2.1rem;
   justify-content: flex-end;
-  padding: 12px 16px;
-  border-top: 1px solid rgb(0 0 0 / 6%);
+  padding: 1rem;
 }
 
 /* Animación simple */
@@ -89,4 +89,9 @@ header button {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+.outlineButton {
+  color: #2196f3;
+  border: 1px solid #2196f3;
 }
