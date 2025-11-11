@@ -217,7 +217,6 @@ export class EditPromissoryNoteComponent implements OnInit {
   formatDateForInput(date: any): string {
     const d = new Date(date);
     const corrected = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-    console.log(corrected.toISOString().split('T')[0]);
     return corrected.toISOString().split('T')[0];
   }
   ngOnInit(): void {
