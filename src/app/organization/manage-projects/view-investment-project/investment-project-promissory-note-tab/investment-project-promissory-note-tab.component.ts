@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
@@ -10,8 +11,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { getInvestmentGroupLabel, getInvestmentProcessGroupStatusLabel } from 'app/shared/helpers/states';
 import { SystemService } from 'app/system/system.service';
-import { of } from 'rxjs';
-import { catchError, debounceTime } from 'rxjs/operators';
+import { catchError, debounceTime, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'mifosx-investment-project-promissory-note-tab',
@@ -35,7 +35,8 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     private alertService: AlertService,
     private clientsService: ClientsService,
     private systemService: SystemService,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe
   ) {
     this.route.data.subscribe((data: { accountData: any; PromissoryNoteGroups: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
@@ -256,6 +257,21 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     const plain = content?.replace(/<[^>]+>/g, '').replace(/\n+/g, ' ') || '';
     return plain.length > length ? plain.slice(0, length) + '...' : plain;
   }
+
+  approbePromissoryNote(NoteId: any) {
+    this.organizationService
+      .aprobeGroup(NoteId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((response) => {
+        window.location.reload();
+        this.loading = false;
+      });
+  }
+
   startEditingPromissoryNoteGroup(id: any) {
     this.router.navigate(
       [
