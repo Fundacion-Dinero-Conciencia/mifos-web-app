@@ -104,7 +104,6 @@
     </table>
   </section>
   <section class="container createForm" *ngIf="isCreatingSimulation && !loadingCommissions">
-    {{ generalPurposeprojectId }}
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Loan Type' | translate }} </mat-label>
@@ -292,17 +291,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsCommisions"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsCommisions"></tr>
     </table>
-    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
-      <button
-        *ngIf="isEditingSimulation"
-        mat-raised-button
-        color="primary"
-        (click)="submitCommisions()"
-        [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
-      >
-        guardar cambios en comisiones
-      </button>
-    </div>
+
     <div fxLayout="column" style="margin-top: 24px" *ngIf="isEditingSimulation">
       <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
         <div>
@@ -347,6 +336,20 @@
           <strong>{{ 'labels.inputs.Total Credit' | translate }}:</strong> ${{ totalCredit | currency: currency }}
         </div>
       </div>
+    </div>
+    <p class="important" *ngIf="isEditingSimulation">
+      <i>*Recuerda guardar los cambios en comisiones para actualizar el monto a financiar.</i>
+    </p>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
+      <button
+        *ngIf="isEditingSimulation"
+        mat-raised-button
+        color="primary"
+        (click)="submitCommisions()"
+        [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+      >
+        Guardar cambios en comisiones
+      </button>
     </div>
     <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
       <button
