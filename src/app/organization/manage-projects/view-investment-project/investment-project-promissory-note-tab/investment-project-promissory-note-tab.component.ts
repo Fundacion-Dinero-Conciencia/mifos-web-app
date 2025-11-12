@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,10 +10,10 @@ import { ClientsService } from 'app/clients/clients.service';
 import { AlertService } from 'app/core/alert/alert.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
+import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { getInvestmentGroupLabel, getInvestmentProcessGroupStatusLabel } from 'app/shared/helpers/states';
 import { SystemService } from 'app/system/system.service';
 import { catchError, debounceTime, finalize } from 'rxjs/operators';
-
 @Component({
   selector: 'mifosx-investment-project-promissory-note-tab',
   templateUrl: './investment-project-promissory-note-tab.component.html',
@@ -36,6 +37,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     private clientsService: ClientsService,
     private systemService: SystemService,
     private router: Router,
+    public dialog: MatDialog,
     private datePipe: DatePipe
   ) {
     this.route.data.subscribe((data: { accountData: any; PromissoryNoteGroups: any; clientTemplate: any }) => {
@@ -54,7 +56,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     this.filters.valueChanges.pipe(debounceTime(300)).subscribe((values) => {});
   }
   currency: string;
-
+  systemDate: Date | null = null;
   clientForm: UntypedFormGroup;
   filters: UntypedFormGroup;
   displayedColumnsGroups: string[] = [
@@ -107,6 +109,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
         Validators.required
       ]
     });
+    this.setBusinessDate();
   }
 
   getTodayFormatted(): string {
@@ -199,6 +202,20 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     });
   }
 
+  setBusinessDate(): void {
+    this.systemService.getBusinessDate(SettingsService.businessDateType).subscribe((data: any) => {
+      if (!!data.date) {
+        const [
+          year,
+          month,
+          day
+        ] = data.date.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        this.systemDate = date;
+      }
+    });
+  }
+
   downloadFundMandate(clientId: string) {
     const payload = { groupId: clientId };
     this.organizationService.generateFundPromissoryPdf(payload).subscribe((data: any) => {
@@ -258,18 +275,55 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     return plain.length > length ? plain.slice(0, length) + '...' : plain;
   }
 
-  approbePromissoryNote(NoteId: any) {
-    this.organizationService
-      .aprobeGroup(NoteId)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe((response) => {
-        window.location.reload();
-        this.loading = false;
+  approbePromissoryNote(Note: any) {
+    const NoteId = Note.id;
+    const creationDate = Note.creationDate;
+    const isValidDate = this.isValidDate(new Date(`${creationDate[0]}-${creationDate[1]}-${creationDate[2]}`));
+
+    if (!isValidDate) {
+      const dialogErrorDateRef = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+          heading: 'Fecha inválida',
+          dialogContext: `No es posible aprobar el pagaré. La fecha de emision no puede ser superior a la fecha actual del sistema. Por favor, edita la fecha y haz click en aprobar.`
+        }
       });
+      dialogErrorDateRef.afterClosed().subscribe(() => {
+        return;
+      });
+      return;
+    } else {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+          heading: '¿Deseas continuar?',
+          dialogContext: `Convertir a pagaré. Al consolidar este grupo, ya no podrás editar la información ni mover inversionistas. El grupo de pagaré quedará en modo consulta y pasará a estado Aprobado con fecha ${this.getTodayFormatted()} Solo podrás visualizar la información y generar el último pagaré emitido.`
+        }
+      });
+      dialogRef.afterClosed().subscribe((response: { confirm: any }) => {
+        if (response.confirm) {
+          this.organizationService
+            .aprobeGroup(NoteId)
+            .pipe(
+              finalize(() => {
+                this.loading = false;
+              })
+            )
+            .subscribe((response) => {
+              window.location.reload();
+              this.loading = false;
+            });
+        }
+      });
+    }
+  }
+
+  isValidDate(date: Date): boolean {
+    if (!!this.systemDate) {
+      if (this.systemDate && date) {
+        return date <= this.systemDate;
+      }
+      return false;
+    }
+    return true;
   }
 
   startEditingPromissoryNoteGroup(id: any) {
