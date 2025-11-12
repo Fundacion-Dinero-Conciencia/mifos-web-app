@@ -31,7 +31,7 @@ export class ReportsService {
   }
   getInterestCertificatePDF(clientId: number, year: number): Observable<Blob> {
     const httpParams = new HttpParams().set('clientId', clientId.toString()).set('year', year.toString());
-    return this.http.get('certificates/interests', { params: httpParams, responseType: 'blob' });
+    return this.http.get('/certificates/interests', { params: httpParams, responseType: 'blob' });
   }
 
   /**

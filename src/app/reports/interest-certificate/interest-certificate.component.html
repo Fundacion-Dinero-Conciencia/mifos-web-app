@@ -4,14 +4,14 @@
       <mat-card-content fxLayout="column">
         <mat-form-field>
           <mat-label>{{ 'labels.inputs.Client name' | translate }}</mat-label>
-          <input matInput formControlName="clientId" [matAutocomplete]="clientsAutocomplete" />
-          <mat-error *ngIf="reportForm.controls.clientId.hasError('required')">
+          <input matInput formControlName="client" [matAutocomplete]="clientsAutocomplete" />
+          <mat-error *ngIf="reportForm.controls.client.hasError('required')">
             {{ 'labels.inputs.Client' | translate }} {{ 'labels.commons.is' | translate }}
             <strong>{{ 'labels.commons.required' | translate }}</strong>
           </mat-error>
         </mat-form-field>
         <mat-autocomplete autoActiveFirstOption #clientsAutocomplete="matAutocomplete" [displayWith]="displayClient">
-          <mat-option *ngFor="let client of clientsData" [value]="client.id">
+          <mat-option *ngFor="let client of clientsData" [value]="client">
             {{ client.id }} - {{ client.displayName }}
           </mat-option>
         </mat-autocomplete>
@@ -36,7 +36,7 @@
         <button
           mat-raised-button
           color="primary"
-          [disabled]="!reportForm.valid"
+          [disabled]="!reportForm.valid || loading"
           id="runreport"
           (click)="downloadReport()"
         >
