@@ -1187,6 +1187,7 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Year": "Año",
       "Public": "Publico",
       "Debtor client": "Cliente deudor",
       "Proyect name": "Nombre del proyecto",
@@ -2573,6 +2574,7 @@
     },
     "menus": {
       "Accounting": "Contabilidad",
+      "Certificates": "Certificados",
       "Account Overview": "Descripción de cuenta",
       "Activate": "Activar",
       "Add Charge": "Agregar cargo",

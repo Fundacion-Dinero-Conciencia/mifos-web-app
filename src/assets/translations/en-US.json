@@ -1201,6 +1201,7 @@
       "Principal Amount": "Principal Amount"
     },
     "inputs": {
+      "Year": "year",
       "Public": "Public",
       "accounting": {
         "ASSET": "ASSET",
@@ -2582,6 +2583,7 @@
       "Working with Code": "Working with Code"
     },
     "menus": {
+      "Certificates": "Certificates",
       "Accounting": "Accounting",
       "Account Overview": "Account Overview",
       "Activate": "Activate",

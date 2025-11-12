@@ -97,7 +97,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       if (value.length >= 2) {
         this.clientsService.getFilteredClients('displayName', 'ASC', true, value).subscribe((data: any) => {
           this.clientsData = data.pageItems;
-          console.log(this.clientsData);
         });
       }
     });
