@@ -29,8 +29,6 @@ export class CreateUserComponent implements OnInit, AfterViewInit {
   officesData: any;
   /** Roles data. */
   rolesData: any;
-  /** Staff data. */
-  staffData: any;
 
   /* Reference of create user form */
   @ViewChild('userFormRef') userFormRef: ElementRef<any>;
@@ -62,12 +60,8 @@ export class CreateUserComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /**
-   * Creates the user form, sets the staff data and conditional controls of the user form.
-   */
   ngOnInit() {
     this.createUserForm();
-    this.setStaffData();
     this.setConditionalControls();
   }
 
@@ -106,7 +100,6 @@ export class CreateUserComponent implements OnInit, AfterViewInit {
           '',
           Validators.required
         ],
-        staffId: [''],
         roles: [
           '',
           Validators.required
@@ -114,18 +107,6 @@ export class CreateUserComponent implements OnInit, AfterViewInit {
       },
       { validator: confirmPasswordValidator }
     );
-  }
-
-  /**
-   * Sets the staff data each time the user selects a new office
-   */
-  setStaffData() {
-    this.userForm.get('officeId').valueChanges.subscribe((officeId: string) => {
-      this.staffData = [];
-      this.usersService.getStaff(officeId).subscribe((staff: any) => {
-        this.staffData = staff;
-      });
-    });
   }
 
   /**
@@ -160,9 +141,6 @@ export class CreateUserComponent implements OnInit, AfterViewInit {
    */
   submit() {
     const user = this.userForm.value;
-    if (this.userForm.value.staffId == null || this.userForm.value.staffId === '') {
-      delete user.staffId;
-    }
     this.usersService.createUser(user).subscribe((response: any) => {
       if (this.configurationWizardService.showUsersForm === true) {
         this.configurationWizardService.showUsersForm = false;

@@ -127,15 +127,6 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>{{ 'labels.inputs.Staff' | translate }}</mat-label>
-            <mat-select formControlName="staffId">
-              <mat-option *ngFor="let staff of staffData" [value]="staff.id">
-                {{ staff.displayName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field fxFlex="48%">
             <mat-label>{{ 'labels.inputs.Roles' | translate }}</mat-label>
             <mat-select required formControlName="roles" multiple>
               <mat-option *ngFor="let role of rolesData" [value]="role.id">
