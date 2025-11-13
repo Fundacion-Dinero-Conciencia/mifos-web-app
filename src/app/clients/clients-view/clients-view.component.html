@@ -299,6 +299,12 @@
       </mat-menu>
 
       <mat-menu #More="matMenu">
+        <button mat-menu-item (click)="doAction('See Projects')">
+          {{ 'labels.buttons.See Projects' | translate }}
+        </button>
+        <button mat-menu-item (click)="doAction('create Project')">
+          {{ 'labels.buttons.Create Investment Project' | translate }}
+        </button>
         <button mat-menu-item (click)="doAction('Add Charge')" *mifosxHasPermission="'CREATE_CLIENTCHARGE'">
           {{ 'labels.buttons.Add Charge' | translate }}
         </button>
@@ -340,9 +346,6 @@
             {{ 'labels.buttons.View Standing Instructions' | translate }}
           </button>
         </span>
-        <button mat-menu-item (click)="doAction('See Projects')">
-          {{ 'labels.buttons.See Projects' | translate }}
-        </button>
       </mat-menu>
     </mat-card-title-group>
   </mat-card-header>

@@ -18,14 +18,4 @@ export class ViewInvestmentProjectComponent {
       this.projectData = data;
     });
   }
-  get canEdit() {
-    const status = this.projectData?.status?.statusValue?.name;
-    return (
-      status !== 'Cerrado' &&
-      status !== 'Cancelado' &&
-      status !== 'Anulado' &&
-      status !== 'En curso' &&
-      status !== 'En Formalización'
-    );
-  }
 }

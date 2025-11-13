@@ -6,12 +6,11 @@
   window['env']['fineractApiUrls'] = '';
   window['env']['fineractApiUrl'] = '';
 
-
   window['env']['apiProvider'] = '';
   window['env']['apiVersion'] = '';
 
   window['env']['fineractPlatformTenantId'] = '';
-  window['env']['fineractPlatformTenantIds'] = 'default, migration';
+  window['env']['fineractPlatformTenantIds'] = 'default, migration, chile';
 
   // Language Environment variables
   window['env']['defaultLanguage'] = '';

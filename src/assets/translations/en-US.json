@@ -3482,7 +3482,8 @@
       "Write a note": "Write a note",
       "“Maker-Checker” principle requires every tasks": "The “Maker-Checker” principle requires every tasks to be completed by two people to reduce the chance of errors and misuse. One person initiates the process and the second completes it.",
       "Accepted": "Accepted",
-      "Pending": "Pending",
+      "Received": "Received",
+      "Assigned": "Assigned",
       "Reserved": "Reserved"
     },
     "titles": {

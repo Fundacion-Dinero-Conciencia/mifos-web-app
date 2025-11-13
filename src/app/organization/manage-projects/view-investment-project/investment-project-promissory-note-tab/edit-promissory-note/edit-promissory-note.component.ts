@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,7 +12,6 @@ import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/conf
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { SystemService } from 'app/system/system.service';
 import { debounceTime, finalize } from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'mifosx-edit-promissory-note',
@@ -40,6 +39,8 @@ export class EditPromissoryNoteComponent implements OnInit {
 
   minDate = new Date(2000, 0, 1);
   maxDate = new Date();
+
+  allowToEdit = true;
 
   displayedColumns: string[] = [
     'Investor',
@@ -80,6 +81,9 @@ export class EditPromissoryNoteComponent implements OnInit {
       this.PromissoryNoteGroup = data.PromissoryNoteGroup;
       this.dataSource.data = this.PromissoryNoteGroup.investmentList;
       this.selectedSignators = data.PromissoryNoteGroup.signatorList.map((signator: any) => signator.memberId);
+      if (data.PromissoryNoteGroup?.status?.value === 'SIGNED') {
+        this.allowToEdit = false;
+      }
     });
   }
 
@@ -105,6 +109,7 @@ export class EditPromissoryNoteComponent implements OnInit {
       this.PromissoryNoteGroup = data;
       this.dataSource.data = this.PromissoryNoteGroup.investmentList;
       this.loading = false;
+      this.selectedSignators = this.PromissoryNoteGroup.signatorList.map((signator: any) => signator.memberId);
     });
   }
 
@@ -298,6 +303,7 @@ export class EditPromissoryNoteComponent implements OnInit {
           }
         });
     } else {
+      this.loading = true;
       const signator = this.PromissoryNoteGroup.signatorList.filter(
         (signator: any) => signator.memberId === signatorId
       );
@@ -309,11 +315,13 @@ export class EditPromissoryNoteComponent implements OnInit {
           })
         )
         .subscribe((response) => {
-          this.loading = true;
-
           const index = formArray.value.indexOf(signatorId);
+          const index2 = this.selectedSignators.indexOf(signatorId);
           if (index > -1) {
             formArray.removeAt(index);
+          }
+          if (index2 > -1) {
+            this.selectedSignators.splice(index2, 1);
           }
         });
     }
@@ -395,28 +403,26 @@ export class EditPromissoryNoteComponent implements OnInit {
   }
 
   generateFundPromissoryPdf() {
-    this.clientService.getClientAccountData(this.projectData.ownerId).subscribe((data: any) => {
-      const payload = { fundId: data.savingsAccounts[0].id };
-      this.organizationService.generateFundPromissoryPdf(payload).subscribe((data: any) => {
-        const byteCharacters = atob(data.pdfBase64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: 'application/pdf' });
+    const payload = { groupId: this.PromissoryNoteGroup.id };
+    this.organizationService.generateFundPromissoryPdf(payload).subscribe((data: any) => {
+      const byteCharacters = atob(data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
 
-        const blobUrl = URL.createObjectURL(blob);
+      const blobUrl = URL.createObjectURL(blob);
 
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = 'PagareFondo.pdf';
-        document.body.appendChild(link);
-        link.click();
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'PagareFondo.pdf';
+      document.body.appendChild(link);
+      link.click();
 
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      });
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
     });
   }
 }

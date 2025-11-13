@@ -182,16 +182,6 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
       });
   }
 
-  getMandate(clientId: string, amount: string, projectId: string) {
-    this.clientsService.getClientData(clientId).subscribe((response: any) => {
-      if (response.legalForm.value === 'Entity') {
-        this.downloadFundMandate(clientId, amount);
-      } else {
-        this.downloadRetailMandate(clientId, amount, projectId);
-      }
-    });
-  }
-
   downloadRetailMandate(clientId: string, amount: string, projectId: string) {
     const jsonData = {
       clientId: clientId,
@@ -208,18 +198,27 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     });
   }
 
-  downloadFundMandate(clientId: string, amount: string) {
-    const jsonData = {
-      clientId: clientId,
-      amount: amount
-    };
-    this.organizationService.getFundMandate(JSON.stringify(jsonData)).subscribe((response: any) => {
-      const byteCharacters = atob(response);
-      const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0));
+  downloadFundMandate(clientId: string) {
+    const payload = { groupId: clientId };
+    this.organizationService.generateFundPromissoryPdf(payload).subscribe((data: any) => {
+      const byteCharacters = atob(data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      window.open(url);
+
+      const blobUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'PagareFondo.pdf';
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
     });
   }
 

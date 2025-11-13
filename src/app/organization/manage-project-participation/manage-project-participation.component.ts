@@ -98,14 +98,21 @@ export class ManageProjectParticipationComponent implements OnInit {
   }
 
   statusLabel(status: number) {
-    if (status === 200) {
-      return 'Pending';
-    } else if (status === 100) {
+    if (status === 100) {
+      // Pagaré aprobado [Aceptado]
       return 'Accepted';
+    } else if (status === 200) {
+      // Recibida por kiphu [Recibido]
+      return 'Received';
     } else if (status === 300) {
+      // cancelado [Cancelado]
       return 'Canceled';
     } else if (status === 400) {
+      // reservado [Reservado]
       return 'Reserved';
+    } else if (status === 500) {
+      // asignado a un pagaré [Asignado]
+      return 'Assigned';
     }
   }
 

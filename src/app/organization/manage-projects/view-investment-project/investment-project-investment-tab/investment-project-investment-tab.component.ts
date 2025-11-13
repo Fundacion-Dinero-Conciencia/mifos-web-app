@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { catchError, debounceTime } from 'rxjs/operators';
 import { SettingsService } from 'app/settings/settings.service';
 import { SystemService } from 'app/system/system.service';
+import { LoansService } from 'app/loans/loans.service';
 @Component({
   selector: 'mifosx-investment-project-investment-tab',
   templateUrl: './investment-project-investment-tab.component.html',
@@ -27,6 +28,7 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     private organizationService: OrganizationService,
+    private loansService: LoansService,
     private alertService: AlertService,
     private clientsService: ClientsService,
     private systemService: SystemService
@@ -70,23 +72,11 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       this.currency = data.stringValue;
     });
   }
-  downloadPromissoryNote(id: string) {
-    this.organizationService
-      .downloadPromissoryNote(id)
-      .pipe(
-        catchError((error) => {
-          this.alertService.alert({
-            type: 'error',
-            message: 'No tiene pagarè adjunto'
-          });
-          throw error;
-        })
-      )
-      .subscribe((response: any) => {
-        const blob = new Blob([response], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        window.open(url);
-      });
+  downloadPromissoryNote(subCreditId: string, promissoryPdfId: string) {
+    this.loansService.downloadLoanDocument(subCreditId, promissoryPdfId).subscribe((res) => {
+      const url = window.URL.createObjectURL(res);
+      window.open(url);
+    });
   }
 
   getMandate(clientId: string, amount: string, projectId: string) {
@@ -151,11 +141,14 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
         })
       )
       .subscribe((response: any) => {
-        console.log(response);
         this.dataSource.data = response.content || response;
         this.paginator.length = response.total;
         this.dataSource.paginator = this.paginator;
       });
+  }
+
+  resetFilters() {
+    this.filters.reset();
   }
 
   codeToState(code: number): string {

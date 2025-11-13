@@ -1,7 +1,7 @@
 <div class="container">
   <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
     <a [routerLink]="['./edit']" *ngIf="!router.url.includes('edit')">
-      <button mat-raised-button color="primary" *mifosxHasPermission="'UPDATE_FUND'" [disabled]="!canEdit">
+      <button mat-raised-button color="primary" *mifosxHasPermission="'UPDATE_FUND'">
         <fa-icon icon="edit" class="m-r-10"></fa-icon>
         {{ 'labels.buttons.Edit' | translate }} {{ 'labels.inputs.Proyect' | translate }}
       </button>
