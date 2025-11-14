@@ -371,6 +371,7 @@
         {{ 'labels.inputs.Address' | translate }}
       </a>
       <a
+        *ngIf="!isInvestorClient"
         mat-tab-link
         [routerLink]="['./family-members']"
         routerLinkActive
@@ -410,16 +411,24 @@
         {{ 'labels.inputs.Notes' | translate }}
       </a>
       <ng-container *ngFor="let clientDatatable of clientDatatables">
-        <a
-          mat-tab-link
-          [routerLink]="['./datatables', clientDatatable.registeredTableName]"
-          routerLinkActive
-          #datatable="routerLinkActive"
-          [active]="datatable.isActive"
-          *mifosxHasPermission="'READ_' + clientDatatable.registeredTableName"
+        <div
+          *ngIf="
+            !(isInvestorClient && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS') &&
+            !(isCreditClient && clientDatatable.registeredTableName === 'PROFILING') &&
+            !(isCreditClient && clientDatatable.registeredTableName === 'INTEREST_SECTOR')
+          "
         >
-          {{ clientDatatable.registeredTableName }}
-        </a>
+          <a
+            mat-tab-link
+            [routerLink]="['./datatables', clientDatatable.registeredTableName]"
+            routerLinkActive
+            #datatable="routerLinkActive"
+            [active]="datatable.isActive"
+            *mifosxHasPermission="'READ_' + clientDatatable.registeredTableName"
+          >
+            {{ clientDatatable.registeredTableName }}
+          </a>
+        </div>
       </ng-container>
     </nav>
 
