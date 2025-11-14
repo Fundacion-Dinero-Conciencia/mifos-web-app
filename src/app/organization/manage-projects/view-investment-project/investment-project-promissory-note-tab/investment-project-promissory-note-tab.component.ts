@@ -300,17 +300,25 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe((response: { confirm: any }) => {
         if (response.confirm) {
-          this.organizationService
-            .aprobeGroup(NoteId)
-            .pipe(
-              finalize(() => {
+          const data = {
+            dateFormat: 'dd MMMM yyyy',
+            locale: 'es',
+            signedDate: this.datePipe.transform(new Date(), 'dd MMMM yyyy', '', 'es')
+          };
+
+          this.organizationService.editInsvestmentGroup(NoteId, JSON.stringify(data)).subscribe((response) => {
+            this.organizationService
+              .aprobeGroup(NoteId)
+              .pipe(
+                finalize(() => {
+                  this.loading = false;
+                })
+              )
+              .subscribe((response) => {
+                window.location.reload();
                 this.loading = false;
-              })
-            )
-            .subscribe((response) => {
-              window.location.reload();
-              this.loading = false;
-            });
+              });
+          });
         }
       });
     }
