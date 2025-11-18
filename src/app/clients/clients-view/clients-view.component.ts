@@ -131,9 +131,16 @@ export class ClientsViewComponent implements OnInit {
         });
         break;
       case 'See Projects':
-        this.router.navigate(['/organization/projects'], {
-          state: { ownerId: this.clientViewData.id }
-        });
+        if (this.isCreditClient) {
+          this.router.navigate(['/organization/projects'], {
+            state: { ownerId: this.clientViewData.id }
+          });
+        } else {
+          this.router.navigate(['/organization/project-participation'], {
+            state: { ownerId: this.clientViewData.id }
+          });
+        }
+
         break;
       case 'create Project':
         this.router.navigate(['/organization/projects/create'], {
