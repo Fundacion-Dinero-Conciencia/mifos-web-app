@@ -275,17 +275,6 @@
         >
           Aceptar
         </button>
-        <button
-          *ngIf="allowToEdit"
-          mat-raised-button
-          color="primary"
-          class="aprobeButton"
-          matStepperNext
-          [disabled]="!haveLegalSelected || promissoryNoteQuantity <= 0 || !clientForm.valid"
-          (click)="openApproveDialog()"
-        >
-          Aprobar
-        </button>
       </div>
     </mat-step>
   </mat-horizontal-stepper>

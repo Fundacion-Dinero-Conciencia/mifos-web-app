@@ -1,21 +1,21 @@
 /** Angular Imports */
-import { Component, OnInit, TemplateRef, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { UsersService } from 'app/users/users.service';
 /** rxjs Imports */
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 /** Custom Imports. */
 import { activities } from './activities';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
 
 /** Custom Services */
-import { AuthenticationService } from '../core/authentication/authentication.service';
-import { PopoverService } from '../configuration-wizard/popover/popover.service';
 import { ConfigurationWizardService } from '../configuration-wizard/configuration-wizard.service';
+import { PopoverService } from '../configuration-wizard/popover/popover.service';
+import { AuthenticationService } from '../core/authentication/authentication.service';
 
 /** Custom Components */
 import { NextStepDialogComponent } from '../configuration-wizard/next-step-dialog/next-step-dialog.component';
@@ -63,7 +63,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private router: Router,
     private dialog: MatDialog,
     private configurationWizardService: ConfigurationWizardService,
-    private popoverService: PopoverService
+    private popoverService: PopoverService,
+    private usersService: UsersService
   ) {}
 
   /**
@@ -73,6 +74,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     const credentials = this.authenticationService.getCredentials();
     this.username = credentials.username;
+
+    this.usersService.getUser(credentials.userId + '').subscribe((userData) => {
+      this.username = (userData.firstname + ' ' + userData.lastname).toLowerCase();
+    });
+    console.log(credentials);
     this.setFilteredActivities();
     if (!this.authenticationService.hasDialogBeenShown()) {
       this.dialog.open(WarningDialogComponent);

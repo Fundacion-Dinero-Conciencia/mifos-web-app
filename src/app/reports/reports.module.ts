@@ -14,6 +14,8 @@ import { ChartComponent } from './run-report/chart/chart.component';
 import { PentahoComponent } from './run-report/pentaho/pentaho.component';
 import { XBRLComponent } from './xbrl/xbrl.component';
 import { XBRLReportComponent } from './xbrl-report/xbrl-report.component';
+import { CertificatesComponent } from './certificates/certificates.component';
+import { InterestCertificateComponent } from './interest-certificate/interest-certificate.component';
 
 /**
  * Reports Module
@@ -32,7 +34,9 @@ import { XBRLReportComponent } from './xbrl-report/xbrl-report.component';
     ChartComponent,
     PentahoComponent,
     XBRLComponent,
-    XBRLReportComponent
+    XBRLReportComponent,
+    CertificatesComponent,
+    InterestCertificateComponent
   ],
   providers: [DecimalPipe]
 })
