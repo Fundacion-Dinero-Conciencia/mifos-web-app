@@ -36,7 +36,7 @@ export class ClientsViewComponent implements OnInit {
   ) {
     this.route.data.subscribe((data: { clientViewData: any; clientTemplateData: any; clientDatatables: any }) => {
       this.clientViewData = data.clientViewData;
-      console.log(this.clientViewData.clientType);
+      console.log(this.clientViewData);
       this.clientDatatables = data.clientDatatables;
       this.clientTemplateData = data.clientTemplateData;
     });
@@ -52,10 +52,10 @@ export class ClientsViewComponent implements OnInit {
   }
 
   get isCreditClient(): boolean {
-    return this.clientViewData.clientType.id === 320 || this.clientViewData.clientType.name === 'Cliente de Crédito';
+    return this.clientViewData?.clientType?.name === 'Cliente de Crédito';
   }
   get isInvestorClient(): boolean {
-    return this.clientViewData.clientType.id === 319 || this.clientViewData.clientType.name === 'Cliente de Inversión';
+    return this.clientViewData?.clientType?.name === 'Cliente de Inversión';
   }
 
   isActive(): boolean {
