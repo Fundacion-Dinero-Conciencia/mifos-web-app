@@ -91,7 +91,7 @@
           <fa-icon icon="edit"></fa-icon>
         </button>
         <button
-          *ngIf="note.status?.value != 'SIGNED'"
+          *ngIf="note.status?.value != 'SIGNED' && note.investmentList.length > 0"
           class="document-action-button"
           mat-raised-button
           color="primary"
