@@ -346,7 +346,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   cancelEditingForm() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      amount: this.selectedSimulation.amountToBeFinanced,
+      amount: this.projectData.amount,
       interestRate: this.selectedSimulation?.rate,
       period: this.selectedSimulation?.period
     });
@@ -452,7 +452,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   setFormValuesToEdit() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      amount: this.selectedSimulation.amountToBeFinanced,
+      amount: this.projectData.amount,
       interestRate: this.selectedSimulation.rate,
       period: this.selectedSimulation.period
     });
@@ -587,7 +587,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         const principal = this.createForm.get('amount').value;
         const numberOfRepayments = this.createForm.get('period').value;
         const interestRatePerPeriod = this.createForm.get('interestRate').value;
-        this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments);
+        this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments, true);
         this.alertService.alert({
           type: 'Success',
           message: this.translateService.instant('labels.heading.Saved Successfully')
@@ -599,7 +599,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     });
   }
 
-  submitProjectData(editCredit: boolean, amount?: any, rate?: any, period?: any) {
+  submitProjectData(editCredit: boolean, amount?: any, rate?: any, period?: any, reloadAfter: boolean = false) {
     var payload: any = {};
     payload.amountToBeFinanced = this.getMontoAFinanciar;
     payload.amountToBeDelivered = this.getMontoAEntregar;
@@ -622,7 +622,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         if (editCredit === true) {
           this.organizationService.deleteAdditionalExpensesById(this.idProject as string, true).subscribe({
             next: (dataX) => {
-              window.location.reload();
+              if (reloadAfter) {
+                window.location.reload();
+              }
             }
           });
         } else {
@@ -645,6 +647,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
                 type: 'Success',
                 message: this.translateService.instant('labels.heading.Saved Successfully')
               });
+
+              if (reloadAfter) {
+                window.location.reload();
+              }
             },
             error: (err) => {
               console.error('Error update loan:', err);
@@ -696,8 +702,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       const principal = this.createForm.get('amount').value;
       const numberOfRepayments = this.createForm.get('period').value;
       const interestRatePerPeriod = this.createForm.get('interestRate').value;
-      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments);
-      window.location.reload();
+      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments, true);
     });
   }
 

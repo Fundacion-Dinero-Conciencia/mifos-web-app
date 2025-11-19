@@ -301,7 +301,7 @@
         </div>
         <div>
           <strong>{{ 'labels.inputs.Amount to be Delivered' | translate }}:</strong> ${{
-            getMontoAEntregar | currency: currency
+            projectData.amount | currency: currency
           }}
         </div>
         <div><strong>CAE:</strong> {{ getCaeValue() }}%</div>
@@ -313,7 +313,7 @@
       <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
         <div>
           <strong>{{ 'labels.inputs.Amount Requested' | translate }}:</strong> ${{
-            loanTemplate?.principal | currency: currency
+            projectData.amount | currency: currency
           }}
         </div>
         <div>
