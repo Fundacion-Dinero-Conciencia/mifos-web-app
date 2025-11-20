@@ -27,7 +27,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   filesvg = faFileAlt;
   isEditingSimulation: boolean = false;
   idProject: string | number;
-  isFactoring = false;
   investorInterests: any;
   totalCredit: any;
   form!: FormGroup;
@@ -66,6 +65,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   loanTemplateEdit: any;
   selectedSimulation: any;
   currency: string;
+  isFactoring: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -91,6 +91,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         '',
         Validators.required
       ],
+      // loanPurposeId: [
+      //   '',
+      //   Validators.required
+      // ],
       amount: [
         '',
         Validators.required
@@ -105,6 +109,15 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       ]
     });
     this.createForm.valueChanges;
+  }
+
+  loanIsFactoring(): boolean {
+    const loanProductId = this.createForm.get('basedInLoanProductId')?.value;
+    return this.loanProductsData.find((lp: any) => {
+      if (lp.id === loanProductId) {
+        return lp.isFactoringProduct === true;
+      }
+    });
   }
 
   getDefaultCurrency() {
@@ -346,6 +359,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   cancelEditingForm() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
+      // loanPurposeId: this.selectedSimulation.loanPurposeId,
       amount: this.projectData.amount,
       interestRate: this.selectedSimulation?.rate,
       period: this.selectedSimulation?.period
@@ -380,9 +394,11 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   switchAllowEditing() {
     this.allowEditingForm = !this.allowEditingForm;
     this.createForm.get('basedInLoanProductId').disable();
+    // this.createForm.get('loanPurposeId').disable();
     if (this.allowEditingForm) {
       this.createForm.enable();
       this.createForm.get('basedInLoanProductId').disable();
+      // this.createForm.get('loanPurposeId').disable();
     } else {
       this.createForm.disable();
     }
@@ -415,6 +431,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         this.switchEditingSimulation({ ...response[0] });
       }
     });
+    this.isFactoring = this.loanIsFactoring();
     this.idProject = this.route.parent?.snapshot.paramMap.get('id');
   }
   generateSimulationPdf() {
@@ -431,14 +448,12 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       // 2. Crear un objeto URL
       const blobUrl = URL.createObjectURL(blob);
 
-      // 3. Crear un enlace y forzar la descarga
       const link = document.createElement('a');
       link.href = blobUrl;
       link.download = 'SimulacionFinanciamiento.pdf';
       document.body.appendChild(link);
       link.click();
 
-      // 4. Limpiar
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
     });
@@ -452,6 +467,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   setFormValuesToEdit() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
+      // loanPurposeId: this.selectedSimulation.loanPurposeId,
       amount: this.projectData.amount,
       interestRate: this.selectedSimulation.rate,
       period: this.selectedSimulation.period

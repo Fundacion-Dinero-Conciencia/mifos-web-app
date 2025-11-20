@@ -106,13 +106,21 @@
   <section class="container createForm" *ngIf="isCreatingSimulation && !loadingCommissions">
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="24%">
-        <mat-label>{{ 'labels.inputs.Loan Type' | translate }} </mat-label>
+        <mat-label>{{ 'labels.inputs.Product Type' | translate }} </mat-label>
         <mat-select formControlName="basedInLoanProductId">
           <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
             {{ loanProduct.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <!-- <mat-form-field fxFlex="20%" *ngIf="!isFactoring">
+        <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
+        <mat-select formControlName="loanPurposeId">
+          <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
+            {{ loanPurpose.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field> -->
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
         <input matInput formControlName="amount" type="number" />
@@ -120,10 +128,7 @@
       <mat-form-field fxFlex="24%">
         <mat-label
           >{{ 'labels.Term' | translate }} (
-          {{
-            (createForm.get('basedInLoanProductId').value == 1 ? 'labels.catalogs.Months' : 'labels.catalogs.Days')
-              | translate
-          }})</mat-label
+          {{ (!isFactoring ? 'labels.catalogs.Months' : 'labels.catalogs.Days') | translate }})</mat-label
         >
         <input matInput formControlName="period" type="number" />
       </mat-form-field>
