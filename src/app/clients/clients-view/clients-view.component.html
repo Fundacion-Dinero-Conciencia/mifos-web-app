@@ -412,13 +412,13 @@
       >
         {{ 'labels.inputs.Notes' | translate }}
       </a>
-
       <ng-container *ngFor="let clientDatatable of clientDatatables">
         <div
           *ngIf="
-            !(isCreditClient && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS') &&
-            !(isInvestorClient && clientDatatable.registeredTableName === 'PROFILING') &&
-            !(isInvestorClient && clientDatatable.registeredTableName === 'INTEREST_SECTOR')
+            !(isInvestorClient && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS') &&
+            !(isCreditClient && clientDatatable.registeredTableName === 'BANK_DETAILS') &&
+            !(isCreditClient && clientDatatable.registeredTableName === 'PROFILING') &&
+            !(isCreditClient && clientDatatable.registeredTableName === 'INTEREST_SECTOR')
           "
         >
           <a
