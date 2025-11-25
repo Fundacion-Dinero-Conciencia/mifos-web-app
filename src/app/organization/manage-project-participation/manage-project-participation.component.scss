@@ -32,7 +32,34 @@ table {
 
 h6 {
   font-size: 14px;
-  color: #5cb85c;
   font-weight: 400;
   margin: unset;
+}
+
+.approved {
+  color: #5cb85c;
+}
+
+.notApproved {
+  color: #d9534f;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.empty-state fa-icon {
+  display: block;
+  margin: 0 auto 1rem;
+  color: #999;
+}
+
+.empty-state button {
+  margin-top: 1rem;
+}
+
+:host ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: #2196f3;
 }

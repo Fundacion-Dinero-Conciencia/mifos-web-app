@@ -4,11 +4,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountTransfersService } from 'app/account-transfers/account-transfers.service';
+import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
+import { SystemService } from 'app/system/system.service';
+import { finalize } from 'rxjs/operators';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
-import { SystemService } from 'app/system/system.service';
-import { SettingsService } from 'app/settings/settings.service';
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
@@ -18,7 +19,7 @@ export class ManageProjectParticipationComponent implements OnInit {
   projectParticipationsData: any[] = [];
   dataSource: MatTableDataSource<any>;
   currency: string;
-
+  loading: boolean = false;
   displayedColumns: string[] = [
     'project',
     'participant',
@@ -31,6 +32,7 @@ export class ManageProjectParticipationComponent implements OnInit {
   ];
   selectedItems: any[] = [];
   selectedInvests: any[] = [];
+  amountToInvest: number = 0;
   filterStatus: string = '';
   filterText: string = '';
   reservationSelected: any;
@@ -45,16 +47,14 @@ export class ManageProjectParticipationComponent implements OnInit {
     'Add'
   ];
 
-  onDialogConfirm(result: { confirm: true }) {
-    this.showDialog = false;
-  }
-
   onDialogCancel() {
     this.showDialog = false;
   }
 
   openAssignTransfersDialog(reservation: any) {
     this.reservationSelected = reservation;
+    console.log(reservation);
+    this.getTransactions(reservation.participantId, reservation.id);
     this.showDialog = true;
   }
 
@@ -107,6 +107,12 @@ export class ManageProjectParticipationComponent implements OnInit {
         !parsedFilter.text || data.projectName.toLowerCase().includes(parsedFilter.text.toLowerCase());
       return matchesStatus && matchesText;
     };
+  }
+
+  getTransactions(participantId: number, paticipationId: number) {
+    this.organizationservice.getTransactions(participantId, paticipationId).subscribe((data: any) => {
+      this.dataSourceInvestSelection = new MatTableDataSource(data);
+    });
   }
 
   applyFilter(filterValue: string) {
@@ -214,10 +220,54 @@ export class ManageProjectParticipationComponent implements OnInit {
     });
   }
 
+  assignTransaction() {
+    this.loading = true;
+
+    this.organizationservice
+      .assignTransactions({
+        projectParticipationId: this.reservationSelected.id,
+        savingsTransactionId: this.selectedInvests
+      })
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.showDialog = false;
+          this.selectedInvests = [];
+          this.reload();
+        },
+        error: (err) => {
+          console.error('Error asignando transacción:', err);
+          // aquí puedes poner alert si quieres
+        }
+      });
+  }
+
+  get totalAmountSelected() {
+    if (!this.reservationSelected) {
+      return 0;
+    }
+    return this.reservationSelected?.amount + this.reservationSelected?.commission;
+  }
+
+  get amoutToBeAssigned() {
+    const amount = (this.totalAmountSelected || 0) - (this.reservationSelected?.assignedAmount || 0);
+    return amount;
+  }
+
   navigateToCreate() {
     this.router.navigate(['/organization/project-participation/create']);
   }
   onInvestSelected(event: any, invest: any) {
-    console.log(invest);
+    if (event.checked) {
+      this.selectedInvests.push(invest.id);
+      this.amountToInvest += invest.amount;
+    } else {
+      this.selectedInvests = this.selectedInvests.filter((id) => id !== invest.id);
+      this.amountToInvest -= invest.amount;
+    }
   }
 }

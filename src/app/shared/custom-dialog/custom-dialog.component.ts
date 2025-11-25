@@ -1,5 +1,6 @@
 /** Angular Imports */
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { inputs } from '@syncfusion/ej2-angular-richtexteditor/src/rich-text-editor/richtexteditor.component';
 
 @Component({
   selector: 'mifosx-custom-dialog',
@@ -13,6 +14,7 @@ export class CustomDialogComponent {
   @Input() color: 'primary' | 'accent' | 'warn' | string = 'primary';
   @Input() confirmText = 'Confirm';
   @Input() cancelText = 'Cancel';
+  @Input() disableConfirm = false;
 
   @Output() confirm = new EventEmitter<{ confirm: true }>();
   @Output() dismiss = new EventEmitter<void>();

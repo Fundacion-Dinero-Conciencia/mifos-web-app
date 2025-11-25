@@ -15,7 +15,6 @@
   </header>
 
   <main class="cx-content">
-    <!-- CHILDREN: contenido proyectado -->
     <ng-content></ng-content>
   </main>
 
@@ -23,7 +22,7 @@
     <button mat-raised-button (click)="onCancel()" class="outlineButton">
       {{ 'labels.buttons.' + cancelText | translate }}
     </button>
-    <button mat-raised-button [color]="color" (click)="onConfirm()">
+    <button mat-raised-button [color]="color" (click)="onConfirm()" [disabled]="disableConfirm">
       {{ 'labels.buttons.' + confirmText | translate }}
     </button>
   </footer>
