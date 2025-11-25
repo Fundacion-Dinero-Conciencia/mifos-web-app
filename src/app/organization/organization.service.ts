@@ -981,6 +981,13 @@ export class OrganizationService {
     return this.http.delete(`/additionalExpenses/${projectId}?flagAllDelete=${flagAllDelete}`);
   }
 
+  getTransactions(participantId: number | string, participationtId: number | string) {
+    return this.http.get(`/savingsaccounts/${participantId}/onlytransactions/${participationtId}`);
+  }
+  assignTransactions(body: { projectParticipationId: string; savingsTransactionId: number[] }) {
+    return this.http.post(`/projectparticipation/assigntransaction`, body);
+  }
+
   getCae(data: number[]) {
     return this.http.post(`/additionalExpenses/getTir`, data);
   }

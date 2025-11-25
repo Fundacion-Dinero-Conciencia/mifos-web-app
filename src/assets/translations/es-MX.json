@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
       "Create Simulation": "Crear Simulación",
       "Select definitive simulation": "Seleccionar simulación definitiva",

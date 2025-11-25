@@ -96,7 +96,7 @@ import { InvestmentProjectInvestmentTabComponent } from './manage-projects/view-
 import { InvestmentProjectNotesTabComponent } from './manage-projects/view-investment-project/investment-project-notes-tab/investment-project-notes-tab.component';
 import { InvestmentProjectPromissoryNoteTabComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/investment-project-promissory-note-tab.component';
 import { EditPromissoryNoteComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/edit-promissory-note/edit-promissory-note.component';
-
+import { CustomDialogComponent } from 'app/shared/custom-dialog/custom-dialog.component';
 /**
  * Organization Module
  *
