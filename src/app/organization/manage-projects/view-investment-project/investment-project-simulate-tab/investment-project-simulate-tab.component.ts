@@ -66,6 +66,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   selectedSimulation: any;
   currency: string;
   isFactoring: boolean = false;
+  creditTypesData: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -81,20 +82,20 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     private translateService: TranslateService,
     private dialog: MatDialog
   ) {
-    this.route.data.subscribe((data: { accountData: any; loanProductsData: any; loanPurposeData: any }) => {
+    this.route.data.subscribe((data: { accountData: any; loanProductsData: any; creditTypesData: any }) => {
       this.projectData = data.accountData;
       this.loanProductsData = data.loanProductsData;
-      this.loanPurposeData = data.loanPurposeData.codeValues;
+      this.creditTypesData = data.creditTypesData.codeValues;
     });
     this.createForm = this.formBuilder.group({
       basedInLoanProductId: [
         '',
         Validators.required
       ],
-      // loanPurposeId: [
-      //   '',
-      //   Validators.required
-      // ],
+      creditTypeId: [
+        '',
+        Validators.required
+      ],
       amount: [
         '',
         Validators.required
@@ -359,8 +360,8 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   cancelEditingForm() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      // loanPurposeId: this.selectedSimulation.loanPurposeId,
       amount: this.projectData.amount || 0,
+      creditTypeId: this.selectedSimulation.creditTypeId,
       interestRate: this.selectedSimulation?.rate,
       period: this.selectedSimulation?.period
     });
@@ -398,7 +399,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     if (this.allowEditingForm) {
       this.createForm.enable();
       this.createForm.get('basedInLoanProductId').disable();
-      // this.createForm.get('loanPurposeId').disable();
+      this.createForm.get('creditTypeId').disable();
     } else {
       this.createForm.disable();
     }
@@ -467,8 +468,8 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   setFormValuesToEdit() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      // loanPurposeId: this.selectedSimulation.loanPurposeId,
       amount: this.projectData.amount || 0,
+      creditTypeId: this.selectedSimulation.creditTypeId,
       interestRate: this.selectedSimulation.rate,
       period: this.selectedSimulation.period
     });
