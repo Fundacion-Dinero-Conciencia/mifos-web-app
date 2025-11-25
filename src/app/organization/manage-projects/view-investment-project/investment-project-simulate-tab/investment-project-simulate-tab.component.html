@@ -114,6 +114,14 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field fxFlex="24%">
+        <mat-label>{{ 'labels.inputs.Credit Type' | translate }} </mat-label>
+        <mat-select formControlName="creditTypeId">
+          <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
+            {{ creditType.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
         <input matInput formControlName="amount" type="number" />
       </mat-form-field>
