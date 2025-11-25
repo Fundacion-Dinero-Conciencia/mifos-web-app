@@ -799,8 +799,8 @@ const routes: Routes = [
                   data: { title: 'Investment Project', breadcrumb: 'Simulations', routeParamBreadcrumb: false },
                   resolve: {
                     accountData: ManageProjectResolver,
-                    loanPurposeData: DataCodeLoanPurposeResolver,
-                    loanProductsData: LoanProductsResolver
+                    loanProductsData: LoanProductsResolver,
+                    creditTypesData: DataCodeCreditTypesResolver
                   }
                 },
                 {
