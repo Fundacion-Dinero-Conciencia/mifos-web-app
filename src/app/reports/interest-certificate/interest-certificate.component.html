@@ -1,0 +1,49 @@
+<div class="container input">
+  <mat-card>
+    <form [formGroup]="reportForm">
+      <mat-card-content fxLayout="column">
+        <mat-form-field>
+          <mat-label>{{ 'labels.inputs.Client name' | translate }}</mat-label>
+          <input matInput formControlName="client" [matAutocomplete]="clientsAutocomplete" />
+          <mat-error *ngIf="reportForm.controls.client.hasError('required')">
+            {{ 'labels.inputs.Client' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.commons.required' | translate }}</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-autocomplete autoActiveFirstOption #clientsAutocomplete="matAutocomplete" [displayWith]="displayClient">
+          <mat-option *ngFor="let client of clientsData" [value]="client">
+            {{ client.id }} - {{ client.displayName }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-form-field>
+          <mat-label>{{ 'labels.inputs.Period' | translate }}</mat-label>
+          <mat-select required formControlName="year">
+            <mat-option *ngFor="let year of years" [value]="year">
+              {{ year + ' - ' + (year + 1) }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="reportForm.controls.year.hasError('required')">
+            {{ 'labels.inputs.Period' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.inputs.required' | translate }}</strong>
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px">
+        <button type="button" mat-raised-button [routerLink]="['/certificates']">
+          {{ 'labels.buttons.Cancel' | translate }}
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="!reportForm.valid || loading"
+          id="runreport"
+          (click)="downloadReport()"
+        >
+          <fa-icon icon="file-export" class="m-r-10"></fa-icon>
+          {{ 'labels.buttons.Run and Download Report' | translate }}
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

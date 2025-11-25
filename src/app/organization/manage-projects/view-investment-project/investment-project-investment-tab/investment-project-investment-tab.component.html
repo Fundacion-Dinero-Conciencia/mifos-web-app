@@ -67,10 +67,11 @@
       </th>
       <td mat-cell *matCellDef="let document; let index">
         <button
+          *ngIf="document.promissoryPdfId"
           class="document-action-button"
           mat-raised-button
           color="primary"
-          (click)="downloadPromissoryNote(document.participationId)"
+          (click)="downloadPromissoryNote(document.subCreditId, document.promissoryPdfId)"
         >
           <fa-icon icon="eye"></fa-icon>
         </button>

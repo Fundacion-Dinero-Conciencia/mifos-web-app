@@ -1,17 +1,17 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Dialogs */
+import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
+import { CaptureImageDialogComponent } from './custom-dialogs/capture-image-dialog/capture-image-dialog.component';
+import { DeleteSignatureDialogComponent } from './custom-dialogs/delete-signature-dialog/delete-signature-dialog.component';
 import { UnassignStaffDialogComponent } from './custom-dialogs/unassign-staff-dialog/unassign-staff-dialog.component';
+import { UploadImageDialogComponent } from './custom-dialogs/upload-image-dialog/upload-image-dialog.component';
 import { UploadSignatureDialogComponent } from './custom-dialogs/upload-signature-dialog/upload-signature-dialog.component';
 import { ViewSignatureDialogComponent } from './custom-dialogs/view-signature-dialog/view-signature-dialog.component';
-import { DeleteSignatureDialogComponent } from './custom-dialogs/delete-signature-dialog/delete-signature-dialog.component';
-import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
-import { UploadImageDialogComponent } from './custom-dialogs/upload-image-dialog/upload-image-dialog.component';
-import { CaptureImageDialogComponent } from './custom-dialogs/capture-image-dialog/capture-image-dialog.component';
 
 /** Custom Services */
 import { ClientsService } from '../clients.service';
@@ -36,6 +36,7 @@ export class ClientsViewComponent implements OnInit {
   ) {
     this.route.data.subscribe((data: { clientViewData: any; clientTemplateData: any; clientDatatables: any }) => {
       this.clientViewData = data.clientViewData;
+      console.log(this.clientViewData);
       this.clientDatatables = data.clientDatatables;
       this.clientTemplateData = data.clientTemplateData;
     });
@@ -48,6 +49,13 @@ export class ClientsViewComponent implements OnInit {
       },
       (error: any) => {}
     );
+  }
+
+  get isCreditClient(): boolean {
+    return this.clientViewData?.clientType?.name === 'Cliente de Crédito';
+  }
+  get isInvestorClient(): boolean {
+    return this.clientViewData?.clientType?.name === 'Cliente de Inversión';
   }
 
   isActive(): boolean {
@@ -123,9 +131,16 @@ export class ClientsViewComponent implements OnInit {
         });
         break;
       case 'See Projects':
-        this.router.navigate(['/organization/projects'], {
-          state: { ownerId: this.clientViewData.id }
-        });
+        if (this.isCreditClient) {
+          this.router.navigate(['/organization/projects'], {
+            state: { ownerId: this.clientViewData.id }
+          });
+        } else {
+          this.router.navigate(['/organization/project-participation'], {
+            state: { ownerId: this.clientViewData.id }
+          });
+        }
+
         break;
       case 'create Project':
         this.router.navigate(['/organization/projects/create'], {

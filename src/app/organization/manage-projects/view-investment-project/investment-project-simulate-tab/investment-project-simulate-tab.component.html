@@ -104,16 +104,23 @@
     </table>
   </section>
   <section class="container createForm" *ngIf="isCreatingSimulation && !loadingCommissions">
-    {{ generalPurposeprojectId }}
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="24%">
-        <mat-label>{{ 'labels.inputs.Loan Type' | translate }} </mat-label>
+        <mat-label>{{ 'labels.inputs.Product Type' | translate }} </mat-label>
         <mat-select formControlName="basedInLoanProductId">
           <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
             {{ loanProduct.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <!-- <mat-form-field fxFlex="20%" *ngIf="!isFactoring">
+        <mat-label>{{ 'labels.inputs.Credit Type' | translate }}</mat-label>
+        <mat-select formControlName="loanPurposeId">
+          <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
+            {{ loanPurpose.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field> -->
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
         <input matInput formControlName="amount" type="number" />
@@ -121,10 +128,7 @@
       <mat-form-field fxFlex="24%">
         <mat-label
           >{{ 'labels.Term' | translate }} (
-          {{
-            (createForm.get('basedInLoanProductId').value == 1 ? 'labels.catalogs.Months' : 'labels.catalogs.Days')
-              | translate
-          }})</mat-label
+          {{ (!isFactoring ? 'labels.catalogs.Months' : 'labels.catalogs.Days') | translate }})</mat-label
         >
         <input matInput formControlName="period" type="number" />
       </mat-form-field>
@@ -292,17 +296,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumnsCommisions"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsCommisions"></tr>
     </table>
-    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
-      <button
-        *ngIf="isEditingSimulation"
-        mat-raised-button
-        color="primary"
-        (click)="submitCommisions()"
-        [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
-      >
-        guardar cambios en comisiones
-      </button>
-    </div>
+
     <div fxLayout="column" style="margin-top: 24px" *ngIf="isEditingSimulation">
       <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
         <div>
@@ -312,7 +306,7 @@
         </div>
         <div>
           <strong>{{ 'labels.inputs.Amount to be Delivered' | translate }}:</strong> ${{
-            getMontoAEntregar | currency: currency
+            projectData.amount || 0 | currency: currency
           }}
         </div>
         <div><strong>CAE:</strong> {{ getCaeValue() }}%</div>
@@ -324,7 +318,7 @@
       <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="32px">
         <div>
           <strong>{{ 'labels.inputs.Amount Requested' | translate }}:</strong> ${{
-            loanTemplate?.principal | currency: currency
+            projectData.amount || 0 | currency: currency
           }}
         </div>
         <div>
@@ -347,6 +341,20 @@
           <strong>{{ 'labels.inputs.Total Credit' | translate }}:</strong> ${{ totalCredit | currency: currency }}
         </div>
       </div>
+    </div>
+    <p class="important" *ngIf="isEditingSimulation">
+      <i>*Recuerda guardar los cambios en comisiones para actualizar el monto a financiar.</i>
+    </p>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
+      <button
+        *ngIf="isEditingSimulation"
+        mat-raised-button
+        color="primary"
+        (click)="submitCommisions()"
+        [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+      >
+        Guardar cambios en comisiones
+      </button>
     </div>
     <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
       <button

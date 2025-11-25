@@ -29,6 +29,10 @@ export class ReportsService {
   getReports(): Observable<any> {
     return this.http.get('/reports');
   }
+  getInterestCertificatePDF(clientId: number, year: number): Observable<Blob> {
+    const httpParams = new HttpParams().set('clientId', clientId.toString()).set('year', year.toString());
+    return this.http.get('/certificates/interests', { params: httpParams, responseType: 'blob' });
+  }
 
   /**
    * @returns {Observable<any>} Mix Taxonomy data

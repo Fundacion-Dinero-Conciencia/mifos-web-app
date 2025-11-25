@@ -1202,6 +1202,7 @@
       "Principal Amount": "Principal Amount"
     },
     "inputs": {
+      "Year": "year",
       "Public": "Public",
       "accounting": {
         "ASSET": "ASSET",
@@ -1808,6 +1809,7 @@
       "Interest Posting period": "Interest Posting period",
       "Interest Rate": "Interest Rate",
       "Loan Type": "Loan Type",
+      "Product Type": "Product Type",
       "Interest Rates": "Interest Rates",
       "Interest Rate Chart": "Interest Rate Chart",
       "Interest Rate Differential": "Interest Rate Differential",
@@ -2583,6 +2585,7 @@
       "Working with Code": "Working with Code"
     },
     "menus": {
+      "Certificates": "Certificates",
       "Accounting": "Accounting",
       "Account Overview": "Account Overview",
       "Activate": "Activate",
@@ -3483,7 +3486,8 @@
       "Write a note": "Write a note",
       "“Maker-Checker” principle requires every tasks": "The “Maker-Checker” principle requires every tasks to be completed by two people to reduce the chance of errors and misuse. One person initiates the process and the second completes it.",
       "Accepted": "Accepted",
-      "Pending": "Pending",
+      "Received": "Received",
+      "Assigned": "Assigned",
       "Reserved": "Reserved"
     },
     "titles": {

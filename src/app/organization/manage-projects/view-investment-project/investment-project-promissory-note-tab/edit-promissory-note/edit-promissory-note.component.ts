@@ -38,8 +38,7 @@ export class EditPromissoryNoteComponent implements OnInit {
   dataSourceAval: MatTableDataSource<any> = new MatTableDataSource<any>();
 
   minDate = new Date(2000, 0, 1);
-  maxDate = new Date();
-
+  maxDate: Date;
   allowToEdit = true;
 
   displayedColumns: string[] = [
@@ -75,6 +74,9 @@ export class EditPromissoryNoteComponent implements OnInit {
     private settingsService: SettingsService,
     public datePipe: DatePipe
   ) {
+    this.maxDate = new Date();
+    this.maxDate.setMonth(this.maxDate.getMonth() + 2);
+
     this.route.data.subscribe((data: { accountData: any; PromissoryNoteGroup: any; clientTemplate: any }) => {
       this.projectData = data.accountData;
       this.clientClassificationTypeOptions = data.clientTemplate.clientClassificationOptions;
@@ -217,12 +219,10 @@ export class EditPromissoryNoteComponent implements OnInit {
   formatDateForInput(date: any): string {
     const d = new Date(date);
     const corrected = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-    console.log(corrected.toISOString().split('T')[0]);
     return corrected.toISOString().split('T')[0];
   }
   ngOnInit(): void {
     this.minDate = this.settingsService.minAllowedDate;
-    this.maxDate = this.settingsService.businessDate;
     this.organizationService.getGroupStatus(this.PromissoryNoteGroup.id).subscribe((data: any) => {});
     this.getSignators();
     this.getGroupsList();

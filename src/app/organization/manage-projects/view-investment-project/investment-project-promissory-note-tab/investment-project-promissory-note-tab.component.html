@@ -28,7 +28,7 @@
     </ng-container>
 
     <ng-container matColumnDef="InvestmentNumber">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>'N° de inversiones'</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>N° de inversiones</th>
       <td mat-cell *matCellDef="let note">{{ note.investmentList.length }}</td>
     </ng-container>
     <ng-container matColumnDef="Amount">
@@ -75,6 +75,7 @@
           class="document-action-button"
           mat-raised-button
           color="primary"
+          mat-tooltip="Obtener pagaré"
           (click)="startEditingPromissoryNoteGroup(note.id)"
         >
           <fa-icon icon="eye"></fa-icon>
@@ -84,9 +85,20 @@
           class="document-action-button"
           mat-raised-button
           color="primary"
+          mat-tooltip="Editar pagaré"
           (click)="startEditingPromissoryNoteGroup(note.id)"
         >
           <fa-icon icon="edit"></fa-icon>
+        </button>
+        <button
+          *ngIf="note.status?.value != 'SIGNED' && note.investmentList.length > 0"
+          class="document-action-button"
+          mat-raised-button
+          color="primary"
+          mat-tooltip="Aprobar pagaré"
+          (click)="approbePromissoryNote(note)"
+        >
+          <fa-icon icon="check"></fa-icon>
         </button>
         <button
           *ngIf="note.status?.value != 'SIGNED' && note.investmentList.length === 0"

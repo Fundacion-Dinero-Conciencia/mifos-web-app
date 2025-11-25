@@ -85,6 +85,7 @@ export class ManageProjectParticipationComponent implements OnInit {
         item.createdOnDate = new Date(item.createdOnDate);
         this.projectParticipationsData.push(item);
       });
+      this.applyOwnerFilter();
       this.dataSource = new MatTableDataSource(this.projectParticipationsData);
     });
   }
@@ -208,6 +209,17 @@ export class ManageProjectParticipationComponent implements OnInit {
         this.selectedItems = this.selectedItems.filter((i) => i !== item);
       }
     });
+  }
+
+  applyOwnerFilter() {
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras?.state;
+    console.log(state);
+    if (state) {
+      this.projectParticipationsData = this.projectParticipationsData.filter(
+        (project) => project.participantId === state.ownerId
+      );
+    }
   }
 
   processInvestments(): void {

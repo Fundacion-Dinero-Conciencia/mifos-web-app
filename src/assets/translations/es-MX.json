@@ -372,7 +372,7 @@
       "Create Group": "Crea un Grupo",
       "Create Holiday": "Crear Festivo",
       "Create Hook": "Crear gancho",
-      "Create Investment Project": "Crear Proyecto de Inversion",
+      "Create Investment Project": "Crear Proyecto de Inversión",
       "Create Journal Entries": "Crear entradas de diario",
       "Create Loan Product": "Crear producto de Crédito",
       "Create Office": "Crear Oficina",
@@ -1189,6 +1189,7 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Year": "Año",
       "Public": "Publico",
       "Debtor client": "Cliente deudor",
       "Proyect name": "Nombre del proyecto",
@@ -1216,6 +1217,7 @@
       "Natural person": "Persona natural",
       "ACCOUNTING": "CONTABILIDAD",
       "Loan Type": "Tipo de Crédito",
+      "Product Type": "Tipo de Producto",
       "ADDRESS": "DOMICILIO",
       "Above Changes are Effective from": "Los cambios anteriores son efectivos desde",
       "Absent": "Ausente",
@@ -2586,6 +2588,7 @@
       "Add Loan Charge": "Agregar cargo de Crédito",
       "Admin": "Administración",
       "All": "Todo",
+      "Certificates": "Certificados",
       "App Configuration": "Configuración de la aplicación",
       "Application Menu": "Menú de aplicaciones",
       "Approve": "Aprobar",
@@ -3379,9 +3382,9 @@
       "Voluntary": "Voluntario",
       "Write a note": "Escribe una nota",
       "“Maker-Checker” principle requires every tasks": "El principio \"Maker-Checker\" requiere que dos personas completen cada tarea para reducir la posibilidad de errores y uso indebido. Una persona inicia el proceso y la segunda lo completa.",
-      "Accepted": "Aceptada",
-      "Rejected": "Rechazada",
-      "Pending": "Pendiente",
+      "Accepted": "Aceptado",
+      "Received": "Recibido",
+      "Assigned": "Asignado",
       "Reserved": "Reservado"
     },
     "titles": {
