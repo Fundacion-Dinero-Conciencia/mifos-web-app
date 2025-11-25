@@ -511,12 +511,11 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         type: 'success',
         message: 'Simulaciòn creada con èxito'
       });
-      this.organizationService.getSimulations(this.projectData.id).subscribe((response: any) => {
-        this.dataSource.data = response || [];
-        this.addQueryParam(0);
-        window.location.reload();
-      });
-      this.switchCreatingSimulation();
+      const principal = this.createForm.get('amount').value;
+      const numberOfRepayments = this.createForm.get('period').value;
+      const interestRatePerPeriod = this.createForm.get('interestRate').value;
+      this.addQueryParam(0);
+      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments, true);
     });
   }
 
