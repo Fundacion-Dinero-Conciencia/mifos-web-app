@@ -27,7 +27,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   filesvg = faFileAlt;
   isEditingSimulation: boolean = false;
   idProject: string | number;
-  isFactoring = false;
   investorInterests: any;
   totalCredit: any;
   form!: FormGroup;
@@ -66,6 +65,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   loanTemplateEdit: any;
   selectedSimulation: any;
   currency: string;
+  isFactoring: boolean = false;
   creditTypesData: any;
 
   constructor(
@@ -110,6 +110,15 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       ]
     });
     this.createForm.valueChanges;
+  }
+
+  loanIsFactoring(): boolean {
+    const loanProductId = this.createForm.get('basedInLoanProductId')?.value;
+    return this.loanProductsData.find((lp: any) => {
+      if (lp.id === loanProductId) {
+        return lp.isFactoringProduct === true;
+      }
+    });
   }
 
   getDefaultCurrency() {
@@ -204,7 +213,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   calculatePromissoryNote(percentage: any): number {
-    var amount = this.selectedSimulation?.amountToBeFinanced || 0;
+    let amount = this.selectedSimulation?.amountToBeFinanced || 0;
 
     // Buscar comisión AEF
     const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF');
@@ -224,7 +233,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       const tasaToApply =
         this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.vat / 360; // tasa AEF por mes
       const montoFinanciar = this.getMontoAFinanciar;
-      amount = this.updateAmountRequested() || 0;
+      amount = this.updateAmountRequested() || this.projectData.amount || 0;
       subtotalAef = (montoFinanciar * this.selectedSimulation?.period * tasaToApply) / 100;
     }
 
@@ -386,6 +395,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   switchAllowEditing() {
     this.allowEditingForm = !this.allowEditingForm;
     this.createForm.get('basedInLoanProductId').disable();
+    // this.createForm.get('loanPurposeId').disable();
     if (this.allowEditingForm) {
       this.createForm.enable();
       this.createForm.get('basedInLoanProductId').disable();
@@ -422,6 +432,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         this.switchEditingSimulation({ ...response[0] });
       }
     });
+    this.isFactoring = this.loanIsFactoring();
     this.idProject = this.route.parent?.snapshot.paramMap.get('id');
   }
   generateSimulationPdf() {
@@ -438,14 +449,12 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       // 2. Crear un objeto URL
       const blobUrl = URL.createObjectURL(blob);
 
-      // 3. Crear un enlace y forzar la descarga
       const link = document.createElement('a');
       link.href = blobUrl;
       link.download = 'SimulacionFinanciamiento.pdf';
       document.body.appendChild(link);
       link.click();
 
-      // 4. Limpiar
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
     });
@@ -497,18 +506,17 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   createSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
+    const payloadJSON = JSON.stringify({ ...this.createForm.value });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
         message: 'Simulaciòn creada con èxito'
       });
-      this.organizationService.getSimulations(this.projectData.id).subscribe((response: any) => {
-        this.dataSource.data = response || [];
-        this.addQueryParam(0);
-        window.location.reload();
-      });
-      this.switchCreatingSimulation();
+      const principal = this.createForm.get('amount').value;
+      const numberOfRepayments = this.createForm.get('period').value;
+      const interestRatePerPeriod = this.createForm.get('interestRate').value;
+      this.addQueryParam(0);
+      this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments, true);
     });
   }
 
@@ -595,7 +603,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         const principal = this.createForm.get('amount').value;
         const numberOfRepayments = this.createForm.get('period').value;
         const interestRatePerPeriod = this.createForm.get('interestRate').value;
-        this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments);
+        this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments, true);
         this.alertService.alert({
           type: 'Success',
           message: this.translateService.instant('labels.heading.Saved Successfully')
@@ -607,11 +615,11 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     });
   }
 
-  submitProjectData(editCredit: boolean, amount?: any, rate?: any, period?: any) {
+  submitProjectData(editCredit: boolean, amount?: any, rate?: any, period?: any, reloadAfter: boolean = false) {
     var payload: any = {};
     payload.amountToBeFinanced = this.getMontoAFinanciar;
     payload.amountToBeDelivered = this.getMontoAEntregar;
-    payload.creditTypeId = this.generalPurposeprojectId;
+    payload.creditTypeId = this.createForm.get('creditTypeId').value;
     payload.projectRate = this.projectData.rate;
     payload.onlyAmounts = true;
 
@@ -630,7 +638,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         if (editCredit === true) {
           this.organizationService.deleteAdditionalExpensesById(this.idProject as string, true).subscribe({
             next: (dataX) => {
-              window.location.reload();
+              if (reloadAfter) {
+                window.location.reload();
+              }
             }
           });
         } else {
@@ -653,6 +663,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
                 type: 'Success',
                 message: this.translateService.instant('labels.heading.Saved Successfully')
               });
+
+              if (reloadAfter) {
+                window.location.reload();
+              }
             },
             error: (err) => {
               console.error('Error update loan:', err);
@@ -677,7 +691,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   editSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
+    const payloadJSON = JSON.stringify({ ...this.createForm.value });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
@@ -704,8 +718,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       const principal = this.createForm.get('amount').value;
       const numberOfRepayments = this.createForm.get('period').value;
       const interestRatePerPeriod = this.createForm.get('interestRate').value;
-      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments);
-      window.location.reload();
+      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments, true);
     });
   }
 
@@ -728,6 +741,8 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     const existInvoice = this.comisiones.data.find((c) => c.commissionType?.name === 'MONTO FACTURA');
     if (existInvoice) {
       return existInvoice.total;
+    } else {
+      return;
     }
   }
 
@@ -736,8 +751,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   get getMontoAFinanciar(): number {
-    const montoAFinanciar = this.createForm.value.amount;
+    const montoAFinanciar = this.createForm.value.amount || 0;
     const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.total || 0;
+
     const ivaAef =
       this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'IVA-AEF')?.total || 0;
     const otrosGastos = this.comisiones.data
@@ -751,7 +767,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       // const amountInvoice =
       //   this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'MONTO FACTURA')?.total || 0;
       // return amountInvoice + aef + ivaAef + otrosGastos;
-      return this.updateAmountRequested();
+      return this.updateAmountRequested() || this.projectData.amount || 0;
     }
     return montoAFinanciar + aef + ivaAef + otrosGastos + ite;
   }
@@ -861,7 +877,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       loanTermFrequency: data.termFrequency,
       loanTermFrequencyType: data.termPeriodFrequencyType.id,
       numberOfRepayments: data.numberOfRepayments,
-      repaymentEvery: data.repaymentEvery,
+      repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
       repaymentFrequencyType: data.repaymentFrequencyType.id,
       interestType: data.interestType.id,
       isEqualAmortization: data.isEqualAmortization,
@@ -901,7 +917,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         loanTermFrequency: data.termFrequency,
         loanTermFrequencyType: data.termPeriodFrequencyType.id,
         numberOfRepayments: data.numberOfRepayments,
-        repaymentEvery: data.repaymentEvery,
+        repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
         repaymentFrequencyType: data.repaymentFrequencyType.id,
         repaymentFrequencyNthDayType: '',
         repaymentFrequencyDayOfWeekType: '',
@@ -1127,6 +1143,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     }
 
     this.organizationService.getCae(cashFlows).subscribe((data) => {
+      console.log(data);
       this.caeValue = data;
       this.caeValue = this.caeValue;
     });
@@ -1134,6 +1151,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   getTotalCredit() {
     const montoFinanciar = this.getMontoAFinanciar;
+    console.log(this.getMontoAFinanciar);
     const extractDate = (arr: any): string => {
       if (!arr || arr.length !== 3) return '';
 
@@ -1154,7 +1172,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       loanTermFrequency: this.loanTemplate?.termFrequency,
       loanTermFrequencyType: this.loanTemplate?.termPeriodFrequencyType?.id,
       numberOfRepayments: this.loanTemplate?.numberOfRepayments,
-      repaymentEvery: this.loanTemplate?.repaymentEvery,
+      repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
       repaymentFrequencyType: this.loanTemplate?.repaymentFrequencyType?.id,
       interestType: this.loanTemplate?.interestType?.id,
       isEqualAmortization: this.loanTemplate?.isEqualAmortization,
