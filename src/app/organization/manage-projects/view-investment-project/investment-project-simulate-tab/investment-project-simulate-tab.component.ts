@@ -506,7 +506,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   createSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
+    const payloadJSON = JSON.stringify({ ...this.createForm.value });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
@@ -516,7 +516,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       const numberOfRepayments = this.createForm.get('period').value;
       const interestRatePerPeriod = this.createForm.get('interestRate').value;
       this.addQueryParam(0);
-      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments, true);
+      this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments, true);
     });
   }
 
@@ -619,7 +619,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     var payload: any = {};
     payload.amountToBeFinanced = this.getMontoAFinanciar;
     payload.amountToBeDelivered = this.getMontoAEntregar;
-    payload.creditTypeId = this.generalPurposeprojectId;
+    payload.creditTypeId = this.createForm.get('creditTypeId').value;
     payload.projectRate = this.projectData.rate;
     payload.onlyAmounts = true;
 
@@ -691,7 +691,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   editSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value, loanPurposeId: this.generalPurposeprojectId });
+    const payloadJSON = JSON.stringify({ ...this.createForm.value });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
