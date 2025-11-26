@@ -24,12 +24,16 @@
 
     <ng-container matColumnDef="Mnemotécnico">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
-      <td mat-cell *matCellDef="let note">{{ note.mnemonic }}</td>
+      <td mat-cell *matCellDef="let note">
+        {{ note.mnemonic }}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="InvestmentNumber">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>N° de inversiones</th>
-      <td mat-cell *matCellDef="let note">{{ note.investmentList.length }}</td>
+      <td mat-cell *matCellDef="let note">
+        {{ note.investmentList.length }}
+      </td>
     </ng-container>
     <ng-container matColumnDef="Amount">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto total</th>

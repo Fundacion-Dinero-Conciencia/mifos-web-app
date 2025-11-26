@@ -183,20 +183,6 @@
         >
           <i class="fa fa-dollar"></i>
         </button>
-        <span *ngIf="element.status.pendingApproval">
-          <button
-            class="account-action-button"
-            mat-raised-button
-            color="primary"
-            matTooltip="{{ 'tooltips.Approve' | translate }}"
-            matTooltipPosition="above"
-            *mifosxHasPermission="'APPROVE_LOAN'"
-            (click)="routeEdit($event)"
-            [routerLink]="['../', 'loans-accounts', element.id, 'actions', 'Approve']"
-          >
-            <i class="fa fa-check"></i>
-          </button>
-        </span>
         <span *ngIf="!element.status.pendingApproval && !element.status.active && !element.status.overpaid">
           <button
             class="account-action-button"

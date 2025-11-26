@@ -30,7 +30,11 @@
   <table mat-table #documentsTable [dataSource]="dataSource" matSort class="m-t-25">
     <ng-container matColumnDef="Investor">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Investor' | translate }}</th>
-      <td mat-cell *matCellDef="let investment">{{ investment.participantName }}</td>
+      <td mat-cell *matCellDef="let investment">
+        <a [routerLink]="['../../../../clients/' + investment.participantId]" style="text-decoration: none">
+          {{ investment.participantName }}
+        </a>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="date">

@@ -56,11 +56,6 @@ export class LoansAccountButtonConfiguration {
             name: 'Undo Disbursal',
             icon: 'undo',
             taskPermissionName: 'DISBURSALUNDO_LOAN'
-          },
-          {
-            name: 'Create Sub-Credit',
-            icon: 'plus',
-            taskPermissionName: 'CREATE_SUB_CREDIT_LOAN'
           }
         ];
         break;
@@ -72,11 +67,6 @@ export class LoansAccountButtonConfiguration {
             taskPermissionName: 'CREATE_LOANCHARGE'
           },
           {
-            name: 'Approve',
-            icon: 'check',
-            taskPermissionName: 'APPROVE_LOAN'
-          },
-          {
             name: 'Modify Application',
             icon: 'edit',
             taskPermissionName: 'UPDATE_LOAN'
@@ -85,11 +75,6 @@ export class LoansAccountButtonConfiguration {
             name: 'Reject',
             icon: 'times',
             taskPermissionName: 'REJECT_LOAN'
-          },
-          {
-            name: 'Create Sub-Credit',
-            icon: 'plus',
-            taskPermissionName: 'CREATE_SUB_CREDIT_LOAN'
           }
         ];
         break;
@@ -109,11 +94,6 @@ export class LoansAccountButtonConfiguration {
             name: 'Undo Approval',
             icon: 'undo',
             taskPermissionName: 'APPROVALUNDO_LOAN'
-          },
-          {
-            name: 'Create Sub-Credit',
-            icon: 'plus',
-            taskPermissionName: 'CREATE_SUB_CREDIT_LOAN'
           }
         ];
         break;
@@ -212,10 +192,6 @@ export class LoansAccountButtonConfiguration {
           {
             name: 'Sell Loan',
             taskPermissionName: 'SALE_LOAN'
-          },
-          {
-            name: 'Create Sub-Credit',
-            taskPermissionName: 'CREATE_SUB_CREDIT_LOAN'
           }
         ];
         this.optionPaymentArray = [
@@ -234,10 +210,6 @@ export class LoansAccountButtonConfiguration {
           {
             name: 'Merchant Issued Refund',
             taskPermissionName: 'CREATE_MERCHANT_ISSUED_REFUND'
-          },
-          {
-            name: 'Create Sub-Credit',
-            taskPermissionName: 'CREATE_SUB_CREDIT_LOAN'
           }
         ];
         break;
@@ -266,10 +238,6 @@ export class LoansAccountButtonConfiguration {
           {
             name: 'Loan Screen Reports',
             taskPermissionName: 'READ_LOAN'
-          },
-          {
-            name: 'Create Sub-Credit',
-            taskPermissionName: 'CREATE_SUB_CREDIT_LOAN'
           }
         ];
         this.optionPaymentArray = [];
@@ -291,10 +259,6 @@ export class LoansAccountButtonConfiguration {
           {
             name: 'Loan Screen Report',
             taskPermissionName: 'READ_LOAN'
-          },
-          {
-            name: 'Create Sub-Credit',
-            taskPermissionName: 'CREATE_SUB_CREDIT_LOAN'
           }
         ];
         this.optionPaymentArray = [];
