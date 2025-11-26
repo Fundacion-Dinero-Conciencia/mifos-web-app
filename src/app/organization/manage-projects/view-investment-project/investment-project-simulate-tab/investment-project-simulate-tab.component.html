@@ -87,11 +87,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-        (click)="projectData?.status?.statusValue?.name === 'En Borrador' && switchEditingSimulation(row)"
-      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="switchEditingSimulation(row)"></tr>
       <tr class="mat-row noContentTable" *matNoDataRow>
         <td class="mat-cell" [attr.colspan]="displayedColumns.length">
           <div class="empty-state">
@@ -176,7 +172,7 @@
       </button>
     </div>
     <form
-      *ngIf="adicionalForm && isEditingSimulation"
+      *ngIf="projectData?.status?.statusValue?.name === 'En Borrador' && adicionalForm && isEditingSimulation"
       [formGroup]="adicionalForm"
       fxLayout="column"
       fxLayoutGap="16px"
@@ -342,12 +338,13 @@
         </div>
       </div>
     </div>
-    <p class="important" *ngIf="isEditingSimulation">
+    <p class="important" *ngIf="isEditingSimulation && projectData?.status?.statusValue?.name === 'En Borrador'">
       <i>*Recuerda guardar los cambios en comisiones para actualizar el monto a financiar.</i>
     </p>
     <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
+      {{ projectData?.status?.statusValue?.name }}
       <button
-        *ngIf="isEditingSimulation"
+        *ngIf="isEditingSimulation && projectData?.status?.statusValue?.name === 'En Borrador'"
         mat-raised-button
         color="primary"
         (click)="submitCommisions()"
