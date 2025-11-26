@@ -516,7 +516,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       const numberOfRepayments = this.createForm.get('period').value;
       const interestRatePerPeriod = this.createForm.get('interestRate').value;
       this.addQueryParam(0);
-      this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments, true);
+      this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments, true);
     });
   }
 
