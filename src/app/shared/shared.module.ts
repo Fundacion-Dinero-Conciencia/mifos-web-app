@@ -16,6 +16,7 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 import { EnableDialogComponent } from './enable-dialog/enable-dialog.component';
 import { DisableDialogComponent } from './disable-dialog/disable-dialog.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
 import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 import { NotificationsTrayComponent } from './notifications-tray/notifications-tray.component';
 import { SearchToolComponent } from './search-tool/search-tool.component';
@@ -86,6 +87,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     EnableDialogComponent,
     DisableDialogComponent,
     ConfirmationDialogComponent,
+    CustomDialogComponent,
     KeyboardShortcutsDialogComponent,
     ErrorDialogComponent,
     NotificationsTrayComponent,
@@ -115,6 +117,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     InputPasswordComponent
   ],
   exports: [
+    CustomDialogComponent,
     FileUploadComponent,
     FooterComponent,
     LanguageSelectorComponent,

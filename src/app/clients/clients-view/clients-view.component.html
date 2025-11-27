@@ -170,6 +170,17 @@
                       ></mifosx-external-identifier>
                     </td>
                   </tr>
+                  <tr>
+                    <td>
+                      <b> RUT</b>
+                    </td>
+                    <td>
+                      <mifosx-external-identifier
+                        externalId="{{ clientViewData.rut }}"
+                        completed="true"
+                      ></mifosx-external-identifier>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -184,7 +195,12 @@
           </mat-icon>
           <span>{{ 'labels.buttons.Edit' | translate }}</span>
         </button>
-
+        <button mat-menu-item (click)="doAction('See Projects')">
+          <mat-icon matListIcon>
+            <fa-icon icon="eye" size="sm"></fa-icon>
+          </mat-icon>
+          {{ 'labels.buttons.See Projects' | translate }}
+        </button>
         <button *ngIf="isActive()" mat-menu-item [matMenuTriggerFor]="accountApplications">
           <mat-icon matListIcon>
             <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
@@ -299,10 +315,7 @@
       </mat-menu>
 
       <mat-menu #More="matMenu">
-        <button mat-menu-item (click)="doAction('See Projects')">
-          {{ 'labels.buttons.See Projects' | translate }}
-        </button>
-        <button mat-menu-item (click)="doAction('create Project')">
+        <button mat-menu-item (click)="doAction('create Project')" [disabled]="isInvestorClient">
           {{ 'labels.buttons.Create Investment Project' | translate }}
         </button>
         <button mat-menu-item (click)="doAction('Add Charge')" *mifosxHasPermission="'CREATE_CLIENTCHARGE'">
@@ -414,6 +427,7 @@
         <div
           *ngIf="
             !(isInvestorClient && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS') &&
+            !(isCreditClient && clientDatatable.registeredTableName === 'BANK_DETAILS') &&
             !(isCreditClient && clientDatatable.registeredTableName === 'PROFILING') &&
             !(isCreditClient && clientDatatable.registeredTableName === 'INTEREST_SECTOR')
           "

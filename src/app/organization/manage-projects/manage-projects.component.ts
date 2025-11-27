@@ -1,18 +1,18 @@
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrganizationService } from '../organization.service';
-import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationWizardService } from 'app/configuration-wizard/configuration-wizard.service';
-import { PopoverService } from 'app/configuration-wizard/popover/popover.service';
-import { FormfieldBase } from 'app/shared/form-dialog/formfield/model/formfield-base';
-import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { ContinueSetupDialogComponent } from 'app/configuration-wizard/continue-setup-dialog/continue-setup-dialog.component';
+import { PopoverService } from 'app/configuration-wizard/popover/popover.service';
+import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
+import { FormfieldBase } from 'app/shared/form-dialog/formfield/model/formfield-base';
 import { InputBase } from 'app/shared/form-dialog/formfield/model/input-base';
 import { environment } from 'environments/environment';
+import { OrganizationService } from '../organization.service';
 
 @Component({
   selector: 'mifosx-manage-projects',
@@ -36,6 +36,7 @@ export class ManageProjectsComponent implements OnInit {
   /** Columns to be displayed in funds table. */
   displayedColumns: string[] = [
     'name',
+    'Rut',
     'country',
     'active',
     'occupancyPercentage',

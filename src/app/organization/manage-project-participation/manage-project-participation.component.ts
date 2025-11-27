@@ -4,10 +4,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountTransfersService } from 'app/account-transfers/account-transfers.service';
+import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
+import { SystemService } from 'app/system/system.service';
+import { finalize } from 'rxjs/operators';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
-
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
@@ -16,8 +18,11 @@ import { SelectDialogComponent } from '../select-dialog/select-dialog.component'
 export class ManageProjectParticipationComponent implements OnInit {
   projectParticipationsData: any[] = [];
   dataSource: MatTableDataSource<any>;
+  currency: string;
+  loading: boolean = false;
   displayedColumns: string[] = [
     'project',
+    'RUT',
     'participant',
     'amount',
     'commission',
@@ -27,14 +32,52 @@ export class ManageProjectParticipationComponent implements OnInit {
     'actions'
   ];
   selectedItems: any[] = [];
+  selectedInvests: any[] = [];
+  amountToInvest: number = 0;
+  filterStatus: string = '';
+  filterText: string = '';
+  reservationSelected: any;
+  showDialog = false;
+  dataSourceInvestSelection: MatTableDataSource<any> = new MatTableDataSource<any>();
 
+  displayedColumnsInvestSelection: string[] = [
+    'Date',
+    'Bank',
+    'Amount',
+    'Transactions',
+    'Add'
+  ];
+
+  onDialogCancel() {
+    this.showDialog = false;
+  }
+
+  openAssignTransfersDialog(reservation: any) {
+    this.reservationSelected = reservation;
+    this.getTransactions(reservation.participantId, reservation.id);
+    this.showDialog = true;
+  }
+
+  statusId: Record<number, string> = {
+    100: 'Accepted',
+    200: 'Pending',
+    300: 'Canceled',
+    400: 'Reserved'
+  };
+
+  statuses = [
+    { id: 100 },
+    { id: 200 },
+    { id: 300 },
+    { id: 400 }];
   constructor(
     private route: ActivatedRoute,
     private organizationservice: OrganizationService,
     public dialog: MatDialog,
     private router: Router,
     private translateService: TranslateService,
-    private accountTransfersService: AccountTransfersService
+    private accountTransfersService: AccountTransfersService,
+    private systemService: SystemService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.projectParticipationsData = [];
@@ -42,16 +85,53 @@ export class ManageProjectParticipationComponent implements OnInit {
         item.createdOnDate = new Date(item.createdOnDate);
         this.projectParticipationsData.push(item);
       });
+      this.applyOwnerFilter();
       this.dataSource = new MatTableDataSource(this.projectParticipationsData);
     });
   }
 
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
+    });
+  }
+
   ngOnInit(): void {
+    this.getDefaultCurrency();
     this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+    this.dataSourceInvestSelection = new MatTableDataSource([]);
+
+    this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
+      const parsedFilter = JSON.parse(filter);
+      const matchesStatus = !parsedFilter.status || data.status?.value === parsedFilter.status;
+      const matchesText =
+        !parsedFilter.text ||
+        data.projectName.toLowerCase().includes(parsedFilter.text.toLowerCase()) ||
+        !parsedFilter.text ||
+        (data.rut + '').toLowerCase().includes(parsedFilter.text.toLowerCase());
+      return matchesStatus && matchesText;
+    };
+  }
+
+  getTransactions(participantId: number, paticipationId: number) {
+    this.organizationservice.getTransactions(participantId, paticipationId).subscribe((data: any) => {
+      this.dataSourceInvestSelection = new MatTableDataSource(data);
+    });
   }
 
   applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.filterText = filterValue.trim().toLowerCase();
+    this.dataSource.filter = JSON.stringify({
+      status: this.filterStatus,
+      text: this.filterText
+    });
+  }
+  applySelectFilter(filterValue: string) {
+    this.filterStatus = filterValue;
+    this.dataSource.filter = JSON.stringify({
+      status: this.filterStatus,
+      text: this.filterText
+    });
   }
 
   manageRequest(request: any, command: string): void {
@@ -98,22 +178,7 @@ export class ManageProjectParticipationComponent implements OnInit {
   }
 
   statusLabel(status: number) {
-    if (status === 100) {
-      // Pagaré aprobado [Aceptado]
-      return 'Accepted';
-    } else if (status === 200) {
-      // Recibida por kiphu [Recibido]
-      return 'Received';
-    } else if (status === 300) {
-      // cancelado [Cancelado]
-      return 'Canceled';
-    } else if (status === 400) {
-      // reservado [Reservado]
-      return 'Reserved';
-    } else if (status === 500) {
-      // asignado a un pagaré [Asignado]
-      return 'Assigned';
-    }
+    return this.statusId[status];
   }
 
   reload() {
@@ -149,6 +214,16 @@ export class ManageProjectParticipationComponent implements OnInit {
     });
   }
 
+  applyOwnerFilter() {
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras?.state;
+    if (state) {
+      this.projectParticipationsData = this.projectParticipationsData.filter(
+        (project) => project.participantId === state.ownerId
+      );
+    }
+  }
+
   processInvestments(): void {
     const dataToSend = this.selectedItems.map((item) => item.selectedData);
 
@@ -159,7 +234,58 @@ export class ManageProjectParticipationComponent implements OnInit {
     });
   }
 
+  assignTransaction() {
+    this.loading = true;
+
+    this.organizationservice
+      .assignTransactions({
+        projectParticipationId: this.reservationSelected.id,
+        savingsTransactionId: this.selectedInvests
+      })
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.showDialog = false;
+          this.selectedInvests = [];
+          this.reload();
+        },
+        error: (err) => {
+          console.error('Error asignando transacción:', err);
+          // aquí puedes poner alert si quieres
+        }
+      });
+  }
+
+  get totalAmountSelected() {
+    if (!this.reservationSelected) {
+      return 0;
+    }
+    return this.reservationSelected?.amount + this.reservationSelected?.commission;
+  }
+
+  get amoutToBeAssigned() {
+    const amount = (this.totalAmountSelected || 0) - (this.reservationSelected?.assignedAmount || 0);
+    return amount;
+  }
+
+  isReservationFullyAssigned(participation: any): boolean {
+    return participation.assignedAmount >= participation.amount + participation.commission;
+  }
+
   navigateToCreate() {
     this.router.navigate(['/organization/project-participation/create']);
+  }
+  onInvestSelected(event: any, invest: any) {
+    if (event.checked) {
+      this.selectedInvests.push(invest.id);
+      this.amountToInvest += invest.amount;
+    } else {
+      this.selectedInvests = this.selectedInvests.filter((id) => id !== invest.id);
+      this.amountToInvest -= invest.amount;
+    }
   }
 }
