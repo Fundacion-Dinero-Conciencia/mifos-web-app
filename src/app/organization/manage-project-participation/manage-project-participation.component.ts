@@ -22,6 +22,7 @@ export class ManageProjectParticipationComponent implements OnInit {
   loading: boolean = false;
   displayedColumns: string[] = [
     'project',
+    'RUT',
     'participant',
     'amount',
     'commission',
@@ -53,7 +54,6 @@ export class ManageProjectParticipationComponent implements OnInit {
 
   openAssignTransfersDialog(reservation: any) {
     this.reservationSelected = reservation;
-    console.log(reservation);
     this.getTransactions(reservation.participantId, reservation.id);
     this.showDialog = true;
   }
@@ -105,7 +105,10 @@ export class ManageProjectParticipationComponent implements OnInit {
       const parsedFilter = JSON.parse(filter);
       const matchesStatus = !parsedFilter.status || data.status?.value === parsedFilter.status;
       const matchesText =
-        !parsedFilter.text || data.projectName.toLowerCase().includes(parsedFilter.text.toLowerCase());
+        !parsedFilter.text ||
+        data.projectName.toLowerCase().includes(parsedFilter.text.toLowerCase()) ||
+        !parsedFilter.text ||
+        (data.rut + '').toLowerCase().includes(parsedFilter.text.toLowerCase());
       return matchesStatus && matchesText;
     };
   }
@@ -214,7 +217,6 @@ export class ManageProjectParticipationComponent implements OnInit {
   applyOwnerFilter() {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state;
-    console.log(state);
     if (state) {
       this.projectParticipationsData = this.projectParticipationsData.filter(
         (project) => project.participantId === state.ownerId
@@ -268,6 +270,10 @@ export class ManageProjectParticipationComponent implements OnInit {
   get amoutToBeAssigned() {
     const amount = (this.totalAmountSelected || 0) - (this.reservationSelected?.assignedAmount || 0);
     return amount;
+  }
+
+  isReservationFullyAssigned(participation: any): boolean {
+    return participation.assignedAmount >= participation.amount + participation.commission;
   }
 
   navigateToCreate() {

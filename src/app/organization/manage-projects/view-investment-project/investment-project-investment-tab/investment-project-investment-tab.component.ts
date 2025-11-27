@@ -6,12 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { ClientsService } from 'app/clients/clients.service';
 import { AlertService } from 'app/core/alert/alert.service';
+import { LoansService } from 'app/loans/loans.service';
 import { OrganizationService } from 'app/organization/organization.service';
-import { of } from 'rxjs';
-import { catchError, debounceTime } from 'rxjs/operators';
 import { SettingsService } from 'app/settings/settings.service';
 import { SystemService } from 'app/system/system.service';
-import { LoansService } from 'app/loans/loans.service';
+import { of } from 'rxjs';
+import { catchError, debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'mifosx-investment-project-investment-tab',
   templateUrl: './investment-project-investment-tab.component.html',
@@ -23,7 +23,13 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   investorTypes: any[];
   filesvg = faFileAlt;
   currency: string;
-
+  pageIndex = 0;
+  pageSize = 5;
+  totalItems = 0;
+  filterOptions = [
+    'Cliente',
+    'RUT'
+  ];
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
@@ -38,6 +44,9 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       this.clientClassificationTypeOptions = data.clientTemplate.clientClassificationOptions;
     });
     this.filters = this.formBuilder.group({
+      filterBy: [
+        'Cliente'
+      ],
       clientClassificationId: [
         ''
       ],
@@ -52,6 +61,7 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   }
   filters: UntypedFormGroup;
   displayedColumns: string[] = [
+    'Rut',
     'Investor',
     'date',
     'Value invested',
@@ -60,12 +70,12 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
     'Watch promissory note'
   ];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   requestParams = {};
   ngOnInit(): void {
     this.getDefaultCurrency();
-    this.loadInvestments(0, 10);
+    this.loadInvestments(0, this.pageSize);
   }
   getDefaultCurrency() {
     this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
@@ -124,7 +134,8 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       projectId: this.projectData?.id,
       page,
       size,
-      name: filters?.name || undefined,
+      name: this.filters.get('filterBy').value === 'Cliente' ? filters?.name : undefined,
+      rut: this.filters.get('filterBy').value !== 'Cliente' ? filters?.name : undefined,
       classificationId: filters?.clientClassificationId || undefined
     };
 
@@ -142,8 +153,9 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
       )
       .subscribe((response: any) => {
         this.dataSource.data = response.content || response;
-        this.paginator.length = response.total;
-        this.dataSource.paginator = this.paginator;
+        this.pageSize = size;
+        this.pageIndex = page;
+        this.totalItems = response.total;
       });
   }
 
@@ -175,5 +187,8 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   shorten(content: string, length: number = 100): string {
     const plain = content?.replace(/<[^>]+>/g, '').replace(/\n+/g, ' ') || '';
     return plain.length > length ? plain.slice(0, length) + '...' : plain;
+  }
+  applyFilterOptionChange(event: any) {
+    this.filters.get('name')?.setValue('');
   }
 }

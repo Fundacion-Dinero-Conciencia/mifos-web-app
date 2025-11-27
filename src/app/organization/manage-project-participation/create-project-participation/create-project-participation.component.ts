@@ -11,6 +11,8 @@ import { SystemService } from 'app/system/system.service';
 import { LoansService } from 'app/loans/loans.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { AccountingService } from 'app/accounting/accounting.service';
+import { finalize } from 'rxjs/operators';
+import { filter } from 'lodash';
 
 @Component({
   selector: 'mifosx-create-project-participation',
@@ -22,9 +24,14 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
   dataSource: MatTableDataSource<any>;
   projectParticipationForm: UntypedFormGroup;
   participantsData: any[] = [];
+  loading = false;
   projectsData: any[] = [];
   investmentFee: any;
   currency: any = {};
+  filterOptions = [
+    'Cliente',
+    'RUT'
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -76,6 +83,9 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
         '',
         Validators.required
       ],
+      filterBy: [
+        'Cliente'
+      ],
       projectId: [
         '',
         Validators.required
@@ -110,8 +120,10 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
   }
 
   submit() {
+    this.loading = true;
     const payload = {
-      ...this.projectParticipationForm.getRawValue()
+      ...this.projectParticipationForm.getRawValue(),
+      filterBy: undefined
     };
     const participant: any = payload['participantId'];
     payload['participantId'] = participant['id'];
@@ -121,9 +133,17 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
     payload['commission'] = payload['commission'] * 1;
     payload['status'] = 400;
     payload['type'] = 'MANUAL';
-    this.organizationService.createInvestmentProjectParticipations(payload).subscribe((response: any) => {
-      this.router.navigate(['../'], { relativeTo: this.route });
-    });
+
+    this.organizationService
+      .createInvestmentProjectParticipations(payload)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe((response: any) => {
+        this.router.navigate(['../'], { relativeTo: this.route });
+      });
   }
 
   ngAfterViewInit() {
@@ -137,9 +157,17 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
 
     this.projectParticipationForm.controls.participantId.valueChanges.subscribe((value: string) => {
       if (value.length >= 2) {
-        this.clientsService.getFilteredClients('displayName', 'ASC', true, value).subscribe((data: any) => {
-          this.participantsData = data.pageItems;
-        });
+        this.clientsService
+          .getFilteredClientsByParamName(
+            null,
+            'ASC',
+            true,
+            this.projectParticipationForm.get('filterBy').value === 'Cliente' ? 'displayName' : 'rut',
+            value
+          )
+          .subscribe((data: any) => {
+            this.participantsData = data.pageItems;
+          });
       }
     });
   }

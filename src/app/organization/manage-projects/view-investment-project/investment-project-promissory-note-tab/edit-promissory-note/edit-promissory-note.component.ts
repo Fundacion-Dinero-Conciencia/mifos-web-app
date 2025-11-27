@@ -43,6 +43,7 @@ export class EditPromissoryNoteComponent implements OnInit {
 
   displayedColumns: string[] = [
     'Investor',
+    'RUT',
     'Date',
     'Value invested',
     'Group'
@@ -241,11 +242,16 @@ export class EditPromissoryNoteComponent implements OnInit {
             ? (investment.clientClassification ? investment.clientClassification.id : 296) ===
               values.clientClassificationId
             : true) &&
-          (values.name ? investment.participantName.toLowerCase().includes(values.name.toLowerCase()) : true)
+          (values.name
+            ? investment.participantName?.toLowerCase().includes(values.name.toLowerCase()) ||
+              investment.rut?.toLowerCase().includes(values.name.toLowerCase())
+            : true)
         );
       });
+
       this.dataSource.data = filteredData;
     });
+
     this.getDefaultCurrency();
     this.clientForm = this.formBuilder.group({
       documentNumber: [
