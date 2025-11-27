@@ -1020,6 +1020,7 @@ export class OrganizationService {
     projectId?: string;
     statusCode?: string;
     name?: string;
+    rut?: string;
     classificationId?: string;
     page?: number;
     size?: number;
@@ -1028,6 +1029,9 @@ export class OrganizationService {
 
     if (filters.participantId) {
       params = params.set('participantId', filters.participantId);
+    }
+    if (filters.rut) {
+      params = params.set('rut', filters.rut);
     }
     if (filters.name) {
       params = params.set('name', filters.name);

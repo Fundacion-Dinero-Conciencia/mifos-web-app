@@ -36,6 +36,7 @@ export class ManageProjectsComponent implements OnInit {
   /** Columns to be displayed in funds table. */
   displayedColumns: string[] = [
     'name',
+    'Rut',
     'country',
     'active',
     'occupancyPercentage',

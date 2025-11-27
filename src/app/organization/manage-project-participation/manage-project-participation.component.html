@@ -34,6 +34,10 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Project' | translate }}</th>
         <td mat-cell *matCellDef="let item">{{ item.projectName }}</td>
       </ng-container>
+      <ng-container matColumnDef="RUT">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>RUT</th>
+        <td mat-cell *matCellDef="let item">{{ item.rut || '-' }}</td>
+      </ng-container>
 
       <ng-container matColumnDef="participant">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Participant' | translate }}</th>
@@ -99,7 +103,7 @@
               <fa-icon icon="clock"></fa-icon>
             </button>
             <button
-              *ngIf="item.status.value === 400"
+              *ngIf="item.status.value === 400 && isReservationFullyAssigned(item) === false"
               class="action-button"
               mat-raised-button
               color="primary"
@@ -108,6 +112,17 @@
               (click)="openAssignTransfersDialog(item)"
             >
               $
+            </button>
+            <button
+              *ngIf="item.status.value === 400 && isReservationFullyAssigned(item)"
+              class="action-button"
+              mat-raised-button
+              color="primary"
+              matTooltip="{{ 'Ver transferencias bancarias asignadas' }}"
+              matTooltipPosition="left"
+              (click)="openAssignTransfersDialog(item)"
+            >
+              <fa-icon icon="eye"></fa-icon>
             </button>
           </span>
         </td>

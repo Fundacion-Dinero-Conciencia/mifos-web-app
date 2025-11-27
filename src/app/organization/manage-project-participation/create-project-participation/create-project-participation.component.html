@@ -3,6 +3,14 @@
     <mat-card>
       <mat-card-content>
         <div fxLayout="column">
+          <mat-form-field fxFlex="98%" class="inputSearch m-r-25 m-b-10">
+            <mat-label>Filtrar por:</mat-label>
+            <mat-select formControlName="filterBy">
+              <mat-option *ngFor="let filterOption of filterOptions" [value]="filterOption">
+                {{ filterOption }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Participant' | translate }}</mat-label>
             <input matInput formControlName="participantId" [matAutocomplete]="participantsAutocomplete" />
@@ -18,7 +26,7 @@
             [displayWith]="displayParticipant"
           >
             <mat-option *ngFor="let client of participantsData" [value]="client">
-              {{ client.id }} - {{ client.displayName }}
+              {{ client.displayName }} - {{ client.rut }}
             </mat-option>
           </mat-autocomplete>
 
@@ -70,7 +78,7 @@
         <button type="button" mat-raised-button [routerLink]="['../']">
           {{ 'labels.buttons.Cancel' | translate }}
         </button>
-        <button mat-raised-button color="primary" [disabled]="!projectParticipationForm.valid">
+        <button mat-raised-button color="primary" [disabled]="!projectParticipationForm.valid || loading">
           {{ 'labels.buttons.Submit' | translate }}
         </button>
       </mat-card-actions>

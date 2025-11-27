@@ -1,7 +1,6 @@
 /** Angular Imports */
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from 'environments/environment';
+import { Injectable } from '@angular/core';
 
 /** rxjs Imports */
 import { Observable } from 'rxjs';
@@ -29,6 +28,26 @@ export class ClientsService {
       .set('orphansOnly', orphansOnly.toString())
       .set('sortOrder', sortOrder)
       .set('orderBy', orderBy);
+    if (officeId) {
+      httpParams = httpParams.set('officeId', officeId);
+    }
+    return this.http.get('/clients', { params: httpParams });
+  }
+  getFilteredClientsByParamName(
+    orderBy: string | null,
+    sortOrder: string,
+    orphansOnly: boolean,
+    paramName: string,
+    value?: string,
+    officeId?: any
+  ): Observable<any> {
+    let httpParams = new HttpParams()
+      .set(paramName, value)
+      .set('orphansOnly', orphansOnly.toString())
+      .set('sortOrder', sortOrder);
+    if (orderBy) {
+      httpParams.set('orderBy', orderBy);
+    }
     if (officeId) {
       httpParams = httpParams.set('officeId', officeId);
     }

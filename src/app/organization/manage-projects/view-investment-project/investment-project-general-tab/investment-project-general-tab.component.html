@@ -3,6 +3,18 @@
     <mat-card>
       <mat-card-content>
         <div fxLayout="row wrap" class="content">
+          <div fxFlex="30%" class="mat-body-strong">ID {{ 'labels.inputs.Proyect' | translate }}</div>
+          <div fxFlex="70%">
+            {{ projectData.id }}
+          </div>
+          <div fxFlex="30%" class="mat-body-strong">{{ 'labels.inputs.Country' | translate }}</div>
+          <div fxFlex="70%">
+            {{ projectData?.country?.name || '-' }}
+          </div>
+          <div fxFlex="30%" class="mat-body-strong">RUT({{ 'labels.catalogs.Client' | translate }})</div>
+          <div fxFlex="70%">
+            {{ projectData.rut || '-' }}
+          </div>
           <div fxFlex="30%" class="mat-body-strong">
             {{ 'labels.inputs.Client Name' | translate }}
           </div>
@@ -11,14 +23,7 @@
               {{ shorten(projectData.ownerName, 100) }}
             </a>
           </div>
-          <div fxFlex="30%" class="mat-body-strong">RUT</div>
-          <div fxFlex="70%">
-            {{ projectData.rut }}
-          </div>
-          <div fxFlex="30%" class="mat-body-strong">ID {{ 'labels.inputs.Proyect' | translate }}</div>
-          <div fxFlex="70%">
-            {{ projectData.id }}
-          </div>
+
           <div fxFlex="30%" class="mat-body-strong">
             {{ 'labels.inputs.Project Name' | translate }}
           </div>
