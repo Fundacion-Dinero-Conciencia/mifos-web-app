@@ -703,6 +703,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
     });
   }
 
+
   getCAE(periods?: any) {
     const installments = periods ? periods : this.loanTemplate?.repaymentSchedule?.periods;
     const cashFlows: number[] = [];

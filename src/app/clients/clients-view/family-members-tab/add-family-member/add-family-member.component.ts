@@ -1,12 +1,13 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Services */
-import { ClientsService } from '../../../clients.service';
-import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
+import { SettingsService } from 'app/settings/settings.service';
+import { ClientsService } from '../../../clients.service';
+import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 /**
  * Add Family Member Component
@@ -16,7 +17,9 @@ import { Dates } from 'app/core/utils/dates';
   templateUrl: './add-family-member.component.html',
   styleUrls: ['./add-family-member.component.scss']
 })
-export class AddFamilyMemberComponent implements OnInit {
+export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
+  @ViewChild('addressPicker') addressPicker!: ElementRef;
+
   /** Maximum Due Date allowed. */
   maxDate = new Date();
   /** Minimum age allowed is 0. */
@@ -122,7 +125,11 @@ export class AddFamilyMemberComponent implements OnInit {
    * Submits the form and adds the family member
    */
   submit() {
+    if (this.addFamilyMemberForm.invalid) {
+      return;
+    }
     const addFamilyMemberFormData = this.addFamilyMemberForm.value;
+
     const locale = this.settingsService.language.code;
     const dateFormat = this.settingsService.dateFormat;
     const prevDateOfBirth: Date = this.addFamilyMemberForm.value.dateOfBirth;
@@ -151,5 +158,67 @@ export class AddFamilyMemberComponent implements OnInit {
     );
 
     this.relationValue = matchedCode?.name;
+
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'email',
+      'mobileNumber',
+      'relationshipId'
+    ];
+    if ([
+        'Contacto',
+        'Familiar',
+        'Referente'
+      ].includes(this.relationValue)) {
+      Object.keys(this.addFamilyMemberForm.controls).forEach((key) => {
+        this.addFamilyMemberForm.get(key)?.clearValidators();
+        this.addFamilyMemberForm.get(key)?.updateValueAndValidity({ emitEvent: false });
+      });
+
+      requiredFields.forEach((field) => {
+        this.addFamilyMemberForm.get(field)?.setValidators([Validators.required]);
+        this.addFamilyMemberForm.get(field)?.updateValueAndValidity({ emitEvent: false });
+      });
+    } else {
+      Object.keys(this.addFamilyMemberForm.controls).forEach((key) => {
+        this.addFamilyMemberForm.get(key)?.setValidators([Validators.required]);
+        this.addFamilyMemberForm.get(key)?.updateValueAndValidity({ emitEvent: false });
+      });
+    }
+    this.addFamilyMemberForm.get('isMaritalPartnership')?.clearValidators();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      const value = this.addFamilyMemberForm.controls['address'].value;
+      if (value && this.addressPicker?.nativeElement) {
+        const component = this.addressPicker.nativeElement;
+        const shadow = component.shadowRoot;
+        const inputEl = shadow?.querySelector('input');
+        inputEl.value = value;
+      }
+    }, 50);
+  }
+  onPlaceChanged(event: any, controlName: string): void {
+    let address: string | null = null;
+    const component = event.target;
+    const shadow = component.shadowRoot;
+    const inputEl = shadow?.querySelector('input');
+    if (inputEl?.value) {
+      address = inputEl?.value;
+    } else if (event?.detail?.place) {
+      const place = event.detail.place;
+      address = place.formattedAddress || place.formatted_address || place.name;
+    }
+
+    if (!address) {
+      return;
+    }
+
+    const control = this.addFamilyMemberForm.get(controlName);
+    control?.setValue(address);
+    control?.markAsDirty();
+    control?.markAsTouched();
   }
 }

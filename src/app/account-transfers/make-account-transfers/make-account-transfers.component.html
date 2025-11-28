@@ -41,7 +41,7 @@
           <span fxFlex="60%">{{ accountTransferTemplateData.currency.name }}</span>
         </div>
 
-        <div class="filter-box" [formGroup]="makeAccountTransferForm">
+        <!-- <div class="filter-box" [formGroup]="makeAccountTransferForm">
           <mat-checkbox
             labelPosition="after"
             formControlName="isInvestment"
@@ -49,7 +49,7 @@
             (change)="onInvestmentChange($event)"
             >{{ 'labels.inputs.Is Investment' | translate }}
           </mat-checkbox>
-        </div>
+        </div> -->
       </div>
 
       <div *ngIf="interbank">
@@ -171,7 +171,7 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field fxFlex="98%">
+          <!-- <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.External Agent' | translate }}</mat-label>
             <mat-select formControlName="investmentAgentId" #selectPanel>
               <mat-option>
@@ -190,12 +190,12 @@
                 {{ staff.displayName }}
               </mat-option>
             </mat-select>
-          </mat-form-field>
+          </mat-form-field> -->
 
-          <mat-form-field fxFlex="98%">
+          <!-- <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Percentage' | translate }}</mat-label>
             <input type="number" matInput formControlName="percentageInvestmentAgent" />
-          </mat-form-field>
+          </mat-form-field> -->
 
           <mat-form-field fxFlex="98%">
             <mat-label>{{ 'labels.inputs.Amount' | translate }}</mat-label>
