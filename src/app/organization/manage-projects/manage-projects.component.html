@@ -85,10 +85,16 @@
           </button>
 
           <a
+            *ngIf="
+              element.status?.statusValue?.name === 'En Formalización' ||
+              element.status?.statusValue?.name === 'En Financiamiento' ||
+              element.status?.statusValue?.name === 'En curso'
+            "
+            (click)="$event.stopPropagation()"
             class="document-action-button custom-button"
             mat-raised-button
             color="primary"
-            [href]="projectUrl + element.id"
+            [href]="setProjectUrl(element)"
             target="_blank"
             rel="noopener"
           >
