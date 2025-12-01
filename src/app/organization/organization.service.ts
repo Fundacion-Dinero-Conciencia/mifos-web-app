@@ -981,6 +981,13 @@ export class OrganizationService {
     return this.http.delete(`/additionalExpenses/${projectId}?flagAllDelete=${flagAllDelete}`);
   }
 
+  getTransactions(participantId: number | string, participationtId: number | string) {
+    return this.http.get(`/savingsaccounts/${participantId}/onlytransactions/${participationtId}`);
+  }
+  assignTransactions(body: { projectParticipationId: string; savingsTransactionId: number[] }) {
+    return this.http.post(`/projectparticipation/assigntransaction`, body);
+  }
+
   getCae(data: number[]) {
     return this.http.post(`/additionalExpenses/getTir`, data);
   }
@@ -1013,6 +1020,7 @@ export class OrganizationService {
     projectId?: string;
     statusCode?: string;
     name?: string;
+    rut?: string;
     classificationId?: string;
     page?: number;
     size?: number;
@@ -1021,6 +1029,9 @@ export class OrganizationService {
 
     if (filters.participantId) {
       params = params.set('participantId', filters.participantId);
+    }
+    if (filters.rut) {
+      params = params.set('rut', filters.rut);
     }
     if (filters.name) {
       params = params.set('name', filters.name);

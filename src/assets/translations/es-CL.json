@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
       "Create Simulation": "Crear simulación",
       "Select definitive simulation": "Seleccionar simulación definitiva",
@@ -371,7 +372,7 @@
       "Create Group": "Crea un Grupo",
       "Create Holiday": "Crear Festivo",
       "Create Hook": "Crear gancho",
-      "Create Investment Project": "Crear Proyecto de Inversion",
+      "Create Investment Project": "Crear Proyecto de Inversión",
       "Create Journal Entries": "Crear entradas de diario",
       "Create Loan Product": "Crear producto de Crédito",
       "Create Office": "Crear Oficina",
@@ -1228,6 +1229,7 @@
       "Account Type": "Tipo de cuenta",
       "Account Usage": "Uso de la cuenta",
       "Loan Type": "Tipo de Crédito",
+      "Product Type": "Tipo de Producto",
       "Account action": "Acción de cuenta",
       "Account moves out of NPA only after all arrears have been cleared": "La cuenta sale del NPA solo después de que se hayan liquidado todos los atrasos",
       "Account to Credit": "Cuenta para acreditar",

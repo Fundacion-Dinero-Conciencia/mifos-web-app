@@ -81,14 +81,14 @@ export class KeyboardShortcutsConfiguration {
         route: 'centers/create'
       },
       // Frequent Posting - ctrl + f
-      {
-        title: 'Frequent Posting',
-        ctrlKey: true,
-        shiftKey: false,
-        altKey: false,
-        key: 'f',
-        route: 'accounting/journal-entries/frequent-postings'
-      },
+      // {
+      //   title: 'Frequent Posting',
+      //   ctrlKey: true,
+      //   shiftKey: false,
+      //   altKey: false,
+      //   key: 'f',
+      //   route: 'accounting/journal-entries/frequent-postings'
+      // },
       // Closure Entries - ctrl + e
       {
         title: 'Closure Entries',

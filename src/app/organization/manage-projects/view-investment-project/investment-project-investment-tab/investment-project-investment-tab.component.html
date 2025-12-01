@@ -9,6 +9,14 @@
 
 <section class="tab-container mat-typography mt-10">
   <form [formGroup]="filters">
+    <mat-form-field fxFlex="15%" class="inputSearch m-r-25 m-b-10">
+      <mat-label>Filtrar por:</mat-label>
+      <mat-select formControlName="filterBy" (selectionChange)="applyFilterOptionChange($event)">
+        <mat-option *ngFor="let filterOption of filterOptions" [value]="filterOption">
+          {{ filterOption }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-form-field fxFlex="25%" class="inputSearch">
       <mat-label>{{ 'labels.text.Search by Text' | translate }}</mat-label>
       <input matInput formControlName="name" />
@@ -28,11 +36,20 @@
   </form>
 
   <table mat-table #documentsTable [dataSource]="dataSource" matSort class="m-t-25">
+    <ng-container matColumnDef="Rut">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>RUT</th>
+      <td mat-cell *matCellDef="let investment">
+        {{ investment.rut }}
+      </td>
+    </ng-container>
     <ng-container matColumnDef="Investor">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.heading.Investor' | translate }}</th>
-      <td mat-cell *matCellDef="let investment">{{ investment.participantName }}</td>
+      <td mat-cell *matCellDef="let investment">
+        <a [routerLink]="['../../../../clients/' + investment.participantId]" style="text-decoration: none">
+          {{ investment.participantName }}
+        </a>
+      </td>
     </ng-container>
-
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'Fecha de inversion' }}</th>
       <td mat-cell *matCellDef="let investment">{{ investment.projectParticipationCreatedDate | dateFormat }}</td>
@@ -92,5 +109,14 @@
       </td>
     </tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
+  <mat-paginator
+    [length]="totalItems"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    showFirstLastButtons
+    (page)="onPageChange($event)"
+  >
+    ></mat-paginator
+  >
 </section>

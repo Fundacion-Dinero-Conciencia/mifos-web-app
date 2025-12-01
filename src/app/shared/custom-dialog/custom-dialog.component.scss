@@ -1,0 +1,97 @@
+::ng-deep .mat-dialog-container {
+  padding: 0 !important;
+  min-width: 70dvw;
+  overflow: hidden;
+}
+
+header {
+  border-bottom: 1px solid #9c9c9c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 2rem;
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+header h1 {
+  font-weight: 400;
+  color: #032a5a;
+  margin: unset;
+}
+
+header button {
+  outline: none;
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+}
+
+:host {
+  /* apila por encima del contenido */
+  position: fixed;
+  inset: 0;
+  z-index: 1000; /* > toolbars/menus */
+  pointer-events: none; /* el host no bloquea, solo los hijos */
+}
+
+/* Fondo */
+.cx-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 48%);
+  backdrop-filter: saturate(120%) blur(1px);
+  pointer-events: auto;
+}
+
+/* Panel */
+.cx-panel {
+  position: fixed;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  max-height: 90dvh;
+
+  --w: min(640px, 92vw);
+
+  background: #fff;
+  width: var(--w);
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 25%);
+  overflow: hidden;
+  animation: cx-in 0.16s ease-out;
+}
+
+.cx-content {
+  padding: 16px 2rem;
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.cx-actions {
+  display: flex;
+  gap: 2.1rem;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+/* Animación simple */
+@keyframes cx-in {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.outlineButton {
+  color: #2196f3;
+  border: 1px solid #2196f3;
+}
