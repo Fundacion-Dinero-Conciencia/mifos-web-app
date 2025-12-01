@@ -103,13 +103,13 @@
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Product Type' | translate }} </mat-label>
-        <mat-select formControlName="basedInLoanProductId">
+        <mat-select formControlName="basedInLoanProductId" (selectionChange)="switchLoanProduct()">
           <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
             {{ loanProduct.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field fxFlex="24%">
+      <mat-form-field fxFlex="24%" *ngIf="!isFactoring">
         <mat-label>{{ 'labels.inputs.Credit Type' | translate }} </mat-label>
         <mat-select formControlName="creditTypeId">
           <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">

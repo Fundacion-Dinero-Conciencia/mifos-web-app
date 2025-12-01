@@ -93,8 +93,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         Validators.required
       ],
       creditTypeId: [
-        '',
-        Validators.required
+        ''
       ],
       amount: [
         '',
@@ -403,6 +402,13 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     } else {
       this.createForm.disable();
     }
+  }
+
+  switchLoanProduct() {
+    const id = this.createForm.get('basedInLoanProductId')?.value;
+    const product = this.loanProductsData.find((lp: any) => lp.id === id);
+    console.log(product);
+    this.isFactoring = product?.name.includes('Factoring');
   }
 
   ngOnInit(): void {
