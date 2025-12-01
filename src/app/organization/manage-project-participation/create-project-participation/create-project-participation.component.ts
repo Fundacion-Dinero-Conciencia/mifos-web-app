@@ -45,39 +45,6 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
     private loanService: LoansService,
     private accountingService: AccountingService
   ) {
-    this.route.data.subscribe((data: { projectparticipations: any }) => {
-      this.projectParticipationsData = [];
-      if (data.projectparticipations) {
-        data.projectparticipations.forEach((item: any) => {
-          item.createdOnDate = new Date(item.createdOnDate);
-          this.projectParticipationsData.push(item);
-        });
-        this.dataSource = new MatTableDataSource(this.projectParticipationsData);
-      }
-      this.participantsData = [];
-      this.projectsData = [];
-    });
-  }
-
-  ngOnInit(): void {
-    this.getDefaultCurrency();
-    this.setupProjectParticipationForm();
-    this.dataSource = new MatTableDataSource(this.projectParticipationsData);
-    this.getInvestmentFeeConfiguration();
-    this.setupListeners();
-  }
-
-  /**
-   * Get the Configuration and the investment fee value
-   */
-  getInvestmentFeeConfiguration(): void {
-    this.systemService.getConfigurationByName('investment-fee').subscribe((configurationData: any) => {
-      const value = parseFloat(configurationData.stringValue);
-      this.investmentFee = isNaN(value) ? 0 : value;
-    });
-  }
-
-  setupProjectParticipationForm() {
     this.projectParticipationForm = this.formBuilder.group({
       participantId: [
         '',
@@ -98,6 +65,36 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
         '',
         Validators.required
       ]
+    });
+
+    this.route.data.subscribe((data: { projectparticipations: any }) => {
+      this.projectParticipationsData = [];
+      if (data.projectparticipations) {
+        data.projectparticipations.forEach((item: any) => {
+          item.createdOnDate = new Date(item.createdOnDate);
+          this.projectParticipationsData.push(item);
+        });
+        this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+      }
+      this.participantsData = [];
+      this.projectsData = [];
+    });
+  }
+
+  ngOnInit(): void {
+    this.getDefaultCurrency();
+    this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+    this.getInvestmentFeeConfiguration();
+    this.setupListeners();
+  }
+
+  /**
+   * Get the Configuration and the investment fee value
+   */
+  getInvestmentFeeConfiguration(): void {
+    this.systemService.getConfigurationByName('investment-fee').subscribe((configurationData: any) => {
+      const value = parseFloat(configurationData.stringValue);
+      this.investmentFee = isNaN(value) ? 0 : value;
     });
   }
 
