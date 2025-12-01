@@ -136,13 +136,15 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
 
     this.organizationService
       .createInvestmentProjectParticipations(payload)
-      .pipe(
-        finalize(() => {
+      .pipe(finalize(() => {}))
+      .subscribe({
+        next: (response: any) => {
+          this.router.navigate(['../'], { relativeTo: this.route });
+        },
+        error: (err) => {
+          console.error('Error al crear participación:', err);
           this.loading = false;
-        })
-      )
-      .subscribe((response: any) => {
-        this.router.navigate(['../'], { relativeTo: this.route });
+        }
       });
   }
 
