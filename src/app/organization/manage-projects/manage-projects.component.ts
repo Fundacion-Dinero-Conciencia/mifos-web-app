@@ -97,7 +97,7 @@ export class ManageProjectsComponent implements OnInit {
     return this.settingsService.tenantIdentifier;
   }
   setProjectUrl(project: any) {
-    return this.projectUrl + project.id + '?isPublicView=1&publicTenant=' + this.tenantIdentifier;
+    return this.projectUrl + project.id + '?isPublicView=1&publicTenant=' + this.tenantIdentifier.trim();
   }
 
   applyOwnerFilter() {
