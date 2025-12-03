@@ -201,6 +201,12 @@
           </mat-icon>
           {{ 'labels.buttons.See Projects' | translate }}
         </button>
+        <button mat-menu-item (click)="doAction('Set support')">
+          <mat-icon matListIcon>
+            <fa-icon icon="user" size="sm"></fa-icon>
+          </mat-icon>
+          Soporte
+        </button>
         <button *ngIf="isActive()" mat-menu-item [matMenuTriggerFor]="accountApplications">
           <mat-icon matListIcon>
             <fa-icon icon="money-bill-alt" size="sm"></fa-icon>

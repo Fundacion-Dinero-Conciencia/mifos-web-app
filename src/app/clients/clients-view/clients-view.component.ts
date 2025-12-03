@@ -6,13 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Dialogs */
 import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
+import { environment } from 'environments/environment';
 import { CaptureImageDialogComponent } from './custom-dialogs/capture-image-dialog/capture-image-dialog.component';
 import { DeleteSignatureDialogComponent } from './custom-dialogs/delete-signature-dialog/delete-signature-dialog.component';
 import { UnassignStaffDialogComponent } from './custom-dialogs/unassign-staff-dialog/unassign-staff-dialog.component';
 import { UploadImageDialogComponent } from './custom-dialogs/upload-image-dialog/upload-image-dialog.component';
 import { UploadSignatureDialogComponent } from './custom-dialogs/upload-signature-dialog/upload-signature-dialog.component';
 import { ViewSignatureDialogComponent } from './custom-dialogs/view-signature-dialog/view-signature-dialog.component';
-
 /** Custom Services */
 import { ClientsService } from '../clients.service';
 
@@ -150,6 +150,10 @@ export class ClientsViewComponent implements OnInit {
             mnemonic: this.clientViewData.mnemonic
           }
         });
+        break;
+      case 'Set support':
+        const url = `${environment.baseUrlInvestments}` + '?impersonatedAccountNo=' + this.clientViewData.accountNo;
+        window.open(url, '_blank');
         break;
     }
   }
