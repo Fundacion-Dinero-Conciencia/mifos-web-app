@@ -1140,7 +1140,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   getCAE(periods?: any) {
     const installments = periods ? periods : this.loanTemplate?.repaymentSchedule?.periods;
     const cashFlows: number[] = [];
-    cashFlows.push(-installments[0].principalDisbursed);
+    cashFlows.push(-this.projectData.amount);
 
     for (let i = 1; i < installments.length; i++) {
       const p = installments[i];

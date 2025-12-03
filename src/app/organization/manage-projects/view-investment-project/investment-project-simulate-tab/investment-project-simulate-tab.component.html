@@ -342,7 +342,6 @@
       <i>*Recuerda guardar los cambios en comisiones para actualizar el monto a financiar.</i>
     </p>
     <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
-      {{ projectData?.status?.statusValue?.name }}
       <button
         *ngIf="isEditingSimulation && projectData?.status?.statusValue?.name === 'En Borrador'"
         mat-raised-button
