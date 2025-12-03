@@ -62,7 +62,7 @@ export const environment = {
 
   minPasswordLength: loadedEnv['minPasswordLength'] || 12,
   baseUrlProject: 'https://investments-backend-stg.up.railway.app/project-details/',
-  baseUrlInvestments: 'https://investments-backend-stg.up.railway.app/invest',
+  baseUrlInvestments: 'https://investments-backend-stg.up.railway.app/investments',
   GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
 };
 
