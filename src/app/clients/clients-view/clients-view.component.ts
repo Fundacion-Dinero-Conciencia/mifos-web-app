@@ -152,7 +152,7 @@ export class ClientsViewComponent implements OnInit {
         });
         break;
       case 'Set support':
-        const url = `${environment.baseUrlProject}` + '?impersonatedAccountNo=' + this.clientViewData.accountNo;
+        const url = `${environment.baseUrlInvestments}` + '?impersonatedAccountNo=' + this.clientViewData.accountNo;
         window.open(url, '_blank');
         break;
     }
