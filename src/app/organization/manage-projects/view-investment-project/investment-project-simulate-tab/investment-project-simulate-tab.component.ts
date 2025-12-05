@@ -883,7 +883,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       loanTermFrequency: data.termFrequency,
       loanTermFrequencyType: data.termPeriodFrequencyType.id,
       numberOfRepayments: data.numberOfRepayments,
-      repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
+      repaymentEvery: this.isFactoring ? data.termFrequency : this.loanTemplate?.repaymentEvery,
       repaymentFrequencyType: data.repaymentFrequencyType.id,
       interestType: data.interestType.id,
       isEqualAmortization: data.isEqualAmortization,
