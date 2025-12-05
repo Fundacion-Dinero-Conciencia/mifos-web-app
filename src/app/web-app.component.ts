@@ -22,6 +22,7 @@ import { AuthenticationService } from './core/authentication/authentication.serv
 import { SettingsService } from './settings/settings.service';
 import { IdleTimeoutService } from './home/timeout-dialog/idle-timeout.service';
 import { SessionTimeoutDialogComponent } from './home/timeout-dialog/session-timeout-dialog.component';
+import { RouteLoaderService } from './core/route-loader/route-loader.service';
 
 /** Custom Items */
 import { Alert } from './core/alert/alert.model';
@@ -68,7 +69,8 @@ export class WebAppComponent implements OnInit {
     private themingService: ThemingService,
     private dateUtils: Dates,
     private idle: IdleTimeoutService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public routeLoaderService: RouteLoaderService
   ) {}
 
   @HostBinding('class') public cssClass: string;

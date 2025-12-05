@@ -1,56 +1,56 @@
 /** Angular Imports */
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 /** Custom Components */
-import { SavingsAccountViewComponent } from './savings-account-view/savings-account-view.component';
-import { TransactionsTabComponent } from './savings-account-view/transactions-tab/transactions-tab.component';
-import { DatatableTransactionTabComponent } from './savings-account-view/transactions/view-transaction/datatable-transaction-tab/datatable-transaction-tab.component';
-import { SavingAccountActionsComponent } from './saving-account-actions/saving-account-actions.component';
-import { ChargesTabComponent } from './savings-account-view/charges-tab/charges-tab.component';
-import { StandingInstructionsTabComponent } from './savings-account-view/standing-instructions-tab/standing-instructions-tab.component';
-import { DatatableTabsComponent } from './savings-account-view/datatable-tabs/datatable-tabs.component';
 import { CreateSavingsAccountComponent } from './create-savings-account/create-savings-account.component';
 import { EditSavingsAccountComponent } from './edit-savings-account/edit-savings-account.component';
-import { ViewTransactionComponent } from './savings-account-view/transactions/view-transaction/view-transaction.component';
-import { ViewChargeComponent } from './savings-account-view/view-charge/view-charge.component';
-import { ViewRecieptComponent } from './savings-account-view/transactions/view-reciept/view-reciept.component';
-import { ExportTransactionsComponent } from './savings-account-view/transactions-tab/export-transactions/export-transactions.component';
-import { EditTransactionComponent } from './savings-account-view/transactions/edit-transaction/edit-transaction.component';
 import { CreateGsimAccountComponent } from './gsim-account/create-gsim-account/create-gsim-account.component';
 import { GsimAccountComponent } from './gsim-account/gsim-account.component';
+import { SavingAccountActionsComponent } from './saving-account-actions/saving-account-actions.component';
+import { ChargesTabComponent } from './savings-account-view/charges-tab/charges-tab.component';
+import { DatatableTabsComponent } from './savings-account-view/datatable-tabs/datatable-tabs.component';
+import { SavingsAccountViewComponent } from './savings-account-view/savings-account-view.component';
+import { StandingInstructionsTabComponent } from './savings-account-view/standing-instructions-tab/standing-instructions-tab.component';
+import { ExportTransactionsComponent } from './savings-account-view/transactions-tab/export-transactions/export-transactions.component';
+import { TransactionsTabComponent } from './savings-account-view/transactions-tab/transactions-tab.component';
+import { EditTransactionComponent } from './savings-account-view/transactions/edit-transaction/edit-transaction.component';
+import { ViewRecieptComponent } from './savings-account-view/transactions/view-reciept/view-reciept.component';
+import { DatatableTransactionTabComponent } from './savings-account-view/transactions/view-transaction/datatable-transaction-tab/datatable-transaction-tab.component';
+import { ViewTransactionComponent } from './savings-account-view/transactions/view-transaction/view-transaction.component';
+import { ViewChargeComponent } from './savings-account-view/view-charge/view-charge.component';
 
 /** Custom Resolvers */
+import { GroupAccountsResolver } from 'app/groups/common-resolvers/group-account.resolver';
+import { GroupViewResolver } from 'app/groups/common-resolvers/group-view.resolver';
+import { GSIMAccountsResolver } from 'app/groups/common-resolvers/gsim-account-resolver';
+import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
+import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
+import { SavingDocumentsResolver } from './common-resolvers/saving-documents.resolver';
+import { SavingNotesResolver } from './common-resolvers/saving-notes.resolver';
+import { SavingsAccountActionsResolver } from './common-resolvers/savings-account-actions.resolver';
+import { SavingsAccountAndTemplateResolver } from './common-resolvers/savings-account-and-template.resolver';
+import { SavingsAccountChargeResolver } from './common-resolvers/savings-account-charge.resolver';
+import { SavingsAccountTemplateResolver } from './common-resolvers/savings-account-template.resolver';
+import { SavingsAccountTransactionTemplateResolver } from './common-resolvers/savings-account-transaction-template.resolver';
+import { SavingsAccountTransactionResolver } from './common-resolvers/savings-account-transaction.resolver';
 import { SavingsAccountViewResolver } from './common-resolvers/savings-account-view.resolver';
 import { SavingsDatatableResolver } from './common-resolvers/savings-datatable.resolver';
 import { SavingsDatatablesResolver } from './common-resolvers/savings-datatables.resolver';
+import { SavingsTransactionRecieptResolver } from './common-resolvers/savings-transaction-reciept.resolver';
 import { TransactionDatatableResolver } from './common-resolvers/transaction-datatable.resolver';
 import { TransactionDatatablesResolver } from './common-resolvers/transaction-datatables.resolver';
-import { SavingsAccountTemplateResolver } from './common-resolvers/savings-account-template.resolver';
-import { SavingsAccountAndTemplateResolver } from './common-resolvers/savings-account-and-template.resolver';
-import { SavingsAccountTransactionResolver } from './common-resolvers/savings-account-transaction.resolver';
-import { SavingsAccountChargeResolver } from './common-resolvers/savings-account-charge.resolver';
-import { SavingsAccountActionsResolver } from './common-resolvers/savings-account-actions.resolver';
-import { SavingsTransactionRecieptResolver } from './common-resolvers/savings-transaction-reciept.resolver';
-import { SavingsAccountTransactionTemplateResolver } from './common-resolvers/savings-account-transaction-template.resolver';
-import { GSIMAccountsResolver } from 'app/groups/common-resolvers/gsim-account-resolver';
-import { GroupAccountsResolver } from 'app/groups/common-resolvers/group-account.resolver';
 import { GSIMViewResolver } from './gsim-account/gsim-account.resolver';
-import { GroupViewResolver } from 'app/groups/common-resolvers/group-view.resolver';
-import { SavingsDocumentsTabComponent } from './savings-account-view/savings-documents-tab/savings-documents-tab.component';
-import { NotesTabComponent } from './savings-account-view/notes-tab/notes-tab.component';
-import { SavingNotesResolver } from './common-resolvers/saving-notes.resolver';
-import { SavingDocumentsResolver } from './common-resolvers/saving-documents.resolver';
-import { SavingsTransactionGeneralTabComponent } from './savings-account-view/transactions/view-transaction/savings-transaction-general-tab/savings-transaction-general-tab.component';
 import { GeneralTabComponent } from './savings-account-view/general-tab/general-tab.component';
-import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
-import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
+import { NotesTabComponent } from './savings-account-view/notes-tab/notes-tab.component';
+import { SavingsDocumentsTabComponent } from './savings-account-view/savings-documents-tab/savings-documents-tab.component';
+import { SavingsTransactionGeneralTabComponent } from './savings-account-view/transactions/view-transaction/savings-transaction-general-tab/savings-transaction-general-tab.component';
 
 /** Savings Routes */
 const routes: Routes = [
   {
     path: '',
-    data: { title: 'All Savings', breadcrumb: 'Savings', routeParamBreadcrumb: false },
+    data: { title: 'All Savings', breadcrumb: 'Savings', routeParamBreadcrumb: false, addBreadcrumbLink: false },
     children: [
       {
         path: 'create',

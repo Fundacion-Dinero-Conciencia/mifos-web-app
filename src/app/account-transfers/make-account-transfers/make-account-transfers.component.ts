@@ -1,26 +1,19 @@
 /** Angular Imports */
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  AbstractControl,
-  FormGroup,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  ValidationErrors,
-  Validators
-} from '@angular/forms';
 
 /** Custom Services */
-import { AccountTransfersService } from '../account-transfers.service';
-import { SettingsService } from 'app/settings/settings.service';
 import { ClientsService } from 'app/clients/clients.service';
 import { Dates } from 'app/core/utils/dates';
+import { SettingsService } from 'app/settings/settings.service';
+import { AccountTransfersService } from '../account-transfers.service';
 
 /** Environment Configuration */
-import { environment } from 'environments/environment';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { OrganizationService } from 'app/organization/organization.service';
 import { AlertService } from 'app/core/alert/alert.service';
+import { OrganizationService } from 'app/organization/organization.service';
+import { environment } from 'environments/environment';
 
 /**
  * Create account transfers
@@ -55,7 +48,7 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
   /** Savings Id or Loans Id */
   id: any;
   /** Clients Data */
-  clientsData: any;
+  clientsData: any = [];
   /** interbank transfer */
   interbank: boolean = false;
   /** Reference of phoneAccount search */
@@ -149,15 +142,15 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
   createMakeAccountTransferForm() {
     this.makeAccountTransferForm = this.formBuilder.group({
       toOfficeId: [
-        '',
+        this.toOfficeTypeData[0].id,
         Validators.required
       ],
       toClientId: [
-        '',
+        this.accountTransferTemplateData.fromClient,
         Validators.required
       ],
       toAccountType: [
-        '',
+        this.toAccountTypeData[0].id,
         Validators.required
       ],
       toAccountId: [
@@ -178,14 +171,14 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
       transferDescription: [
         '',
         Validators.required
-      ],
-      isInvestment: [this.isInvestment],
-      percentageInvestmentAgent: [
-        ''
-      ],
-      investmentAgentId: [
-        ''
       ]
+      // isInvestment: [this.isInvestment],
+      // percentageInvestmentAgent: [
+      //   ''
+      // ],
+      // investmentAgentId: [
+      //   ''
+      // ]
     });
   }
 
@@ -277,6 +270,10 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit() {
     if (!this.interbank) {
+      this.clientsData.push({
+        id: this.accountTransferTemplateData.fromClient.id,
+        displayName: this.accountTransferTemplateData.fromClient.displayName
+      });
       this.makeAccountTransferForm.controls.toClientId.valueChanges.subscribe((value: string) => {
         if (value.length >= 2) {
           this.clientsService.getFilteredClients('displayName', 'ASC', true, value).subscribe((data: any) => {
@@ -317,10 +314,10 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
       fromAccountId: this.id,
       fromAccountType: this.accountTypeId,
       fromClientId: this.accountTransferTemplateData.fromClient.id,
-      fromOfficeId: this.accountTransferTemplateData.fromClient.officeId,
-      isInvestment: this.isInvestment,
-      investmentAgentId: this.makeAccountTransferForm.controls.investmentAgentId.value,
-      percentageInvestmentAgent: this.makeAccountTransferForm.controls.percentageInvestmentAgent.value
+      fromOfficeId: this.accountTransferTemplateData.fromClient.officeId
+      // isInvestment: this.isInvestment,
+      // investmentAgentId: this.makeAccountTransferForm.controls.investmentAgentId.value,
+      // percentageInvestmentAgent: this.makeAccountTransferForm.controls.percentageInvestmentAgent.value
     };
     this.accountTransfersService.createAccountTransfer(makeAccountTransferData).subscribe({
       next: (response) => {
