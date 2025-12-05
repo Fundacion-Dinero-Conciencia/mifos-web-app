@@ -1177,7 +1177,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       expectedDisbursementDate: extractDate(this.loanTemplate.timeline?.expectedDisbursementDate),
       loanTermFrequency: this.loanTemplate?.termFrequency,
       loanTermFrequencyType: this.loanTemplate?.termPeriodFrequencyType?.id,
-      numberOfRepayments: this.loanTemplate?.numberOfRepayments,
+      numberOfRepayments: this.isFactoring ? this.loanTemplate?.termFrequency : this.loanTemplate?.numberOfRepayments,
       repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
       repaymentFrequencyType: this.loanTemplate?.repaymentFrequencyType?.id,
       interestType: this.loanTemplate?.interestType?.id,
