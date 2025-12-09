@@ -119,7 +119,7 @@
       </mat-form-field>
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
-        <input matInput formControlName="amount" type="number" />
+        <input matInput formControlName="amount" (input)="formatAmount($event)" />
       </mat-form-field>
       <mat-form-field fxFlex="24%">
         <mat-label

@@ -1,5 +1,13 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -11,12 +19,12 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
 import { SystemService } from 'app/system/system.service';
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 @Component({
   selector: 'mifosx-edit-investment-project',
   templateUrl: './edit-investment-project.component.html',
   styleUrls: ['./edit-investment-project.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [CurrencyPipe]
 })
 export class EditInvestmentProjectComponent implements OnInit {
   /** New Investment Project form */
@@ -56,7 +64,8 @@ export class EditInvestmentProjectComponent implements OnInit {
     private dialog: MatDialog,
     private clientsService: ClientsService,
     private systemService: SystemService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private currencyPipe: CurrencyPipe
   ) {
     this.route.data.subscribe(
       (data: {
@@ -185,13 +194,13 @@ export class EditInvestmentProjectComponent implements OnInit {
                 data?.position
               ],
               maxAmount: [
-                data?.maxAmount,
+                this.currencyPipe.transform(data?.maxAmount, '', '', '1.0-0'),
                 [
                   Validators.required,
                   Validators.min(0)]
               ],
               minAmount: [
-                data?.minAmount,
+                this.currencyPipe.transform(data?.minAmount, '', '', '1.0-0'),
                 [
                   Validators.required,
                   Validators.min(0)]
@@ -260,6 +269,8 @@ export class EditInvestmentProjectComponent implements OnInit {
   submit() {
     const rawGeneralFormValues = this.investmentProjectFormGeneral.getRawValue();
     const rawPublicationFormValues = this.investmentProjectPublication.getRawValue();
+    rawPublicationFormValues.minAmount = Number((rawPublicationFormValues.minAmount + '').replace(/[^0-9]/g, ''));
+    rawPublicationFormValues.maxAmount = Number((rawPublicationFormValues.maxAmount + '').replace(/[^0-9]/g, ''));
     const rawImpactFormValues = this.investmentProjectImpact.getRawValue();
     // const payload = {
     //   ...this.investmentProjectForm.getRawValue()
@@ -454,6 +465,16 @@ export class EditInvestmentProjectComponent implements OnInit {
       status !== 'En Formalización' &&
       status !== 'En Financiamiento'
     );
+  }
+
+  formatAmount(event: any, formKey: string) {
+    const raw = event.target.value.replace(/[^0-9]/g, '');
+    const numericValue = Number(raw);
+
+    this.investmentProjectPublication.get(formKey)?.setValue(numericValue, { emitEvent: false });
+
+    event.target.value =
+      this.currencyPipe.transform(this.investmentProjectPublication.get(formKey).value, '', '', '1.0-0') ?? '';
   }
 
   getImagePath(location: string): string {
