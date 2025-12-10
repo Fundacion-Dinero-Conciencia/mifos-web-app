@@ -87,10 +87,13 @@ export class ManageProjectsComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.projectsData);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    const originUrl = window.location.href.includes('dev')
-      ? environment.baseUrlProject.replace('stg', 'dev')
-      : environment.baseUrlProject;
-    this.projectUrl = originUrl;
+    if (window.location.href.includes('dev')) {
+      this.projectUrl = environment.baseUrlProject.replace('stg', 'dev');
+    } else if (window.location.href.includes('stg')) {
+      this.projectUrl = environment.baseUrlProject;
+    } else {
+      this.projectUrl = environment.baseUrlProjectProduction;
+    }
   }
 
   get tenantIdentifier(): string {
