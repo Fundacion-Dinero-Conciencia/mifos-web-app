@@ -66,7 +66,9 @@ export const environment = {
 
   minPasswordLength: loadedEnv['minPasswordLength'] || 12,
   baseUrlProject: 'https://investments-backend-dev.up.railway.app/project-details/',
-  baseUrlInvestments: 'https://investments-backend-dev.up.railway.app/investments',
+  baseUrlInvestments: 'https://investments-backend.belat.com/investments',
+  baseUrlProjectProduction: 'https://investments-backend.up.railway.app/project-details/',
+  baseUrlInvestmentsProduction: 'https://investments-backend.belat.com/investments',
   GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
 };
 

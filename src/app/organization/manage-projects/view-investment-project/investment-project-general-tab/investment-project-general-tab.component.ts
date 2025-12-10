@@ -86,9 +86,14 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
   }
 
   setProjectUrl(project: any) {
-    const projectUrl = window.location.href.includes('dev')
-      ? environment.baseUrlProject.replace('stg', 'dev')
-      : environment.baseUrlProject;
+    let projectUrl;
+    if (window.location.href.includes('dev')) {
+      projectUrl = environment.baseUrlProject.replace('stg', 'dev');
+    } else if (window.location.href.includes('stg')) {
+      projectUrl = environment.baseUrlProject;
+    } else {
+      projectUrl = environment.baseUrlProjectProduction;
+    }
     return projectUrl + project.id + '?isPublicView=1&publicTenant=' + this.tenantIdentifier.trim();
   }
 
