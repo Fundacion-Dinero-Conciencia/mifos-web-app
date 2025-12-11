@@ -127,7 +127,18 @@
 
       <mat-form-field fxFlex="calc(50% - 25px)">
         <mat-label>{{ 'labels.inputs.Address' | translate }}</mat-label>
-        <input formControlName="address" required matInput />
+        <div class="adressContainer">
+          <gmpx-place-picker
+            #addressPicker
+            id="google-maps-place-picker"
+            (input)="onPlaceChanged($event, 'address')"
+            (gmpx-placechange)="onPlaceChanged($event, 'address')"
+            class="gmpx-place-picker"
+            placeholder="Escribe la dirección"
+          ></gmpx-place-picker>
+        </div>
+
+        <input class="hiddenAddressInput" type="text" formControlName="address" required matInput />
         <mat-error *ngIf="addFamilyMemberForm.controls.address.hasError('required')">
           {{ 'labels.inputs.Address' | translate }} {{ 'labels.commons.is' | translate }}
           <strong>{{ 'labels.commons.required' | translate }}</strong>

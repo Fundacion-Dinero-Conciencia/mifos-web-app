@@ -42,6 +42,8 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
   ) {
     this.showMap = !!data.showMap;
     this.dialogRef.disableClose = data.disableClose !== undefined ? data.disableClose : true;
+    console.log('????');
+    console.log(data);
     this.formfields = data.formfields.sort((a: FormfieldBase, b: FormfieldBase) => a.order - b.order);
     this.pristine = data.pristine !== undefined ? data.pristine : true;
     this.layout = { ...this.layout, ...data.layout };
