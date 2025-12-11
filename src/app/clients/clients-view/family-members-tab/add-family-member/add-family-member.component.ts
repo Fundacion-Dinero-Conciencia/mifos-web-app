@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
 import { ClientsService } from '../../../clients.service';
+import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 /**
  * Add Family Member Component
@@ -16,7 +17,9 @@ import { ClientsService } from '../../../clients.service';
   templateUrl: './add-family-member.component.html',
   styleUrls: ['./add-family-member.component.scss']
 })
-export class AddFamilyMemberComponent implements OnInit {
+export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
+  @ViewChild('addressPicker') addressPicker!: ElementRef;
+
   /** Maximum Due Date allowed. */
   maxDate = new Date();
   /** Minimum age allowed is 0. */
@@ -184,5 +187,38 @@ export class AddFamilyMemberComponent implements OnInit {
       });
     }
     this.addFamilyMemberForm.get('isMaritalPartnership')?.clearValidators();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      const value = this.addFamilyMemberForm.controls['address'].value;
+      if (value && this.addressPicker?.nativeElement) {
+        const component = this.addressPicker.nativeElement;
+        const shadow = component.shadowRoot;
+        const inputEl = shadow?.querySelector('input');
+        inputEl.value = value;
+      }
+    }, 50);
+  }
+  onPlaceChanged(event: any, controlName: string): void {
+    let address: string | null = null;
+    const component = event.target;
+    const shadow = component.shadowRoot;
+    const inputEl = shadow?.querySelector('input');
+    if (inputEl?.value) {
+      address = inputEl?.value;
+    } else if (event?.detail?.place) {
+      const place = event.detail.place;
+      address = place.formattedAddress || place.formatted_address || place.name;
+    }
+
+    if (!address) {
+      return;
+    }
+
+    const control = this.addFamilyMemberForm.get(controlName);
+    control?.setValue(address);
+    control?.markAsDirty();
+    control?.markAsTouched();
   }
 }
