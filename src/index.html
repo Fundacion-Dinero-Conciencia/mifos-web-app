@@ -15,11 +15,16 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Mono:300" rel="stylesheet" />
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k&libraries=places"
+      async
+    ></script>
+    <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library"></script>
     <!-- Load environment variables -->
   </head>
   <body class="h-full">
     <script src="assets/env.js"></script>
-    <script>
+    <!-- <script>
       const apiKey = window.env?.GOOGLE_MAPS_API_KEY;
       if (apiKey) {
         const script = document.createElement('script');
@@ -30,7 +35,7 @@
       } else {
         console.error('Google Maps API key not found in window.env');
       }
-    </script>
+    </script> -->
     <!--[if lt IE 10]>
       <p>
         You are using an <strong>outdated</strong> browser. Please

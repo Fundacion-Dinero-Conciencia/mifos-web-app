@@ -58,6 +58,7 @@ import { AddClientCollateralComponent } from './clients-view/client-actions/add-
 import { ClientDatatableStepComponent } from './client-stepper/client-datatable-step/client-datatable-step.component';
 import { ClientIdentifiersStepComponent } from './client-stepper/client-identifiers-step/client-identifiers-step.component';
 import { ClientIdentifiersDialogComponent } from './client-stepper/client-identifiers-step/client-identifiers-dialog/client-identifiers-dialog.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 /**
  * Clients Module
@@ -123,6 +124,7 @@ import { ClientIdentifiersDialogComponent } from './client-stepper/client-identi
     ClientIdentifiersStepComponent,
     ClientIdentifiersDialogComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: []
 })
 export class ClientsModule {}

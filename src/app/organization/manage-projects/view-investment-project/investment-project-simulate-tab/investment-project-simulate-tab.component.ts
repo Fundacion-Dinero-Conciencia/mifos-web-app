@@ -89,6 +89,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       this.projectData = data.accountData;
       this.loanProductsData = data.loanProductsData;
       this.creditTypesData = data.creditTypesData.codeValues;
+      console.log(this.creditTypesData);
     });
     this.createForm = this.formBuilder.group({
       basedInLoanProductId: [
@@ -515,6 +516,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   createSimulation() {
     const payload = { ...this.createForm.value };
+    if (this.isFactoring) {
+      payload.creditTypeId = this.creditTypesData.find((ct: any) => ct.name === 'Factoring')?.id || undefined;
+    }
     payload.amount = Number((this.createForm.value.amount + '').replace(/[^0-9]/g, ''));
     const payloadJSON = JSON.stringify({ ...payload });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
@@ -630,6 +634,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     payload.amountToBeFinanced = this.getMontoAFinanciar;
     payload.amountToBeDelivered = this.getMontoAEntregar;
     payload.creditTypeId = this.createForm.get('creditTypeId').value;
+    if (this.isFactoring) {
+      payload.creditTypeId = this.creditTypesData.find((ct: any) => ct.name === 'Factoring')?.id || undefined;
+    }
     payload.projectRate = this.projectData.rate;
     payload.onlyAmounts = true;
 
@@ -702,6 +709,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
   editSimulation() {
     const payload = { ...this.createForm.value };
+    if (this.isFactoring) {
+      payload.creditTypeId = this.creditTypesData.find((ct: any) => ct.name === 'Factoring')?.id || undefined;
+    }
     payload.amount = Number((this.createForm.value.amount + '').replace(/[^0-9]/g, ''));
     const payloadJSON = JSON.stringify({ payload });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
@@ -889,7 +899,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       loanTermFrequency: data.termFrequency,
       loanTermFrequencyType: data.termPeriodFrequencyType.id,
       numberOfRepayments: data.numberOfRepayments,
-      repaymentEvery: this.isFactoring ? data.termFrequency : this.loanTemplate?.repaymentEvery,
+      repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
       repaymentFrequencyType: data.repaymentFrequencyType.id,
       interestType: data.interestType.id,
       isEqualAmortization: data.isEqualAmortization,

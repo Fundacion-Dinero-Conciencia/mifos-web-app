@@ -39,7 +39,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 /**
  * Material Module
  *
@@ -86,6 +86,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatTreeModule,
     MatBadgeModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
