@@ -605,8 +605,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       ...this.loanTemplateEdit,
       principal: Number((this.createForm.get('amount').value + '').replace(/[^0-9]/g, '')),
       interestRatePerPeriod: this.createForm.get('interestRate').value,
-      numberOfRepayments: this.createForm.get('period').value,
+      numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
       loanTermFrequency: this.createForm.get('period').value,
+      repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
       amount: undefined,
       interestRate: undefined,
       period: undefined
@@ -896,10 +897,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         data.timeline.expectedDisbursementDate,
         SettingsService.businessDateFormat
       ),
-      loanTermFrequency: data.termFrequency,
+      loanTermFrequency: this.createForm.get('period').value || data.termFrequency,
       loanTermFrequencyType: data.termPeriodFrequencyType.id,
-      numberOfRepayments: data.numberOfRepayments,
-      repaymentEvery: this.isFactoring ? data.termFrequency : this.loanTemplate?.repaymentEvery,
+      numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
+      repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
       repaymentFrequencyType: data.repaymentFrequencyType.id,
       interestType: data.interestType.id,
       isEqualAmortization: data.isEqualAmortization,
@@ -936,10 +937,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         ),
         linkAccountId: '',
         createStandingInstructionAtDisbursement: '',
-        loanTermFrequency: data.termFrequency,
+        loanTermFrequency: this.createForm.get('period').value || data.termFrequency,
         loanTermFrequencyType: data.termPeriodFrequencyType.id,
-        numberOfRepayments: data.numberOfRepayments,
-        repaymentEvery: this.isFactoring ? data.termFrequency : this.loanTemplate?.repaymentEvery,
+        numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
+        repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
         repaymentFrequencyType: data.repaymentFrequencyType.id,
         repaymentFrequencyNthDayType: '',
         repaymentFrequencyDayOfWeekType: '',
@@ -966,6 +967,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         principal: data.principal,
         allowPartialPeriodInterestCalcualtion: data.allowPartialPeriodInterestCalculation
       };
+      console.log('loanTemplateEdit', this.loanTemplateEdit);
       this.createFormLoan();
     });
   }
@@ -1198,10 +1200,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       principal: montoFinanciar,
       submittedOnDate: extractDate(this.loanTemplate.timeline?.submittedOnDate),
       expectedDisbursementDate: extractDate(this.loanTemplate.timeline?.expectedDisbursementDate),
-      loanTermFrequency: this.loanTemplate?.termFrequency,
+      loanTermFrequency: this.createForm.get('period').value,
       loanTermFrequencyType: this.loanTemplate?.termPeriodFrequencyType?.id,
-      numberOfRepayments: this.isFactoring ? this.loanTemplate?.termFrequency : this.loanTemplate?.numberOfRepayments,
-      repaymentEvery: this.isFactoring ? this.loanTemplate?.termFrequency : this.loanTemplate?.repaymentEvery,
+      numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
+      repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
       repaymentFrequencyType: this.loanTemplate?.repaymentFrequencyType?.id,
       interestType: this.loanTemplate?.interestType?.id,
       isEqualAmortization: this.loanTemplate?.isEqualAmortization,
