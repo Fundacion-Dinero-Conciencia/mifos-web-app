@@ -43,7 +43,7 @@
               {{ 'labels.inputs.Mimum investment' | translate }}
             </div>
             <div fxFlex="70%">
-              {{ projectData.minAmount }}
+              {{ projectData.minAmount | currency: currency }}
             </div>
           </div>
 
@@ -52,7 +52,7 @@
               {{ 'labels.inputs.Maximum investment' | translate }}
             </div>
             <div fxFlex="70%">
-              {{ projectData.maxAmount }}
+              {{ projectData.maxAmount | currency: currency }}
             </div>
           </div>
           <div fxLayout="row wrap" class="m-b-15">

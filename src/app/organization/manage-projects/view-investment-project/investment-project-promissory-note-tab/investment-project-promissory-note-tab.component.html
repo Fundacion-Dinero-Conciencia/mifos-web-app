@@ -80,7 +80,7 @@
           mat-raised-button
           color="primary"
           mat-tooltip="Obtener pagaré"
-          (click)="startEditingPromissoryNoteGroup(note.id)"
+          (click)="$event.stopPropagation(); startEditingPromissoryNoteGroup(note.id)"
         >
           <fa-icon icon="eye"></fa-icon>
         </button>
@@ -90,7 +90,7 @@
           mat-raised-button
           color="primary"
           mat-tooltip="Editar pagaré"
-          (click)="startEditingPromissoryNoteGroup(note.id)"
+          (click)="$event.stopPropagation(); startEditingPromissoryNoteGroup(note.id)"
         >
           <fa-icon icon="edit"></fa-icon>
         </button>
@@ -100,7 +100,7 @@
           mat-raised-button
           color="primary"
           mat-tooltip="Aprobar pagaré"
-          (click)="approbePromissoryNote(note)"
+          (click)="$event.stopPropagation(); approbePromissoryNote(note)"
         >
           <fa-icon icon="check"></fa-icon>
         </button>
@@ -109,14 +109,19 @@
           class="document-action-button"
           mat-raised-button
           color="primary"
-          (click)="deletePromissoryNoteGroup(note.id)"
+          (click)="$event.stopPropagation(); deletePromissoryNoteGroup(note.id)"
         >
           <fa-icon icon="trash"></fa-icon>
         </button>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumnsGroups"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnsGroups"></tr>
+    <tr
+      mat-row
+      [ngStyle]="{ cursor: !!row.subCreditId ? 'pointer' : undefine }"
+      *matRowDef="let row; columns: displayedColumnsGroups"
+      [routerLink]="!!row.subCreditId ? ['/clients', projectData.ownerId, 'loans-accounts', row.subCreditId] : null"
+    ></tr>
     <tr class="mat-row noContentTable" *matNoDataRow>
       <td class="mat-cell" [attr.colspan]="displayedColumnsGroups.length">
         <div class="empty-state">
