@@ -42,6 +42,7 @@ export class ManageProjectsComponent implements OnInit {
     'occupancyPercentage',
     'amount',
     'rate',
+    'creditType',
     'status',
     'actions'
   ];
