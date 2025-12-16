@@ -55,7 +55,7 @@
 
       <ng-container matColumnDef="creditType">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Credit Type' | translate }}</th>
-        <td mat-cell *matCellDef="let item">{{ item.creditType.name }}</td>
+        <td mat-cell *matCellDef="let item">{{ item.creditType?.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="active">
@@ -85,16 +85,10 @@
           </button>
 
           <a
-            *ngIf="
-              element.status?.statusValue?.name === 'En Formalización' ||
-              element.status?.statusValue?.name === 'En Financiamiento' ||
-              element.status?.statusValue?.name === 'En curso'
-            "
-            (click)="$event.stopPropagation()"
             class="document-action-button custom-button"
             mat-raised-button
             color="primary"
-            [href]="setProjectUrl(element)"
+            [href]="projectUrl + element.id"
             target="_blank"
             rel="noopener"
           >
