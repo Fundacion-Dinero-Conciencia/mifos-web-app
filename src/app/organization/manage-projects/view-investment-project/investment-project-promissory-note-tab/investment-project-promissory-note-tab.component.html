@@ -25,7 +25,13 @@
     <ng-container matColumnDef="Mnemotécnico">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
       <td mat-cell *matCellDef="let note">
-        {{ note.mnemonic }}
+        <a
+          [routerLink]="
+            !!note.subCreditId ? ['/clients', projectData.ownerId, 'loans-accounts', note.subCreditId] : null
+          "
+        >
+          {{ note.mnemonic }}
+        </a>
       </td>
     </ng-container>
 
@@ -120,7 +126,6 @@
       mat-row
       [ngStyle]="{ cursor: !!row.subCreditId ? 'pointer' : undefine }"
       *matRowDef="let row; columns: displayedColumnsGroups"
-      [routerLink]="!!row.subCreditId ? ['/clients', projectData.ownerId, 'loans-accounts', row.subCreditId] : null"
     ></tr>
     <tr class="mat-row noContentTable" *matNoDataRow>
       <td class="mat-cell" [attr.colspan]="displayedColumnsGroups.length">
