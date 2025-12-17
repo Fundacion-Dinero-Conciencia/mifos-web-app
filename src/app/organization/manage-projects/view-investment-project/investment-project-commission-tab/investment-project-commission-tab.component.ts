@@ -714,7 +714,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
       cashFlows.push(payment);
     }
 
-    this.organizationService.getCae(cashFlows).subscribe((data) => {
+    this.organizationService.getCae(cashFlows, this.projectData?.loanId).subscribe((data) => {
       this.caeValue = data;
       this.caeValue = this.caeValue;
     });

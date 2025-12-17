@@ -336,6 +336,21 @@
               </p>
             </mat-list-item>
           </div>
+          <div #conciliation>
+            <mat-list-item>
+              <mat-icon matListIcon [routerLink]="['bank-conciliation']">
+                <fa-icon icon="dollar-sign" size="sm"></fa-icon>
+              </mat-icon>
+              <h4 matLine [routerLink]="['bank-conciliation']">{{ 'labels.heading.Bank-conciliation' | translate }}</h4>
+              <fa-icon
+                (click)="arrowBooleansToggle(18)"
+                *ngIf="!arrowBooleans[18]"
+                icon="arrow-down"
+                size="md"
+              ></fa-icon>
+              <fa-icon (click)="arrowBooleansToggle(18)" *ngIf="arrowBooleans[18]" icon="arrow-up" size="md"></fa-icon>
+            </mat-list-item>
+          </div>
         </mat-nav-list>
       </div>
     </div>

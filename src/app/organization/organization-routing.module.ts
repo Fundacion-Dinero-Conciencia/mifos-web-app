@@ -70,6 +70,8 @@ import { AdhocQueryTemplateResolver } from './adhoc-query/adhoc-query-template.r
 import { AdhocQueriesResolver } from './adhoc-query/common-resolvers/adhoc-queries.resolver';
 import { AdhocQueryAndTemplateResolver } from './adhoc-query/common-resolvers/adhoc-query-and-template.resolver';
 import { AdhocQueryResolver } from './adhoc-query/common-resolvers/adhoc-query.resolver';
+import { ConciliationMenuComponent } from './bank-conciliation/conciliation-menu/conciliation-menu.component';
+import { ConciliationPayinComponent } from './bank-conciliation/conciliation-payin/conciliation-payin.component';
 import { BulkImportResolver } from './bulk-import/bulk-import.resolver';
 import { CurrenciesResolver } from './currencies/currencies.resolver';
 import { EditEmployeeResolver } from './employees/edit-employee.resolver';
@@ -685,6 +687,27 @@ const routes: Routes = [
             }
           ]
         },
+        {
+          path: 'bank-conciliation',
+          data: { title: 'Bank-conciliation', breadcrumb: 'Bank-conciliation' },
+          children: [
+            {
+              path: '',
+              component: ConciliationMenuComponent
+            },
+            {
+              path: 'Payin',
+              data: { title: 'Payin', breadcrumb: 'Payin' },
+              children: [
+                {
+                  path: '',
+                  component: ConciliationPayinComponent
+                }
+              ]
+            }
+          ]
+        },
+
         {
           path: 'holidays',
           data: { title: 'Manage Holidays', breadcrumb: 'Manage Holidays' },

@@ -19,7 +19,7 @@
   </main>
 
   <footer class="cx-actions">
-    <button mat-raised-button (click)="onCancel()" class="outlineButton">
+    <button mat-raised-button (click)="onCancel()" class="outlineButton" *ngIf="!hideCancelButton">
       {{ 'labels.buttons.' + cancelText | translate }}
     </button>
     <button mat-raised-button [color]="color" (click)="onConfirm()" [disabled]="disableConfirm">

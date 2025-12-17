@@ -94,7 +94,9 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
     this.route.data.subscribe((data: { accountTransferTemplate: any }) => {
       this.accountTransferTemplateData = data.accountTransferTemplate;
       this.setParams();
-      this.setOptions();
+      this.toOfficeTypeData = this.accountTransferTemplateData.toOfficeOptions;
+      this.toAccountTypeData = this.accountTransferTemplateData.toAccountTypeOptions;
+      this.toAccountData = this.accountTransferTemplateData.toAccountOptions;
       this.orgService.getEmployeesByStatus(this.statusEmployees).subscribe(
         (response) => {
           this.staffData = response;
@@ -138,6 +140,7 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
     if (!this.interbank) {
       this.createMakeAccountTransferForm();
     }
+    this.setOptions();
   }
 
   /**
@@ -220,6 +223,7 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
         Validators.required
       ]
     });
+
     this.isLoading = false;
   }
 
@@ -230,22 +234,23 @@ export class MakeAccountTransfersComponent implements OnInit, AfterViewInit {
 
   /** Sets options value */
   setOptions() {
-    this.toOfficeTypeData = this.accountTransferTemplateData.toOfficeOptions;
-    this.toAccountTypeData = this.accountTransferTemplateData.toAccountTypeOptions;
-    this.toAccountData = this.accountTransferTemplateData.toAccountOptions;
-  }
-
-  /** Executes on change of various select options */
-  changeEvent() {
-    const formValue = this.refineObject(this.makeAccountTransferForm.value);
+    let formValue = {};
+    if (this.makeAccountTransferForm) {
+      formValue = this.refineObject(this.makeAccountTransferForm.value);
+    }
     this.accountTransfersService
       .newAccountTranferResource(this.id, this.accountTypeId, formValue)
       .subscribe((response: any) => {
         this.accountTransferTemplateData = response;
         this.toClientTypeData = response.toClientOptions;
-        this.setOptions();
+        this.toOfficeTypeData = this.accountTransferTemplateData.toOfficeOptions;
+        this.toAccountTypeData = this.accountTransferTemplateData.toAccountTypeOptions;
+        this.toAccountData = this.accountTransferTemplateData.toAccountOptions;
       });
   }
+
+  /** Executes on change of various select options */
+  changeEvent() {}
 
   /** Refine Object
    * Removes the object param with null or '' values

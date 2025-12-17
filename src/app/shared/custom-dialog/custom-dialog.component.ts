@@ -15,12 +15,11 @@ export class CustomDialogComponent {
   @Input() confirmText = 'Confirm';
   @Input() cancelText = 'Cancel';
   @Input() disableConfirm = false;
-
-  @Output() confirm = new EventEmitter<{ confirm: true }>();
+  @Input() hideCancelButton = false;
+  @Output() confirm = new EventEmitter<void>();
   @Output() dismiss = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
 
-  /** Cerrar con ESC */
   @HostListener('document:keydown.escape')
   onEsc() {
     if (this.open) this._close('esc');
@@ -36,8 +35,7 @@ export class CustomDialogComponent {
   }
 
   onConfirm() {
-    this.confirm.emit({ confirm: true });
-    this._close('confirm');
+    this.confirm.emit();
   }
 
   private _close(_reason: 'esc' | 'backdrop' | 'cancel' | 'confirm') {
