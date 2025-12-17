@@ -97,6 +97,8 @@ import { InvestmentProjectNotesTabComponent } from './manage-projects/view-inves
 import { InvestmentProjectPromissoryNoteTabComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/investment-project-promissory-note-tab.component';
 import { EditPromissoryNoteComponent } from './manage-projects/view-investment-project/investment-project-promissory-note-tab/edit-promissory-note/edit-promissory-note.component';
 import { CustomDialogComponent } from 'app/shared/custom-dialog/custom-dialog.component';
+import { ConciliationMenuComponent } from './bank-conciliation/conciliation-menu/conciliation-menu.component';
+import { ConciliationPayinComponent } from './bank-conciliation/conciliation-payin/conciliation-payin.component';
 /**
  * Organization Module
  *
@@ -191,7 +193,9 @@ import { CustomDialogComponent } from 'app/shared/custom-dialog/custom-dialog.co
     InvestmentProjectInvestmentTabComponent,
     InvestmentProjectNotesTabComponent,
     InvestmentProjectPromissoryNoteTabComponent,
-    EditPromissoryNoteComponent
+    EditPromissoryNoteComponent,
+    ConciliationMenuComponent,
+    ConciliationPayinComponent
   ],
   providers: [
     CreateHoliday,

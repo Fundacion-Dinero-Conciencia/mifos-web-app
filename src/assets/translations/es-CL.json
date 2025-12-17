@@ -803,6 +803,7 @@
       "Password validation": "La contraseña debe contener un mínimo de {{minchar}} caracteres, que deben incluir 1 carácter mayúscula, minúscula y especial y no debe constar de caracteres repetidos ni espacios en blanco."
     },
     "heading": {
+      "Bank-conciliation": "Conciliación bancaria",
       "investments": "inversiones",
       "Impact": "Impacto",
       "Portrait image": "Imagen de portada",
@@ -2639,6 +2640,7 @@
       "Navigation": "Navegación",
       "Notifications": "Notificaciones",
       "Organization": "Organización",
+      "Bank-conciliation": "Conciliación bancaria",
       "Interest Payment Waiver": "Exención de pago de intereses",
       "Payments": "Pagos",
       "Payout Refund": "Reembolso de pago",

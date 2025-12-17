@@ -808,6 +808,7 @@
       "Password validation": "Password should contain minimum {{minchar}} characters, that should income 1 uppercase, lowercase and special character and should not consists of repeated characters or white-spaces"
     },
     "heading": {
+      "Bank-conciliation": "Bank conciliation",
       "Investor": "Investor",
       "Value invested": "Value invested",
       "Investment status": "Investment status",
