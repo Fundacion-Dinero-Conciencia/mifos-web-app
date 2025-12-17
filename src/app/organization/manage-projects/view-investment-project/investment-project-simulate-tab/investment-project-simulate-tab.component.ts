@@ -1159,11 +1159,14 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     const installments = periods ? periods : this.loanTemplate?.repaymentSchedule?.periods;
     const cashFlows: number[] = [];
     cashFlows.push(-this.projectData.amount);
-
-    for (let i = 1; i < installments.length; i++) {
-      const p = installments[i];
-      const payment = p.totalInstallmentAmountForPeriod ?? 0;
-      cashFlows.push(payment);
+    if (!this.isFactoring) {
+      for (let i = 1; i < installments.length; i++) {
+        const p = installments[i];
+        const payment = p.totalInstallmentAmountForPeriod ?? 0;
+        cashFlows.push(payment);
+      }
+    } else {
+      cashFlows.push(this.getMontoAFinanciar);
     }
 
     this.organizationService.getCae(cashFlows, this.projectData?.loanId).subscribe((data) => {
