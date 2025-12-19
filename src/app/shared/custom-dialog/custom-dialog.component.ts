@@ -15,12 +15,11 @@ export class CustomDialogComponent {
   @Input() confirmText = 'Confirm';
   @Input() cancelText = 'Cancel';
   @Input() disableConfirm = false;
-
+  @Input() hideCancelButton = false;
   @Output() confirm = new EventEmitter<{ confirm: true }>();
   @Output() dismiss = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
 
-  /** Cerrar con ESC */
   @HostListener('document:keydown.escape')
   onEsc() {
     if (this.open) this._close('esc');
