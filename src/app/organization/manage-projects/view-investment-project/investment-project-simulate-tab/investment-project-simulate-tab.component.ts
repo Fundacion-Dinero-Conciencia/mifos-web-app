@@ -1231,7 +1231,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         this.getMontoAEntregar;
         this.totalCredit = Math.round(data.totalRepaymentExpected);
         this.investorInterests = Math.round(data.totalInterestCharged);
-        this.getCAE(data.periods);
+        this.getCAE(this.projectData?.loanId);
       });
     }
   }
