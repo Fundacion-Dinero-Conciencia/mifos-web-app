@@ -27,7 +27,7 @@
 
 /* RECEIVED – Morado */
 .status-pill--recieved {
-  background-color: #cffe00; /* Morado diferenciador */
+  background-color: #cffe00; /* Morado dmatHeaderCellDeferenciador */
 }
 
 /* INVALID / ERROR – Rojo */
@@ -64,4 +64,33 @@
 
 .tableDetailContainer {
   margin-top: 3rem;
+}
+
+.addAsignationButton {
+  margin: 1rem 0;
+  outline: none;
+  border-radius: 4px;
+  border: 1px solid #1074b9;
+  color: #1074b9;
+  background-color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.1rem 0.2rem;
+  cursor: pointer;
+}
+
+.addAsignationButton .ng-fa-icon {
+  margin-left: 0.1rem;
+}
+
+.InputValuePartition {
+  margin: 0 0.5rem;
+}
+
+.ErrorText {
+  color: red;
+}
+
+.important {
+  font-weight: 600;
 }

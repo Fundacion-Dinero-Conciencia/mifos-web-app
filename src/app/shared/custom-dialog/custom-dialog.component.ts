@@ -16,7 +16,7 @@ export class CustomDialogComponent {
   @Input() cancelText = 'Cancel';
   @Input() disableConfirm = false;
   @Input() hideCancelButton = false;
-  @Output() confirm = new EventEmitter<{ confirm: true }>();
+  @Output() confirm = new EventEmitter<void>();
   @Output() dismiss = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
 
@@ -35,8 +35,7 @@ export class CustomDialogComponent {
   }
 
   onConfirm() {
-    this.confirm.emit({ confirm: true });
-    this._close('confirm');
+    this.confirm.emit();
   }
 
   private _close(_reason: 'esc' | 'backdrop' | 'cancel' | 'confirm') {

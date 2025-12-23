@@ -1015,6 +1015,28 @@ export class OrganizationService {
     });
   }
 
+  assignPayingById(
+    notificationId: string,
+    partitionList: {
+      loanId?: number;
+      amount: number;
+    }[]
+  ) {
+    return this.http.post(
+      `/shinkansen/payin-partitioner`,
+      JSON.stringify({
+        notificationId,
+        partitionList
+      }),
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+  getLoanDataByClientId(clientId: number) {
+    return this.http.get(`/shinkansen/loandata/${clientId}`);
+  }
+
   getProjectParticipationPageable(filters: {
     participantId?: string;
     projectId?: string;

@@ -1,7 +1,7 @@
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
 
@@ -30,7 +30,7 @@ const statuses = {
   templateUrl: './conciliation-payin.component.html',
   styleUrls: ['./conciliation-payin.component.scss']
 })
-export class ConciliationPayinComponent implements OnInit, AfterViewInit {
+export class ConciliationPayinComponent implements OnInit {
   filters: UntypedFormGroup;
   constructor(
     private fb: UntypedFormBuilder,
@@ -43,7 +43,12 @@ export class ConciliationPayinComponent implements OnInit, AfterViewInit {
   pageSize = 5;
   totalItems = 0;
   showDialogTransactions = false;
+  isDebtorDetail = false;
+  showDialogAssignation = false;
   clientOptions: any[] = [];
+  selectedRowPartition: number[] = [];
+  isconfirming = false;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   displayedColumns: string[] = [
     'systemDate',
@@ -89,9 +94,18 @@ export class ConciliationPayinComponent implements OnInit, AfterViewInit {
     'paymentId',
     'view'
   ];
+  assignDisplayedColumns: string[] = [
+    'assignment',
+    'amount',
+    'actions'
+  ];
 
   detailDataSource = new MatTableDataSource<any>([]);
+  assignDataSource = new MatTableDataSource<any>([]);
   detailedRow: any = null;
+  inputsGroup: any[];
+  selectorsGroup: any[];
+  availableLoans: any[] = [];
 
   ngOnInit(): void {
     this.systemService.getCodeByName('ClientType').subscribe((data: any) => {
@@ -104,13 +118,7 @@ export class ConciliationPayinComponent implements OnInit, AfterViewInit {
       notificationId: [''],
       status: ['']
     });
-    this.organizationService.getShinkansen({}).subscribe((data: any) => {
-      this.dataSource.data = data.content as any;
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    this.loadPage(0, this.pageSize);
   }
 
   getStatusLabel(status: string): string {
@@ -143,7 +151,7 @@ export class ConciliationPayinComponent implements OnInit, AfterViewInit {
       this.dataSource.data = response.content || response;
       this.pageSize = size;
       this.pageIndex = page;
-      this.totalItems = response.total;
+      this.totalItems = response.totalElements;
     });
   }
   onPageChange(event: any) {
@@ -166,14 +174,80 @@ export class ConciliationPayinComponent implements OnInit, AfterViewInit {
   }
 
   viewDetails(row: any) {
+    this.isDebtorDetail = false;
     this.detailedRow = row;
     this.detailDataSource.data = row.transactionDataList || [];
     this.showDialogTransactions = true;
   }
 
+  viewDetailsDebtor(row: any) {
+    this.isDebtorDetail = true;
+    this.detailedRow = row;
+    this.detailDataSource.data = row.transactionDataList || [];
+    this.showDialogTransactions = true;
+  }
+  viewAssignation(row: any) {
+    this.detailedRow = row;
+    this.selectedRowPartition = row.transactionDataList.map((t: any) => t.amount);
+    this.inputsGroup = row.transactionDataList.map((t: any) => t.amount);
+    this.assignDataSource.data = this.selectedRowPartition || [];
+    this.showDialogAssignation = true;
+  }
+  viewAssignationDebtor(row: any) {
+    this.organizationService.getLoanDataByClientId(row.clientId).subscribe((loanData: any) => {
+      this.availableLoans = [];
+      this.showDialogAssignation = true;
+    });
+    this.detailedRow = row;
+    this.isDebtorDetail = true;
+    this.selectedRowPartition = row.transactionDataList.map((t: any) => t.amount);
+    this.inputsGroup = row.transactionDataList.map((t: any) => t.amount);
+    this.assignDataSource.data = this.selectedRowPartition || [];
+  }
+
+  deleteAmountByIndex(index: number): void {
+    this.selectedRowPartition.splice(index, 1);
+    this.assignDataSource.data = [...this.selectedRowPartition];
+  }
+
   closeDetailedRow() {
+    this.isDebtorDetail = false;
     this.showDialogTransactions = false;
     this.detailedRow = null;
+  }
+
+  closeTransactionAssignation() {
+    this.availableLoans = [];
+    this.showDialogAssignation = false;
+    this.detailedRow = null;
+    this.selectedRowPartition = [];
+    this.isconfirming = false;
+  }
+
+  confirmAction() {
+    if (!this.isconfirming) {
+      this.isconfirming = true;
+    }
+  }
+  getValuesConciliation(): number[] {
+    if (!this.inputsGroup) {
+      return [];
+    }
+    return [...this.inputsGroup];
+  }
+  getValuesLoans(): number[] {
+    if (!this.selectorsGroup) {
+      return [];
+    }
+    return [...this.selectorsGroup];
+  }
+
+  getTotalAssignedAmount(): number {
+    return this.getValuesConciliation().reduce((total, amount) => total + amount, 0);
+  }
+
+  get totalAssignedAmount(): number {
+    return this.getTotalAssignedAmount();
   }
 
   getConciliationProgress(row: any): number {
@@ -184,7 +258,24 @@ export class ConciliationPayinComponent implements OnInit, AfterViewInit {
     row.transactionDataList.forEach((transaction: any) => {
       totalTransactions += transaction.amount;
     });
-    console.log(totalTransactions);
     return totalTransactions > 0 ? (row.amount / totalTransactions) * 100 : 0;
+  }
+
+  addAssinmentAmount(): void {
+    this.selectedRowPartition.push(0);
+    this.assignDataSource.data = [...this.selectedRowPartition];
+  }
+
+  assignPayingById(id: string): void {
+    this.selectedRowPartition = this.getValuesConciliation();
+    const loans = this.getValuesLoans();
+    const listPayload = this.selectedRowPartition.map((amount, index) => ({
+      loanId: loans?.[index] || null,
+      amount
+    }));
+    this.organizationService.assignPayingById(id, listPayload).subscribe(() => {
+      this.closeTransactionAssignation();
+      this.applyFilters();
+    });
   }
 }

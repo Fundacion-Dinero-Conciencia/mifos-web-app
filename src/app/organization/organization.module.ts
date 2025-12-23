@@ -99,6 +99,7 @@ import { EditPromissoryNoteComponent } from './manage-projects/view-investment-p
 import { CustomDialogComponent } from 'app/shared/custom-dialog/custom-dialog.component';
 import { ConciliationMenuComponent } from './bank-conciliation/conciliation-menu/conciliation-menu.component';
 import { ConciliationPayinComponent } from './bank-conciliation/conciliation-payin/conciliation-payin.component';
+import { FormsModule } from '@angular/forms';
 /**
  * Organization Module
  *
@@ -110,7 +111,8 @@ import { ConciliationPayinComponent } from './bank-conciliation/conciliation-pay
     PipesModule,
     DirectivesModule,
     OrganizationRoutingModule,
-    CKEditorModule
+    CKEditorModule,
+    FormsModule
   ],
   declarations: [
     OrganizationComponent,
