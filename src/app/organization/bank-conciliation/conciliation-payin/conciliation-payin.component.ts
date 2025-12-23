@@ -100,7 +100,6 @@ export class ConciliationPayinComponent implements OnInit {
     'amount',
     'actions'
   ];
-
   detailDataSource = new MatTableDataSource<any>([]);
   assignDataSource = new MatTableDataSource<any>([]);
   detailedRow: any = null;
