@@ -1048,7 +1048,7 @@ export class InvestmentProjectCommissionTabComponent implements OnInit {
         this.getMontoAEntregar();
         this.totalCredit = Math.round(data.totalRepaymentExpected);
         this.investorInterests = Math.round(data.totalInterestCharged);
-        this.getCAE(this.projectData?.loanId);
+        this.getCAE(data.periods);
       });
     }
   }
