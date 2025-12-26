@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
+import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
 
 export interface ConciliationRow {
   systemDate: string | Date;
@@ -104,7 +105,7 @@ export class ConciliationPayinComponent implements OnInit {
   assignDataSource = new MatTableDataSource<any>([]);
   detailedRow: any = null;
   inputsGroup: any[];
-  selectorsGroup: any[];
+  selectorsGroup: any[] = [];
   availableLoans: any[] = [];
 
   ngOnInit(): void {
@@ -144,14 +145,16 @@ export class ConciliationPayinComponent implements OnInit {
     const requestParams = {
       ...filters,
       page,
-      size
+      size,
+      sort: 'transactionDate'
     };
-
+    showGlobalLoader();
     this.organizationService.getShinkansen({ ...requestParams }).subscribe((response: any) => {
       this.dataSource.data = response.content || response;
       this.pageSize = size;
       this.pageIndex = page;
       this.totalItems = response.totalElements;
+      hideGlobalLoader();
     });
   }
   onPageChange(event: any) {
@@ -188,20 +191,29 @@ export class ConciliationPayinComponent implements OnInit {
   }
   viewAssignation(row: any) {
     this.detailedRow = row;
-    this.selectedRowPartition = row.transactionDataList.map((t: any) => t.amount);
-    this.inputsGroup = row.transactionDataList.map((t: any) => t.amount);
+    this.selectedRowPartition = [
+      0,
+      0
+    ];
+    this.inputsGroup = [
+      0,
+      0
+    ];
     this.assignDataSource.data = this.selectedRowPartition || [];
     this.showDialogAssignation = true;
   }
   viewAssignationDebtor(row: any) {
+    showGlobalLoader();
     this.organizationService.getLoanDataByClientId(row.clientId).subscribe((loanData: any) => {
-      this.availableLoans = [];
+      this.availableLoans = [...loanData];
       this.showDialogAssignation = true;
+      hideGlobalLoader();
     });
     this.detailedRow = row;
     this.isDebtorDetail = true;
-    this.selectedRowPartition = row.transactionDataList.map((t: any) => t.amount);
-    this.inputsGroup = row.transactionDataList.map((t: any) => t.amount);
+    this.selectedRowPartition = [0];
+    this.selectorsGroup = [undefined];
+    this.inputsGroup = [0];
     this.assignDataSource.data = this.selectedRowPartition || [];
   }
 
@@ -235,11 +247,12 @@ export class ConciliationPayinComponent implements OnInit {
     }
     return [...this.inputsGroup];
   }
-  getValuesLoans(): number[] {
+  getValuesLoanIds(): number[] {
     if (!this.selectorsGroup) {
       return [];
     }
-    return [...this.selectorsGroup];
+    const stringValues = [...this.selectorsGroup];
+    return stringValues.map((value) => (value !== undefined ? Number(value) : undefined));
   }
 
   getTotalAssignedAmount(): number {
@@ -262,20 +275,80 @@ export class ConciliationPayinComponent implements OnInit {
   }
 
   addAssinmentAmount(): void {
+    if (this.isDebtorDetail) {
+      this.selectorsGroup.push(undefined);
+    }
     this.selectedRowPartition.push(0);
     this.assignDataSource.data = [...this.selectedRowPartition];
   }
 
   assignPayingById(id: string): void {
     this.selectedRowPartition = this.getValuesConciliation();
-    const loans = this.getValuesLoans();
+    const loans = this.getValuesLoanIds();
     const listPayload = this.selectedRowPartition.map((amount, index) => ({
       loanId: loans?.[index] || null,
       amount
     }));
+    showGlobalLoader();
     this.organizationService.assignPayingById(id, listPayload).subscribe(() => {
       this.closeTransactionAssignation();
       this.applyFilters();
+      hideGlobalLoader();
     });
+  }
+
+  get NonSelectedLoansOptions(): any[] {
+    if (!this.availableLoans) {
+      return [];
+    }
+    const loansSelected = this.getValuesLoanIds();
+    return this.availableLoans.filter((loan) => !loansSelected.includes(Number(loan.loanId)));
+  }
+
+  getNonSelectedLoansOptionsExceptLoanId(loanId: number): any[] {
+    if (!this.availableLoans) {
+      return [];
+    }
+    if (loanId === undefined) {
+      return this.NonSelectedLoansOptions;
+    }
+    const loansSelected = this.availableLoans.find((loan) => Number(loan.loanId) === Number(loanId));
+    return [
+      ...this.NonSelectedLoansOptions,
+      loansSelected
+    ];
+  }
+
+  get disableConfirmAssign(): boolean {
+    let disable = false;
+    if (this.detailedRow) {
+      if (this.isDebtorDetail) {
+        this.getValuesLoanIds().some((id) => id === undefined) && (disable = true);
+
+        this.selectorsGroup.forEach((loanId, index) => {
+          const loan = this.getLoanById(loanId);
+          if (loan) {
+            loan.totalAmount < this.inputsGroup[index] && (disable = true);
+          }
+        });
+      }
+
+      if (!this.isDebtorDetail) {
+        this.detailedRow && this.detailedRow.amount !== this.totalAssignedAmount && (disable = true);
+      }
+
+      this.totalAssignedAmount <= 1 && (disable = true);
+
+      return disable;
+    } else {
+      return true;
+    }
+  }
+
+  getLoanById(id: number): any {
+    if (!this.availableLoans) {
+      return null;
+    }
+    return this.availableLoans.find((loan) => Number(loan.loanId) === Number(id)) || null;
   }
 }

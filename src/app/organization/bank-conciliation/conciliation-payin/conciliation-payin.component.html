@@ -208,8 +208,13 @@
             <!-- Asignación -->
             <ng-container matColumnDef="assignment">
               <th mat-header-cell *matHeaderCellDef>{{ isDebtorDetail ? 'Cuota' : 'Asignación' }}</th>
-              <td mat-cell *matCellDef="let row; let i = index">Asignación {{ i + 1 }}</td>
-            </ng-container>
+              <td mat-cell *matCellDef="let row; let i = index">
+                <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p>
+                <p *ngIf="isDebtorDetail">{{ row.quotas || '-' }}</p>
+              </td>
+
+              <td></td
+            ></ng-container>
 
             <!-- Proyecto -->
             <ng-container matColumnDef="project">
@@ -275,7 +280,7 @@
     (dismiss)="closeTransactionAssignation()"
     (closed)="closeTransactionAssignation()"
     [confirmText]="isconfirming ? 'Confirm' : 'Submit'"
-    [disableConfirm]="detailedRow && detailedRow.amount !== totalAssignedAmount"
+    [disableConfirm]="disableConfirmAssign"
   >
     <main>
       <section class="headerTransactionDetail">
@@ -305,7 +310,12 @@
                 <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p>
                 <select *ngIf="isDebtorDetail" id="loanSelector{{ i }}" [(ngModel)]="selectorsGroup[i]">
                   <option value="" disabled selected>Selecciona</option>
-                  <option *ngFor="let loan of availableLoans" [value]="loan.id">xd</option>
+                  <option
+                    *ngFor="let loan of getNonSelectedLoansOptionsExceptLoanId(selectorsGroup[i])"
+                    [value]="loan.loanId"
+                  >
+                    {{ loan.creditType }}-{{ loan.accountNo }}
+                  </option>
                 </select>
               </td>
             </ng-container>
@@ -313,15 +323,35 @@
             <!-- Monto -->
             <ng-container matColumnDef="amount">
               <th mat-header-cell *matHeaderCellDef>Monto</th>
-              <td mat-cell *matCellDef="let amount; let i = index">
-                <span>$</span
-                ><input
-                  [(ngModel)]="inputsGroup[i]"
-                  type="number"
-                  class="InputValuePartition"
-                  [disabled]="isconfirming"
-                  id="amountInput{{ i }}"
-                /><span>CLP</span>
+              <td
+                mat-cell
+                *matCellDef="let amount; let i = index"
+                [ngClass]="{
+                  'InputValuePartition--error':
+                    selectorsGroup[i] && getLoanById(selectorsGroup[i])?.totalAmount < inputsGroup[i]
+                }"
+              >
+                <div
+                  [matTooltipDisabled]="
+                    !(selectorsGroup[i] && getLoanById(selectorsGroup[i])?.totalAmount < inputsGroup[i])
+                  "
+                  matTooltip="{{
+                    'No puedes pagar más de ' +
+                      (getLoanById(selectorsGroup[i])?.totalAmount | currency: currency) +
+                      ' que corresponde al saldo pendiente del subcrédito'
+                  }}"
+                  matTooltipClass="tooltip-error"
+                >
+                  <span>$</span
+                  ><input
+                    [(ngModel)]="inputsGroup[i]"
+                    type="number"
+                    class="InputValuePartition"
+                    [disabled]="isconfirming"
+                    id="amountInput{{ i }}"
+                  />
+                  <span>CLP</span>
+                </div>
               </td>
             </ng-container>
 
@@ -330,7 +360,7 @@
               <th mat-header-cell *matHeaderCellDef>Accciones</th>
               <td mat-cell *matCellDef="let row; let i = index">
                 <button
-                  *ngIf="isDebtorDetail ? i > 1 : i > 1"
+                  *ngIf="isDebtorDetail ? i > 0 : i > 1"
                   mat-raised-button
                   color="primary"
                   class="action-btn"
@@ -346,11 +376,34 @@
             <tr mat-header-row *matHeaderRowDef="assignDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: assignDisplayedColumns"></tr>
           </table>
-          <button class="addAsignationButton" (click)="addAssinmentAmount()">
+
+          <button
+            *ngIf="(isDebtorDetail && NonSelectedLoansOptions.length > 0) || !isDebtorDetail"
+            class="addAsignationButton"
+            (click)="addAssinmentAmount()"
+          >
             <fa-icon icon="plus"></fa-icon>
             Agregar asignación
           </button>
-          <p *ngIf="detailedRow && detailedRow.amount > totalAssignedAmount">Debe asignar todo el monto disponible</p>
+          <article
+            class="debtorAdvice"
+            *ngIf="
+              !!detailedRow &&
+              isDebtorDetail &&
+              totalAssignedAmount > 0 &&
+              detailedRow.amount !== totalAssignedAmount &&
+              totalAssignedAmount <= detailedRow.amount
+            "
+          >
+            <span class="infoIcon">𝐢</span>
+            <div>
+              <h3>Monto a cuenta vista: {{ detailedRow?.amount - totalAssignedAmount | currency: currency }}</h3>
+              <p>El monto será abonado automáticamente a la cuenta vista del cliente</p>
+            </div>
+          </article>
+          <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">
+            totalAssignedAmount">Debe asignar todo el monto disponible
+          </p>
           <p *ngIf="isconfirming" class="important">
             Confirma la división de la transferencia. Esta acción no se puede revertir.
           </p>

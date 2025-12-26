@@ -94,3 +94,57 @@
 .important {
   font-weight: 600;
 }
+
+.InputValuePartition--error {
+  color: red;
+  font-weight: bold;
+  cursor: help;
+}
+
+.InputValuePartition--error input {
+  outline: red;
+  border: 2px solid red;
+}
+
+::ng-deep .tooltip-error {
+  background-color: #f32b2b1a !important;
+  color: red !important;
+  border-color: transparent !important;
+}
+
+.debtorAdvice {
+  margin-top: 1rem;
+  border: 2px solid #0006;
+  border-radius: 6px;
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.debtorAdvice h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: unset;
+  margin-bottom: 0.4rem;
+}
+
+.debtorAdvice p {
+  margin: 0;
+}
+
+.infoIcon {
+  background-color: #1074b9;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0.1rem;
+  margin-right: 0.3rem;
+  margin-top: 0.3rem;
+}
