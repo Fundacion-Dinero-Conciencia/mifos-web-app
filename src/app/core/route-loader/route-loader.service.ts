@@ -22,7 +22,7 @@ export class RouteLoaderService {
     });
   }
 
-  private show() {
+  show() {
     setTimeout(() => {
       const globalLoadingBar = document.getElementById('global-loader');
       if (globalLoadingBar) {
@@ -31,7 +31,7 @@ export class RouteLoaderService {
     }, 10);
   }
 
-  private hide() {
+  hide() {
     setTimeout(() => {
       const globalLoadingBar = document.getElementById('global-loader');
       if (globalLoadingBar) {
