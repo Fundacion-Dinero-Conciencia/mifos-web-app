@@ -8,7 +8,8 @@ import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.componen
 import { FormfieldBase } from 'app/shared/form-dialog/formfield/model/formfield-base';
 import { InputBase } from 'app/shared/form-dialog/formfield/model/input-base';
 import { SelectBase } from 'app/shared/form-dialog/formfield/model/select-base';
-
+import { environment } from 'environments/environment';
+import { SettingsService } from 'app/settings/settings.service';
 @Component({
   selector: 'mifosx-investment-project-general-tab',
   templateUrl: './investment-project-general-tab.component.html',
@@ -25,7 +26,8 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
     private organizationService: OrganizationService,
     private dialog: MatDialog,
     private translateService: TranslateService,
-    private clientService: ClientsService
+    private clientService: ClientsService,
+    private settingsService: SettingsService
   ) {
     this.route.data.subscribe((data: { accountData: any }) => {
       this.projectData = data.accountData;
@@ -51,6 +53,18 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
     });
   }
 
+  copyPublicUrl() {
+    const projectUrl = this.setProjectUrl(this.projectData);
+    navigator.clipboard
+      .writeText(projectUrl)
+      .then(() => {
+        alert('Copiado!');
+      })
+      .catch((err) => {
+        console.error('Could not copy text: ', err);
+      });
+  }
+
   getAddressData() {
     this.organizationService.getAddresDataByProjectId(this.idProject).subscribe({
       next: (response: any) => {
@@ -62,6 +76,25 @@ export class InvestmentProjectGeneralTabComponent implements OnInit {
         console.error('Error loading address data:', error);
       }
     });
+  }
+
+  get tenantIdentifier(): string {
+    if (!this.settingsService.tenantIdentifier || this.settingsService.tenantIdentifier === '') {
+      return 'default';
+    }
+    return this.settingsService.tenantIdentifier;
+  }
+
+  setProjectUrl(project: any) {
+    let projectUrl;
+    if (window.location.href.includes('dev')) {
+      projectUrl = environment.baseUrlProject.replace('stg', 'dev');
+    } else if (window.location.href.includes('stg')) {
+      projectUrl = environment.baseUrlProject;
+    } else {
+      projectUrl = environment.baseUrlProjectProduction;
+    }
+    return projectUrl + project.id + '?isPublicView=1&publicTenant=' + this.tenantIdentifier.trim();
   }
 
   addAddress() {

@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,7 +19,8 @@ import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'mifosx-investment-project-simulate-tab',
   templateUrl: './investment-project-simulate-tab.component.html',
-  styleUrls: ['./investment-project-simulate-tab.component.scss']
+  styleUrls: ['./investment-project-simulate-tab.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class InvestmentProjectSimulateTabComponent implements OnInit {
   adicionalForm!: FormGroup;
@@ -80,12 +82,14 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     private dateUtils: Dates,
     private fb: FormBuilder,
     private translateService: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private currencyPipe: CurrencyPipe
   ) {
     this.route.data.subscribe((data: { accountData: any; loanProductsData: any; creditTypesData: any }) => {
       this.projectData = data.accountData;
       this.loanProductsData = data.loanProductsData;
       this.creditTypesData = data.creditTypesData.codeValues;
+      console.log(this.creditTypesData);
     });
     this.createForm = this.formBuilder.group({
       basedInLoanProductId: [
@@ -93,8 +97,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         Validators.required
       ],
       creditTypeId: [
-        '',
-        Validators.required
+        ''
       ],
       amount: [
         '',
@@ -360,7 +363,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   cancelEditingForm() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      amount: this.projectData.amount || 0,
+      amount: this.currencyPipe.transform(this.projectData.amount || 0, '', '', '1.0-0'),
       creditTypeId: this.selectedSimulation.creditTypeId,
       interestRate: this.selectedSimulation?.rate,
       period: this.selectedSimulation?.period
@@ -403,6 +406,12 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     } else {
       this.createForm.disable();
     }
+  }
+
+  switchLoanProduct() {
+    const id = this.createForm.get('basedInLoanProductId')?.value;
+    const product = this.loanProductsData.find((lp: any) => lp.id === id);
+    this.isFactoring = product?.name.includes('Factoring');
   }
 
   ngOnInit(): void {
@@ -468,7 +477,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   setFormValuesToEdit() {
     this.createForm.patchValue({
       basedInLoanProductId: this.selectedSimulation.basedInLoanProductId,
-      amount: this.projectData.amount || 0,
+      amount: this.currencyPipe.transform(this.projectData.amount || 0, '', '', '1.0-0'),
       creditTypeId: this.selectedSimulation.creditTypeId,
       interestRate: this.selectedSimulation.rate,
       period: this.selectedSimulation.period
@@ -506,13 +515,18 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   createSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value });
+    const payload = { ...this.createForm.value };
+    if (this.isFactoring) {
+      payload.creditTypeId = this.creditTypesData.find((ct: any) => ct.name === 'Factoring')?.id || undefined;
+    }
+    payload.amount = Number((this.createForm.value.amount + '').replace(/[^0-9]/g, ''));
+    const payloadJSON = JSON.stringify({ ...payload });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
         message: 'Simulaciòn creada con èxito'
       });
-      const principal = this.createForm.get('amount').value;
+      const principal = Number((this.createForm.get('amount').value + '').replace(/[^0-9]/g, ''));
       const numberOfRepayments = this.createForm.get('period').value;
       const interestRatePerPeriod = this.createForm.get('interestRate').value;
       this.addQueryParam(0);
@@ -589,10 +603,11 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   sendEdit() {
     const modifiedData = {
       ...this.loanTemplateEdit,
-      principal: this.createForm.get('amount').value,
+      principal: Number((this.createForm.get('amount').value + '').replace(/[^0-9]/g, '')),
       interestRatePerPeriod: this.createForm.get('interestRate').value,
-      numberOfRepayments: this.createForm.get('period').value,
+      numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
       loanTermFrequency: this.createForm.get('period').value,
+      repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
       amount: undefined,
       interestRate: undefined,
       period: undefined
@@ -600,7 +615,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
     this.loanService.updateLoansAccount(this.projectData?.loanId, modifiedData).subscribe({
       next: (data) => {
-        const principal = this.createForm.get('amount').value;
+        const principal = Number((this.createForm.get('amount').value + '').replace(/[^0-9]/g, ''));
         const numberOfRepayments = this.createForm.get('period').value;
         const interestRatePerPeriod = this.createForm.get('interestRate').value;
         this.submitProjectData(true, principal, interestRatePerPeriod, numberOfRepayments, true);
@@ -620,6 +635,9 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     payload.amountToBeFinanced = this.getMontoAFinanciar;
     payload.amountToBeDelivered = this.getMontoAEntregar;
     payload.creditTypeId = this.createForm.get('creditTypeId').value;
+    if (this.isFactoring) {
+      payload.creditTypeId = this.creditTypesData.find((ct: any) => ct.name === 'Factoring')?.id || undefined;
+    }
     payload.projectRate = this.projectData.rate;
     payload.onlyAmounts = true;
 
@@ -691,7 +709,12 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   editSimulation() {
-    const payloadJSON = JSON.stringify({ ...this.createForm.value });
+    const payload = { ...this.createForm.value };
+    if (this.isFactoring) {
+      payload.creditTypeId = this.creditTypesData.find((ct: any) => ct.name === 'Factoring')?.id || undefined;
+    }
+    payload.amount = Number((this.createForm.value.amount + '').replace(/[^0-9]/g, ''));
+    const payloadJSON = JSON.stringify({ payload });
     this.organizationService.generateSimulation(this.projectData.id, payloadJSON).subscribe((response: any) => {
       this.alertService.alert({
         type: 'success',
@@ -715,7 +738,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       id: c.id
     }));
     this.organizationService.saveAdditionalExpenses(payload).subscribe((data) => {
-      const principal = this.createForm.get('amount').value;
+      const principal = Number((this.createForm.get('amount').value + '').replace(/[^0-9]/g, ''));
       const numberOfRepayments = this.createForm.get('period').value;
       const interestRatePerPeriod = this.createForm.get('interestRate').value;
       this.submitProjectData(false, principal, interestRatePerPeriod, numberOfRepayments, true);
@@ -751,7 +774,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   get getMontoAFinanciar(): number {
-    const montoAFinanciar = this.createForm.value.amount || 0;
+    const montoAFinanciar = Number((this.createForm.value.amount + '').replace(/[^0-9]/g, '')) || 0;
     const aef = this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.total || 0;
 
     const ivaAef =
@@ -775,7 +798,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   get getMontoAEntregar(): number {
     const period = this.createForm.value.period || this.projectData?.period;
     const rate = this.createForm.value.interestRate || this.projectData?.rate;
-    const amount = this.createForm.value.amount || this.projectData?.amount || 0;
+    const amount = Number((this.createForm.value.amount + '').replace(/[^0-9]/g, '')) || this.projectData?.amount || 0;
     if (this.isFactoring) {
       const tasaToApply =
         this.comisiones.data.find((c) => c.commissionType?.name?.trim().toUpperCase() === 'AEF')?.vat / 360;
@@ -874,10 +897,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         data.timeline.expectedDisbursementDate,
         SettingsService.businessDateFormat
       ),
-      loanTermFrequency: data.termFrequency,
+      loanTermFrequency: this.createForm.get('period').value || data.termFrequency,
       loanTermFrequencyType: data.termPeriodFrequencyType.id,
-      numberOfRepayments: data.numberOfRepayments,
-      repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
+      numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
+      repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
       repaymentFrequencyType: data.repaymentFrequencyType.id,
       interestType: data.interestType.id,
       isEqualAmortization: data.isEqualAmortization,
@@ -914,10 +937,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         ),
         linkAccountId: '',
         createStandingInstructionAtDisbursement: '',
-        loanTermFrequency: data.termFrequency,
+        loanTermFrequency: this.createForm.get('period').value || data.termFrequency,
         loanTermFrequencyType: data.termPeriodFrequencyType.id,
-        numberOfRepayments: data.numberOfRepayments,
-        repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
+        numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
+        repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
         repaymentFrequencyType: data.repaymentFrequencyType.id,
         repaymentFrequencyNthDayType: '',
         repaymentFrequencyDayOfWeekType: '',
@@ -944,6 +967,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         principal: data.principal,
         allowPartialPeriodInterestCalcualtion: data.allowPartialPeriodInterestCalculation
       };
+      console.log('loanTemplateEdit', this.loanTemplateEdit);
       this.createFormLoan();
     });
   }
@@ -1134,24 +1158,34 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   getCAE(periods?: any) {
     const installments = periods ? periods : this.loanTemplate?.repaymentSchedule?.periods;
     const cashFlows: number[] = [];
-    cashFlows.push(-installments[0].principalDisbursed);
-
-    for (let i = 1; i < installments.length; i++) {
-      const p = installments[i];
-      const payment = p.totalInstallmentAmountForPeriod ?? 0;
-      cashFlows.push(payment);
+    cashFlows.push(-this.projectData.amount);
+    if (!this.isFactoring) {
+      for (let i = 1; i < installments.length; i++) {
+        const p = installments[i];
+        const payment = p.totalInstallmentAmountForPeriod ?? 0;
+        cashFlows.push(payment);
+      }
+    } else {
+      cashFlows.push(this.getMontoAFinanciar);
     }
 
-    this.organizationService.getCae(cashFlows).subscribe((data) => {
-      console.log(data);
+    this.organizationService.getCae(cashFlows, this.projectData?.loanId).subscribe((data) => {
       this.caeValue = data;
       this.caeValue = this.caeValue;
     });
   }
 
+  formatAmount(event: any) {
+    const raw = event.target.value.replace(/[^0-9]/g, '');
+    const numericValue = Number(raw);
+
+    this.createForm.get('amount')?.setValue(numericValue, { emitEvent: false });
+
+    event.target.value = this.currencyPipe.transform(this.createForm.get('amount').value, '', '', '1.0-0') ?? '';
+  }
+
   getTotalCredit() {
     const montoFinanciar = this.getMontoAFinanciar;
-    console.log(this.getMontoAFinanciar);
     const extractDate = (arr: any): string => {
       if (!arr || arr.length !== 3) return '';
 
@@ -1169,10 +1203,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       principal: montoFinanciar,
       submittedOnDate: extractDate(this.loanTemplate.timeline?.submittedOnDate),
       expectedDisbursementDate: extractDate(this.loanTemplate.timeline?.expectedDisbursementDate),
-      loanTermFrequency: this.loanTemplate?.termFrequency,
+      loanTermFrequency: this.createForm.get('period').value,
       loanTermFrequencyType: this.loanTemplate?.termPeriodFrequencyType?.id,
-      numberOfRepayments: this.loanTemplate?.numberOfRepayments,
-      repaymentEvery: this.isFactoring ? 1 : this.loanTemplate?.repaymentEvery,
+      numberOfRepayments: this.isFactoring ? 1 : this.createForm.get('period').value,
+      repaymentEvery: this.isFactoring ? this.createForm.get('period').value : 1,
       repaymentFrequencyType: this.loanTemplate?.repaymentFrequencyType?.id,
       interestType: this.loanTemplate?.interestType?.id,
       isEqualAmortization: this.loanTemplate?.isEqualAmortization,

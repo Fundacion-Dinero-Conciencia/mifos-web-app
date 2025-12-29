@@ -43,6 +43,18 @@
             {{ projectData.status?.statusValue?.name }}
           </div>
         </div>
+        <button
+          mat-raised-button
+          color="primary"
+          *ngIf="
+            projectData.status?.statusValue?.name === 'En Formalización' ||
+            projectData.status?.statusValue?.name === 'En Financiamiento' ||
+            projectData.status?.statusValue?.name === 'En curso'
+          "
+          (click)="copyPublicUrl()"
+        >
+          Obtener Url publica del proyecto
+        </button>
       </mat-card-content>
     </mat-card>
   </div>

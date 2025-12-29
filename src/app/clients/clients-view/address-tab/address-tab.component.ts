@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormfieldBase } from 'app/shared/form-dialog/formfield/model/formfield-base';
 import { InputBase } from 'app/shared/form-dialog/formfield/model/input-base';
 import { SelectBase } from 'app/shared/form-dialog/formfield/model/select-base';
+import { MapsBase } from 'app/shared/form-dialog/formfield/model/maps-base';
 
 /** Custom Components */
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
@@ -187,45 +188,49 @@ export class AddressTabComponent {
     );
     formfields.push(
       this.isFieldEnabled('addressLine1')
-        ? new InputBase({
+        ? new MapsBase({
             controlName: 'addressLine1',
             label: this.translateService.instant('labels.inputs.Address Line') + ' 1',
             value: address ? address.addressLine1 : '',
             type: 'text',
+            controlType: 'maps',
             order: 3
           })
         : null
     );
     formfields.push(
       this.isFieldEnabled('addressLine2')
-        ? new InputBase({
+        ? new MapsBase({
             controlName: 'addressLine2',
             label: this.translateService.instant('labels.inputs.Address Line') + ' 2',
             value: address ? address.addressLine2 : '',
             type: 'text',
-            order: 4
+            order: 4,
+            controlType: 'maps'
           })
         : null
     );
     formfields.push(
       this.isFieldEnabled('addressLine3')
-        ? new InputBase({
+        ? new MapsBase({
             controlName: 'addressLine3',
             label: this.translateService.instant('labels.inputs.Address Line') + ' 3',
             value: address ? address.addressLine3 : '',
             type: 'text',
-            order: 5
+            order: 5,
+            controlType: 'maps'
           })
         : null
     );
     formfields.push(
       this.isFieldEnabled('townVillage')
-        ? new InputBase({
+        ? new MapsBase({
             controlName: 'townVillage',
             label: this.translateService.instant('labels.inputs.Town / Village'),
             value: address ? address.townVillage : '',
             type: 'text',
-            order: 6
+            order: 6,
+            controlType: 'maps'
           })
         : null
     );
@@ -285,6 +290,7 @@ export class AddressTabComponent {
         : null
     );
     formfields = formfields.filter((field) => field !== null);
+    console.log(formfields);
     return formfields;
   }
 }

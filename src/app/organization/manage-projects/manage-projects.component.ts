@@ -13,6 +13,7 @@ import { FormfieldBase } from 'app/shared/form-dialog/formfield/model/formfield-
 import { InputBase } from 'app/shared/form-dialog/formfield/model/input-base';
 import { environment } from 'environments/environment';
 import { OrganizationService } from '../organization.service';
+import { SettingsService } from 'app/settings/settings.service';
 
 @Component({
   selector: 'mifosx-manage-projects',
@@ -42,6 +43,7 @@ export class ManageProjectsComponent implements OnInit {
     'occupancyPercentage',
     'amount',
     'rate',
+    'creditType',
     'status',
     'actions'
   ];
@@ -72,7 +74,8 @@ export class ManageProjectsComponent implements OnInit {
     public dialog: MatDialog,
     private router: Router,
     private configurationWizardService: ConfigurationWizardService,
-    private popoverService: PopoverService
+    private popoverService: PopoverService,
+    private settingsService: SettingsService
   ) {
     this.route.data.subscribe((data: { projects: any }) => {
       this.projectsData = data.projects;
@@ -85,7 +88,23 @@ export class ManageProjectsComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.projectsData);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.projectUrl = `${environment.baseUrlProject}`;
+    if (window.location.href.includes('dev')) {
+      this.projectUrl = environment.baseUrlProject.replace('stg', 'dev');
+    } else if (window.location.href.includes('stg')) {
+      this.projectUrl = environment.baseUrlProject;
+    } else {
+      this.projectUrl = environment.baseUrlProjectProduction;
+    }
+  }
+
+  get tenantIdentifier(): string {
+    if (!this.settingsService.tenantIdentifier || this.settingsService.tenantIdentifier === '') {
+      return 'default';
+    }
+    return this.settingsService.tenantIdentifier;
+  }
+  setProjectUrl(project: any) {
+    return this.projectUrl + project.id + '?isPublicView=1&publicTenant=' + this.tenantIdentifier.trim();
   }
 
   applyOwnerFilter() {

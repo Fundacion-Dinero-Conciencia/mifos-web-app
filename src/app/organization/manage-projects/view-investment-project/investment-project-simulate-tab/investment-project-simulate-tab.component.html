@@ -103,13 +103,13 @@
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Product Type' | translate }} </mat-label>
-        <mat-select formControlName="basedInLoanProductId">
+        <mat-select formControlName="basedInLoanProductId" (selectionChange)="switchLoanProduct()">
           <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
             {{ loanProduct.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field fxFlex="24%">
+      <mat-form-field fxFlex="24%" *ngIf="!isFactoring">
         <mat-label>{{ 'labels.inputs.Credit Type' | translate }} </mat-label>
         <mat-select formControlName="creditTypeId">
           <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
@@ -119,7 +119,7 @@
       </mat-form-field>
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
-        <input matInput formControlName="amount" type="number" />
+        <input matInput formControlName="amount" (input)="formatAmount($event)" />
       </mat-form-field>
       <mat-form-field fxFlex="24%">
         <mat-label
@@ -342,7 +342,6 @@
       <i>*Recuerda guardar los cambios en comisiones para actualizar el monto a financiar.</i>
     </p>
     <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="100%" fxLayout.lt-md="column" class="m-t-20">
-      {{ projectData?.status?.statusValue?.name }}
       <button
         *ngIf="isEditingSimulation && projectData?.status?.statusValue?.name === 'En Borrador'"
         mat-raised-button

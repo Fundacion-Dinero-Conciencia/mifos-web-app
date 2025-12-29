@@ -137,7 +137,7 @@
             </mat-list-item>
           </div>
 
-          <div #projects class="custom-task">
+          <div #projects>
             <mat-list-item>
               <mat-icon matListIcon [routerLink]="['projects']">
                 <fa-icon icon="book" size="sm"></fa-icon>
@@ -150,8 +150,7 @@
               </p>
             </mat-list-item>
           </div>
-
-          <div #projectparticipations class="custom-task">
+          <div #projectparticipations>
             <mat-list-item>
               <mat-icon matListIcon [routerLink]="['project-participation']">
                 <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
@@ -334,6 +333,21 @@
               <p matLine *ngIf="arrowBooleans[17]" [routerLink]="['bulk-import']">
                 {{ 'labels.text.Bulk data import using excel spreadsheet templates' | translate }}
               </p>
+            </mat-list-item>
+          </div>
+          <div #conciliation>
+            <mat-list-item>
+              <mat-icon matListIcon [routerLink]="['bank-conciliation']">
+                <fa-icon icon="dollar-sign" size="sm"></fa-icon>
+              </mat-icon>
+              <h4 matLine [routerLink]="['bank-conciliation']">{{ 'labels.heading.Bank-conciliation' | translate }}</h4>
+              <fa-icon
+                (click)="arrowBooleansToggle(18)"
+                *ngIf="!arrowBooleans[18]"
+                icon="arrow-down"
+                size="md"
+              ></fa-icon>
+              <fa-icon (click)="arrowBooleansToggle(18)" *ngIf="arrowBooleans[18]" icon="arrow-up" size="md"></fa-icon>
             </mat-list-item>
           </div>
         </mat-nav-list>

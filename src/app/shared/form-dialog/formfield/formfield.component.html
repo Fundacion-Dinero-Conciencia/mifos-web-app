@@ -38,6 +38,34 @@
       </mat-error>
     </mat-form-field>
   </div>
+  <div *ngIf="formfield.controlType === 'maps'" fxFlexFill>
+    <mat-form-field fxFlexFill>
+      <mat-label>{{ formfield.label }}</mat-label>
+      <div class="adressContainer">
+        <gmpx-place-picker
+          #addressPicker
+          id="google-maps-place-picker"
+          (input)="onPlaceChanged($event, formfield.controlName)"
+          (gmpx-placechange)="onPlaceChanged($event, formfield.controlName)"
+          class="gmpx-place-picker"
+          placeholder="Escribe la dirección"
+        ></gmpx-place-picker>
+      </div>
+
+      <input
+        class="hiddenAddressInput"
+        type="text"
+        matInput
+        required
+        [formControlName]="formfield.controlName"
+        [required]="formfield.required"
+      />
+      <mat-error *ngIf="form.controls[formfield.controlName].hasError('required')">
+        {{ formfield.label }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.required' | translate }}</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
 
   <mat-form-field fxFlexFill *ngIf="formfield.controlType === 'datepicker'" (click)="datePicker.open()">
     <mat-label>{{ formfield.label }}</mat-label>

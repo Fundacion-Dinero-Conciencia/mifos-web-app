@@ -4,14 +4,17 @@ import { ActivatedRoute } from '@angular/router';
 import { UploadImageDialogComponent } from 'app/clients/clients-view/custom-dialogs/upload-image-dialog/upload-image-dialog.component';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
+import { SettingsService } from 'app/settings/settings.service';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'mifosx-investment-project-image-tab',
   templateUrl: './investment-project-image-tab.component.html',
   styleUrls: ['./investment-project-image-tab.component.scss']
 })
-export class InvestmentProjectImageTabComponent {
+export class InvestmentProjectImageTabComponent implements OnInit {
   imageData: any;
+  currency: string;
   coverImage: any;
   projectId: any;
   projectData: any;
@@ -37,6 +40,10 @@ export class InvestmentProjectImageTabComponent {
       this.projectData = data.accountData;
       this.imageData = data.imageData;
     });
+  }
+
+  ngOnInit(): void {
+    this.getDefaultCurrency();
   }
 
   shorten(content: string, length: number = 100): string {
@@ -71,6 +78,13 @@ export class InvestmentProjectImageTabComponent {
       this.getProjectImages();
     });
   }
+
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
+    });
+  }
+
   isValidImage(path: string): boolean {
     if (!path) return false;
     const ext = path.split('.').pop()?.toLowerCase();

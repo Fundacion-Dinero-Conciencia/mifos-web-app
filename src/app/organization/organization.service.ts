@@ -988,8 +988,8 @@ export class OrganizationService {
     return this.http.post(`/projectparticipation/assigntransaction`, body);
   }
 
-  getCae(data: number[]) {
-    return this.http.post(`/additionalExpenses/getTir`, data);
+  getCae(data: number[], loanId: number) {
+    return this.http.post(`/additionalExpenses/getTir?loanId=${loanId}`, data);
   }
   getSimulations(id: string) {
     return this.http.get(`/investmentproject/${id}/all-simulations`);
@@ -1013,6 +1013,28 @@ export class OrganizationService {
     return this.http.post(`/investmentgroup`, JSON.stringify(data), {
       headers: { 'Content-Type': 'application/json' }
     });
+  }
+
+  assignPayingById(
+    notificationId: string,
+    partitionList: {
+      loanId?: number;
+      amount: number;
+    }[]
+  ) {
+    return this.http.post(
+      `/shinkansen/payin-partitioner`,
+      JSON.stringify({
+        notificationId,
+        partitionList
+      }),
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+  getLoanDataByClientId(clientId: number) {
+    return this.http.get(`/shinkansen/loandata/${clientId}`);
   }
 
   getProjectParticipationPageable(filters: {
@@ -1053,5 +1075,35 @@ export class OrganizationService {
     }
 
     return this.http.get(`/projectparticipation/search/pageable`, { params });
+  }
+
+  getShinkansen(filters: {
+    page?: number;
+    size?: number;
+    sort?: string;
+    status?: number;
+    rut?: string;
+    startDate?: string;
+    endDate?: string;
+    clientTypeId?: number;
+    notificationId?: string;
+  }) {
+    let params = new HttpParams();
+
+    if (filters.page !== undefined) params = params.set('page', filters.page);
+    if (filters.size !== undefined) params = params.set('size', filters.size);
+    if (filters.sort) params = params.set('sort', filters.sort);
+
+    if (filters.status !== undefined) params = params.set('status', filters.status);
+    if (filters.rut) params = params.set('rut', filters.rut);
+
+    if (filters.startDate) params = params.set('startDate', filters.startDate);
+    if (filters.endDate) params = params.set('endDate', filters.endDate);
+
+    if (filters.clientTypeId !== undefined) params = params.set('clientTypeId', filters.clientTypeId);
+
+    if (filters.notificationId) params = params.set('notificationId', filters.notificationId);
+
+    return this.http.get(`/v1/shinkansen`, { params });
   }
 }

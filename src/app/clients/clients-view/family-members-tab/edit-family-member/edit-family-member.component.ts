@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ClientsService } from '../../../clients.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
-
+import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 /**
  * Edit Family Member Component
  */
@@ -16,7 +16,8 @@ import { Dates } from 'app/core/utils/dates';
   templateUrl: './edit-family-member.component.html',
   styleUrls: ['./edit-family-member.component.scss']
 })
-export class EditFamilyMemberComponent implements OnInit {
+export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
+  @ViewChild('addressPicker') addressPicker!: ElementRef;
   /** Maximum Due Date allowed. */
   maxDate = new Date();
   /** Add family member form. */
@@ -49,6 +50,18 @@ export class EditFamilyMemberComponent implements OnInit {
       this.familyMemberDetails = data.editFamilyMember;
       this.clientIdentifierCodes = data.clientIdentifierCodes.codeValues;
     });
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      const value = this.editFamilyMemberForm.controls['address'].value;
+      if (value && this.addressPicker?.nativeElement) {
+        const component = this.addressPicker.nativeElement;
+        const shadow = component.shadowRoot;
+        const inputEl = shadow?.querySelector('input');
+        inputEl.value = value;
+      }
+    }, 50);
   }
 
   ngOnInit() {
@@ -129,6 +142,28 @@ export class EditFamilyMemberComponent implements OnInit {
       .subscribe((res) => {
         this.router.navigate(['../../'], { relativeTo: this.route });
       });
+  }
+
+  onPlaceChanged(event: any, controlName: string): void {
+    let address: string | null = null;
+    const component = event.target;
+    const shadow = component.shadowRoot;
+    const inputEl = shadow?.querySelector('input');
+    if (inputEl?.value) {
+      address = inputEl?.value;
+    } else if (event?.detail?.place) {
+      const place = event.detail.place;
+      address = place.formattedAddress || place.formatted_address || place.name;
+    }
+
+    if (!address) {
+      return;
+    }
+
+    const control = this.editFamilyMemberForm.get(controlName);
+    control?.setValue(address);
+    control?.markAsDirty();
+    control?.markAsTouched();
   }
 
   getRelationValue() {

@@ -113,7 +113,9 @@ import {
   faReceipt,
   faTableCells,
   faSave,
-  faCircleCheck
+  faCircleCheck,
+  faExchangeAlt,
+  faCodeBranch
 } from '@fortawesome/free-solid-svg-icons';
 
 /**
@@ -239,7 +241,9 @@ export class IconsModule {
       faReceipt,
       faTableCells,
       faSave,
-      faCircleCheck
+      faCircleCheck,
+      faExchangeAlt,
+      faCodeBranch
     );
   }
 }
