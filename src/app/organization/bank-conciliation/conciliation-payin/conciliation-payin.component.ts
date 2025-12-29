@@ -191,11 +191,9 @@ export class ConciliationPayinComponent implements OnInit {
   viewAssignation(row: any) {
     this.detailedRow = row;
     this.selectedRowPartition = [
-      0,
       0
     ];
     this.inputsGroup = [
-      0,
       0
     ];
     this.assignDataSource.data = this.selectedRowPartition || [];
@@ -292,10 +290,12 @@ export class ConciliationPayinComponent implements OnInit {
   assignPayingById(id: string): void {
     this.selectedRowPartition = this.getValuesConciliation();
     const loans = this.getValuesLoanIds();
-    const listPayload = this.selectedRowPartition.map((amount, index) => ({
-      loanId: loans?.[index] || null,
-      amount
-    }));
+    const listPayload = this.selectedRowPartition
+      .map((amount, index) => ({
+        loanId: loans?.[index] || null,
+        amount
+      }))
+      .filter((item) => item.amount !== 0 && item.amount !== undefined && item.amount !== null);
     showGlobalLoader();
     this.organizationService.assignPayingById(id, listPayload).subscribe(() => {
       this.closeTransactionAssignation();
