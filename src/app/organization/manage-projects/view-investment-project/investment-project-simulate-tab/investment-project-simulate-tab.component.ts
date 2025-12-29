@@ -1142,7 +1142,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       cashFlows.push(payment);
     }
 
-    this.organizationService.getCae(cashFlows).subscribe((data) => {
+    this.organizationService.getCae(cashFlows, this.projectData?.loanId).subscribe((data) => {
       console.log(data);
       this.caeValue = data;
       this.caeValue = this.caeValue;
