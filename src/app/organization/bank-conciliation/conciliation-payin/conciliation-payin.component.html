@@ -245,11 +245,30 @@
               <th mat-header-cell *matHeaderCellDef>Ver detalle de pago</th>
               <td mat-cell *matCellDef="let row">
                 <button
+                  *ngIf="detailedRow && !isDebtorDetail"
                   [routerLink]="[
                     '/clients',
                     detailedRow.clientId,
                     'savings-accounts',
                     detailedRow.savingsAccountId,
+                    'transactions',
+                    row.transactionId
+                  ]"
+                  mat-raised-button
+                  color="primary"
+                  class="action-btn"
+                  matTooltip="Ver detalle de pago"
+                  (click)="$event.stopPropagation()"
+                >
+                  <fa-icon icon="eye"></fa-icon>
+                </button>
+                <button
+                  *ngIf="detailedRow && isDebtorDetail"
+                  [routerLink]="[
+                    '/clients',
+                    detailedRow.clientId,
+                    'loans-accounts',
+                    row.loanId,
                     'transactions',
                     row.transactionId
                   ]"
@@ -300,6 +319,17 @@
           {{ totalAssignedAmount | currency: currency }}
         </p>
       </section>
+      <section *ngIf="detailedRow && detailedRow.clientType?.name?.includes('Mixto')" class="mixClientSelector">
+        <p>¿A qué corresponde esta transferencia?</p>
+        <mat-radio-group
+          [(ngModel)]="isDebtorDetail"
+          class="clientTypeRadioGroup"
+          (ngModelChange)="onClientTypeChange($event)"
+        >
+          <mat-radio-button [value]="false">Inversionista</mat-radio-button>
+          <mat-radio-button [value]="true">Deudor</mat-radio-button>
+        </mat-radio-group>
+      </section>
       <section class="tableDetailContainer">
         <section class="tableDetailContainer">
           <table mat-table [dataSource]="assignDataSource" class="assignment-table">
@@ -309,7 +339,7 @@
               <td mat-cell *matCellDef="let row; let i = index">
                 <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p>
                 <select *ngIf="isDebtorDetail" id="loanSelector{{ i }}" [(ngModel)]="selectorsGroup[i]">
-                  <option value="" disabled selected>Selecciona</option>
+                  <option [value]="undefined" disabled selected>Selecciona</option>
                   <option
                     *ngFor="let loan of getNonSelectedLoansOptionsExceptLoanId(selectorsGroup[i])"
                     [value]="loan.loanId"

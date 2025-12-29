@@ -191,11 +191,9 @@ export class ConciliationPayinComponent implements OnInit {
   viewAssignation(row: any) {
     this.detailedRow = row;
     this.selectedRowPartition = [
-      0,
       0
     ];
     this.inputsGroup = [
-      0,
       0
     ];
     this.assignDataSource.data = this.selectedRowPartition || [];
@@ -214,6 +212,14 @@ export class ConciliationPayinComponent implements OnInit {
     this.selectorsGroup = [undefined];
     this.inputsGroup = [0];
     this.assignDataSource.data = this.selectedRowPartition || [];
+  }
+
+  onClientTypeChange() {
+    if (this.isDebtorDetail) {
+      this.viewAssignationDebtor(this.detailedRow);
+    } else {
+      this.viewAssignation(this.detailedRow);
+    }
   }
 
   deleteAmountByIndex(index: number): void {
