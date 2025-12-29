@@ -340,7 +340,6 @@
                       (getLoanById(selectorsGroup[i])?.totalAmount | currency: currency) +
                       ' que corresponde al saldo pendiente del subcrédito'
                   }}"
-                  matTooltipClass="tooltip-error"
                 >
                   <span>$</span
                   ><input
@@ -401,9 +400,7 @@
               <p>El monto será abonado automáticamente a la cuenta vista del cliente</p>
             </div>
           </article>
-          <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">
-            totalAssignedAmount">Debe asignar todo el monto disponible
-          </p>
+          <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">Debe asignar todo el monto disponible</p>
           <p *ngIf="isconfirming" class="important">
             Confirma la división de la transferencia. Esta acción no se puede revertir.
           </p>
