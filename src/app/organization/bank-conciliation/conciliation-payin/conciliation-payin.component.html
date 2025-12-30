@@ -127,10 +127,7 @@
           color="primary"
           class="action-btn"
           matTooltip="Ver detalle"
-          (click)="
-            $event.stopPropagation();
-            row.clientType?.name?.includes('Crédito') ? viewDetailsDebtor(row) : viewDetails(row)
-          "
+          (click)="$event.stopPropagation(); viewDetails(row)"
         >
           <fa-icon icon="eye"></fa-icon>
         </button>
@@ -264,14 +261,25 @@
                 </button>
                 <button
                   *ngIf="detailedRow && isDebtorDetail"
-                  [routerLink]="[
-                    '/clients',
-                    detailedRow.clientId,
-                    'loans-accounts',
-                    row.loanId,
-                    'transactions',
-                    row.transactionId
-                  ]"
+                  [routerLink]="
+                    !!row.loanId
+                      ? [
+                          '/clients',
+                          detailedRow.clientId,
+                          'loans-accounts',
+                          row.loanId,
+                          'transactions',
+                          row.transactionId
+                        ]
+                      : [
+                          '/clients',
+                          detailedRow.clientId,
+                          'savings-accounts',
+                          detailedRow.savingsAccountId,
+                          'transactions',
+                          row.transactionId
+                        ]
+                  "
                   mat-raised-button
                   color="primary"
                   class="action-btn"

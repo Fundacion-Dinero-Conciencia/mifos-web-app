@@ -175,7 +175,7 @@ export class ConciliationPayinComponent implements OnInit {
     this.applyFilters();
   }
 
-  viewDetails(row: any) {
+  viewDetailsInvestor(row: any) {
     this.isDebtorDetail = false;
     this.detailedRow = row;
     this.detailDataSource.data = row.transactionDataList || [];
@@ -188,6 +188,28 @@ export class ConciliationPayinComponent implements OnInit {
     this.detailDataSource.data = row.transactionDataList || [];
     this.showDialogTransactions = true;
   }
+
+  viewDetails(row: any) {
+    if (!row) {
+      return;
+    }
+    if (row.clientType.name.includes('Crédito')) {
+      this.viewDetailsDebtor(row);
+    } else if (row.clientType.name.includes('Inversión')) {
+      this.viewDetailsInvestor(row);
+    } else {
+      console.log(row.transactionDataList);
+      const isDebtor = row.transactionDataList.some(
+        (transaction: any) => transaction.loanId !== null && transaction.loanId !== undefined
+      );
+      if (isDebtor) {
+        this.viewDetailsDebtor(row);
+      } else {
+        this.viewDetailsInvestor(row);
+      }
+    }
+  }
+
   viewAssignation(row: any) {
     this.detailedRow = row;
     this.selectedRowPartition = [
