@@ -1039,6 +1039,9 @@ export class OrganizationService {
   getPromissoryNoteGroups(id: string) {
     return this.http.get(`/investmentgroup/all/project/${id}`);
   }
+  getLoanCalendarByLoanId(id: string) {
+    return this.http.get(`/loans/calendar/${id}`);
+  }
   getPromissoryNoteGroup(id: string) {
     return this.http.get(`/investmentgroup/signator/all/${id}`);
   }
@@ -1147,5 +1150,14 @@ export class OrganizationService {
     if (filters.notificationId) params = params.set('notificationId', filters.notificationId);
 
     return this.http.get(`/v1/shinkansen`, { params });
+  }
+  getPayoutItems(filters: { page?: number; size?: number; search?: string }): Observable<any> {
+    return this.http.get(`/shinkansen/loandata/payout`, {
+      params: {
+        page: filters.page.toString(),
+        size: filters.size.toString(),
+        search: filters.search || ''
+      }
+    });
   }
 }

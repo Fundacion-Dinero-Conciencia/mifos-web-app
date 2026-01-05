@@ -37,7 +37,7 @@ export class ConciliationMenuComponent implements OnInit {
       },
       {
         icon: 'assets/icons/transfer.png',
-        name: 'Payout',
+        name: 'payout',
         description:
           'Administra la conciliación de pagos salientes (Payout), relacionando las transferencias bancarias con las órdenes de pago generadas en el sistema.'
       },

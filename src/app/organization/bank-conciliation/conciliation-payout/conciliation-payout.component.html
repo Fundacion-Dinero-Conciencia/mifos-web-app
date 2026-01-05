@@ -1,0 +1,457 @@
+<main class="container">
+  <div fxLayoutAlign="flex-end center">
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/organization', 'bank-conciliation', 'payout', 'subcreditos']"
+    >
+      Generar orden de pago
+    </button>
+  </div>
+  <form [formGroup]="filters" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-between center">
+    <!-- Tipo de cliente -->
+    <mat-form-field fxFlex="30%" class="inputSearch m-b-10">
+      <mat-label>Tipo de operacion</mat-label>
+      <mat-select formControlName="operationType">
+        <mat-option *ngFor="let type of clientOptions" [value]="type.id">
+          {{ type.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- RUT -->
+    <!-- Id transacción -->
+    <mat-form-field fxFlex="30%" (click)="validFromDatePicker.open()">
+      <mat-label>Rango de fechas</mat-label>
+      <input matInput [matDatepicker]="validFromDatePicker" required formControlName="date" />
+      <mat-datepicker-toggle matSuffix [for]="validFromDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #validFromDatePicker></mat-datepicker>
+    </mat-form-field>
+    <!-- Estado -->
+    <mat-form-field fxFlex="30%" class="inputSearch m-b-10">
+      <mat-label>Estado</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let status of statusOptions" [value]="status.id">
+          {{ status.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Botones -->
+    <div fxFlex="100%" fxLayout="row" fxLayoutAlign="end center" class="m-b-10" fxLayoutGap="10px" class="m-r-20">
+      <button mat-raised-button color="primary" class="m-r-10" type="button" (click)="applyFilters()">Buscar</button>
+      <button mat-stroked-button color="primary" type="button" (click)="onClear()">Limpiar</button>
+    </div>
+  </form>
+  <table mat-table [dataSource]="dataSource" matSort class="m-t-25 conciliation-table">
+    <!-- Fecha Sistema -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.transactionDate | date: 'dd-MM-yyyy' }}
+      </td>
+    </ng-container>
+
+    <!-- RUT -->
+    <ng-container matColumnDef="investmentType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo de operación</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.rut }}
+      </td>
+    </ng-container>
+
+    <!-- Tipo de cliente -->
+    <ng-container matColumnDef="subCredit">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Subcrédito</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.clientType?.name || 'No encontrado' }}
+      </td>
+    </ng-container>
+
+    <!-- Cliente -->
+    <ng-container matColumnDef="loanNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>N° de pagaré</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.clientName || '-' }}
+      </td>
+    </ng-container>
+
+    <!-- ID transacción -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.notificationId }}
+      </td>
+    </ng-container>
+
+    <!-- Monto total -->
+    <ng-container matColumnDef="aprovedNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Registros aceptados</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.amount | currency: currency }}
+      </td>
+    </ng-container>
+
+    <!-- Nº de asignaciones -->
+    <ng-container matColumnDef="failNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Registros rechazados</th>
+      <td mat-cell *matCellDef="let row" style="text-align: center">
+        {{ row.transactionDataList?.length || '-' }}
+      </td>
+    </ng-container>
+
+    <!-- Estado -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+      <td mat-cell *matCellDef="let row">
+        <span
+          [ngClass]="{
+            'status-pill': true,
+            'status-pill--pending': row.conciliationStatus.value === 'PENDING',
+            'status-pill--assigned': row.conciliationStatus.value === 'ASSIGNED',
+            'status-pill--applied': row.conciliationStatus.value === 'APPLIED',
+            'status-pill--conciliated': row.conciliationStatus.value === 'CONCILIATED',
+            'status-pill--recieved': row.conciliationStatus.value === 'RECEIVED',
+            'status-pill--error': row.conciliationStatus.value === 'INVALID'
+          }"
+        ></span>
+        {{ getStatusLabel(row.conciliationStatus.value) }}
+      </td>
+    </ng-container>
+
+    <!-- Acciones -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          *ngIf="
+            (row.conciliationStatus.value === 'APPLIED' || row.conciliationStatus.value === 'CONCILIATED') &&
+            row.transactionDataList?.length > 0
+          "
+          mat-raised-button
+          color="primary"
+          class="action-btn"
+          matTooltip="Ver detalle"
+          (click)="$event.stopPropagation(); viewDetails(row)"
+        >
+          <fa-icon icon="eye"></fa-icon>
+        </button>
+        <button
+          *ngIf="row.conciliationStatus.value === 'RECEIVED'"
+          mat-raised-button
+          color="primary"
+          class="action-btn"
+          matTooltip="Dividir transferencias"
+          (click)="
+            $event.stopPropagation();
+            row.clientType?.name?.includes('Crédito') ? viewAssignationDebtor(row) : viewAssignation(row)
+          "
+        >
+          <fa-icon icon="code-branch"></fa-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Header y filas -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClick(row)" style="cursor: pointer"></tr>
+
+    <!-- Sin datos -->
+    <tr class="mat-row noContentTable" *matNoDataRow>
+      <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+        <div class="empty-state">
+          <fa-icon [icon]="filesvg" size="3x"></fa-icon>
+          <p>No hay transacciones para mostrar.</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Paginador -->
+  <mat-paginator
+    [length]="totalItems"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    showFirstLastButtons
+    (page)="onPageChange($event)"
+  >
+    ></mat-paginator
+  >
+
+  <mifosx-custom-dialog
+    [open]="showDialogTransactions"
+    [heading]="'Detalle de transacción'"
+    color="primary"
+    (confirm)="closeDetailedRow()"
+    (dismiss)="closeDetailedRow()"
+    (closed)="closeDetailedRow()"
+    [hideCancelButton]="true"
+    [confirmText]="'Submit'"
+    [disableConfirm]="false"
+  >
+    <main>
+      <section class="headerTransactionDetail">
+        <p>Monto de la transferencia:</p>
+        <p>
+          {{ detailedRow?.amount | currency: currency }}
+        </p>
+        <div class="loadingBar">
+          <div
+            [ngStyle]="{
+              width: detailedRow ? getConciliationProgress(detailedRow) + '%' : '0%'
+            }"
+          ></div>
+        </div>
+      </section>
+      <section class="tableDetailContainer">
+        <section class="tableDetailContainer">
+          <table mat-table [dataSource]="detailDataSource" class="assignment-table">
+            <!-- Asignación -->
+            <ng-container matColumnDef="assignment">
+              <th mat-header-cell *matHeaderCellDef>{{ isDebtorDetail ? 'Cuota' : 'Asignación' }}</th>
+              <td mat-cell *matCellDef="let row; let i = index">
+                <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p>
+                <p *ngIf="isDebtorDetail">{{ row.quotas || '-' }}</p>
+              </td>
+
+              <td></td
+            ></ng-container>
+
+            <!-- Proyecto -->
+            <ng-container matColumnDef="project">
+              <th mat-header-cell *matHeaderCellDef>Proyecto</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.projectName }}
+              </td>
+            </ng-container>
+
+            <!-- Monto -->
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef>Monto</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.amount | currency: currency }}
+              </td>
+            </ng-container>
+
+            <!-- ID de pago -->
+            <ng-container matColumnDef="paymentId">
+              <th mat-header-cell *matHeaderCellDef>ID de pago</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.transactionId }}
+              </td>
+            </ng-container>
+
+            <!-- Ver detalle de pago -->
+            <ng-container matColumnDef="view">
+              <th mat-header-cell *matHeaderCellDef>Ver detalle de pago</th>
+              <td mat-cell *matCellDef="let row">
+                <button
+                  *ngIf="detailedRow && !isDebtorDetail"
+                  [routerLink]="[
+                    '/clients',
+                    detailedRow.clientId,
+                    'savings-accounts',
+                    detailedRow.savingsAccountId,
+                    'transactions',
+                    row.transactionId
+                  ]"
+                  mat-raised-button
+                  color="primary"
+                  class="action-btn"
+                  matTooltip="Ver detalle de pago"
+                  (click)="$event.stopPropagation()"
+                >
+                  <fa-icon icon="eye"></fa-icon>
+                </button>
+                <button
+                  *ngIf="detailedRow && isDebtorDetail"
+                  [routerLink]="
+                    !!row.loanId
+                      ? [
+                          '/clients',
+                          detailedRow.clientId,
+                          'loans-accounts',
+                          row.loanId,
+                          'transactions',
+                          row.transactionId
+                        ]
+                      : [
+                          '/clients',
+                          detailedRow.clientId,
+                          'savings-accounts',
+                          detailedRow.savingsAccountId,
+                          'transactions',
+                          row.transactionId
+                        ]
+                  "
+                  mat-raised-button
+                  color="primary"
+                  class="action-btn"
+                  matTooltip="Ver detalle de pago"
+                  (click)="$event.stopPropagation()"
+                >
+                  <fa-icon icon="eye"></fa-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!-- Header y filas -->
+            <tr mat-header-row *matHeaderRowDef="detailDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: detailDisplayedColumns"></tr>
+          </table>
+        </section>
+      </section>
+    </main>
+  </mifosx-custom-dialog>
+  <mifosx-custom-dialog
+    [open]="showDialogAssignation"
+    [heading]="!isDebtorDetail ? 'Dividir transferencia en depósitos' : 'Asignar transferencia a subcréditos'"
+    color="primary"
+    (confirm)="isconfirming ? assignPayingById(detailedRow.internalId) : confirmAction()"
+    (dismiss)="closeTransactionAssignation()"
+    (closed)="closeTransactionAssignation()"
+    [confirmText]="isconfirming ? 'Confirm' : 'Submit'"
+    [disableConfirm]="disableConfirmAssign"
+  >
+    <main>
+      <section class="headerTransactionDetail">
+        <p>Monto de la transferencia:</p>
+        <p>
+          {{ detailedRow?.amount | currency: currency }}
+        </p>
+        <div class="loadingBar">
+          <div
+            [ngStyle]="{
+              width: (totalAssignedAmount / detailedRow?.amount) * 100 + '%' || '0%'
+            }"
+          ></div>
+        </div>
+        <p>Monto Asignado:</p>
+        <p class="bold">
+          {{ totalAssignedAmount | currency: currency }}
+        </p>
+      </section>
+      <section *ngIf="detailedRow && detailedRow.clientType?.name?.includes('Mixto')" class="mixClientSelector">
+        <p>¿A qué corresponde esta transferencia?</p>
+        <mat-radio-group
+          [(ngModel)]="isDebtorDetail"
+          class="clientTypeRadioGroup"
+          (ngModelChange)="onClientTypeChange($event)"
+        >
+          <mat-radio-button [value]="false">Inversionista</mat-radio-button>
+          <mat-radio-button [value]="true">Deudor</mat-radio-button>
+        </mat-radio-group>
+      </section>
+      <section class="tableDetailContainer">
+        <section class="tableDetailContainer">
+          <table mat-table [dataSource]="assignDataSource" class="assignment-table">
+            <!-- Asignación -->
+            <ng-container matColumnDef="assignment">
+              <th mat-header-cell *matHeaderCellDef>{{ isDebtorDetail ? 'Subcrédito' : 'Asignación' }}</th>
+              <td mat-cell *matCellDef="let row; let i = index">
+                <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p>
+                <select *ngIf="isDebtorDetail" id="loanSelector{{ i }}" [(ngModel)]="selectorsGroup[i]">
+                  <option [value]="undefined" disabled selected>Selecciona</option>
+                  <option
+                    *ngFor="let loan of getNonSelectedLoansOptionsExceptLoanId(selectorsGroup[i])"
+                    [value]="loan.loanId"
+                  >
+                    {{ loan.creditType }}-{{ loan.accountNo }}
+                  </option>
+                </select>
+              </td>
+            </ng-container>
+
+            <!-- Monto -->
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef>Monto</th>
+              <td
+                mat-cell
+                *matCellDef="let amount; let i = index"
+                [ngClass]="{
+                  'InputValuePartition--error':
+                    selectorsGroup[i] && getLoanById(selectorsGroup[i])?.totalAmount < inputsGroup[i]
+                }"
+              >
+                <div
+                  [matTooltipDisabled]="
+                    !(selectorsGroup[i] && getLoanById(selectorsGroup[i])?.totalAmount < inputsGroup[i])
+                  "
+                  matTooltip="{{
+                    'No puedes pagar más de ' +
+                      (getLoanById(selectorsGroup[i])?.totalAmount | currency: currency) +
+                      ' que corresponde al saldo pendiente del subcrédito'
+                  }}"
+                >
+                  <span>$</span
+                  ><input
+                    [(ngModel)]="inputsGroup[i]"
+                    type="number"
+                    class="InputValuePartition"
+                    [disabled]="isconfirming"
+                    id="amountInput{{ i }}"
+                  />
+                  <span>CLP</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Ver detalle de pago -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Accciones</th>
+              <td mat-cell *matCellDef="let row; let i = index">
+                <button
+                  *ngIf="isDebtorDetail ? i > 0 : i > 0"
+                  mat-raised-button
+                  color="primary"
+                  class="action-btn"
+                  matTooltip="Borrar asignación"
+                  (click)="$event.stopPropagation(); deleteAmountByIndex(index)"
+                >
+                  <fa-icon icon="trash"></fa-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!-- Header y filas -->
+            <tr mat-header-row *matHeaderRowDef="assignDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: assignDisplayedColumns"></tr>
+          </table>
+
+          <button
+            *ngIf="(isDebtorDetail && NonSelectedLoansOptions.length > 0) || !isDebtorDetail"
+            class="addAsignationButton"
+            (click)="addAssinmentAmount()"
+          >
+            <fa-icon icon="plus"></fa-icon>
+            Agregar asignación
+          </button>
+          <article
+            class="debtorAdvice"
+            *ngIf="
+              !!detailedRow &&
+              isDebtorDetail &&
+              totalAssignedAmount > 0 &&
+              detailedRow.amount !== totalAssignedAmount &&
+              totalAssignedAmount <= detailedRow.amount
+            "
+          >
+            <span class="infoIcon">𝐢</span>
+            <div>
+              <h3>Monto a cuenta vista: {{ detailedRow?.amount - totalAssignedAmount | currency: currency }}</h3>
+              <p>El monto será abonado automáticamente a la cuenta vista del cliente</p>
+            </div>
+          </article>
+          <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">Debe asignar todo el monto disponible</p>
+          <p *ngIf="isconfirming" class="important">
+            Confirma la división de la transferencia. Esta acción no se puede revertir.
+          </p>
+          <p *ngIf="detailedRow && detailedRow.amount < totalAssignedAmount" class="ErrorText">
+            El monto ingresado es mayor al monto disponible. Ajusta el valor para continuar.
+          </p>
+        </section>
+      </section>
+    </main>
+  </mifosx-custom-dialog>
+</main>

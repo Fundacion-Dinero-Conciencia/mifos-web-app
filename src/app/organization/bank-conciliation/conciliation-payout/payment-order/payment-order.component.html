@@ -1,0 +1,171 @@
+<div class="container">
+  <!-- Top: Volver -->
+  <div fxLayout="row" fxLayoutAlign="end center" class="m-b-15">
+    <button class="outlinedButton" [routerLink]="['../']">Volver</button>
+  </div>
+
+  <!-- Título -->
+  <div class="m-b-10">
+    <h2 class="bc-title bc-title--section">Orden de pago</h2>
+    <div class="bc-subtitle">Pagaré #{{ promissoryNo }} - Subcrédito{{ subCreditNo }} - Cuota #{{ installmentNo }}</div>
+  </div>
+
+  <!-- Alert/Info box -->
+  <div class="infoBox m-b-20" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
+    <span class="infoBox__icon">ⓘ</span>
+
+    <div class="infoBox__content">
+      <div class="infoBox__title">Dispersión de cuota pagada</div>
+      <div class="infoBox__text">
+        Se generará la nómina de pago con los inversionistas seleccionados. Puedes desmarcar inversiones que no deben
+        incluirse en esta nómina por casos excepcionales.
+      </div>
+    </div>
+  </div>
+
+  <!-- Search + Monto a pagar label -->
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" class="m-b-10">
+    <mat-form-field class="inputSearch" fxFlex="50%">
+      <mat-label>Buscar por nombre o RUT de inversionista</mat-label>
+      <input matInput type="text" (input)="onFilter($any($event.target).value)" />
+      <button mat-icon-button matSuffix aria-label="Buscar">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="rightLabel">Monto a pagar</div>
+  </div>
+
+  <!-- Included bar -->
+  <div class="includedBar m-b-10" fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+      <div class="includedBar__text">
+        Inversiones incluidas <b>{{ includedCount }}</b> de <b>{{ totalCount }}</b>
+      </div>
+    </div>
+
+    <div class="includedBar__total">
+      Total a dispersar en nómina:
+      <b>{{ totalToDisperse | currency: currency : 'symbol-narrow' }}</b>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="bc-table mat-elevation-z0">
+    <table mat-table [dataSource]="dataSource" class="bc-table__table">
+      <!-- Check -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef class="col-select"></th>
+        <td mat-cell *matCellDef="let row" class="col-select">
+          <mat-checkbox [checked]="row.selected" (change)="toggleRow(row, $event.checked)"> </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Inversionista -->
+      <ng-container matColumnDef="investor">
+        <th mat-header-cell *matHeaderCellDef>Inversionista</th>
+        <td mat-cell *matCellDef="let row">
+          <a class="linkStyle" [routerLink]="row.investorLink || []">{{ row.investorName }}</a>
+        </td>
+      </ng-container>
+
+      <!-- RUT -->
+      <ng-container matColumnDef="rut">
+        <th mat-header-cell *matHeaderCellDef>RUT</th>
+        <td mat-cell *matCellDef="let row">{{ row.rut }}</td>
+      </ng-container>
+
+      <!-- Participación -->
+      <ng-container matColumnDef="participation">
+        <th mat-header-cell *matHeaderCellDef>Participación</th>
+        <td mat-cell *matCellDef="let row">{{ row.participation }}</td>
+      </ng-container>
+
+      <!-- Monto cuota a pagar -->
+      <ng-container matColumnDef="installmentAmount">
+        <th mat-header-cell *matHeaderCellDef>Monto cuota a pagar</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.installmentAmount | currency: currency : 'symbol-narrow' }}
+        </td>
+      </ng-container>
+
+      <!-- Monto a pagar (editable) -->
+      <ng-container matColumnDef="amountToPay">
+        <th mat-header-cell *matHeaderCellDef>Monto a pagar</th>
+        <td mat-cell *matCellDef="let row" class="cell-input">
+          <mat-form-field appearance="outline" class="tableInput">
+            <input
+              matInput
+              type="text"
+              [disabled]="!row.selected"
+              [(ngModel)]="row.amountToPay"
+              (ngModelChange)="onRowEdited(row)"
+            />
+            <span matSuffix class="suffixCurrency">{{ currency }}</span>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Monto a reinvertir (editable) -->
+      <ng-container matColumnDef="amountToReinvest">
+        <th mat-header-cell *matHeaderCellDef>Monto a reinvertir</th>
+        <td mat-cell *matCellDef="let row" class="cell-input">
+          <mat-form-field appearance="outline" class="tableInput">
+            <input
+              matInput
+              type="text"
+              [disabled]="!row.selected"
+              [(ngModel)]="row.amountToReinvest"
+              (ngModelChange)="onRowEdited(row)"
+            />
+            <span matSuffix class="suffixCurrency">{{ currency }}</span>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      showFirstLastButtons
+      (page)="onPageChange($event)"
+    >
+    </mat-paginator>
+  </div>
+
+  <!-- Footer buttons -->
+  <div class="footerBar m-t-25" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="48px">
+    <button class="outlinedButton" (click)="onCancel()">Cancelar</button>
+
+    <button mat-raised-button color="primary" (click)="onSaveChanges()">Guardar cambios</button>
+
+    <button mat-raised-button color="accent" class="btnGreen" (click)="onGeneratePayroll()">
+      Generar nómina de pago
+    </button>
+  </div>
+</div>
+<mifosx-custom-dialog
+  [open]="showDialog"
+  [heading]="'Confirmar generación de nómina'"
+  color="primary"
+  (confirm)="generatePayment()"
+  (dismiss)="showDialog = false"
+  (closed)="showDialog = false"
+  [confirmText]="'GeneratePayRoll'"
+>
+  <p class="biggerFont m-b-0">
+    Estás a punto de generar la nómina de pago con las inversiones seleccionadas correspondiente al Pagaré
+  </p>
+
+  <p class="biggerFont">#12345 – Subcrédito TEST46TSTC01 – Cuota #2</p>
+
+  <article fxLayout="row" class="dangerAdvertistment biggerFont">
+    <div class="colorIcon">⚠︎</div>
+    <p>Esta acción es irreversible y no podrá ser modificada posteriormente por el usuario.</p>
+  </article>
+</mifosx-custom-dialog>
