@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/build_scan_push_img.yml@v10
+    uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/build_scan_push_img.yml@v9
     with:
       environment: pro
     secrets:
