@@ -485,15 +485,18 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   switchEditingSimulation(row: any) {
-    this.selectedSimulation = row;
-    this.isCreatingSimulation = !this.isCreatingSimulation;
-    this.isEditingSimulation = !this.isEditingSimulation;
-    if (this.isEditingSimulation) {
-      this.addQueryParam(1);
-      this.getLoanTemplate();
+    console.log('Dataa: ', this.projectData);
+    if (this.projectData?.status?.statusValue?.name == 'En Borrador') {
+      this.selectedSimulation = row;
+      this.isCreatingSimulation = !this.isCreatingSimulation;
+      this.isEditingSimulation = !this.isEditingSimulation;
+      if (this.isEditingSimulation) {
+        this.addQueryParam(1);
+        this.getLoanTemplate();
+      }
+      this.setFormValuesToEdit();
+      this.createForm.disable();
     }
-    this.setFormValuesToEdit();
-    this.createForm.disable();
   }
 
   get generalPurposeprojectId(): string {
