@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,23 +13,24 @@ import { SelectDialogComponent } from '../select-dialog/select-dialog.component'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-
+import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
   styleUrls: ['./manage-project-participation.component.scss']
 })
-export class ManageProjectParticipationComponent implements OnInit {
+export class ManageProjectParticipationComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   projectParticipationsData: any[] = [];
   dataSource: MatTableDataSource<any>;
   currency: string;
   loading: boolean = false;
   displayedColumns: string[] = [
-    'project',
-    'RUT',
-    'participant',
+    'projectName',
+    'rut',
+    'participantName',
     'amount',
     'commission',
     'paymentType',
@@ -37,6 +38,8 @@ export class ManageProjectParticipationComponent implements OnInit {
     'status',
     'actions'
   ];
+
+  sortColumn: string = '';
   selectedItems: any[] = [];
   selectedInvests: any[] = [];
   amountToInvest: number = 0;
@@ -67,7 +70,8 @@ export class ManageProjectParticipationComponent implements OnInit {
       .getInvestmentProjectParticipations({
         page: this.pageIndex,
         size: this.pageSize,
-        search: this.filterText
+        search: this.filterText,
+        sort: this.sortColumn
       })
       .subscribe((data: any) => {
         this.projectParticipationsData = data.content;
@@ -80,7 +84,12 @@ export class ManageProjectParticipationComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.loadParticipations();
   }
-
+  onSortChange(sort: any) {
+    this.sortColumn = sort.active;
+    console.log(sort);
+    this.paginator.firstPage();
+    this.loadParticipations();
+  }
   openAssignTransfersDialog(reservation: any) {
     this.reservationSelected = reservation;
     this.getTransactions(reservation.participantId, reservation.id);
@@ -91,14 +100,16 @@ export class ManageProjectParticipationComponent implements OnInit {
     100: 'Accepted',
     200: 'Pending',
     300: 'Canceled',
-    400: 'Reserved'
+    400: 'Reserved',
+    500: 'Assigned'
   };
 
   statuses = [
     { id: 100 },
     { id: 200 },
     { id: 300 },
-    { id: 400 }];
+    { id: 400 },
+    { id: 500 }];
   constructor(
     private route: ActivatedRoute,
     private organizationservice: OrganizationService,
@@ -148,7 +159,32 @@ export class ManageProjectParticipationComponent implements OnInit {
       return matchesStatus && matchesText;
     };
   }
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (item: any, property: string) => {
+      if (property === 'createdOnDate') {
+        const v = item.createdOnDate;
 
+        // Mifos: [YYYY, M, D]
+        if (Array.isArray(v)) {
+          const [
+            y,
+            m,
+            d
+          ] = v;
+          return new Date(y, m - 1, d).getTime();
+        }
+
+        // Por si viene string/Date
+        return v ? new Date(v).getTime() : 0;
+      }
+      if (property === 'status') {
+        return item.status?.value;
+      }
+
+      return item[property];
+    };
+  }
   getTransactions(participantId: number, paticipationId: number) {
     this.organizationservice.getTransactions(participantId, paticipationId).subscribe((data: any) => {
       this.dataSourceInvestSelection = new MatTableDataSource(data);
