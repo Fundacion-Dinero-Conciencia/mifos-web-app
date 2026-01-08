@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,12 +10,18 @@ import { SystemService } from 'app/system/system.service';
 import { finalize } from 'rxjs/operators';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
   styleUrls: ['./manage-project-participation.component.scss']
 })
 export class ManageProjectParticipationComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   projectParticipationsData: any[] = [];
   dataSource: MatTableDataSource<any>;
   currency: string;
@@ -36,10 +42,14 @@ export class ManageProjectParticipationComponent implements OnInit {
   amountToInvest: number = 0;
   filterStatus: string = '';
   filterText: string = '';
+  private valueText$ = new Subject<string>();
   reservationSelected: any;
   showDialog = false;
   dataSourceInvestSelection: MatTableDataSource<any> = new MatTableDataSource<any>();
-
+  pageSize = 5;
+  pageIndex = 0;
+  totalItems = 0;
+  byProjectParticipationList = false;
   displayedColumnsInvestSelection: string[] = [
     'Date',
     'Bank',
@@ -50,6 +60,25 @@ export class ManageProjectParticipationComponent implements OnInit {
 
   onDialogCancel() {
     this.showDialog = false;
+  }
+
+  loadParticipations() {
+    this.organizationservice
+      .getInvestmentProjectParticipations({
+        page: this.pageIndex,
+        size: this.pageSize,
+        search: this.filterText
+      })
+      .subscribe((data: any) => {
+        this.projectParticipationsData = data.content;
+        this.totalItems = data.totalElements;
+        this.dataSource.data = this.projectParticipationsData;
+      });
+  }
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadParticipations();
   }
 
   openAssignTransfersDialog(reservation: any) {
@@ -80,13 +109,13 @@ export class ManageProjectParticipationComponent implements OnInit {
     private systemService: SystemService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
-      this.projectParticipationsData = [];
-      data.projectparticipations.forEach((item: any) => {
-        item.createdOnDate = new Date(item.createdOnDate);
-        this.projectParticipationsData.push(item);
-      });
       this.applyOwnerFilter();
-      this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+      this.dataSource = new MatTableDataSource([]);
+      if (data.projectparticipations) {
+        this.projectParticipationsData = data.projectparticipations;
+        this.dataSource.data = this.projectParticipationsData;
+        this.byProjectParticipationList = true;
+      }
     });
   }
 
@@ -97,10 +126,17 @@ export class ManageProjectParticipationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dataSource = new MatTableDataSource([]);
     this.getDefaultCurrency();
-    this.dataSource = new MatTableDataSource(this.projectParticipationsData);
+    if (!this.byProjectParticipationList) {
+      this.loadParticipations();
+    }
     this.dataSourceInvestSelection = new MatTableDataSource([]);
-
+    this.valueText$.pipe(debounceTime(400), distinctUntilChanged()).subscribe((value) => {
+      this.paginator.firstPage();
+      this.filterText = value;
+      this.loadParticipations();
+    });
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
       const parsedFilter = JSON.parse(filter);
       const matchesStatus = !parsedFilter.status || data.status?.value === parsedFilter.status;
@@ -120,11 +156,7 @@ export class ManageProjectParticipationComponent implements OnInit {
   }
 
   applyFilter(filterValue: string) {
-    this.filterText = filterValue.trim().toLowerCase();
-    this.dataSource.filter = JSON.stringify({
-      status: this.filterStatus,
-      text: this.filterText
-    });
+    this.valueText$.next(filterValue.trim().toLowerCase());
   }
   applySelectFilter(filterValue: string) {
     this.filterStatus = filterValue;
