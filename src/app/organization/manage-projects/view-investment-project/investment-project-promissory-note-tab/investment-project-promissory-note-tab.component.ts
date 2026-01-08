@@ -295,7 +295,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         data: {
           heading: '¿Deseas continuar?',
-          dialogContext: `Convertir a pagaré. Al consolidar este grupo, ya no podrás editar la información ni mover inversionistas. El grupo de pagaré quedará en modo consulta y pasará a estado Aprobado con fecha ${this.getTodayFormatted()} Solo podrás visualizar la información y generar el último pagaré emitido.`
+          dialogContext: `Convertir a pagaré. Al consolidar este grupo, ya no podrás editar la información ni mover inversionistas. El grupo de pagaré quedará en modo consulta y pasará a estado Aprobado con fecha ${this.datePipe.transform(this.systemDate, 'dd MMMM yyyy', '', 'es')} Solo podrás visualizar la información y generar el último pagaré emitido.`
         }
       });
       dialogRef.afterClosed().subscribe((response: { confirm: any }) => {
@@ -303,7 +303,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
           const data = {
             dateFormat: 'dd MMMM yyyy',
             locale: 'es',
-            signedDate: this.datePipe.transform(new Date(), 'dd MMMM yyyy', '', 'es')
+            signedDate: this.datePipe.transform(this.systemDate, 'dd MMMM yyyy', '', 'es')
           };
 
           this.organizationService.editInsvestmentGroup(NoteId, JSON.stringify(data)).subscribe((response) => {

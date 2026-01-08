@@ -26,8 +26,6 @@ export class ManageProjectParticipationsResolver implements Resolve<Object> {
     const projectId = route.params.projectId;
     if (projectId) {
       return this.organizationService.getInvestmentProjectParticipationsByProjectId(projectId);
-    } else {
-      return this.organizationService.getInvestmentProjectParticipations();
     }
   }
 }

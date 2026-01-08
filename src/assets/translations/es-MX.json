@@ -2753,6 +2753,8 @@
       "Accounting": "Contabilidad",
       "Accounting Closures": "Cierres Contables",
       "Accounting Rules": "Reglas de contabilidad",
+      "Approved": "Aprobado",
+      "Pending": "Pendiente",
       "Accounting to journal entries": "En Mifos X, puede cerrar la contabilidad a los asientos del diario. Los cierres se pueden aplicar a todas las sucursales o a cada sucursal por separado. Es importante que las organizaciones cierren la contabilidad periódicamente para evitar transacciones que afecten los libros contables.",
       "Accounts linked to Financial Activities": "Las cuentas vinculadas a actividades financieras son cuentas asignadas que se necesitan para realizar transacciones contables que generen el sistema.",
       "Accrues income, expenses and liabilities": "Devenga ingresos, gastos y pasivos a la fecha proporcionada.",

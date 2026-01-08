@@ -866,8 +866,25 @@ export class OrganizationService {
     return this.http.post(`/projectparticipation`, payload);
   }
 
-  getInvestmentProjectParticipations(): Observable<any> {
-    return this.http.get('/projectparticipation/all');
+  getInvestmentProjectParticipations(payload: {
+    page?: number;
+    size?: number;
+    search?: string;
+    sort?: string;
+  }): Observable<any> {
+    const params: any = {
+      page: payload.page?.toString() || '0',
+      size: payload.size?.toString() || '5'
+    };
+
+    if (payload.sort) {
+      params.sort = payload.sort;
+    }
+    if (payload.search) {
+      params.search = payload.search;
+    }
+
+    return this.http.get('/projectparticipation/all', { params });
   }
 
   getInvestmentProjectParticipationsByProjectId(projectId: string): Observable<any> {

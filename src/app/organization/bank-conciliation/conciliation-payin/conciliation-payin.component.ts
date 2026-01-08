@@ -175,7 +175,7 @@ export class ConciliationPayinComponent implements OnInit {
     this.applyFilters();
   }
 
-  viewDetails(row: any) {
+  viewDetailsInvestor(row: any) {
     this.isDebtorDetail = false;
     this.detailedRow = row;
     this.detailDataSource.data = row.transactionDataList || [];
@@ -188,14 +188,34 @@ export class ConciliationPayinComponent implements OnInit {
     this.detailDataSource.data = row.transactionDataList || [];
     this.showDialogTransactions = true;
   }
+
+  viewDetails(row: any) {
+    if (!row) {
+      return;
+    }
+    if (row.clientType.name.includes('Crédito')) {
+      this.viewDetailsDebtor(row);
+    } else if (row.clientType.name.includes('Inversión')) {
+      this.viewDetailsInvestor(row);
+    } else {
+      console.log(row.transactionDataList);
+      const isDebtor = row.transactionDataList.some(
+        (transaction: any) => transaction.loanId !== null && transaction.loanId !== undefined
+      );
+      if (isDebtor) {
+        this.viewDetailsDebtor(row);
+      } else {
+        this.viewDetailsInvestor(row);
+      }
+    }
+  }
+
   viewAssignation(row: any) {
     this.detailedRow = row;
     this.selectedRowPartition = [
-      0,
       0
     ];
     this.inputsGroup = [
-      0,
       0
     ];
     this.assignDataSource.data = this.selectedRowPartition || [];
@@ -214,6 +234,14 @@ export class ConciliationPayinComponent implements OnInit {
     this.selectorsGroup = [undefined];
     this.inputsGroup = [0];
     this.assignDataSource.data = this.selectedRowPartition || [];
+  }
+
+  onClientTypeChange() {
+    if (this.isDebtorDetail) {
+      this.viewAssignationDebtor(this.detailedRow);
+    } else {
+      this.viewAssignation(this.detailedRow);
+    }
   }
 
   deleteAmountByIndex(index: number): void {
@@ -284,10 +312,12 @@ export class ConciliationPayinComponent implements OnInit {
   assignPayingById(id: string): void {
     this.selectedRowPartition = this.getValuesConciliation();
     const loans = this.getValuesLoanIds();
-    const listPayload = this.selectedRowPartition.map((amount, index) => ({
-      loanId: loans?.[index] || null,
-      amount
-    }));
+    const listPayload = this.selectedRowPartition
+      .map((amount, index) => ({
+        loanId: loans?.[index] || null,
+        amount
+      }))
+      .filter((item) => item.amount !== 0 && item.amount !== undefined && item.amount !== null);
     showGlobalLoader();
     this.organizationService.assignPayingById(id, listPayload).subscribe(() => {
       this.closeTransactionAssignation();
