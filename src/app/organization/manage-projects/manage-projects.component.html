@@ -115,6 +115,15 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.id]" class="select-row"></tr>
     </table>
 
-    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      showFirstLastButtons
+      (page)="onPageChange($event)"
+    >
+      ></mat-paginator
+    >
   </div>
 </div>

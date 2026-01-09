@@ -846,8 +846,29 @@ export class OrganizationService {
     return this.http.get(`/investmentproject/historyStatus?id=${projectId}`);
   }
 
-  getInvestmentProjects(): Observable<any> {
-    return this.http.get('/investmentproject/all');
+  getInvestmentProjects(payload: {
+    page?: number;
+    size?: number;
+    search?: string;
+    sort?: string;
+    status?: string;
+  }): Observable<any> {
+    const params: any = {
+      page: payload.page?.toString() || '0',
+      size: payload.size?.toString() || '5'
+    };
+
+    if (payload.sort) {
+      params.sort = payload.sort;
+    }
+    if (payload.search) {
+      params.search = payload.search;
+    }
+    if (payload.status) {
+      params.status = payload.status;
+    }
+
+    return this.http.get('/investmentproject/all', { params });
   }
 
   getInvestmentProject(projectId: any): Observable<any> {
@@ -871,6 +892,7 @@ export class OrganizationService {
     size?: number;
     search?: string;
     sort?: string;
+    status?: string;
   }): Observable<any> {
     const params: any = {
       page: payload.page?.toString() || '0',
@@ -882,6 +904,9 @@ export class OrganizationService {
     }
     if (payload.search) {
       params.search = payload.search;
+    }
+    if (payload.status) {
+      params.status = payload.status;
     }
 
     return this.http.get('/projectparticipation/all', { params });

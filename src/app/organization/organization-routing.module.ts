@@ -111,7 +111,6 @@ import { PromissoryNoteGroupResolver } from './manage-projects/investment-projec
 import { InvestmentProjectTemplateResolver } from './manage-projects/investment-project-template.resolver';
 import { ManageProjectResolver } from './manage-projects/manage-project.resolver';
 import { ManageProjectsComponent } from './manage-projects/manage-projects.component';
-import { ManageProjectsResolver } from './manage-projects/manage-projects.resolver';
 import { StatusHistoryProjectResolver } from './manage-projects/status-history-project.resolver';
 import { InvestmentProjectCommissionTabComponent } from './manage-projects/view-investment-project/investment-project-commission-tab/investment-project-commission-tab.component';
 import { InvestmentProjectTabComponent } from './manage-projects/view-investment-project/investment-project-documents-tab/investment-project-documents-tab.component';
@@ -758,10 +757,7 @@ const routes: Routes = [
           children: [
             {
               path: '',
-              component: ManageProjectsComponent,
-              resolve: {
-                projects: ManageProjectsResolver
-              }
+              component: ManageProjectsComponent
             },
             {
               path: 'create',
@@ -994,7 +990,6 @@ const routes: Routes = [
     LoanProvisioningCriteriaAndTemplateResolver,
     StandingInstructionsTemplateResolver,
     AdvanceSearchTemplateResolver,
-    ManageProjectsResolver,
     ManageProjectResolver,
     InvestmentProjectTemplateResolver,
     ManageProjectParticipationsResolver,
