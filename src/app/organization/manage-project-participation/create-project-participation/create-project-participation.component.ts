@@ -203,7 +203,8 @@ export class CreateProjectParticipationComponent implements OnInit, AfterViewIni
         var commissionValue = data?.approvedPrincipal * this.investmentFee * periods * percentageParticipation;
         const rawValue = commissionValue / 100;
         const rounded = Math.round(rawValue);
-        this.projectParticipationForm.get('commission')?.setValue(rounded);
+        console.log(rounded);
+        this.projectParticipationForm.get('commission')?.setValue(rounded > 0 ? rounded : 0);
       });
     }
   }
