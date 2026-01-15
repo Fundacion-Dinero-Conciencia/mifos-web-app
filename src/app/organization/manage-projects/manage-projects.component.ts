@@ -14,6 +14,8 @@ import { InputBase } from 'app/shared/form-dialog/formfield/model/input-base';
 import { environment } from 'environments/environment';
 import { OrganizationService } from '../organization.service';
 import { SettingsService } from 'app/settings/settings.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'mifosx-manage-projects',
@@ -51,11 +53,16 @@ export class ManageProjectsComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
 
   projectUrl: string;
+  pageSize = 5;
+  pageIndex = 0;
+  totalItems = 0;
+  filterText: string = '';
 
   /** Paginator for charges table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   /** Sorter for charges table. */
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  private valueText$ = new Subject<string>();
 
   /**
    * Retrieves the manage funds data from `resolve`.
@@ -77,17 +84,18 @@ export class ManageProjectsComponent implements OnInit {
     private popoverService: PopoverService,
     private settingsService: SettingsService
   ) {
-    this.route.data.subscribe((data: { projects: any }) => {
-      this.projectsData = data.projects;
-      this.dataSource = new MatTableDataSource(this.projectsData);
-    });
     this.applyOwnerFilter();
   }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.projectsData);
-    this.dataSource.paginator = this.paginator;
+    this.dataSource = new MatTableDataSource([]);
     this.dataSource.sort = this.sort;
+    this.loadProjects();
+    this.valueText$.pipe(debounceTime(400), distinctUntilChanged()).subscribe((value) => {
+      this.paginator.firstPage();
+      this.filterText = value as string;
+      this.loadProjects();
+    });
     if (window.location.href.includes('dev')) {
       this.projectUrl = environment.baseUrlProject.replace('stg', 'dev');
     } else if (window.location.href.includes('stg')) {
@@ -95,6 +103,29 @@ export class ManageProjectsComponent implements OnInit {
     } else {
       this.projectUrl = environment.baseUrlProjectProduction;
     }
+  }
+  applyFilter(filterValue: string) {
+    this.valueText$.next(filterValue.trim().toLowerCase());
+  }
+
+  loadProjects() {
+    this.organizationservice
+      .getInvestmentProjects({
+        page: this.pageIndex,
+        size: this.pageSize,
+        search: this.filterText
+      })
+      .subscribe((data: any) => {
+        this.projectsData = data.content;
+        this.totalItems = data.totalElements;
+        this.dataSource.data = this.projectsData;
+      });
+  }
+
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadProjects();
   }
 
   get tenantIdentifier(): string {
@@ -115,17 +146,6 @@ export class ManageProjectsComponent implements OnInit {
     }
   }
 
-  /**
-   * Filters data in charges table based on passed value.
-   * @param {string} filterValue Value to filter data.
-   */
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  /**
-   * Creates the fund form.
-   */
   createFundForm() {
     this.projectForm = this.formBuilder.group({
       name: [

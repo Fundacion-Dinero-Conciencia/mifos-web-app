@@ -71,7 +71,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         page: this.pageIndex,
         size: this.pageSize,
         search: this.filterText,
-        sort: this.sortColumn
+        sort: this.sortColumn,
+        status: this.filterStatus
       })
       .subscribe((data: any) => {
         this.projectParticipationsData = data.content;
@@ -86,7 +87,6 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
   onSortChange(sort: any) {
     this.sortColumn = sort.active;
-    console.log(sort);
     this.paginator.firstPage();
     this.loadParticipations();
   }
@@ -196,10 +196,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
   applySelectFilter(filterValue: string) {
     this.filterStatus = filterValue;
-    this.dataSource.filter = JSON.stringify({
-      status: this.filterStatus,
-      text: this.filterText
-    });
+    this.loadParticipations();
   }
 
   manageRequest(request: any, command: string): void {
