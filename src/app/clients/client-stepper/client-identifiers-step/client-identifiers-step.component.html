@@ -2,7 +2,7 @@
   <h3>{{ 'labels.heading.Identities' | translate }}</h3>
 
   <div fxLayout="row" fxLayoutAlign="flex-end" class="m-b-20">
-    <button mat-raised-button color="primary" (click)="addIdentifier()">
+    <button id="add-identifier-button" mat-raised-button color="primary" (click)="addIdentifier()">
       <fa-icon icon="plus" class="m-r-10"></fa-icon>{{ 'labels.buttons.Add' | translate }}
     </button>
   </div>
@@ -18,10 +18,15 @@
       <mat-divider></mat-divider>
 
       <div class="identifier-actions" fxLayout="row" fxLayoutAlign="flex-end">
-        <button mat-button color="primary">
+        <button id="edit-identifier-button-{{ i }}" mat-button color="primary">
           <fa-icon icon="edit" (click)="editIdentifier(identifier, i)"></fa-icon>
         </button>
-        <button mat-button color="warn" (click)="deleteIdentifier(identifier.documentKey, i)">
+        <button
+          id="delete-identifier-button-{{ i }}"
+          mat-button
+          color="warn"
+          (click)="deleteIdentifier(identifier.documentKey, i)"
+        >
           <fa-icon icon="trash"></fa-icon>
         </button>
       </div>
@@ -40,11 +45,11 @@
     <strong>{{ 'labels.commons.required' | translate }}</strong>
   </mat-error>
   <div fxLayout="row" class="margin-t" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="2%">
-    <button mat-raised-button matStepperPrevious>
+    <button id="previous-button" mat-raised-button matStepperPrevious>
       <fa-icon icon="arrow-left" class="m-r-10"></fa-icon>
       {{ 'labels.buttons.Previous' | translate }}
     </button>
-    <button mat-raised-button matStepperNext [disabled]="clientIdentifiers.length === 0">
+    <button id="next-button" mat-raised-button matStepperNext [disabled]="clientIdentifiers.length === 0">
       {{ 'labels.buttons.Next' | translate }}
       <fa-icon icon="arrow-right" class="m-l-10"></fa-icon>
     </button>

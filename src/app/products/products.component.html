@@ -4,7 +4,11 @@
       <div fxFlex="50%">
         <mat-nav-list>
           <div #loanProducts>
-            <mat-list-item [routerLink]="['loan-products']" *mifosxHasPermission="'READ_LOANPRODUCT'">
+            <mat-list-item
+              id="loan-products"
+              [routerLink]="['loan-products']"
+              *mifosxHasPermission="'READ_LOANPRODUCT'"
+            >
               <mat-icon matListIcon [routerLink]="['loan-products']">
                 <fa-icon icon="briefcase" size="sm"></fa-icon>
               </mat-icon>
@@ -30,7 +34,11 @@
           </div>
 
           <div #savingsProducts>
-            <mat-list-item [routerLink]="['saving-products']" *mifosxHasPermission="'READ_SAVINGSPRODUCT'">
+            <mat-list-item
+              id="savings-products"
+              [routerLink]="['saving-products']"
+              *mifosxHasPermission="'READ_SAVINGSPRODUCT'"
+            >
               <mat-icon matListIcon [routerLink]="['saving-products']">
                 <fa-icon icon="briefcase" size="sm"></fa-icon>
               </mat-icon>
@@ -54,7 +62,11 @@
           </div>
 
           <div #shareProducts>
-            <mat-list-item [routerLink]="['share-products']" *mifosxHasPermission="'READ_SHAREPRODUCT'">
+            <mat-list-item
+              id="share-products"
+              [routerLink]="['share-products']"
+              *mifosxHasPermission="'READ_SHAREPRODUCT'"
+            >
               <mat-icon matListIcon [routerLink]="['share-products']">
                 <fa-icon icon="briefcase" size="sm"></fa-icon>
               </mat-icon>
@@ -78,7 +90,7 @@
           </div>
 
           <div #charges>
-            <mat-list-item [routerLink]="['charges']" *mifosxHasPermission="'READ_CHARGE'">
+            <mat-list-item id="charges" [routerLink]="['charges']" *mifosxHasPermission="'READ_CHARGE'">
               <mat-icon matListIcon [routerLink]="['charges']">
                 <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
               </mat-icon>
@@ -101,7 +113,7 @@
             </mat-list-item>
           </div>
 
-          <mat-list-item [routerLink]="['collaterals']">
+          <mat-list-item id="collaterals" [routerLink]="['collaterals']">
             <mat-icon matListIcon [routerLink]="['collaterals']">
               <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
             </mat-icon>
@@ -124,6 +136,7 @@
           </mat-list-item>
 
           <mat-list-item
+            id="delinquency-bucket-configurations"
             [routerLink]="['delinquency-bucket-configurations']"
             *mifosxHasPermission="'READ_DELINQUENCY_BUCKET'"
           >
@@ -154,7 +167,7 @@
 
       <div fxFlex="50%">
         <mat-nav-list>
-          <mat-list-item [routerLink]="['products-mix']" *mifosxHasPermission="'READ_PRODUCTMIX'">
+          <mat-list-item id="products-mix" [routerLink]="['products-mix']" *mifosxHasPermission="'READ_PRODUCTMIX'">
             <mat-icon matListIcon [routerLink]="['products-mix']">
               <fa-icon icon="random" size="sm"></fa-icon>
             </mat-icon>
@@ -177,7 +190,11 @@
           </mat-list-item>
 
           <div #fixedDepositProducts>
-            <mat-list-item [routerLink]="['fixed-deposit-products']" *mifosxHasPermission="'READ_FIXEDDEPOSITPRODUCT'">
+            <mat-list-item
+              id="fixed-deposit-products"
+              [routerLink]="['fixed-deposit-products']"
+              *mifosxHasPermission="'READ_FIXEDDEPOSITPRODUCT'"
+            >
               <mat-icon matListIcon [routerLink]="['fixed-deposit-products']">
                 <fa-icon icon="briefcase" size="sm"></fa-icon>
               </mat-icon>
@@ -204,6 +221,7 @@
 
           <div #recurringDepositProducts>
             <mat-list-item
+              id="recurring-deposit-products"
               [routerLink]="['recurring-deposit-products']"
               *mifosxHasPermission="'READ_RECURRINGDEPOSITPRODUCT'"
             >
@@ -231,7 +249,11 @@
             </mat-list-item>
           </div>
 
-          <mat-list-item [routerLink]="['tax-configurations']" *mifosxHasPermission="'READ_TAXGROUP'">
+          <mat-list-item
+            id="tax-configurations"
+            [routerLink]="['tax-configurations']"
+            *mifosxHasPermission="'READ_TAXGROUP'"
+          >
             <mat-icon matListIcon [routerLink]="['tax-configurations']">
               <fa-icon icon="cogs" size="sm"></fa-icon>
             </mat-icon>
@@ -255,7 +277,11 @@
             </p>
           </mat-list-item>
 
-          <mat-list-item [routerLink]="['floating-rates']" *mifosxHasPermission="'READ_FLOATINGRATE'">
+          <mat-list-item
+            id="floating-rates"
+            [routerLink]="['floating-rates']"
+            *mifosxHasPermission="'READ_FLOATINGRATE'"
+          >
             <mat-icon matListIcon [routerLink]="['floating-rates']">
               <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
             </mat-icon>

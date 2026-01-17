@@ -5,38 +5,20 @@
     fxLayoutGap="2%"
     fxLayout.lt-md="column"
     class="container m-b-20"
-    *ngIf="!isCreatingSimulation"
-  >
-    <!-- <button mat-raised-button color="primary" (click)="addAddress()" *mifosxHasPermission="'CREATE_ADDRESS'">
-      {{ 'labels.buttons.Select definitive simulation' | translate }}
-    </button> -->
-    <!-- <button
-      mat-raised-button
-      color="primary"
-      (click)="switchCreatingSimulation()"
-      [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
-    >
-      <fa-icon icon="plus" class="m-r-10"></fa-icon>
-      Generar simulación
-    </button> -->
-  </div>
-  <div
-    fxLayout="row"
-    fxLayoutAlign="end"
-    fxLayoutGap="2%"
-    fxLayout.lt-md="column"
-    class="container m-b-20"
     *ngIf="isCreatingSimulation"
   >
-    <button mat-raised-button (click)="backToTable()" class="outlinedButton">Volver a simulaciones</button>
+    <button mat-raised-button (click)="backToTable()" class="outlinedButton" id="back-to-simulations-button">
+      Volver a simulaciones
+    </button>
   </div>
 
   <section class="container" *ngIf="!isCreatingSimulation">
     <table mat-table #documentsTable [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="Mnemonic">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.custom.Mnemonic' | translate }}</th>
-        <td mat-cell *matCellDef="let document">
+        <td mat-cell *matCellDef="let document; let i = index">
           <a
+            id="loan-account-link-{{ i }}"
             [routerLink]="
               !!projectData.loanId ? ['/clients', projectData.ownerId, 'loans-accounts', projectData.loanId] : null
             "
@@ -87,8 +69,14 @@
       </ng-container>
       <ng-container matColumnDef="showMore">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.buttons.Download' | translate }}</th>
-        <td mat-cell *matCellDef="let document; let index">
-          <button class="document-action-button" mat-raised-button color="primary" (click)="generateSimulationPdf()">
+        <td mat-cell *matCellDef="let document; let i = index">
+          <button
+            class="document-action-button"
+            mat-raised-button
+            color="primary"
+            (click)="generateSimulationPdf()"
+            id="download-button-{{ i }}"
+          >
             <fa-icon icon="cloud-download-alt"></fa-icon>
           </button>
         </td>
@@ -101,7 +89,9 @@
           <div class="empty-state">
             <fa-icon [icon]="filesvg" size="3x"></fa-icon>
             <p>Aun no existen simulaciones para este proyecto</p>
-            <button mat-raised-button color="primary" (click)="switchCreatingSimulation()">Crear simulación</button>
+            <button mat-raised-button color="primary" (click)="switchCreatingSimulation()" id="createSimulation-button">
+              Crear simulación
+            </button>
           </div>
         </td>
       </tr>
@@ -111,7 +101,11 @@
     <form [formGroup]="createForm">
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Product Type' | translate }} </mat-label>
-        <mat-select formControlName="basedInLoanProductId" (selectionChange)="switchLoanProduct()">
+        <mat-select
+          formControlName="basedInLoanProductId"
+          (selectionChange)="switchLoanProduct()"
+          id="product-type-select"
+        >
           <mat-option *ngFor="let loanProduct of loanProductsData" [value]="loanProduct.id">
             {{ loanProduct.name }}
           </mat-option>
@@ -119,7 +113,7 @@
       </mat-form-field>
       <mat-form-field fxFlex="24%" *ngIf="!isFactoring">
         <mat-label>{{ 'labels.inputs.Credit Type' | translate }} </mat-label>
-        <mat-select formControlName="creditTypeId">
+        <mat-select formControlName="creditTypeId" id="credit-type-select">
           <mat-option *ngFor="let creditType of creditTypesData" [value]="creditType.id">
             {{ creditType.name }}
           </mat-option>
@@ -127,18 +121,18 @@
       </mat-form-field>
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Amount Requested' | translate }}</mat-label>
-        <input matInput formControlName="amount" (input)="formatAmount($event)" />
+        <input matInput formControlName="amount" (input)="formatAmount($event)" id="amount-requested-input" />
       </mat-form-field>
       <mat-form-field fxFlex="24%">
         <mat-label
           >{{ 'labels.Term' | translate }} (
           {{ (!isFactoring ? 'labels.catalogs.Months' : 'labels.catalogs.Days') | translate }})</mat-label
         >
-        <input matInput formControlName="period" type="number" />
+        <input matInput formControlName="period" type="number" id="loan-term-input" />
       </mat-form-field>
       <mat-form-field fxFlex="24%">
         <mat-label>{{ 'labels.inputs.Interest Rate' | translate }} (%)</mat-label>
-        <input matInput formControlName="interestRate" type="number" />
+        <input matInput formControlName="interestRate" type="number" id="interest-rate-input" />
       </mat-form-field>
     </form>
     <button
@@ -147,6 +141,7 @@
       (click)="switchAllowEditing()"
       *ngIf="isEditingSimulation && !allowEditingForm"
       [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+      id="edit-simulation-button"
     >
       Editar simulación
     </button>
@@ -156,6 +151,7 @@
       class="outlinedButton"
       (click)="goToModifyApplication()"
       *ngIf="isEditingSimulation && !allowEditingForm"
+      id="modify-calendar-button"
     >
       Modificar calendario
     </button>
@@ -167,7 +163,7 @@
       class="container m-b-20"
       *ngIf="isEditingSimulation && allowEditingForm"
     >
-      <button mat-raised-button color="primary" (click)="cancelEditingForm()">
+      <button mat-raised-button color="primary" (click)="cancelEditingForm()" id="cancel-editing-button">
         {{ 'labels.buttons.Cancel' | translate }}
       </button>
       <button
@@ -175,6 +171,7 @@
         color="primary"
         (click)="sendEdit()"
         [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+        id="edit-simulation-confirm-button"
       >
         Editar simulación
       </button>
@@ -189,7 +186,12 @@
       <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="start center">
         <mat-form-field appearance="fill" fxFlex style="margin-top: 16px">
           <mat-label>{{ 'labels.inputs.Charge Type' | translate }}</mat-label>
-          <mat-select formControlName="commissionTypeId" required (selectionChange)="isITESelected()">
+          <mat-select
+            formControlName="commissionTypeId"
+            required
+            (selectionChange)="isITESelected()"
+            id="charge-type-select"
+          >
             <mat-option *ngFor="let type of commissionToShow" [value]="type.id">
               {{ type.name }}
             </mat-option>
@@ -198,7 +200,7 @@
 
         <mat-form-field appearance="fill" fxFlex>
           <mat-label>{{ 'labels.inputs.Description' | translate }}</mat-label>
-          <input matInput formControlName="description" required />
+          <input matInput formControlName="description" required id="description-input" />
         </mat-form-field>
 
         <mifosx-input-amount
@@ -206,17 +208,13 @@
           [isRequired]="true"
           [inputFormControl]="adicionalForm.controls.netAmount"
           [inputLabel]="'Base Price'"
+          id="base-price-input"
         >
         </mifosx-input-amount>
 
-        <!-- <mat-form-field appearance="fill" fxFlex>
-          <mat-label>{{ 'labels.inputs.Base Price' | translate }}</mat-label>
-          <input matInput type="number" formControlName="netAmount" required />
-        </mat-form-field> -->
-
         <mat-form-field appearance="fill" fxFlex>
           <mat-label>{{ 'labels.inputs.Base Percentage' | translate }}</mat-label>
-          <input matInput type="number" formControlName="vat" />
+          <input matInput type="number" formControlName="vat" id="base-percentage-input" />
         </mat-form-field>
 
         <button
@@ -224,11 +222,18 @@
           color="primary"
           (click)="calculateCommission()"
           [disabled]="!isITESelected() && adicionalForm.invalid"
+          id="calculate-commission-button"
         >
           {{ selectedCommission ? ('labels.buttons.Refresh' | translate) : ('labels.buttons.Add' | translate) }}
         </button>
 
-        <button *ngIf="selectedCommission" mat-stroked-button color="warn" (click)="cancelEdit()">
+        <button
+          *ngIf="selectedCommission"
+          mat-stroked-button
+          color="warn"
+          (click)="cancelEdit()"
+          id="cancel-edit-button"
+        >
           {{ 'labels.buttons.Cancel' | translate }}
         </button>
       </div>
@@ -278,6 +283,7 @@
             mat-raised-button
             color="primary"
             (click)="editCommission(element)"
+            id="edit-commission-button-{{ element.id }}"
           >
             <i [matTooltip]="'labels.buttons.Edit' | translate" class="fa fa-edit"></i>
           </a>
@@ -291,6 +297,7 @@
             mat-raised-button
             color="primary"
             (click)="deleteCommission(element)"
+            id="delete-commission-button-{{ element.id }}"
           >
             <i class="fa fa-trash" [matTooltip]="'labels.buttons.Delete' | translate"></i>
           </a>
@@ -356,6 +363,7 @@
         color="primary"
         (click)="submitCommisions()"
         [disabled]="projectData?.status?.statusValue?.name !== 'En Borrador'"
+        id="save-changes-button"
       >
         Guardar cambios en comisiones
       </button>
@@ -367,6 +375,7 @@
         (click)="createSimulation()"
         *ngIf="isCreatingSimulation && !isEditingSimulation"
         [disabled]="!createForm.valid || projectData?.status?.statusValue?.name !== 'En Borrador'"
+        id="create-simulation-button"
       >
         {{ 'labels.buttons.Create Simulation' | translate }}
       </button>
@@ -375,9 +384,4 @@
   <div class="flex justify-center items-center py-8 loader" *ngIf="loadingCommissions">
     <mat-spinner diameter="40"></mat-spinner>
   </div>
-  <!-- <mat-paginator
-    *ngIf="InvestmentDocuments && InvestmentDocuments.length > 10"
-    [pageSizeOptions]="[10, 25, 50]"
-    showFirstLastButtons
-  ></mat-paginator> -->
 </div>

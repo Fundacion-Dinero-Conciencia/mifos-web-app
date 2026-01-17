@@ -3,6 +3,7 @@
     <div class="search-box m-r-30">
       <mat-form-field class="search-box">
         <input
+          id="client-search-input"
           matInput
           placeholder="Search by client name, external Id, mobile"
           class="search-box"
@@ -26,12 +27,13 @@
     </div>
 
     <div class="filter-box" *ngIf="existsClientsToFilter">
-      <mat-checkbox #showClosedAccounts labelPosition="after" class="m-r-10"
+      <mat-checkbox id="show-closed-accounts-checkbox" #showClosedAccounts labelPosition="after" class="m-r-10"
         >{{ 'labels.inputs.Show Closed Accounts' | translate }}
       </mat-checkbox>
     </div>
     <div class="action-button" fxLayoutGap="25px">
       <button
+        id="import-client-button"
         mat-raised-button
         color="primary"
         [routerLink]="['../', 'organization', 'bulk-import', 'Clients']"
@@ -39,7 +41,13 @@
       >
         <fa-icon icon="download" class="m-r-10"></fa-icon>{{ 'labels.buttons.Import Client' | translate }}
       </button>
-      <button mat-raised-button color="primary" [routerLink]="['create']" *mifosxHasPermission="'CREATE_CLIENT'">
+      <button
+        id="create-client-button"
+        mat-raised-button
+        color="primary"
+        [routerLink]="['create']"
+        *mifosxHasPermission="'CREATE_CLIENT'"
+      >
         <fa-icon icon="plus" class="m-r-10"></fa-icon>{{ 'labels.buttons.Create Client' | translate }}
       </button>
     </div>
