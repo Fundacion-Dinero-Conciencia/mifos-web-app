@@ -68,11 +68,11 @@ export class ConciliationPayinComponent implements OnInit {
       name: 'No detectado'
     },
     {
-      id: 100,
+      id: 200,
       name: 'Aplicado'
     },
     {
-      id: 200,
+      id: 100,
       name: 'Recibido'
     },
     {
