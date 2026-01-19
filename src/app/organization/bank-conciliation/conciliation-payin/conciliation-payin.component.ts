@@ -211,6 +211,7 @@ export class ConciliationPayinComponent implements OnInit {
   }
 
   viewAssignation(row: any) {
+    this.isDebtorDetail = false;
     this.detailedRow = row;
     this.selectedRowPartition = [
       0

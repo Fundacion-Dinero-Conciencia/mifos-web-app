@@ -3,7 +3,7 @@
     <!-- Tipo de cliente -->
     <mat-form-field fxFlex="20%" class="inputSearch m-b-10">
       <mat-label>Tipo de cliente</mat-label>
-      <mat-select formControlName="clientTypeId">
+      <mat-select formControlName="clientTypeId" id="clientTypeId">
         <mat-option *ngFor="let type of clientOptions" [value]="type.id">
           {{ type.name }}
         </mat-option>
@@ -13,19 +13,19 @@
     <!-- RUT -->
     <mat-form-field fxFlex="20%" class="inputSearch m-b-10">
       <mat-label>RUT</mat-label>
-      <input matInput formControlName="rut" />
+      <input matInput formControlName="rut" id="rut" />
     </mat-form-field>
 
     <!-- Id transacción -->
     <mat-form-field fxFlex="20%" class="inputSearch m-b-10">
       <mat-label>Id transacción</mat-label>
-      <input matInput formControlName="notificationId" />
+      <input matInput formControlName="notificationId" id="notificationId" />
     </mat-form-field>
 
     <!-- Estado -->
     <mat-form-field fxFlex="20%" class="inputSearch m-b-10">
       <mat-label>Estado</mat-label>
-      <mat-select formControlName="status">
+      <mat-select formControlName="status" id="status">
         <mat-option *ngFor="let status of statusOptions" [value]="status.id">
           {{ status.name }}
         </mat-option>
