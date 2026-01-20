@@ -47,6 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy {
    * Subscribes to alert event of alert service.
    */
   ngOnInit() {
+    this.setSettings();
     this.alert$ = this.alertService.alertEvent.subscribe((alertEvent: Alert) => {
       const alertType = alertEvent.type;
       if (alertType === 'Password Expired') {
@@ -61,6 +62,12 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.router.navigate(['/'], { replaceUrl: true });
       }
     });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.altKey && event.key === 'Enter') {
+        this.reloadSettings();
+      }
+    });
   }
 
   /**
@@ -71,11 +78,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   reloadSettings(): void {
-    this.settingsService.setTenantIdentifier('');
+    this.setSettings();
+    window.location.reload();
+  }
+
+  setSettings(): void {
     this.settingsService.setTenantIdentifier(environment.fineractPlatformTenantId || 'default');
     this.settingsService.setTenantIdentifiers(environment.fineractPlatformTenantIds.split(','));
     this.settingsService.setServers(environment.baseApiUrls.split(','));
-    window.location.reload();
   }
 
   displayTenantSelector(): boolean {

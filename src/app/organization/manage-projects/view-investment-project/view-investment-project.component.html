@@ -1,7 +1,7 @@
 <div class="container">
   <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
     <a [routerLink]="['./edit']" *ngIf="!router.url.includes('edit')">
-      <button mat-raised-button color="primary" *mifosxHasPermission="'UPDATE_FUND'">
+      <button id="edit-button" mat-raised-button color="primary" *mifosxHasPermission="'UPDATE_FUND'">
         <fa-icon icon="edit" class="m-r-10"></fa-icon>
         {{ 'labels.buttons.Edit' | translate }} {{ 'labels.inputs.Proyect' | translate }}
       </button>
@@ -9,6 +9,7 @@
   </div>
   <nav mat-tab-nav-bar class="navigation-tabs" *ngIf="!router.url.includes('edit')">
     <a
+      id="general-tab"
       mat-tab-link
       [routerLink]="['./general']"
       routerLinkActive
@@ -18,6 +19,7 @@
       {{ 'labels.heading.General' | translate }}
     </a>
     <a
+      id="documents-tab"
       mat-tab-link
       [routerLink]="['./documents']"
       routerLinkActive
@@ -27,6 +29,7 @@
       {{ 'labels.heading.Documents' | translate }}
     </a>
     <a
+      id="simulations-tab"
       mat-tab-link
       [routerLink]="['./simulaciones']"
       routerLinkActive
@@ -37,6 +40,7 @@
     </a>
 
     <a
+      id="publication-tab"
       mat-tab-link
       [routerLink]="['./publicacion']"
       routerLinkActive
@@ -45,10 +49,18 @@
     >
       {{ 'labels.heading.Publication' | translate }}
     </a>
-    <a mat-tab-link [routerLink]="['./impacto']" routerLinkActive #impact="routerLinkActive" [active]="impact.isActive">
+    <a
+      id="impact-tab"
+      mat-tab-link
+      [routerLink]="['./impacto']"
+      routerLinkActive
+      #impact="routerLinkActive"
+      [active]="impact.isActive"
+    >
       {{ 'labels.heading.Impact' | translate }}
     </a>
     <a
+      id="investments-tab"
       mat-tab-link
       [routerLink]="['./inversiones']"
       routerLinkActive
@@ -59,6 +71,7 @@
     </a>
 
     <a
+      id="grupos-pagare-tab"
       mat-tab-link
       [routerLink]="['./grupos-pagare']"
       routerLinkActive
@@ -67,7 +80,14 @@
     >
       Pagarés
     </a>
-    <a mat-tab-link [routerLink]="['./notas']" routerLinkActive #notes="routerLinkActive" [active]="notes.isActive">
+    <a
+      id="notes-tab"
+      mat-tab-link
+      [routerLink]="['./notas']"
+      routerLinkActive
+      #notes="routerLinkActive"
+      [active]="notes.isActive"
+    >
       {{ 'labels.heading.Notes' | translate }}
     </a>
   </nav>

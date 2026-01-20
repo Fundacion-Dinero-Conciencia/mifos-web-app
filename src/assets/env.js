@@ -9,7 +9,7 @@
   window['env']['apiVersion'] = '';
 
   window['env']['fineractPlatformTenantId'] = '';
-  window['env']['fineractPlatformTenantIds'] = 'default, migration, chile';
+  window['env']['fineractPlatformTenantIds'] = 'default, migration, chile, argentina';
 
   // Language Environment variables
   window['env']['defaultLanguage'] = '';

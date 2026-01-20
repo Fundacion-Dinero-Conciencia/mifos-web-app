@@ -65,17 +65,17 @@
     <!-- Contact Information/Resources (hidden on smaller screens) -->
     <mat-list fxHide.lt-lg fxLayout="row" fxFlexAlign="center" fxFlex="3 0 auto" class="information-list">
       <mat-list-item
-        ><button mat-button [matMenuTriggerFor]="resourcesMenu">
+        ><button mat-button [matMenuTriggerFor]="resourcesMenu" id="buttonResources">
           {{ 'labels.links.Resources' | translate }}
         </button></mat-list-item
       >
       <mat-list-item
-        ><button mat-button [matMenuTriggerFor]="communityMenu">
+        ><button mat-button [matMenuTriggerFor]="communityMenu" id="buttonLinkCommunity">
           {{ 'labels.links.Community' | translate }}
         </button></mat-list-item
       >
       <mat-list-item
-        ><button mat-button [matMenuTriggerFor]="contributeMenu">
+        ><button mat-button [matMenuTriggerFor]="contributeMenu" id="buttonLinkContribute">
           {{ 'labels.links.Contribute' | translate }}
         </button></mat-list-item
       >
@@ -83,10 +83,6 @@
 
     <!-- Footer -->
     <mifosx-footer></mifosx-footer>
-
-    <div fxLayout="row" fxLayoutAlign="end" class="m-b-20 m-r-10">
-      <a (click)="reloadSettings()"><fa-icon icon="refresh"></fa-icon></a>
-    </div>
   </div>
 </div>
 

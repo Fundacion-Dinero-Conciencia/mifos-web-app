@@ -4,7 +4,7 @@
       <div fxFlex="50%">
         <mat-nav-list>
           <div #office>
-            <mat-list-item *mifosxHasPermission="'READ_OFFICE'">
+            <mat-list-item id="manage-offices" *mifosxHasPermission="'READ_OFFICE'">
               <mat-icon matListIcon [routerLink]="['offices']">
                 <fa-icon icon="building" size="sm"></fa-icon>
               </mat-icon>
@@ -18,7 +18,7 @@
           </div>
 
           <div #holidays>
-            <mat-list-item *mifosxHasPermission="'READ_HOLIDAY'">
+            <mat-list-item id="manage-holidays" *mifosxHasPermission="'READ_HOLIDAY'">
               <mat-icon matListIcon [routerLink]="['holidays']">
                 <fa-icon icon="calendar-alt" size="sm"></fa-icon>
               </mat-icon>
@@ -32,7 +32,7 @@
           </div>
 
           <div #employee>
-            <mat-list-item *mifosxHasPermission="'READ_STAFF'">
+            <mat-list-item id="manage-employees" *mifosxHasPermission="'READ_STAFF'">
               <mat-icon matListIcon [routerLink]="['employees']">
                 <fa-icon icon="user" size="sm"></fa-icon>
               </mat-icon>
@@ -46,7 +46,7 @@
           </div>
 
           <div #standinginstructions>
-            <mat-list-item *mifosxHasPermission="'READ_STANDINGINSTRUCTION'">
+            <mat-list-item id="manage-standing-instructions" *mifosxHasPermission="'READ_STANDINGINSTRUCTION'">
               <mat-icon matListIcon [routerLink]="['standing-instructions-history']">
                 <fa-icon icon="book" size="sm"></fa-icon>
               </mat-icon>
@@ -62,7 +62,7 @@
           </div>
 
           <div #investor>
-            <mat-list-item *mifosxHasPermission="'READ_OFFICE'">
+            <mat-list-item id="manage-investors" *mifosxHasPermission="'READ_OFFICE'">
               <mat-icon matListIcon [routerLink]="['investors']">
                 <fa-icon icon="user-tie" size="sm"></fa-icon>
               </mat-icon>
@@ -76,7 +76,7 @@
           </div>
 
           <div #fundmapping>
-            <mat-list-item *mifosxHasPermission="'READ_OFFICE'">
+            <mat-list-item id="manage-fund-mapping" *mifosxHasPermission="'READ_OFFICE'">
               <mat-icon matListIcon [routerLink]="['fund-mapping']">
                 <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
               </mat-icon>
@@ -90,7 +90,7 @@
           </div>
 
           <div #passwordpreferences>
-            <mat-list-item *mifosxHasPermission="'READ_PASSWORD_VALIDATION_POLICY'">
+            <mat-list-item id="manage-password-preferences" *mifosxHasPermission="'READ_PASSWORD_VALIDATION_POLICY'">
               <mat-icon matListIcon [routerLink]="['password-preferences']">
                 <fa-icon icon="lock" size="sm"></fa-icon>
               </mat-icon>
@@ -106,7 +106,7 @@
           </div>
 
           <div #provisioning>
-            <mat-list-item *mifosxHasPermission="'VIEW_PROVISIONS'">
+            <mat-list-item id="manage-provisioning" *mifosxHasPermission="'VIEW_PROVISIONS'">
               <mat-icon matListIcon [routerLink]="['provisioning-criteria']">
                 <fa-icon icon="edit" size="sm"></fa-icon>
               </mat-icon>
@@ -122,7 +122,7 @@
           </div>
 
           <div #entitydatatable>
-            <mat-list-item *mifosxHasPermission="'READ_ENTITY_DATATABLE_CHECK'">
+            <mat-list-item id="manage-entity-datatable" *mifosxHasPermission="'READ_ENTITY_DATATABLE_CHECK'">
               <mat-icon matListIcon [routerLink]="['entity-data-table-checks']">
                 <fa-icon icon="check" size="sm"></fa-icon>
               </mat-icon>
@@ -137,8 +137,8 @@
             </mat-list-item>
           </div>
 
-          <div #projects>
-            <mat-list-item>
+          <div #projects class="custom-task">
+            <mat-list-item id="manage-projects">
               <mat-icon matListIcon [routerLink]="['projects']">
                 <fa-icon icon="book" size="sm"></fa-icon>
               </mat-icon>
@@ -150,8 +150,9 @@
               </p>
             </mat-list-item>
           </div>
-          <div #projectparticipations>
-            <mat-list-item>
+
+          <div #projectparticipations class="custom-task">
+            <mat-list-item id="manage-project-participations">
               <mat-icon matListIcon [routerLink]="['project-participation']">
                 <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
               </mat-icon>
@@ -171,7 +172,7 @@
       <div fxFlex="50%">
         <mat-nav-list>
           <div #addEditCurrency>
-            <mat-list-item *mifosxHasPermission="'READ_CURRENCY'">
+            <mat-list-item id="manage-currency" *mifosxHasPermission="'READ_CURRENCY'">
               <mat-icon matListIcon [routerLink]="['currencies']">
                 <fa-icon icon="cogs" size="sm"></fa-icon>
               </mat-icon>
@@ -185,7 +186,7 @@
           </div>
 
           <div #manageFunds>
-            <mat-list-item *mifosxHasPermission="'READ_FUND'">
+            <mat-list-item id="manage-funds" *mifosxHasPermission="'READ_FUND'">
               <mat-icon matListIcon [routerLink]="['manage-funds']">
                 <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
               </mat-icon>
@@ -204,7 +205,7 @@
           </div>
 
           <div #bulkloan>
-            <mat-list-item *mifosxHasPermission="'BULKREASSIGN_LOAN'">
+            <mat-list-item id="manage-bulk-loan" *mifosxHasPermission="'BULKREASSIGN_LOAN'">
               <mat-icon matListIcon [routerLink]="['bulkloan']">
                 <fa-icon icon="money-bill-alt" size="sm"></fa-icon>
               </mat-icon>
