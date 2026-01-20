@@ -64,6 +64,8 @@
 
 .tableDetailContainer {
   margin-top: 3rem;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .addAsignationButton {
