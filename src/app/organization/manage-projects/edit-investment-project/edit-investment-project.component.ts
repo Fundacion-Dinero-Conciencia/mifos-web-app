@@ -246,7 +246,10 @@ export class EditInvestmentProjectComponent implements OnInit {
           this.investmentProjectFormGeneral.get('ownerId')?.disable();
           this.investmentProjectFormGeneral.get('mnemonic')?.disable();
           this.investmentProjectFormGeneral.get('countryId')?.disable();
-          if (this.projectData?.status?.statusValue?.name.includes('En Financiamiento')) {
+
+          const statusName = this.projectData?.status?.statusValue?.name;
+
+          if (statusName?.includes('En Financiamiento')) {
             this.investmentProjectFormGeneral.disable();
             this.investmentProjectFormGeneral.get('name')?.enable();
             this.investmentProjectFormGeneral.get('statusId')?.enable();
@@ -255,6 +258,10 @@ export class EditInvestmentProjectComponent implements OnInit {
             this.investmentProjectFormGeneral.get('statusId')?.enable();
             this.investmentProjectPublication.disable();
             this.investmentProjectImpact.disable();
+          }
+
+          if (statusName !== 'En Borrador') {
+            this.investmentProjectPublication.get('isActive')?.enable();
           }
           resolve();
         },
