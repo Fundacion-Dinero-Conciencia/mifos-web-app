@@ -247,6 +247,8 @@ export class ConciliationPayinComponent implements OnInit {
 
   deleteAmountByIndex(index: number): void {
     this.selectedRowPartition.splice(index, 1);
+    this.inputsGroup.splice(index, 1);
+    this.selectorsGroup.splice(index, 1);
     this.assignDataSource.data = [...this.selectedRowPartition];
   }
 

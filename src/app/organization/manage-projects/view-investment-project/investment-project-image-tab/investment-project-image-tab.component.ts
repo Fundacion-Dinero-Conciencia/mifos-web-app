@@ -6,6 +6,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { OnInit } from '@angular/core';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'mifosx-investment-project-image-tab',
@@ -37,6 +38,8 @@ export class InvestmentProjectImageTabComponent implements OnInit {
       this.getProjectImages();
     }
     this.route.data.subscribe((data: { accountData: any; imageData: any }) => {
+      console.log('?????');
+      console.log(data.imageData);
       this.projectData = data.accountData;
       this.imageData = data.imageData;
     });
@@ -127,8 +130,9 @@ export class InvestmentProjectImageTabComponent implements OnInit {
   }
 
   getImagePath(location: string): string {
-    return 'https://bucketfinedev.s3.amazonaws.com/' + location;
+    return environment.amazonBucketUrl + location;
   }
+
   get canEdit() {
     const status = this.projectData?.status?.statusValue?.name;
     return (

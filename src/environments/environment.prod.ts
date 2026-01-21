@@ -65,7 +65,7 @@ export const environment = {
   baseUrlInvestments: 'http://inversionistas.belat.com/investments',
   baseUrlInvestmentsProduction: 'http://inversionistas.belat.com/investments',
   baseUrlProjectProduction: 'http://inversionistas.belat.com/project-details/',
-
+  amazonBucketUrl: 'https://pro-belat-fineract-data.s3.amazonaws.com/',
   GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
 };
 

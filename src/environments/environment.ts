@@ -69,7 +69,8 @@ export const environment = {
   baseUrlInvestments: 'https://investments-backend-dev.up.railway.app/investments',
   baseUrlProjectProduction: 'inversionistas.belat.com/project-details/',
   baseUrlInvestmentsProduction: 'inversionistas.belat.com/investments',
-  GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
+  GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k',
+  amazonBucketUrl: 'https://bucketfinedev.s3.amazonaws.com/'
 };
 
 // Server URL

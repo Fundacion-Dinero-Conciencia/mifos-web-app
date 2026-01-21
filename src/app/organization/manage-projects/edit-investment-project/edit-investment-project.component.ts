@@ -8,6 +8,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
+import { environment } from 'environments/environment';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -485,8 +486,9 @@ export class EditInvestmentProjectComponent implements OnInit {
   }
 
   getImagePath(location: string): string {
-    return 'https://bucketfinedev.s3.amazonaws.com/' + location;
+    return environment.amazonBucketUrl + location;
   }
+
   inputOrderChange(e: InputEvent, index: number) {
     const value = (e.target as HTMLInputElement).value;
     const numberValue = Number(value);
