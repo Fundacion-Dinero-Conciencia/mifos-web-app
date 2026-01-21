@@ -399,7 +399,7 @@
                 color="primary"
                 class="action-btn"
                 matTooltip="Borrar asignación"
-                (click)="$event.stopPropagation(); deleteAmountByIndex(index)"
+                (click)="$event.stopPropagation(); deleteAmountByIndex(i)"
               >
                 <fa-icon icon="trash"></fa-icon>
               </button>
@@ -419,6 +419,8 @@
           <fa-icon icon="plus"></fa-icon>
           Agregar asignación
         </button>
+      </section>
+      <section>
         <article
           class="debtorAdvice"
           *ngIf="
