@@ -65,7 +65,9 @@ export const environment = {
 
   minPasswordLength: loadedEnv['minPasswordLength'] || 12,
   baseUrlProject: 'https://investments-backend-dev.up.railway.app/project-details/',
-  GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k'
+  GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k',
+  amazonBucketUrl: 'https://bucketfinedev.s3.amazonaws.com/'
+
 };
 
 // Server URL
