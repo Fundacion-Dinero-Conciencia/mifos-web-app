@@ -83,7 +83,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   setSettings(): void {
-    console.log('?????');
     this.settingsService.setTenantIdentifier(environment.fineractPlatformTenantId || 'default');
     this.settingsService.setTenantIdentifiers(environment.fineractPlatformTenantIds.split(','));
     this.settingsService.setServers(environment.baseApiUrls.split(','));
