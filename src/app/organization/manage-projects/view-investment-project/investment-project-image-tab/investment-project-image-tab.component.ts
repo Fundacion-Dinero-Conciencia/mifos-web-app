@@ -38,8 +38,6 @@ export class InvestmentProjectImageTabComponent implements OnInit {
       this.getProjectImages();
     }
     this.route.data.subscribe((data: { accountData: any; imageData: any }) => {
-      console.log('?????');
-      console.log(data.imageData);
       this.projectData = data.accountData;
       this.imageData = data.imageData;
     });
@@ -130,6 +128,9 @@ export class InvestmentProjectImageTabComponent implements OnInit {
   }
 
   getImagePath(location: string): string {
+    console.log(environment);
+    console.log(environment.amazonBucketUrl);
+    console.log(environment.production);
     return environment.amazonBucketUrl + location;
   }
 
