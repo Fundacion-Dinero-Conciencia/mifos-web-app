@@ -65,8 +65,8 @@ export const environment = {
   interbankTransfers: window['env']['interbankTransfers'] || false,
 
   minPasswordLength: loadedEnv['minPasswordLength'] || 12,
-  baseUrlProject: 'https://investments-backend-dev.up.railway.app/project-details/',
-  baseUrlInvestments: 'https://investments-backend-dev.up.railway.app/investments',
+  baseUrlProject: 'https://investments-backend-stg.up.railway.app/project-details/',
+  baseUrlInvestments: 'https://investments-backend-stg.up.railway.app/investments',
   baseUrlProjectProduction: 'inversionistas.belat.com/project-details/',
   baseUrlInvestmentsProduction: 'inversionistas.belat.com/investments',
   GOOGLE_MAPS_API_KEY: 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k',
