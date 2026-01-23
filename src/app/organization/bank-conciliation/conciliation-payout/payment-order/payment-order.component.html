@@ -46,7 +46,7 @@
 
     <div class="includedBar__total">
       Total a dispersar en nómina:
-      <b>{{ totalToDisperse | currency: currency : 'symbol-narrow' }}</b>
+      <b>{{ totalToDisperseCalculated | currency: currency : 'symbol-narrow' }}</b>
     </div>
   </div>
 
@@ -78,28 +78,30 @@
       <!-- Participación -->
       <ng-container matColumnDef="participation">
         <th mat-header-cell *matHeaderCellDef>Participación</th>
-        <td mat-cell *matCellDef="let row">{{ row.participation }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.percentageShare }}%</td>
       </ng-container>
 
       <!-- Monto cuota a pagar -->
       <ng-container matColumnDef="installmentAmount">
         <th mat-header-cell *matHeaderCellDef>Monto cuota a pagar</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.installmentAmount | currency: currency : 'symbol-narrow' }}
+          {{ row.amount | currency: currency : 'symbol-narrow' }}
         </td>
       </ng-container>
 
       <!-- Monto a pagar (editable) -->
       <ng-container matColumnDef="amountToPay">
         <th mat-header-cell *matHeaderCellDef>Monto a pagar</th>
-        <td mat-cell *matCellDef="let row" class="cell-input">
+        <td mat-cell *matCellDef="let row; let i = index" class="cell-input">
           <mat-form-field appearance="outline" class="tableInput">
             <input
               matInput
               type="text"
               [disabled]="!row.selected"
-              [(ngModel)]="row.amountToPay"
-              (ngModelChange)="onRowEdited(row)"
+              [value]="rowInputs[i].amountToPay"
+              (input)="onAmountToPayChange(i, row.amount, $event)"
+              [max]="row.amount"
+              min="0"
             />
             <span matSuffix class="suffixCurrency">{{ currency }}</span>
           </mat-form-field>
@@ -109,14 +111,16 @@
       <!-- Monto a reinvertir (editable) -->
       <ng-container matColumnDef="amountToReinvest">
         <th mat-header-cell *matHeaderCellDef>Monto a reinvertir</th>
-        <td mat-cell *matCellDef="let row" class="cell-input">
+        <td mat-cell *matCellDef="let row; let i = index" class="cell-input">
           <mat-form-field appearance="outline" class="tableInput">
             <input
               matInput
               type="text"
               [disabled]="!row.selected"
-              [(ngModel)]="row.amountToReinvest"
-              (ngModelChange)="onRowEdited(row)"
+              [value]="rowInputs[i].amountToReinvest"
+              (input)="onAmountToReinvestChange(i, row.amount, $event)"
+              [max]="row.amount"
+              min="0"
             />
             <span matSuffix class="suffixCurrency">{{ currency }}</span>
           </mat-form-field>

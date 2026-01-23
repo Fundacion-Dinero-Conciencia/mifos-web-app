@@ -4,13 +4,6 @@
       {{ subCreditinfo.clientName }} <span> - {{ subCreditinfo.rut }}</span>
     </h2>
     <h2 *ngIf="!subCreditinfo">Calendario de pagos</h2>
-    <button
-      class="outlinedButton"
-      [routerLink]="['orden-pago']"
-      [state]="{ paymentPeriodInfo: getFirstPeriodWithoutPayment() }"
-    >
-      Dispersar cuota
-    </button>
   </div>
   <div class="bc-table mat-elevation-z0">
     <table mat-table [dataSource]="dataSource" class="bc-table__table">
@@ -145,6 +138,8 @@
             (click)="$event.stopPropagation()"
             class="littler"
             aria-label="Ver"
+            [routerLink]="['orden-pago']"
+            [state]="{ paymentPeriodInfo: row }"
           >
             <mat-icon>visibility</mat-icon>
           </button>

@@ -1,21 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-
-interface InvestorPaymentRow {
-  id: string | number;
-  selected: boolean;
-
-  investorName: string;
-  investorLink?: any[];
-
-  rut: string;
-  participation: string; // ej: '40%'
-
-  installmentAmount: number; // Monto cuota a pagar (endpoint)
-  amountToPay: number | string; // editable (endpoint o inicial)
-  amountToReinvest: number | string; // editable (endpoint o inicial)
-}
+import { ActivatedRoute, Router } from '@angular/router';
+import { OrganizationService } from 'app/organization/organization.service';
+import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 
 @Component({
   selector: 'mifosx-payment-order',
@@ -23,16 +11,21 @@ interface InvestorPaymentRow {
   styleUrls: ['./payment-order.component.scss']
 })
 export class PaymentOrderComponent implements OnInit {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private organizationService: OrganizationService
+  ) {}
   // Header info (idealmente viene del endpoint)
   promissoryNo = '12345';
   subCreditNo = 'TEST46TSTC01';
-  installmentNo = 2;
-
+  installmentNo = 0;
+  currentPeriodInfo: any;
   currency = 'CLP';
 
   // Bar superior (idealmente viene del endpoint)
-  includedCount = 3;
-  totalCount = 4;
+  includedCount = 0;
+  totalCount = 0;
   totalToDisperse = 18000000;
   showDialog = false;
   displayedColumns: string[] = [
@@ -45,72 +38,26 @@ export class PaymentOrderComponent implements OnInit {
     'amountToReinvest'
   ];
 
-  dataSource = new MatTableDataSource<InvestorPaymentRow>([]);
+  dataSource = new MatTableDataSource<any>([]);
 
   // Paginación
   totalItems = 0;
   pageSize = 10;
   pageIndex = 0;
+  inputSearch = '';
+  rowsSelected: any[] = [];
+  rowInputs: any[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
-    // TODO: reemplazar por tu endpoint
-    const mock: InvestorPaymentRow[] = [
-      {
-        id: 1,
-        selected: true,
-        investorName: 'Carlos Acevedo',
-        investorLink: [],
-        rut: '15.789.999-4',
-        participation: '40%',
-        installmentAmount: 8100000,
-        amountToPay: 8000000,
-        amountToReinvest: 100000
-      },
-      {
-        id: 2,
-        selected: true,
-        investorName: 'Sofía Blanco',
-        investorLink: [],
-        rut: '14.456.789-3',
-        participation: '30%',
-        installmentAmount: 6000000,
-        amountToPay: 6000000,
-        amountToReinvest: 0
-      },
-      {
-        id: 3,
-        selected: true,
-        investorName: 'Ignacio Pavez',
-        investorLink: [],
-        rut: '18.190.432-1',
-        participation: '20%',
-        installmentAmount: 4000000,
-        amountToPay: 4000000,
-        amountToReinvest: 0
-      },
-      {
-        id: 4,
-        selected: false,
-        investorName: 'Isabel Soto',
-        investorLink: [],
-        rut: '10.999.111-3',
-        participation: '10%',
-        installmentAmount: 2000000,
-        amountToPay: 2000000,
-        amountToReinvest: 0
-      }
-    ];
-
-    this.dataSource.data = mock;
-    this.totalItems = mock.length;
-
-    // Si prefieres que counts/totales vengan del backend,
-    // asigna includedCount/totalCount/totalToDisperse directo desde la respuesta.
+    this.currentPeriodInfo = history?.state.paymentPeriodInfo;
+    this.installmentNo = this.currentPeriodInfo ? this.currentPeriodInfo.period : 0;
+    if (!this.currentPeriodInfo) {
+      this.router.navigate(['../'], { relativeTo: this.route });
+    }
+    this.loadPage(0, this.pageSize);
   }
-
-  // --- UI helpers (sin cálculos de negocio) ---
 
   generatePayment() {
     console.log('Generando orden de pago...');
@@ -128,25 +75,77 @@ export class PaymentOrderComponent implements OnInit {
     return some && !all;
   }
 
+  get totalToDisperseCalculated(): number {
+    if (this.rowsSelected.length === 0) {
+      return 0;
+    }
+    const total = this.rowsSelected.reduce((sum, row) => {
+      const amountToPay = parseFloat(row.amountToPay) || 0;
+      return sum + amountToPay;
+    });
+    return total;
+  }
+
   toggleAll(checked: boolean): void {
     this.dataSource.data = this.dataSource.data.map((r) => ({ ...r, selected: checked }));
   }
 
-  toggleRow(row: InvestorPaymentRow, checked: boolean): void {
+  loadPage(page: number, size: number, filters?: any) {
+    const requestParams = {
+      ...filters,
+      page,
+      size,
+      sort: 'id'
+    };
+    showGlobalLoader();
+    const loanId = this.route.snapshot.paramMap.get('id');
+    this.organizationService
+      .getPayoutOrders(Number(loanId), Number(1), { ...requestParams })
+      .subscribe((response: any) => {
+        this.dataSource.data = response.content || response;
+        this.rowInputs = this.dataSource.data.map((row) => ({
+          amountToPay: row.amount,
+          amountToReinvest: 0
+        }));
+        this.pageSize = size;
+        this.pageIndex = page;
+        this.totalItems = response.totalElements;
+        this.totalCount = response.totalElements;
+        hideGlobalLoader();
+      });
+  }
+  onAmountToPayChange(rowIndex: number, totalAmount: number, event: any): void {
+    const value = event.target.value;
+    console.log(value);
+    const amount = (parseFloat(value) || 0) > totalAmount ? totalAmount : parseFloat(value) || 0;
+    event.target.value = amount;
+
+    this.rowInputs[rowIndex].amountToReinvest = String(totalAmount - amount);
+    this.rowInputs[rowIndex].amountToPay = String(amount);
+  }
+  onAmountToReinvestChange(rowIndex: number, totalAmount: number, event: any): void {
+    const value = event.target.value;
+    console.log(value);
+
+    const amount = (parseFloat(value) || 0) > totalAmount ? totalAmount : parseFloat(value) || 0;
+    event.target.value = amount;
+    this.rowInputs[rowIndex].amountToPay = String(totalAmount - amount);
+    this.rowInputs[rowIndex].amountToReinvest = String(amount);
+  }
+  toggleRow(row: any, checked: boolean): void {
     row.selected = checked;
   }
 
-  onRowEdited(row: InvestorPaymentRow): void {
+  onRowEdited(row: any): void {
     // Hook para marcar dirty / habilitar guardar, etc.
   }
 
   onFilter(value: string): void {
-    this.dataSource.filter = (value || '').trim().toLowerCase();
+    this.inputSearch = value;
   }
 
-  onPageChange(evt: PageEvent): void {
-    this.pageIndex = evt.pageIndex;
-    this.pageSize = evt.pageSize;
+  onPageChange(event: any) {
+    this.loadPage(event.pageIndex, event.pageSize, this.inputSearch);
   }
 
   onCancel(): void {

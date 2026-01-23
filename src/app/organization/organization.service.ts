@@ -1160,4 +1160,19 @@ export class OrganizationService {
       }
     });
   }
+  getPayoutOrders(
+    loanId: number,
+    periodNumber: number,
+    filters: { page?: number; size?: number; search?: string }
+  ): Observable<any> {
+    return this.http.get(`/shinkansen/orders/payout`, {
+      params: {
+        loanId,
+        periodNumber,
+        page: filters.page.toString(),
+        size: filters.size.toString(),
+        search: filters.search || ''
+      }
+    });
+  }
 }

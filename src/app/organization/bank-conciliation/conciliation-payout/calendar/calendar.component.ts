@@ -42,9 +42,7 @@ export class CalendarComponent implements OnInit {
   }
   ngOnInit(): void {
     const subCreditinfo = history?.state?.subCreditInfo;
-    console.log(history);
     if (subCreditinfo) {
-      console.log(subCreditinfo);
       this.subCreditinfo = subCreditinfo;
     }
     this.dataSource.data = this.calendarViewData;
