@@ -343,7 +343,11 @@
             <th mat-header-cell *matHeaderCellDef>{{ isDebtorDetail ? 'Subcrédito' : 'Asignación' }}</th>
             <td mat-cell *matCellDef="let row; let i = index">
               <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p>
-              <select *ngIf="isDebtorDetail" id="loanSelector{{ i }}" [(ngModel)]="selectorsGroup[i]">
+              <select
+                *ngIf="isDebtorDetail && !!availableLoans"
+                id="loanSelector{{ i }}"
+                (change)="changeSelectedGroup($event, i)"
+              >
                 <option [value]="undefined" disabled selected>Selecciona</option>
                 <option
                   *ngFor="let loan of getNonSelectedLoansOptionsExceptLoanId(selectorsGroup[i])"
@@ -378,7 +382,8 @@
               >
                 <span>$</span
                 ><input
-                  [(ngModel)]="inputsGroup[i]"
+                  (input)="onAmountChangeInput($event, selectorsGroup[i], i)"
+                  [value]="inputsGroup[i]"
                   type="number"
                   class="InputValuePartition"
                   [disabled]="isconfirming"
