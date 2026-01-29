@@ -1048,6 +1048,7 @@ export class OrganizationService {
   deletePromissoryNoteGroup(groupId: string) {
     return this.http.delete(`/investmentgroup/${groupId}`);
   }
+
   createPromissoryNoteGroup(data: {
     projectId: string;
     creationDate: string;
@@ -1056,6 +1057,28 @@ export class OrganizationService {
     signators?: number[];
   }) {
     return this.http.post(`/investmentgroup`, JSON.stringify(data), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  EditOrderPayout(
+    data: {
+      id: number;
+      amountToPaid: number;
+      amountToReinvest: number;
+    }[]
+  ) {
+    return this.http.put(`/shinkansen/orders/payout`, JSON.stringify({ data }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  createPayRoll(
+    data: {
+      id: number;
+      amountToPaid: number;
+      amountToReinvest: number;
+    }[]
+  ) {
+    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data }), {
       headers: { 'Content-Type': 'application/json' }
     });
   }
@@ -1078,6 +1101,7 @@ export class OrganizationService {
       }
     );
   }
+
   getLoanDataByClientId(clientId: number) {
     return this.http.get(`/shinkansen/loandata/${clientId}`);
   }

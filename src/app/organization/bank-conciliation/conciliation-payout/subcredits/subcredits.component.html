@@ -5,7 +5,7 @@
   <div class="bc-search">
     <mat-form-field class="inputSearch" fxFlex="45%">
       <mat-label>Buscar por nombre de empresa, RUT empresa, subcrédito o pagaré</mat-label>
-      <input matInput type="text" (input)="onFilter($any($event.target).value)" />
+      <input matInput type="text" (input)="onSearchInput($any($event.target).value)" />
       <button mat-icon-button matSuffix aria-label="Buscar">
         <mat-icon>search</mat-icon>
       </button>
@@ -70,6 +70,16 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell mat-cell_empty" [attr.colspan]="displayedColumns.length">
+          <div class="alert">
+            <div class="message">
+              <i class="fa fa-exclamation-circle alert-check"></i>
+              No se encontró inversión con el valor ingresado. Por favor verifica la información e intenta nuevamente
+            </div>
+          </div>
+        </td>
+      </tr>
     </table>
 
     <!-- Paginación -->

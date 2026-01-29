@@ -30,6 +30,7 @@ export class CalendarComponent implements OnInit {
   calendarViewData: any;
   currency: string = '';
   subCreditinfo: any;
+  globalData: any;
   dataSource = new MatTableDataSource<any>([]);
   constructor(
     private route: ActivatedRoute,
@@ -37,7 +38,8 @@ export class CalendarComponent implements OnInit {
   ) {
     this.getDefaultCurrency();
     this.route.data.subscribe(({ data }: any) => {
-      this.calendarViewData = data;
+      this.calendarViewData = data.schedulePeriods;
+      this.globalData = data;
     });
   }
   ngOnInit(): void {

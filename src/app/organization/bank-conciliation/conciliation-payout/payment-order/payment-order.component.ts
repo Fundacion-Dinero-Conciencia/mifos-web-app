@@ -4,6 +4,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationService } from 'app/organization/organization.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'mifosx-payment-order',
@@ -17,8 +19,8 @@ export class PaymentOrderComponent implements OnInit {
     private organizationService: OrganizationService
   ) {}
   // Header info (idealmente viene del endpoint)
-  promissoryNo = '12345';
-  subCreditNo = 'TEST46TSTC01';
+  promissoryNo = '-';
+  subCreditNo = '-';
   installmentNo = 0;
   currentPeriodInfo: any;
   currency = 'CLP';
@@ -38,29 +40,40 @@ export class PaymentOrderComponent implements OnInit {
     'amountToReinvest'
   ];
 
+  selectedDisplayedColumns: string[] = [
+    'investor',
+    'rut',
+    'amountToPay',
+    'amountToReinvest',
+    'total'
+  ];
+
+  rowsSelected: any[] = [];
+
   dataSource = new MatTableDataSource<any>([]);
+  dataSourceSelected = new MatTableDataSource<any>([]);
 
   // Paginación
   totalItems = 0;
   pageSize = 10;
   pageIndex = 0;
   inputSearch = '';
-  rowsSelected: any[] = [];
-  rowInputs: any[] = [];
-
+  private searchSubject = new Subject<string>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
-    this.currentPeriodInfo = history?.state.paymentPeriodInfo;
-    this.installmentNo = this.currentPeriodInfo ? this.currentPeriodInfo.period : 0;
-    if (!this.currentPeriodInfo) {
+    if (!history?.state.paymentPeriodInfo) {
       this.router.navigate(['../'], { relativeTo: this.route });
     }
-    this.loadPage(0, this.pageSize);
-  }
+    this.currentPeriodInfo = history?.state.paymentPeriodInfo.row;
+    this.subCreditNo = history?.state.paymentPeriodInfo.subCreditInfo.accountNo;
+    this.installmentNo = this.currentPeriodInfo ? this.currentPeriodInfo.period : 0;
 
-  generatePayment() {
-    console.log('Generando orden de pago...');
+    this.searchSubject.pipe(debounceTime(300)).subscribe((value) => {
+      this.loadPage(0, this.pageSize, this.inputSearch);
+    });
+
+    this.loadPage(0, this.pageSize);
   }
 
   get masterChecked(): boolean {
@@ -79,10 +92,8 @@ export class PaymentOrderComponent implements OnInit {
     if (this.rowsSelected.length === 0) {
       return 0;
     }
-    const total = this.rowsSelected.reduce((sum, row) => {
-      const amountToPay = parseFloat(row.amountToPay) || 0;
-      return sum + amountToPay;
-    });
+    let total = 0;
+    this.rowsSelected.forEach((row) => (total = row.amount + total));
     return total;
   }
 
@@ -90,23 +101,24 @@ export class PaymentOrderComponent implements OnInit {
     this.dataSource.data = this.dataSource.data.map((r) => ({ ...r, selected: checked }));
   }
 
-  loadPage(page: number, size: number, filters?: any) {
+  loadPage(page: number, size: number, search?: string) {
     const requestParams = {
-      ...filters,
+      search,
       page,
-      size,
-      sort: 'id'
+      size
     };
     showGlobalLoader();
     const loanId = this.route.snapshot.paramMap.get('id');
     this.organizationService
       .getPayoutOrders(Number(loanId), Number(1), { ...requestParams })
       .subscribe((response: any) => {
-        this.dataSource.data = response.content || response;
-        this.rowInputs = this.dataSource.data.map((row) => ({
-          amountToPay: row.amount,
-          amountToReinvest: 0
+        const tableContent = response.content.map((item: any) => ({
+          ...item,
+          amountToPay: item.amountToPaid || item.amount,
+          amountToReinvest: item.amountToReinvest || 0,
+          selected: false
         }));
+        this.dataSource.data = tableContent;
         this.pageSize = size;
         this.pageIndex = page;
         this.totalItems = response.totalElements;
@@ -114,26 +126,43 @@ export class PaymentOrderComponent implements OnInit {
         hideGlobalLoader();
       });
   }
-  onAmountToPayChange(rowIndex: number, totalAmount: number, event: any): void {
+  onAmountToPayChange(id: number, index: number, totalAmount: number, event: any): void {
     const value = event.target.value;
-    console.log(value);
     const amount = (parseFloat(value) || 0) > totalAmount ? totalAmount : parseFloat(value) || 0;
     event.target.value = amount;
+    const row = this.rowsSelected.find((row) => row.id === id);
 
-    this.rowInputs[rowIndex].amountToReinvest = String(totalAmount - amount);
-    this.rowInputs[rowIndex].amountToPay = String(amount);
+    row.amountToReinvest = String(totalAmount - amount);
+    row.amountToPay = String(amount);
+
+    this.dataSource.data[index].amountToPay = String(amount);
+    this.dataSource.data[index].amountToReinvest = String(totalAmount - amount);
   }
-  onAmountToReinvestChange(rowIndex: number, totalAmount: number, event: any): void {
+  onAmountToReinvestChange(id: number, index: number, totalAmount: number, event: any): void {
     const value = event.target.value;
-    console.log(value);
-
     const amount = (parseFloat(value) || 0) > totalAmount ? totalAmount : parseFloat(value) || 0;
     event.target.value = amount;
-    this.rowInputs[rowIndex].amountToPay = String(totalAmount - amount);
-    this.rowInputs[rowIndex].amountToReinvest = String(amount);
+    const row = this.rowsSelected.find((row) => row.id === id);
+
+    row.amountToPay = String(totalAmount - amount);
+    row.amountToReinvest = String(amount);
+
+    this.dataSource.data[index].amountToReinvest = String(amount);
+    this.dataSource.data[index].amountToPay = String(totalAmount - amount);
   }
+
+  isRowSelected(row: any): boolean {
+    return this.rowsSelected.filter((r) => r.id === row.id).length > 0;
+  }
+
   toggleRow(row: any, checked: boolean): void {
-    row.selected = checked;
+    if (checked && !this.isRowSelected(row)) {
+      this.rowsSelected.push(row);
+    } else {
+      this.rowsSelected = this.rowsSelected.filter((r) => r.id !== row.id);
+    }
+    this.dataSourceSelected.data = this.rowsSelected;
+    this.includedCount = this.rowsSelected.length;
   }
 
   onRowEdited(row: any): void {
@@ -142,6 +171,7 @@ export class PaymentOrderComponent implements OnInit {
 
   onFilter(value: string): void {
     this.inputSearch = value;
+    this.searchSubject.next(value);
   }
 
   onPageChange(event: any) {
@@ -153,7 +183,34 @@ export class PaymentOrderComponent implements OnInit {
   }
 
   onSaveChanges(): void {
-    // enviar payload al backend
+    showGlobalLoader();
+    const data = this.rowsSelected.map((row, index) => ({
+      amountToPaid: Number(row.amountToPay),
+      amountToReinvest: Number(row.amountToReinvest),
+      id: row.id
+    }));
+    this.organizationService.EditOrderPayout(data).subscribe((response: any) => {
+      console.log('Cambios guardados', response);
+      hideGlobalLoader();
+      this.router.navigate(['../'], { relativeTo: this.route });
+    });
+  }
+
+  generatePayment() {
+    showGlobalLoader();
+    const data = this.rowsSelected.map((row, index) => ({
+      amountToPaid: Number(row.amountToPay),
+      amountToReinvest: Number(row.amountToReinvest),
+      id: row.id
+    }));
+    this.organizationService.createPayRoll(data).subscribe((response: any) => {
+      console.log('nominaGenerada', response);
+      hideGlobalLoader();
+    });
+  }
+
+  get atleastOneChecked(): boolean {
+    return this.rowsSelected.length > 0;
   }
 
   onGeneratePayroll(): void {

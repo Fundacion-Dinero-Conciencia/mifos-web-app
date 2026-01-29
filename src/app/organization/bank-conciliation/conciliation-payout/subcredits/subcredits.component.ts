@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { OrganizationService } from 'app/organization/organization.service';
@@ -17,7 +17,7 @@ export interface ConciliationRow {
   templateUrl: './subcredits.component.html',
   styleUrls: ['./subcredits.component.scss']
 })
-export class SubcreditsComponent implements OnInit, AfterViewInit {
+export class SubcreditsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'company',
     'rut',
@@ -37,9 +37,6 @@ export class SubcreditsComponent implements OnInit, AfterViewInit {
   private destroy$ = new Subject<void>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  ngAfterViewInit(): void {
-    this.loadPage(this.pageIndex, this.pageSize);
-  }
   ngOnInit(): void {
     this.search$.pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((value) => {
       this.onFilter(value);
@@ -57,6 +54,10 @@ export class SubcreditsComponent implements OnInit, AfterViewInit {
       size,
       search: filter || ''
     };
+    if (filter.length === 0) {
+      this.dataSource.data = [];
+      return;
+    }
     this.organizationService.getPayoutItems({ ...requestParams }).subscribe((response: any) => {
       this.dataSource.data = response.content || response;
       this.pageSize = size;
@@ -73,5 +74,9 @@ export class SubcreditsComponent implements OnInit, AfterViewInit {
   }
   onSearchInput(value: string): void {
     this.search$.next(value);
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

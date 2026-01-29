@@ -128,3 +128,16 @@
   font-size: 1.5em;
   margin: unset;
 }
+
+.mat-row .mat-cell.mat-cell_empty {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.alert {
+  margin: unset;
+}
+
+.message {
+  text-align: center;
+}
