@@ -198,7 +198,6 @@ export class ConciliationPayinComponent implements OnInit {
     } else if (row.clientType.name.includes('Inversión')) {
       this.viewDetailsInvestor(row);
     } else {
-      console.log(row.transactionDataList);
       const isDebtor = row.transactionDataList.some(
         (transaction: any) => transaction.loanId !== null && transaction.loanId !== undefined
       );
@@ -252,6 +251,28 @@ export class ConciliationPayinComponent implements OnInit {
     this.assignDataSource.data = [...this.selectedRowPartition];
   }
 
+  onAmountChangeInput(event: Event, creditId: number, index: number): void {
+    const target = event.target as HTMLInputElement;
+    const amount = target.valueAsNumber;
+    if (!this.isDebtorDetail || creditId === undefined) {
+      this.inputsGroup[index] = amount;
+      return;
+    }
+    const loan = this.availableLoans.find((loan) => Number(loan.loanId) === Number(creditId));
+    if (amount > loan.totalAmount) {
+      {
+        target.value = loan.totalAmount.toString();
+        this.inputsGroup[index] = loan.totalAmount;
+      }
+    } else {
+      this.inputsGroup[index] = amount;
+    }
+  }
+  changeSelectedGroup(event: any, index: number): void {
+    const selectedValue = event.target.value;
+    this.selectorsGroup[index] = selectedValue;
+    this.inputsGroup[index] = 0;
+  }
   closeDetailedRow() {
     this.isDebtorDetail = false;
     this.showDialogTransactions = false;
@@ -370,7 +391,7 @@ export class ConciliationPayinComponent implements OnInit {
       }
 
       this.totalAssignedAmount <= 1 && (disable = true);
-
+      this.detailedRow && this.detailedRow.amount < this.totalAssignedAmount && (disable = true);
       return disable;
     } else {
       return true;

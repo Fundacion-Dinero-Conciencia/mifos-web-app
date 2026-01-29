@@ -65,7 +65,12 @@ export class EditRepaymentScheduleComponent implements OnInit {
       if (period.period) {
         periods.push({
           idx: period.period,
-          dueDate: this.dateUtils.formatDate(period.dueDate, this.settingsService.dateFormat)
+          dueDate: this.dateUtils.formatDate(period.dueDate, this.settingsService.dateFormat),
+          label:
+            'Cuota ' +
+            period.period +
+            ' - ' +
+            this.dateUtils.formatDate(period.dueDate, this.settingsService.dateFormat)
         });
       }
     });
@@ -74,14 +79,14 @@ export class EditRepaymentScheduleComponent implements OnInit {
         controlName: 'fromPeriod',
         label: 'From Date',
         value: '',
-        options: { label: 'dueDate', value: 'idx', data: periods },
+        options: { label: 'label', value: 'idx', data: periods },
         required: true
       }),
       new SelectBase({
         controlName: 'toPeriod',
         label: 'To Date',
         value: '',
-        options: { label: 'dueDate', value: 'idx', data: periods },
+        options: { label: 'label', value: 'idx', data: periods },
         required: true
       }),
       new InputBase({
@@ -97,6 +102,7 @@ export class EditRepaymentScheduleComponent implements OnInit {
       title: 'Pattern Update',
       formfields: formfields
     };
+    console.log(periods);
     const addDialogRef = this.dialog.open(FormDialogComponent, { data });
     addDialogRef.afterClosed().subscribe((response: any) => {
       if (response.data) {

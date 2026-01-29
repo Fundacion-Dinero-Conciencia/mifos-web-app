@@ -13,6 +13,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { SystemService } from 'app/system/system.service';
+import { isNumber } from 'lodash';
 import { forkJoin } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
@@ -1043,8 +1044,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   addCommissionAEF(baseAmount: number, percentage: number): void {
+    console.log(baseAmount);
+    console.log(percentage);
     let montoSolicitado = baseAmount || this.selectedSimulation.amountToBeFinanced;
-    const tasaAEF = percentage || this.getCommissionAcordingByPeriod();
+    const tasaAEF = isNumber(percentage) ? percentage : this.getCommissionAcordingByPeriod();
     var tasaToApply = 0;
     if (this.isFactoring === true) {
       tasaToApply = tasaAEF / 360;
