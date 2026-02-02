@@ -18,7 +18,7 @@
       <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let method">
         <button
-          [routerLink]="['./', 'Payin']"
+          [routerLink]="['./', method.name]"
           class="document-action-button"
           mat-raised-button
           color="primary"

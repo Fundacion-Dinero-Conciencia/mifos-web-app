@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "GeneratePayRoll": "Generar nómina",
       "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
       "Create Simulation": "Crear simulación",

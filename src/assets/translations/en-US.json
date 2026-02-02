@@ -295,6 +295,7 @@
       "Home": "Home"
     },
     "buttons": {
+      "GeneratePayRoll": "Generate PayRoll",
       "Assign Transfer": "Assign transfer",
       "Assign": "Assign",
       "Create Simulation": "Create Simulation",

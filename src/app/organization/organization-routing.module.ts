@@ -72,6 +72,8 @@ import { AdhocQueryAndTemplateResolver } from './adhoc-query/common-resolvers/ad
 import { AdhocQueryResolver } from './adhoc-query/common-resolvers/adhoc-query.resolver';
 import { ConciliationMenuComponent } from './bank-conciliation/conciliation-menu/conciliation-menu.component';
 import { ConciliationPayinComponent } from './bank-conciliation/conciliation-payin/conciliation-payin.component';
+import { ConciliationPayoutComponent } from './bank-conciliation/conciliation-payout/conciliation-payout.component';
+import { SubcreditsComponent } from './bank-conciliation/conciliation-payout/subcredits/subcredits.component';
 import { BulkImportResolver } from './bulk-import/bulk-import.resolver';
 import { CurrenciesResolver } from './currencies/currencies.resolver';
 import { EditEmployeeResolver } from './employees/edit-employee.resolver';
@@ -142,6 +144,9 @@ import { CashierTransactionTemplateResolver } from './tellers/common-resolvers/t
 import { TellerResolver } from './tellers/common-resolvers/teller.resolver';
 import { TellersResolver } from './tellers/common-resolvers/tellers.resolver';
 import { WorkingDaysResolver } from './working-days/working-days.resolver';
+import { CalendarComponent } from './bank-conciliation/conciliation-payout/calendar/calendar.component';
+import { LoanCalendarResolver } from './bank-conciliation/conciliation-payout/calendar/calendar.resolver';
+import { PaymentOrderComponent } from './bank-conciliation/conciliation-payout/payment-order/payment-order.component';
 /** Organization Routes */
 const routes: Routes = [
   Route.withShell([
@@ -701,6 +706,53 @@ const routes: Routes = [
                 {
                   path: '',
                   component: ConciliationPayinComponent
+                }
+              ]
+            },
+            {
+              path: 'payout',
+              data: { title: 'Payout', breadcrumb: 'Payout' },
+              children: [
+                {
+                  path: '',
+                  component: ConciliationPayoutComponent
+                },
+                {
+                  data: { title: 'Subcredits', breadcrumb: 'Subcredits' },
+                  path: 'subcreditos',
+                  children: [
+                    {
+                      path: '',
+                      component: SubcreditsComponent
+                    },
+                    {
+                      path: ':id/calendario',
+                      data: {
+                        title: 'Calendar',
+                        breadcrumb: 'Calendar'
+                      },
+                      resolve: {
+                        data: LoanCalendarResolver
+                      },
+                      children: [
+                        {
+                          path: '',
+                          resolve: {
+                            data: LoanCalendarResolver
+                          },
+                          component: CalendarComponent
+                        },
+                        {
+                          path: 'orden-pago',
+                          component: PaymentOrderComponent,
+                          data: {
+                            title: 'PaymentOrder',
+                            breadcrumb: 'PaymentOrder'
+                          }
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
