@@ -204,8 +204,8 @@ export class PaymentOrderComponent implements OnInit {
       id: row.id
     }));
     this.organizationService.createPayRoll(data).subscribe((response: any) => {
-      console.log('nominaGenerada', response);
       hideGlobalLoader();
+      this.router.navigate(['../'], { relativeTo: this.route });
     });
   }
 

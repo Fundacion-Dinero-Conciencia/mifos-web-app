@@ -11,3 +11,8 @@
 .message {
   text-align: center;
 }
+
+.mat-row .mat-cell.mat-cell_empty {
+  padding-left: 0;
+  padding-right: 0;
+}

@@ -5,6 +5,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
 import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
+import { DatePipe } from '@angular/common';
+
+type PayrollStatus = 'EXITOSA' | 'PARCIAL' | 'FALLIDA' | 'PENDIENTE';
+
 export interface ConciliationRow {
   systemDate: string | Date;
   rut: string;
@@ -26,7 +30,8 @@ export class ConciliationPayoutComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private organizationService: OrganizationService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private datePipe: DatePipe
   ) {}
   currency = 'CLP';
   dataSource = new MatTableDataSource<ConciliationRow>([]);
@@ -36,7 +41,7 @@ export class ConciliationPayoutComponent implements OnInit {
   showDialogTransactions = false;
   isDebtorDetail = false;
   showDialogAssignation = false;
-  clientOptions: any[] = [];
+  operationType: any[] = [];
   selectedRowPartition: number[] = [];
   isconfirming = false;
 
@@ -49,33 +54,22 @@ export class ConciliationPayoutComponent implements OnInit {
     'date',
     'aprovedNumber',
     'failNumber',
+    'pendingNumber',
     'status',
     'actions'
   ];
   statusOptions = [
-    {
-      id: 0,
-      name: 'No detectado'
-    },
-    {
-      id: 100,
-      name: 'Aplicado'
-    },
-    {
-      id: 200,
-      name: 'Recibido'
-    },
     {
       id: 300,
       name: 'Pendiente'
     },
     {
       id: 400,
-      name: 'Conciliado'
+      name: 'Exitoso'
     },
     {
-      id: 500,
-      name: 'No encontrado'
+      id: 600,
+      name: 'Fallido'
     }
   ];
   detailDisplayedColumns: string[] = [
@@ -96,37 +90,52 @@ export class ConciliationPayoutComponent implements OnInit {
   inputsGroup: any[];
   selectorsGroup: any[] = [];
   availableLoans: any[] = [];
-
+  findOperationTypeById(id: number): string {
+    const operation = this.operationType.find((op) => op.id === id);
+    return operation ? operation.name : 'Desconocido';
+  }
   ngOnInit(): void {
-    this.systemService.getCodeByName('ClientType').subscribe((data: any) => {
-      this.clientOptions = data.codeValues;
-    });
+    this.operationType = [
+      { id: 100, name: ' Pago de crédito' },
+      { id: 200, name: 'cuotas de inversion' }
+    ];
 
     this.filters = this.fb.group({
-      operationType: [''],
-      date: [''],
+      type: [''],
+      startDate: [''],
+      endDate: [''],
       status: ['']
     });
     this.loadPage(0, this.pageSize);
   }
 
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'INVALID':
-        return 'No detectado';
-      case 'APPLIED':
-        return 'Aplicado';
-      case 'RECEIVED':
-        return 'Recibido';
-      case 'PENDING':
-        return 'Pendiente';
-      case 'CONCILIATED':
-        return 'Conciliado';
-      case 'NOT_FOUND':
-        return 'No encontrado';
-      default:
-        return status || '-';
-    }
+  getPayrollStatus(row: {
+    numberOfOrdersSuccess?: number;
+    numberOfOrdersPending?: number;
+    numberOfOrdersFailed?: number;
+  }) {
+    const success = Number(row.numberOfOrdersSuccess ?? 0);
+    const pending = Number(row.numberOfOrdersPending ?? 0);
+    const failed = Number(row.numberOfOrdersFailed ?? 0);
+
+    const total = success + pending + failed;
+
+    if (total === 0) return 'PENDIENTE';
+
+    if (failed === total) return 'FALLIDA';
+
+    if (success === total) return 'EXITOSA';
+
+    if (pending === total) return 'PENDIENTE';
+
+    return 'PARCIAL';
+  }
+
+  downloadDocument(entityId: string, documentId: string) {
+    this.organizationService.downloadLoanOrder(entityId, documentId).subscribe((res) => {
+      const url = window.URL.createObjectURL(res);
+      window.open(url);
+    });
   }
 
   loadPage(page: number, size: number, filters?: any) {
@@ -137,7 +146,7 @@ export class ConciliationPayoutComponent implements OnInit {
       sort: 'transactionDate'
     };
     showGlobalLoader();
-    this.organizationService.getShinkansen({ ...requestParams }).subscribe((response: any) => {
+    this.organizationService.getShinkansenOrdersPayout({ ...requestParams }).subscribe((response: any) => {
       this.dataSource.data = response.content || response;
       this.pageSize = size;
       this.pageIndex = page;
@@ -151,14 +160,17 @@ export class ConciliationPayoutComponent implements OnInit {
 
   applyFilters(): void {
     this.paginator.firstPage();
-    this.loadPage(0, this.pageSize, this.filters.value);
+    const startDate = this.datePipe.transform(this.filters.value.startDate, 'yyyy-MM-dd');
+    const endDate = this.datePipe.transform(this.filters.value.endDate, 'yyyy-MM-dd');
+    this.loadPage(0, this.pageSize, { ...this.filters.value, startDate, endDate });
   }
 
   onClear() {
     this.filters.reset({
-      operationType: '',
-      date: '',
-      status: ''
+      type: '',
+      status: '',
+      startDate: '',
+      endDate: ''
     });
     this.applyFilters();
   }

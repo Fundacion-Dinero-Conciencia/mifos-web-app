@@ -953,6 +953,12 @@ export class OrganizationService {
     return this.http.get(`/projectparticipation/${participationId}/attachment`, { responseType: 'blob' });
   }
 
+  downloadLoanOrder(parentEntityId: string, documentId: string) {
+    return this.http.get(`/payout_order_group/${parentEntityId}/documents/${documentId}/attachment`, {
+      responseType: 'blob'
+    });
+  }
+
   updateProjectDocumentsImage(projectId: string, imageId: string, formData: FormData) {
     return this.http.put(`/projects/${projectId}/documents/${imageId}`, formData);
   }
@@ -1146,6 +1152,25 @@ export class OrganizationService {
     return this.http.get(`/projectparticipation/search/pageable`, { params });
   }
 
+  getShinkansenOrdersPayout(filters: {
+    page?: number;
+    size?: number;
+    status?: number;
+    type?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    let params = new HttpParams();
+
+    if (filters.page !== undefined) params = params.set('page', filters.page);
+    if (filters.size !== undefined) params = params.set('size', filters.size);
+    if (filters.type) params = params.set('type', filters.type);
+    if (filters.status !== undefined) params = params.set('status', filters.status);
+    if (filters.startDate) params = params.set('fromDate', filters.startDate);
+    if (filters.endDate) params = params.set('toDate', filters.endDate);
+
+    return this.http.get(`/shinkansen/ordersgroup/payout`, { params });
+  }
   getShinkansen(filters: {
     page?: number;
     size?: number;
@@ -1173,7 +1198,7 @@ export class OrganizationService {
 
     if (filters.notificationId) params = params.set('notificationId', filters.notificationId);
 
-    return this.http.get(`/v1/shinkansen`, { params });
+    return this.http.get(`/shinkansen`, { params });
   }
   getPayoutItems(filters: { page?: number; size?: number; search?: string }): Observable<any> {
     return this.http.get(`/shinkansen/loandata/payout`, {
