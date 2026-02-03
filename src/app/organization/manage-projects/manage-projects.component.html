@@ -41,6 +41,10 @@
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Percentage' | translate }}</th>
         <td mat-cell *matCellDef="let item">{{ item.occupancyPercentage | formatNumber }} %</td>
       </ng-container>
+      <ng-container matColumnDef="financedAmount">
+        <th mat-header-cell *matHeaderCellDef class="center">{{ 'Valor financiado ' | translate }}</th>
+        <td mat-cell *matCellDef="let item">{{ item.financedAmount | currency: item.currencyCode }} %</td>
+      </ng-container>
 
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>

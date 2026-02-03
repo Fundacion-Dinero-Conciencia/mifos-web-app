@@ -8,6 +8,7 @@
 "End investments date":"Fecha de termino de la inversiónes", -->
 
 <section class="tab-container mat-typography mt-10">
+  <h2>Monto total invertido: {{ projectData.financedAmount || 0 | currency: currency }}</h2>
   <form [formGroup]="filters">
     <mat-form-field fxFlex="15%" class="inputSearch m-r-25 m-b-10">
       <mat-label>Filtrar por:</mat-label>
