@@ -60,7 +60,7 @@
           <mat-checkbox
             [checked]="isRowSelected(row)"
             (change)="toggleRow(row, $event.checked)"
-            [disabled]="row.dataBank"
+            [disabled]="!row.dataBank"
           >
           </mat-checkbox>
           <span class="toolTip" matTooltip="El usuario tiene datos bancarios incompletos" *ngIf="!row.dataBank">ⓘ</span>
