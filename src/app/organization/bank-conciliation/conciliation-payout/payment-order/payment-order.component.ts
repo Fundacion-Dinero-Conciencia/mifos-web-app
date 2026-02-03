@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrganizationService } from 'app/organization/organization.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
+import { isNumber } from 'lodash';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -114,7 +115,7 @@ export class PaymentOrderComponent implements OnInit {
       .subscribe((response: any) => {
         const tableContent = response.content.map((item: any) => ({
           ...item,
-          amountToPay: item.amountToPaid || item.amount,
+          amountToPay: isNumber(item.amountToPaid) ? item.amountToPaid : item.amount,
           amountToReinvest: item.amountToReinvest || 0,
           selected: false
         }));

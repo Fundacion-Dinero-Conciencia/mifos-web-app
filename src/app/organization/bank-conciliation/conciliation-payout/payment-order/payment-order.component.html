@@ -1,7 +1,7 @@
 <div class="container">
   <!-- Top: Volver -->
   <div fxLayout="row" fxLayoutAlign="end center" class="m-b-15">
-    <button class="outlinedButton" [routerLink]="['../']">Volver</button>
+    <button class="outlinedButton" mat-button [routerLink]="['../']">Volver</button>
   </div>
 
   <!-- Título -->
@@ -60,7 +60,7 @@
           <mat-checkbox
             [checked]="isRowSelected(row)"
             (change)="toggleRow(row, $event.checked)"
-            [disabled]="!row.dataBank"
+            [disabled]="row.dataBank"
           >
           </mat-checkbox>
           <span class="toolTip" matTooltip="El usuario tiene datos bancarios incompletos" *ngIf="!row.dataBank">ⓘ</span>
@@ -91,7 +91,7 @@
       <ng-container matColumnDef="installmentAmount">
         <th mat-header-cell *matHeaderCellDef>Monto cuota a pagar</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.amount | currency: currency : 'symbol-narrow' }}
+          {{ row.amount | currency: currency }}
         </td>
       </ng-container>
 
@@ -214,7 +214,7 @@
 
   <!-- Footer buttons -->
   <footer class="footerBar m-t-25" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="48px">
-    <button class="outlinedButton" (click)="onCancel()">Cancelar</button>
+    <button class="outlinedButton" mat-raised-button (click)="onCancel()">Cancelar</button>
 
     <button mat-raised-button color="primary" (click)="onSaveChanges()" [disabled]="!atleastOneChecked">
       Guardar cambios
