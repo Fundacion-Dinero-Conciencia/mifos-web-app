@@ -2,7 +2,6 @@
   padding: 1rem 4rem;
   min-width: 100%;
   align-items: center;
-  text-align: center;
   box-sizing: border-box;
 }
 
@@ -11,7 +10,6 @@
   margin-bottom: 15rem;
 }
 
-th.mat-header-cell {
-  text-align: center !important;
-  justify-content: center !important; /* para flex */
+.row:hover {
+  filter: brightness(0.95);
 }

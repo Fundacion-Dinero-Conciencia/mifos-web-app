@@ -19,7 +19,7 @@ export class PaymentOrderComponent implements OnInit {
     private route: ActivatedRoute,
     private organizationService: OrganizationService
   ) {}
-  // Header info (idealmente viene del endpoint)
+
   promissoryNo = '-';
   subCreditNo = '-';
   installmentNo = 0;
@@ -119,6 +119,7 @@ export class PaymentOrderComponent implements OnInit {
           amountToReinvest: item.amountToReinvest || 0,
           selected: false
         }));
+
         this.dataSource.data = tableContent;
         this.pageSize = size;
         this.pageIndex = page;
@@ -206,7 +207,7 @@ export class PaymentOrderComponent implements OnInit {
     }));
     this.organizationService.createPayRoll(data).subscribe((response: any) => {
       hideGlobalLoader();
-      this.router.navigate(['../'], { relativeTo: this.route });
+      this.router.navigate(['../../..'], { relativeTo: this.route });
     });
   }
 

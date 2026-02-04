@@ -38,7 +38,7 @@ export class ConciliationPayinComponent implements OnInit {
     private organizationService: OrganizationService,
     private systemService: SystemService
   ) {}
-  currency = 'CLP'; // o lo que uses en tu sistema
+  currency = 'CLP';
   dataSource = new MatTableDataSource<ConciliationRow>([]);
   pageIndex = 0;
   pageSize = 5;

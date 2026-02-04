@@ -1209,6 +1209,7 @@ export class OrganizationService {
       }
     });
   }
+
   getPayoutOrders(
     loanId: number,
     periodNumber: number,
@@ -1222,6 +1223,20 @@ export class OrganizationService {
         size: filters.size.toString(),
         search: filters.search || ''
       }
+    });
+  }
+  getPayoutOrdersTramited(
+    groupId: number,
+    filters: { page?: number; size?: number; search?: string }
+  ): Observable<any> {
+    const params: any = {
+      page: filters.page.toString(),
+      size: filters.size.toString()
+    };
+    filters.search ? (params.search = filters.search) : null;
+
+    return this.http.get(`/shinkansen/orders/payout/${groupId}`, {
+      params
     });
   }
 }

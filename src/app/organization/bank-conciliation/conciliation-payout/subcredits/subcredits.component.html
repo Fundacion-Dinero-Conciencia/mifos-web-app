@@ -1,6 +1,6 @@
 <div class="container">
   <div fxLayoutAlign="flex-end m-b-15">
-    <button class="outlinedButton" [routerLink]="['../']">Volver</button>
+    <button class="outlinedButton" mat-raised-button [routerLink]="['../']">Volver</button>
   </div>
   <div class="bc-search">
     <mat-form-field class="inputSearch" fxFlex="45%">
@@ -46,7 +46,7 @@
         <th mat-header-cell *matHeaderCellDef>Estado</th>
         <td mat-cell *matCellDef="let row">
           <span class="bc-status" [class.bc-status--closed]="row.status === 'closed'">
-            {{ row.status }}
+            {{ 'labels.status.' + capitalize(row.status) | translate }}
           </span>
         </td>
       </ng-container>

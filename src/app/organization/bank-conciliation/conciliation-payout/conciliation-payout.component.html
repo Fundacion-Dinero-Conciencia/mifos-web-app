@@ -146,6 +146,17 @@
         >
           <fa-icon icon="download"></fa-icon>
         </button>
+        <button
+          [routerLink]="['/organization', 'bank-conciliation', 'payout', 'detalles', row.id]"
+          [state]="{ orderInfo: row }"
+          mat-raised-button
+          color="primary"
+          class="action-btn"
+          matTooltip="Descargar detalle"
+          (click)="$event.stopPropagation()"
+        >
+          <fa-icon icon="eye"></fa-icon>
+        </button>
       </td>
     </ng-container>
 

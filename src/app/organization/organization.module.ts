@@ -105,6 +105,7 @@ import { SubcreditsComponent } from './bank-conciliation/conciliation-payout/sub
 import { CalendarComponent } from './bank-conciliation/conciliation-payout/calendar/calendar.component';
 import { LoanCalendarResolver } from './bank-conciliation/conciliation-payout/calendar/calendar.resolver';
 import { PaymentOrderComponent } from './bank-conciliation/conciliation-payout/payment-order/payment-order.component';
+import { PayoutDetailComponent } from './bank-conciliation/conciliation-payout/payout-detail/payout-detail.component';
 /**
  * Organization Module
  *
@@ -206,7 +207,8 @@ import { PaymentOrderComponent } from './bank-conciliation/conciliation-payout/p
     ConciliationPayoutComponent,
     SubcreditsComponent,
     CalendarComponent,
-    PaymentOrderComponent
+    PaymentOrderComponent,
+    PayoutDetailComponent
   ],
   providers: [
     CreateHoliday,

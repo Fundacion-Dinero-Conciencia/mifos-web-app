@@ -49,11 +49,13 @@ export class SubcreditsComponent implements OnInit, OnDestroy {
   }
 
   loadPage(page: number, size: number, filter?: string) {
+    console.log(size);
     const requestParams = {
       page,
       size,
       search: filter || ''
     };
+    console.log(this.filter);
     if (filter.length === 0) {
       this.dataSource.data = [];
       return;
@@ -68,11 +70,15 @@ export class SubcreditsComponent implements OnInit, OnDestroy {
   onPageChange(event: any) {
     this.loadPage(event.pageIndex, event.pageSize, this.filter);
   }
-
+  capitalize(word: string) {
+    if (!word) return '';
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }
   onFilter(value: string): void {
     this.loadPage(0, this.pageSize, value);
   }
   onSearchInput(value: string): void {
+    this.filter = value;
     this.search$.next(value);
   }
   ngOnDestroy(): void {
