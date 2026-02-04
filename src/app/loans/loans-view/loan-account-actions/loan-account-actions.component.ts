@@ -38,6 +38,7 @@ export class LoanAccountActionsComponent {
     'Undo Last Disbursal': boolean;
     'Loan Screen Reports': boolean;
     Approve: boolean;
+    'Go To Promissory': boolean;
     'Add Loan Charge': boolean;
     'Goodwill Credit': boolean;
     'Merchant Issued Refund': boolean;
@@ -75,6 +76,7 @@ export class LoanAccountActionsComponent {
     'Undo Last Disbursal': false,
     'Loan Screen Reports': false,
     Approve: false,
+    'Go To Promissory': false,
     'Add Loan Charge': false,
     'Goodwill Credit': false,
     'Merchant Issued Refund': false,

@@ -44,6 +44,8 @@ export class LoansViewComponent implements OnInit {
   /** Disburse Transaction number */
   disburseTransactionNo = 0;
 
+  loanGroupData: any;
+
   loanDelinquencyClassificationStyle = '';
   loanStatus: LoanStatus;
   currency: Currency;
@@ -58,12 +60,14 @@ export class LoansViewComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.route.data.subscribe(
-      (data: { loanDetailsData: any; loanDatatables: any; loanArrearsDelinquencyConfig: any }) => {
+      (data: { loanDetailsData: any; loanDatatables: any; loanArrearsDelinquencyConfig: any; loanGroupData: any }) => {
         this.loanDetailsData = data.loanDetailsData;
         this.loanDatatables = data.loanDatatables;
         this.loanDisplayArrearsDelinquency = data.loanArrearsDelinquencyConfig.value || 0;
         this.loanStatus = this.loanDetailsData.status;
         this.currency = this.loanDetailsData.currency;
+        this.loanGroupData = data.loanGroupData;
+        console.log('Dataa: ', this.loanGroupData);
         if (this.loanStatus.active) {
           this.loanDetailsData.transactions.forEach((lt: LoanTransaction) => {
             if (!lt.manuallyReversed) {
@@ -243,6 +247,13 @@ export class LoansViewComponent implements OnInit {
       case 'Undo Re-Amortize':
       case 'Undo Charge-Off':
         this.undoLoanAction(actionName);
+        break;
+      case 'Go To Promissory':
+        this.router.navigate([
+          'organization/projects',
+          this.loanGroupData,
+          'grupos-pagare'
+        ]);
         break;
       default:
         const navigationExtras: NavigationExtras = {
