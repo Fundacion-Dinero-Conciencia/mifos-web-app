@@ -10,12 +10,14 @@
   <mat-spinner diameter="40"></mat-spinner>
 </div>
 <section class="tab-container mat-typography mt-10" *ngIf="!isCreatingPromissoryNoteGroup && !loading">
-  <div fxLayout="row" fxLayoutAlign="end">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2>Monto total de pagarés aprobados : {{ projectData.signedGroupsAmount || 0 | currency: currency }}</h2>
     <button mat-raised-button class="outlinedButton" (click)="createGroup()">
       <fa-icon icon="plus" size="sm"></fa-icon>
       Crear grupo
     </button>
   </div>
+
   <table mat-table #documentsTable [dataSource]="dataSourceGroups" matSort class="m-t-25">
     <ng-container matColumnDef="Number">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>N° de pagaré</th>

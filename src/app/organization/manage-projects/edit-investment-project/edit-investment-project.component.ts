@@ -317,6 +317,29 @@ export class EditInvestmentProjectComponent implements OnInit {
       this.router.navigate(['../general'], { relativeTo: this.route });
     });
   }
+
+  get canSaveProject(): boolean {
+    // Si no puedo editar, no permito guardar
+    if (!this.canEdit()) return false;
+
+    const newStatus = this.selectedStatusName;
+    const currentStatus = this.projectData?.status?.statusValue?.name;
+
+    const isClosingFromDraft = currentStatus === 'En Borrador' && (newStatus === 'Anulado' || newStatus === 'Borrado');
+
+    // Caso especial: permitir guardar aunque falten los otros formularios
+    if (isClosingFromDraft) {
+      return this.investmentProjectFormGeneral?.valid;
+    }
+
+    // Flujo normal: todos los forms deben estar válidos
+    return (
+      this.investmentProjectFormGeneral?.valid &&
+      this.investmentProjectPublication?.valid &&
+      this.investmentProjectImpact?.valid
+    );
+  }
+
   uploadCoverDocument() {
     this.uploadDocument('Cover');
   }
@@ -424,6 +447,14 @@ export class EditInvestmentProjectComponent implements OnInit {
         this.investmentProjectImpact.controls?.[fieldName]?.setValue(response.data.value[fieldName]);
       }
     });
+  }
+
+  get selectedStatusName(): string {
+    if (!this.investmentProjectFormGeneral) {
+      return '';
+    }
+    return this.statusData.find((status) => status.id === this.investmentProjectFormGeneral.get('statusId')?.value)
+      ?.name;
   }
 
   shorten(content: string, length: number = 100): string {

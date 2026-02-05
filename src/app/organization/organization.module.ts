@@ -100,6 +100,12 @@ import { CustomDialogComponent } from 'app/shared/custom-dialog/custom-dialog.co
 import { ConciliationMenuComponent } from './bank-conciliation/conciliation-menu/conciliation-menu.component';
 import { ConciliationPayinComponent } from './bank-conciliation/conciliation-payin/conciliation-payin.component';
 import { FormsModule } from '@angular/forms';
+import { ConciliationPayoutComponent } from './bank-conciliation/conciliation-payout/conciliation-payout.component';
+import { SubcreditsComponent } from './bank-conciliation/conciliation-payout/subcredits/subcredits.component';
+import { CalendarComponent } from './bank-conciliation/conciliation-payout/calendar/calendar.component';
+import { LoanCalendarResolver } from './bank-conciliation/conciliation-payout/calendar/calendar.resolver';
+import { PaymentOrderComponent } from './bank-conciliation/conciliation-payout/payment-order/payment-order.component';
+import { PayoutDetailComponent } from './bank-conciliation/conciliation-payout/payout-detail/payout-detail.component';
 /**
  * Organization Module
  *
@@ -197,13 +203,19 @@ import { FormsModule } from '@angular/forms';
     InvestmentProjectPromissoryNoteTabComponent,
     EditPromissoryNoteComponent,
     ConciliationMenuComponent,
-    ConciliationPayinComponent
+    ConciliationPayinComponent,
+    ConciliationPayoutComponent,
+    SubcreditsComponent,
+    CalendarComponent,
+    PaymentOrderComponent,
+    PayoutDetailComponent
   ],
   providers: [
     CreateHoliday,
     ChecklistDatabase,
     OfficeItemFlatNode,
-    OfficeItemNode
+    OfficeItemNode,
+    LoanCalendarResolver
   ]
 })
 export class OrganizationModule {}

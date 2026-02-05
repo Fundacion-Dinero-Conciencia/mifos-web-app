@@ -63,6 +63,15 @@
       >
       </mifosx-loans-account-schedule-step>
     </mat-step>
+    <mat-step>
+      <ng-template matStepLabel
+        ><span style="text-transform: uppercase">{{
+          'labels.menus.Edit Repayment Schedule' | translate
+        }}</span></ng-template
+      >
+
+      <mifosx-edit-repayment-schedule></mifosx-edit-repayment-schedule>
+    </mat-step>
 
     <mat-step state="preview" *ngIf="loansAccountFormValidAndNotPristine" completed>
       <ng-template matStepLabel>{{ 'labels.inputs.PREVIEW' | translate }}</ng-template>

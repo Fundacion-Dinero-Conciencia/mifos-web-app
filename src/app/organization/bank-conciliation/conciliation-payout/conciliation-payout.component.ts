@@ -1,10 +1,13 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
 import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
+import { DatePipe } from '@angular/common';
+
+type PayrollStatus = 'EXITOSA' | 'PARCIAL' | 'FALLIDA' | 'PENDIENTE';
 
 export interface ConciliationRow {
   systemDate: string | Date;
@@ -17,26 +20,18 @@ export interface ConciliationRow {
   status: 'CONCILIADO' | 'PENDIENTE' | 'NO_ENCONTRADO' | string;
 }
 
-const statuses = {
-  INVALID: 'No detectado',
-  APPLIED: 'Aplicado',
-  RECEIVED: 'Recibido',
-  PENDING: 'Pendiente',
-  CONCILIATED: 'Conciliado',
-  NOT_FOUND: 'No encontrado'
-};
-
 @Component({
-  selector: 'mifosx-conciliation-payin',
-  templateUrl: './conciliation-payin.component.html',
-  styleUrls: ['./conciliation-payin.component.scss']
+  selector: 'mifosx-conciliation-payout',
+  templateUrl: './conciliation-payout.component.html',
+  styleUrls: ['./conciliation-payout.component.scss']
 })
-export class ConciliationPayinComponent implements OnInit {
+export class ConciliationPayoutComponent implements OnInit {
   filters: UntypedFormGroup;
   constructor(
     private fb: UntypedFormBuilder,
     private organizationService: OrganizationService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private datePipe: DatePipe
   ) {}
   currency = 'CLP';
   dataSource = new MatTableDataSource<ConciliationRow>([]);
@@ -46,46 +41,35 @@ export class ConciliationPayinComponent implements OnInit {
   showDialogTransactions = false;
   isDebtorDetail = false;
   showDialogAssignation = false;
-  clientOptions: any[] = [];
+  operationType: any[] = [];
   selectedRowPartition: number[] = [];
   isconfirming = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   displayedColumns: string[] = [
-    'systemDate',
-    'rut',
-    'clientType',
-    'clientName',
-    'transactionId',
-    'totalAmount',
-    'assignmentsCount',
+    'id',
+    'investmentType',
+    'subCredit',
+    'loanNumber',
+    'date',
+    'aprovedNumber',
+    'failNumber',
+    'pendingNumber',
     'status',
     'actions'
   ];
   statusOptions = [
-    {
-      id: 0,
-      name: 'No detectado'
-    },
-    {
-      id: 200,
-      name: 'Aplicado'
-    },
-    {
-      id: 100,
-      name: 'Recibido'
-    },
     {
       id: 300,
       name: 'Pendiente'
     },
     {
       id: 400,
-      name: 'Conciliado'
+      name: 'Exitoso'
     },
     {
-      id: 500,
-      name: 'No encontrado'
+      id: 600,
+      name: 'Fallido'
     }
   ];
   detailDisplayedColumns: string[] = [
@@ -106,38 +90,52 @@ export class ConciliationPayinComponent implements OnInit {
   inputsGroup: any[];
   selectorsGroup: any[] = [];
   availableLoans: any[] = [];
-
+  findOperationTypeById(id: number): string {
+    const operation = this.operationType.find((op) => op.id === id);
+    return operation ? operation.name : 'Desconocido';
+  }
   ngOnInit(): void {
-    this.systemService.getCodeByName('ClientType').subscribe((data: any) => {
-      this.clientOptions = data.codeValues;
-    });
+    this.operationType = [
+      { id: 200, name: ' Pago de crédito' },
+      { id: 100, name: 'Cuotas de inversion' }
+    ];
 
     this.filters = this.fb.group({
-      clientTypeId: [''],
-      rut: [''],
-      notificationId: [''],
+      type: [''],
+      startDate: [''],
+      endDate: [''],
       status: ['']
     });
     this.loadPage(0, this.pageSize);
   }
 
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'INVALID':
-        return 'No detectado';
-      case 'APPLIED':
-        return 'Aplicado';
-      case 'RECEIVED':
-        return 'Recibido';
-      case 'PENDING':
-        return 'Pendiente';
-      case 'CONCILIATED':
-        return 'Conciliado';
-      case 'NOT_FOUND':
-        return 'No encontrado';
-      default:
-        return status || '-';
-    }
+  getPayrollStatus(row: {
+    numberOfOrdersSuccess?: number;
+    numberOfOrdersPending?: number;
+    numberOfOrdersFailed?: number;
+  }) {
+    const success = Number(row.numberOfOrdersSuccess ?? 0);
+    const pending = Number(row.numberOfOrdersPending ?? 0);
+    const failed = Number(row.numberOfOrdersFailed ?? 0);
+
+    const total = success + pending + failed;
+
+    if (total === 0) return 'PENDIENTE';
+
+    if (failed === total) return 'FALLIDA';
+
+    if (success === total) return 'EXITOSA';
+
+    if (pending === total) return 'PENDIENTE';
+
+    return 'PARCIAL';
+  }
+
+  downloadDocument(entityId: string, documentId: string) {
+    this.organizationService.downloadLoanOrder(entityId, documentId).subscribe((res) => {
+      const url = window.URL.createObjectURL(res);
+      window.open(url);
+    });
   }
 
   loadPage(page: number, size: number, filters?: any) {
@@ -148,7 +146,7 @@ export class ConciliationPayinComponent implements OnInit {
       sort: 'transactionDate'
     };
     showGlobalLoader();
-    this.organizationService.getShinkansen({ ...requestParams }).subscribe((response: any) => {
+    this.organizationService.getShinkansenOrdersPayout({ ...requestParams }).subscribe((response: any) => {
       this.dataSource.data = response.content || response;
       this.pageSize = size;
       this.pageIndex = page;
@@ -162,15 +160,17 @@ export class ConciliationPayinComponent implements OnInit {
 
   applyFilters(): void {
     this.paginator.firstPage();
-    this.loadPage(0, this.pageSize, this.filters.value);
+    const startDate = this.datePipe.transform(this.filters.value.startDate, 'yyyy-MM-dd');
+    const endDate = this.datePipe.transform(this.filters.value.endDate, 'yyyy-MM-dd');
+    this.loadPage(0, this.pageSize, { ...this.filters.value, startDate, endDate });
   }
 
   onClear() {
     this.filters.reset({
-      clientTypeId: '',
-      rut: '',
-      notificationId: '',
-      status: ''
+      type: '',
+      status: '',
+      startDate: '',
+      endDate: ''
     });
     this.applyFilters();
   }
@@ -198,6 +198,7 @@ export class ConciliationPayinComponent implements OnInit {
     } else if (row.clientType.name.includes('Inversión')) {
       this.viewDetailsInvestor(row);
     } else {
+      console.log(row.transactionDataList);
       const isDebtor = row.transactionDataList.some(
         (transaction: any) => transaction.loanId !== null && transaction.loanId !== undefined
       );
@@ -210,7 +211,6 @@ export class ConciliationPayinComponent implements OnInit {
   }
 
   viewAssignation(row: any) {
-    this.isDebtorDetail = false;
     this.detailedRow = row;
     this.selectedRowPartition = [
       0
@@ -246,33 +246,9 @@ export class ConciliationPayinComponent implements OnInit {
 
   deleteAmountByIndex(index: number): void {
     this.selectedRowPartition.splice(index, 1);
-    this.inputsGroup.splice(index, 1);
-    this.selectorsGroup.splice(index, 1);
     this.assignDataSource.data = [...this.selectedRowPartition];
   }
 
-  onAmountChangeInput(event: Event, creditId: number, index: number): void {
-    const target = event.target as HTMLInputElement;
-    const amount = target.valueAsNumber;
-    if (!this.isDebtorDetail || creditId === undefined) {
-      this.inputsGroup[index] = amount;
-      return;
-    }
-    const loan = this.availableLoans.find((loan) => Number(loan.loanId) === Number(creditId));
-    if (amount > loan.totalAmount) {
-      {
-        target.value = loan.totalAmount.toString();
-        this.inputsGroup[index] = loan.totalAmount;
-      }
-    } else {
-      this.inputsGroup[index] = amount;
-    }
-  }
-  changeSelectedGroup(event: any, index: number): void {
-    const selectedValue = event.target.value;
-    this.selectorsGroup[index] = selectedValue;
-    this.inputsGroup[index] = 0;
-  }
   closeDetailedRow() {
     this.isDebtorDetail = false;
     this.showDialogTransactions = false;
@@ -391,7 +367,7 @@ export class ConciliationPayinComponent implements OnInit {
       }
 
       this.totalAssignedAmount <= 1 && (disable = true);
-      this.detailedRow && this.detailedRow.amount < this.totalAssignedAmount && (disable = true);
+
       return disable;
     } else {
       return true;

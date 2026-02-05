@@ -953,6 +953,12 @@ export class OrganizationService {
     return this.http.get(`/projectparticipation/${participationId}/attachment`, { responseType: 'blob' });
   }
 
+  downloadLoanOrder(parentEntityId: string, documentId: string) {
+    return this.http.get(`/payout_order_group/${parentEntityId}/documents/${documentId}/attachment`, {
+      responseType: 'blob'
+    });
+  }
+
   updateProjectDocumentsImage(projectId: string, imageId: string, formData: FormData) {
     return this.http.put(`/projects/${projectId}/documents/${imageId}`, formData);
   }
@@ -1039,12 +1045,16 @@ export class OrganizationService {
   getPromissoryNoteGroups(id: string) {
     return this.http.get(`/investmentgroup/all/project/${id}`);
   }
+  getLoanCalendarByLoanId(id: string) {
+    return this.http.get(`/loans/calendar/${id}`);
+  }
   getPromissoryNoteGroup(id: string) {
     return this.http.get(`/investmentgroup/signator/all/${id}`);
   }
   deletePromissoryNoteGroup(groupId: string) {
     return this.http.delete(`/investmentgroup/${groupId}`);
   }
+
   createPromissoryNoteGroup(data: {
     projectId: string;
     creationDate: string;
@@ -1053,6 +1063,28 @@ export class OrganizationService {
     signators?: number[];
   }) {
     return this.http.post(`/investmentgroup`, JSON.stringify(data), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  EditOrderPayout(
+    data: {
+      id: number;
+      amountToPaid: number;
+      amountToReinvest: number;
+    }[]
+  ) {
+    return this.http.put(`/shinkansen/orders/payout`, JSON.stringify({ data }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  createPayRoll(
+    data: {
+      id: number;
+      amountToPaid: number;
+      amountToReinvest: number;
+    }[]
+  ) {
+    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data }), {
       headers: { 'Content-Type': 'application/json' }
     });
   }
@@ -1075,6 +1107,7 @@ export class OrganizationService {
       }
     );
   }
+
   getLoanDataByClientId(clientId: number) {
     return this.http.get(`/shinkansen/loandata/${clientId}`);
   }
@@ -1119,6 +1152,25 @@ export class OrganizationService {
     return this.http.get(`/projectparticipation/search/pageable`, { params });
   }
 
+  getShinkansenOrdersPayout(filters: {
+    page?: number;
+    size?: number;
+    status?: number;
+    type?: string;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    let params = new HttpParams();
+
+    if (filters.page !== undefined) params = params.set('page', filters.page);
+    if (filters.size !== undefined) params = params.set('size', filters.size);
+    if (filters.type) params = params.set('type', filters.type);
+    if (filters.status !== undefined) params = params.set('status', filters.status);
+    if (filters.startDate) params = params.set('fromDate', filters.startDate);
+    if (filters.endDate) params = params.set('toDate', filters.endDate);
+
+    return this.http.get(`/shinkansen/ordersgroup/payout`, { params });
+  }
   getShinkansen(filters: {
     page?: number;
     size?: number;
@@ -1146,6 +1198,45 @@ export class OrganizationService {
 
     if (filters.notificationId) params = params.set('notificationId', filters.notificationId);
 
-    return this.http.get(`/v1/shinkansen`, { params });
+    return this.http.get(`/shinkansen`, { params });
+  }
+  getPayoutItems(filters: { page?: number; size?: number; search?: string }): Observable<any> {
+    return this.http.get(`/shinkansen/loandata/payout`, {
+      params: {
+        page: filters.page.toString(),
+        size: filters.size.toString(),
+        search: filters.search || ''
+      }
+    });
+  }
+
+  getPayoutOrders(
+    loanId: number,
+    periodNumber: number,
+    filters: { page?: number; size?: number; search?: string }
+  ): Observable<any> {
+    return this.http.get(`/shinkansen/orders/payout`, {
+      params: {
+        loanId,
+        periodNumber,
+        page: filters.page.toString(),
+        size: filters.size.toString(),
+        search: filters.search || ''
+      }
+    });
+  }
+  getPayoutOrdersTramited(
+    groupId: number,
+    filters: { page?: number; size?: number; search?: string }
+  ): Observable<any> {
+    const params: any = {
+      page: filters.page.toString(),
+      size: filters.size.toString()
+    };
+    filters.search ? (params.search = filters.search) : null;
+
+    return this.http.get(`/shinkansen/orders/payout/${groupId}`, {
+      params
+    });
   }
 }

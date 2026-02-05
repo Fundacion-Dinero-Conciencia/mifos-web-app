@@ -53,6 +53,13 @@ export class DatatableSingleRowComponent implements OnInit {
       dateTransformColumns,
       dataTableEntryObject
     );
+
+    if (this.isAllFieldsRequired(this.datatableName)) {
+      formfields.forEach((formfield) => {
+        formfield.required = true;
+      });
+    }
+
     const data = {
       title: 'Add ' + this.datatableName + ' for ' + this.entityType,
       formfields: formfields
@@ -77,8 +84,13 @@ export class DatatableSingleRowComponent implements OnInit {
       }
     });
   }
-
+  isAllFieldsRequired(datatableName: string): boolean {
+    const requiredFieldsDatatables = ['BANK_DETAILS'];
+    return requiredFieldsDatatables.includes(datatableName);
+  }
   edit() {
+    const isAllFieldsRequired = this.isAllFieldsRequired(this.datatableName);
+
     let dataTableEntryObject: any = {
       locale: this.settingsService.language.code
     };
@@ -103,12 +115,15 @@ export class DatatableSingleRowComponent implements OnInit {
           ? this.dataObject.data[0].row[columns[index].idx]
           : '';
       }
+      if (isAllFieldsRequired) {
+        formfield.required = true;
+      }
       return formfield;
     });
     const data = {
       title: 'Edit ' + this.datatableName + ' for ' + this.entityType,
       formfields: formfields,
-      layout: { addButtonText: 'Save' }
+      layout: { addButtonText: 'Save Changes' }
     };
     const editDialogRef = this.dialog.open(FormDialogComponent, { data, width: '50rem' });
     editDialogRef.afterClosed().subscribe((response: any) => {
