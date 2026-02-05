@@ -49,11 +49,11 @@
           [id]="'view-participations-button'"
           (click)="$event.stopPropagation(); goToParticipations(projectData?.id)"
         >
-          <mat-icon>edit</mat-icon>
+          <mat-icon>groups</mat-icon>
           <span>{{ 'tooltips.View Participations' | translate }}</span>
         </button>
         <button mat-menu-item [routerLink]="['./edit']" [id]="'edit button'" (click)="$event.stopPropagation()">
-          <mat-icon>groups</mat-icon>
+          <mat-icon>edit</mat-icon>
           <span> {{ 'labels.buttons.Edit' | translate }} {{ 'labels.inputs.Proyect' | translate }} </span>
         </button>
       </mat-menu>

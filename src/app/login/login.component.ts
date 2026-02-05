@@ -1,5 +1,5 @@
 /** Angular Imports */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 /** rxjs Imports */
@@ -12,8 +12,8 @@ import { Alert } from '../core/alert/alert.model';
 import { AlertService } from '../core/alert/alert.service';
 
 /** Environment Imports */
-import { environment } from '../../environments/environment';
 import { SettingsService } from 'app/settings/settings.service';
+import { environment } from '../../environments/environment';
 
 /**
  * Login component.
@@ -83,7 +83,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   setSettings(): void {
-    this.settingsService.setTenantIdentifier(environment.fineractPlatformTenantId || 'default');
     this.settingsService.setTenantIdentifiers(environment.fineractPlatformTenantIds.split(','));
     this.settingsService.setServers(environment.baseApiUrls.split(','));
   }
