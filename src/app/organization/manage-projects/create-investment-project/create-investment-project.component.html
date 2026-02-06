@@ -259,7 +259,7 @@
           </mat-form-field>
 
           <div class="filter-box">
-            <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isActive" id="isActive">
+            <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isRenewable" id="isActive">
               {{ 'labels.inputs.Visible On Portal' | translate }}
             </mat-checkbox>
           </div>
@@ -354,6 +354,14 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'labels.inputs.Address' | translate }}</mat-label>
+          <input matInput autofocus formControlName="address" id="address" />
+          <mat-error *ngIf="investmentProjectForm?.get('address')?.hasError('required')">
+            {{ 'labels.inputs.address' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.commons.required' | translate }}</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex="47%">
           <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
           <mat-select formControlName="loanPurposeId" id="loanPurposeId">
             <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
@@ -376,6 +384,24 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field fxFlex="47%">
+          <mat-label>{{ 'Proyecto relacionado' }}</mat-label>
+          <input matInput formControlName="relatedProjectId" [matAutocomplete]="projectsAutocomplete" />
+          <mat-error *ngIf="investmentProjectForm.controls.relatedProjectId.hasError('required')">
+            {{ 'labels.inputs.aArticipant' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.commons.required' | translate }}</strong>
+          </mat-error>
+
+          <mat-autocomplete
+            autoActiveFirstOption
+            #projectsAutocomplete="matAutocomplete"
+            [displayWith]="displayProject"
+          >
+            <mat-option *ngFor="let project of projectsData" [value]="project">
+              {{ project.id }} - {{ project.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field fxFlex="47%">
           <mat-label>{{ 'labels.inputs.Status' | translate }}</mat-label>
           <mat-select required formControlName="statusId" disabled id="statusId">
             <mat-option *ngFor="let status of statusData" [value]="status.id">
@@ -383,6 +409,11 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <div>
+          <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isRenewable" id="isActive">
+            {{ 'Es renovable' }}
+          </mat-checkbox>
+        </div>
         <div class="fullW">
           <button type="button" mat-raised-button [routerLink]="['../']" id="cancelButton">
             {{ 'labels.buttons.Cancel' | translate }}

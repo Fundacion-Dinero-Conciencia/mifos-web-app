@@ -47,6 +47,10 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto total</th>
       <td mat-cell *matCellDef="let note">${{ getMontoTotal(note.investmentList) | currency: currency }}</td>
     </ng-container>
+    <ng-container matColumnDef="Percentage">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>% del proyecto</th>
+      <td mat-cell *matCellDef="let note">{{ getPercentageAboutTheProject(getMontoTotal(note.investmentList)) }} %</td>
+    </ng-container>
     <ng-container matColumnDef="State">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Status' | translate }}</th>
       <td mat-cell *matCellDef="let note">{{ getStateLabel(note.status?.value) }}</td>

@@ -158,7 +158,10 @@ export class ClientGeneralStepComponent implements OnInit {
               '',
               Validators.required
             ],
-            incorpValidityTillDate: [''],
+            activity: [
+              '',
+              Validators.required
+            ],
             incorpNumber: [''],
             mainBusinessLineId: [''],
             remarks: ['']
@@ -212,15 +215,6 @@ export class ClientGeneralStepComponent implements OnInit {
     }
     if (generalDetails.dateOfBirth instanceof Date) {
       generalDetails.dateOfBirth = this.dateUtils.formatDate(generalDetails.dateOfBirth, dateFormat);
-    }
-
-    if (generalDetails.clientNonPersonDetails && generalDetails.clientNonPersonDetails.incorpValidityTillDate) {
-      generalDetails.clientNonPersonDetails = {
-        ...generalDetails.clientNonPersonDetails,
-        incorpValidityTillDate: this.dateUtils.formatDate(generalDetails.dateOfBirth, dateFormat),
-        dateFormat,
-        locale
-      };
     }
     return generalDetails;
   }

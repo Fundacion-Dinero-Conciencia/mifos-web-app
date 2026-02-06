@@ -1,12 +1,12 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms';
 
 /** Custom Services */
-import { ClientsService } from '../clients.service';
-import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
+import { SettingsService } from 'app/settings/settings.service';
+import { ClientsService } from '../clients.service';
 
 /**
  * Edit Client Component
@@ -171,14 +171,15 @@ export class EditClientComponent implements OnInit {
         this.editClientForm.addControl(
           'clientNonPersonDetails',
           this.formBuilder.group({
+            activity: [
+              this.clientDataAndTemplate.clientNonPersonDetails.activity || '',
+              Validators.required
+            ],
             constitutionId: [
               this.clientDataAndTemplate.clientNonPersonDetails.constitution &&
                 this.clientDataAndTemplate.clientNonPersonDetails.constitution.id,
               Validators.required
             ],
-            incorpValidityTillDate: [
-              this.clientDataAndTemplate.clientNonPersonDetails.incorpValidityTillDate &&
-                new Date(this.clientDataAndTemplate.clientNonPersonDetails.incorpValidityTillDate)],
             incorpNumber: [this.clientDataAndTemplate.clientNonPersonDetails.incorpNumber],
             mainBusinessLineId: [
               this.clientDataAndTemplate.clientNonPersonDetails.mainBusinessLine &&
@@ -217,9 +218,6 @@ export class EditClientComponent implements OnInit {
     if (editClientFormValue.clientNonPersonDetails) {
       clientData.clientNonPersonDetails = {
         ...editClientFormValue.clientNonPersonDetails,
-        incorpValidityTillDate:
-          editClientFormValue.clientNonPersonDetails.incorpValidityTillDate &&
-          this.dateUtils.formatDate(editClientFormValue.clientNonPersonDetails.incorpValidityTillDate, dateFormat),
         dateFormat,
         locale
       };

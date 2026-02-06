@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ProjectsService } from '../manage-projects.service';
 import {
   AbstractControl,
   UntypedFormBuilder,
@@ -49,6 +50,7 @@ export class EditInvestmentProjectComponent implements OnInit {
   coverImage: any;
   imagesOrder: any[] = [];
   loanPurposeData: any[] = [];
+  projectsData: any[] = [];
   validExtensions = [
     'jpg',
     'jpeg',
@@ -66,7 +68,8 @@ export class EditInvestmentProjectComponent implements OnInit {
     private clientsService: ClientsService,
     private systemService: SystemService,
     private alertService: AlertService,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private projectsService: ProjectsService
   ) {
     this.route.data.subscribe(
       (data: {
@@ -147,135 +150,142 @@ export class EditInvestmentProjectComponent implements OnInit {
       return null;
     };
   }
+
   async setupInvestmentProjectForm(id: any): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.organizationService.getInvestmentProject(id).subscribe({
-        next: (data) => {
-          this.setArea(data?.area?.id);
-          this.setCategory(data?.category?.id);
-          this.investmentProjectFormGeneral = this.formBuilder.group({
-            countryId: [
-              data.country?.id,
-              Validators.required
-            ],
-            ownerId: [
-              data.ownerName,
-              Validators.required
-            ],
-            name: [
-              data?.name,
-              Validators.required
-            ],
-            mnemonic: [
-              data?.mnemonic,
-              Validators.required
-            ],
-            statusId: [
-              data?.status?.statusValue?.id,
-              Validators.required
-            ],
-            loanPurposeId: [
-              data?.projectGeneralPurpose?.id || ''
-            ]
-          });
-          this.investmentProjectPublication = this.formBuilder.group(
-            {
-              institutionDescription: [
-                data.institutionDescription,
-                Validators.required
-              ],
-              teamDescription: [
-                data?.teamDescription,
-                Validators.required
-              ],
-              financingDescription: [
-                data?.financingDescription
-              ],
-              position: [
-                data?.position
-              ],
-              maxAmount: [
-                this.currencyPipe.transform(data?.maxAmount, '', '', '1.0-0'),
-                [
-                  Validators.required,
-                  Validators.min(0)]
-              ],
-              minAmount: [
-                this.currencyPipe.transform(data?.minAmount, '', '', '1.0-0'),
-                [
-                  Validators.required,
-                  Validators.min(0)]
-              ],
-              isActive: [data.isActive]
-            },
-            {
-              validators: [this.minMaxValidator()]
-            }
-          );
+    let projectData = null;
+    try {
+      const data = await this.organizationService.getInvestmentProject(id).toPromise();
 
-          this.investmentProjectPublication.get('minAmount')?.valueChanges.subscribe(() => {
-            this.investmentProjectPublication.updateValueAndValidity();
-          });
-          this.investmentProjectPublication.get('maxAmount')?.valueChanges.subscribe(() => {
-            this.investmentProjectPublication.updateValueAndValidity();
-          });
+      if (data?.relatedProjectId) {
+        projectData = await this.projectsService.getProyectById(data.relatedProjectId).toPromise();
+        this.projectsData = [projectData];
+      }
 
-          this.investmentProjectImpact = this.formBuilder.group({
-            impactDescription: [
-              data?.impactDescription,
-              Validators.required
-            ],
-            littleSocioEnvironmentalDescription: [
-              data?.littleSocioEnvironmentalDescription,
-              Validators.required
-            ],
-            areaId: [
-              data?.area?.id,
-              Validators.required
-            ],
-            categoryId: [
-              data?.category?.id,
-              Validators.required
-            ],
-            subCategories: [
-              data?.subCategories?.map((o: any) => o.category.id) || []
-            ],
-            objectives: [
-              data?.objectives?.map((o: any) => o.objective.id) || []
-            ]
-          });
-          this.investmentProjectFormGeneral.get('ownerId')?.disable();
-          this.investmentProjectFormGeneral.get('mnemonic')?.disable();
-          this.investmentProjectFormGeneral.get('countryId')?.disable();
-
-          const statusName = this.projectData?.status?.statusValue?.name;
-
-          if (statusName?.includes('En Financiamiento')) {
-            this.investmentProjectFormGeneral.disable();
-            this.investmentProjectFormGeneral.get('name')?.enable();
-            this.investmentProjectFormGeneral.get('statusId')?.enable();
-          } else if (!this.canEdit()) {
-            this.investmentProjectFormGeneral.disable();
-            this.investmentProjectFormGeneral.get('statusId')?.enable();
-            this.investmentProjectPublication.disable();
-            this.investmentProjectImpact.disable();
-          }
-
-          if (statusName !== 'En Borrador') {
-            this.investmentProjectPublication.get('isActive')?.enable();
-          }
-          resolve();
-        },
-        error: (err) => {
-          console.error('Error al obtener el proyecto', err);
-          reject(err);
-        }
+      this.setArea(data?.area?.id);
+      this.setCategory(data?.category?.id);
+      this.investmentProjectFormGeneral = this.formBuilder.group({
+        countryId: [
+          data.country?.id,
+          Validators.required
+        ],
+        ownerId: [
+          data.ownerName,
+          Validators.required
+        ],
+        isRenewable: [data.isRenewable],
+        relatedProjectId: [projectData || ''],
+        name: [
+          data?.name,
+          Validators.required
+        ],
+        mnemonic: [
+          data?.mnemonic,
+          Validators.required
+        ],
+        statusId: [
+          data?.status?.statusValue?.id,
+          Validators.required
+        ],
+        loanPurposeId: [data?.projectGeneralPurpose?.id || '']
       });
+
+      this.investmentProjectPublication = this.formBuilder.group(
+        {
+          institutionDescription: [
+            data.institutionDescription,
+            Validators.required
+          ],
+          teamDescription: [
+            data?.teamDescription,
+            Validators.required
+          ],
+          financingDescription: [data?.financingDescription],
+          position: [data?.position],
+          maxAmount: [
+            this.currencyPipe.transform(data?.maxAmount, '', '', '1.0-0'),
+            [
+              Validators.required,
+              Validators.min(0)]
+          ],
+          minAmount: [
+            this.currencyPipe.transform(data?.minAmount, '', '', '1.0-0'),
+            [
+              Validators.required,
+              Validators.min(0)]
+          ],
+          isActive: [data.isActive]
+        },
+        { validators: [this.minMaxValidator()] }
+      );
+
+      this.investmentProjectPublication.get('minAmount')?.valueChanges.subscribe(() => {
+        this.investmentProjectPublication.updateValueAndValidity();
+      });
+      this.investmentProjectPublication.get('maxAmount')?.valueChanges.subscribe(() => {
+        this.investmentProjectPublication.updateValueAndValidity();
+      });
+
+      this.investmentProjectImpact = this.formBuilder.group({
+        impactDescription: [
+          data?.impactDescription,
+          Validators.required
+        ],
+        littleSocioEnvironmentalDescription: [
+          data?.littleSocioEnvironmentalDescription,
+          Validators.required
+        ],
+        areaId: [
+          data?.area?.id,
+          Validators.required
+        ],
+        categoryId: [
+          data?.category?.id,
+          Validators.required
+        ],
+        subCategories: [data?.subCategories?.map((o: any) => o.category.id) || []],
+        objectives: [data?.objectives?.map((o: any) => o.objective.id) || []]
+      });
+
+      this.investmentProjectFormGeneral.get('ownerId')?.disable();
+      this.investmentProjectFormGeneral.get('mnemonic')?.disable();
+      this.investmentProjectFormGeneral.get('countryId')?.disable();
+
+      const statusName = this.projectData?.status?.statusValue?.name;
+
+      if (statusName?.includes('En Financiamiento')) {
+        this.investmentProjectFormGeneral.disable();
+        this.investmentProjectFormGeneral.get('name')?.enable();
+        this.investmentProjectFormGeneral.get('statusId')?.enable();
+      } else if (!this.canEdit()) {
+        this.investmentProjectFormGeneral.disable();
+        this.investmentProjectFormGeneral.get('statusId')?.enable();
+        this.investmentProjectPublication.disable();
+        this.investmentProjectImpact.disable();
+      }
+
+      if (statusName !== 'En Borrador') {
+        this.investmentProjectPublication.get('isActive')?.enable();
+      }
+    } catch (err) {
+      console.error('Error al obtener el proyecto', err);
+      throw err;
+    }
+
+    this.investmentProjectFormGeneral.controls.relatedProjectId.valueChanges.subscribe((value: string) => {
+      if (value.length >= 2) {
+        this.projectsService.getAllProject(value).subscribe((data: any) => {
+          this.projectsData = data;
+        });
+      }
     });
+  }
+  displayProject(project: any): string {
+    return project ? `${project.id} - ${project.name}` : '';
   }
 
   submit() {
     const rawGeneralFormValues = this.investmentProjectFormGeneral.getRawValue();
+    rawGeneralFormValues.relatedProjectId = rawGeneralFormValues.relatedProjectId?.id || null;
     const rawPublicationFormValues = this.investmentProjectPublication.getRawValue();
     rawPublicationFormValues.minAmount = Number((rawPublicationFormValues.minAmount + '').replace(/[^0-9]/g, ''));
     rawPublicationFormValues.maxAmount = Number((rawPublicationFormValues.maxAmount + '').replace(/[^0-9]/g, ''));

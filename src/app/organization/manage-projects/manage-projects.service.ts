@@ -20,4 +20,12 @@ export class ProjectsService {
     const params = new HttpParams().set('statusName', status).set('name', name);
     return this.http.get('/investmentproject/search', { params });
   }
+  getAllProject(name: string): Observable<any> {
+    const params = new HttpParams().set('name', name);
+    return this.http.get('/investmentproject/search', { params });
+  }
+  getProyectById(id: string | number): Observable<any> {
+    const params = new HttpParams().set('id', id);
+    return this.http.get('/investmentproject/search', { params });
+  }
 }

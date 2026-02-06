@@ -11,6 +11,7 @@ import { SettingsService } from 'app/settings/settings.service';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { RichTextBase } from 'app/shared/form-dialog/formfield/model/rich-text-base';
 import { SystemService } from 'app/system/system.service';
+import { ProjectsService } from '../../manage-projects/manage-projects.service';
 
 @Component({
   selector: 'mifosx-create-investment-project',
@@ -36,6 +37,7 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
   loanProductsData: any[] = [];
   termFrequencyTypeData: any[] = [];
   public Editor = ClassicEditor;
+  projectsData: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +48,8 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     private organizationService: OrganizationService,
     private translateService: TranslateService,
     private systemService: SystemService,
-    private loanService: LoansService
+    private loanService: LoansService,
+    private projectsService: ProjectsService
   ) {
     this.route.data.subscribe(
       (data: {
@@ -92,16 +95,6 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.investmentProjectForm.controls.ownerId.valueChanges.subscribe((value: string) => {
-      if (value.length >= 2) {
-        this.clientsService.getFilteredClients('displayName', 'ASC', true, value).subscribe((data: any) => {
-          this.clientsData = data.pageItems;
-        });
-      }
-    });
-  }
-
   setupInvestmentProjectForm() {
     const ownerId = history.state?.ownerId;
     const ownerName = history.state?.ownerName;
@@ -126,13 +119,9 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
           Validators.required,
           Validators.maxLength(30)]
       ],
-      // RUT: [
-      //   '',
-      //   Validators.required
-      // ],
-      // subtitle: [
-      //   ''
-      // ],
+      relatedProjectId: [
+        ''
+      ],
       mnemonic: [
         '',
         [
@@ -172,10 +161,11 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
       // subCategories: [
       //   ''
       // ],
-      // areaId: [
-      //   ''
-      // ],
-      // isActive: [false],
+      address: [
+        '',
+        Validators.required
+      ],
+      isRenewable: [false],
       statusId: [
         '',
         Validators.required
@@ -215,6 +205,24 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     return client ? client.displayName : undefined;
   }
 
+  ngAfterViewInit() {
+    this.investmentProjectForm.controls.ownerId.valueChanges.subscribe((value: string) => {
+      if (value.length >= 2) {
+        this.clientsService.getFilteredClients('displayName', 'ASC', true, value).subscribe((data: any) => {
+          this.clientsData = data.pageItems;
+        });
+      }
+    });
+
+    this.investmentProjectForm.controls.relatedProjectId.valueChanges.subscribe((value: string) => {
+      if (value.length >= 2) {
+        this.projectsService.getAllProject(value).subscribe((data: any) => {
+          this.projectsData = data;
+        });
+      }
+    });
+  }
+
   submit() {
     // const currencyCode: string = this.currency;
 
@@ -224,6 +232,8 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     };
     const owner: any = payload['ownerId'];
     payload['ownerId'] = owner['id'];
+    const relatedProject: any = payload['relatedProjectId'];
+    payload['relatedProjectId'] = relatedProject ? relatedProject['id'] : null;
     // payload['amount'] = payload['amount'] * 1;
     if (Array.isArray(payload['subCategories']) && payload['subCategories'].length > 0) {
       payload['subCategories'] = '[' + payload['subCategories'].join(',') + ']';
@@ -237,6 +247,10 @@ export class CreateInvestmentProjectComponent implements OnInit, AfterViewInit {
     this.organizationService.createInvestmentProjects(payload).subscribe((response: any) => {
       this.router.navigate([`../${response.resourceId}/general`], { relativeTo: this.route });
     });
+  }
+
+  displayProject(project: any): string | undefined {
+    return project ? project.name : undefined;
   }
 
   setArea(areaValue: any) {
