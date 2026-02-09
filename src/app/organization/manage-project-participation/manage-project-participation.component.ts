@@ -63,6 +63,9 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
 
   onDialogCancel() {
     this.showDialog = false;
+    this.dataSourceInvestSelection = new MatTableDataSource([]);
+    this.reservationSelected = null;
+    this.selectedInvests = [];
   }
 
   loadParticipations() {
