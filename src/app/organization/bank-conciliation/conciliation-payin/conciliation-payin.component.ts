@@ -54,6 +54,7 @@ export class ConciliationPayinComponent implements OnInit {
   displayedColumns: string[] = [
     'systemDate',
     'rut',
+    'payinType',
     'clientType',
     'clientName',
     'transactionId',
