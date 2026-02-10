@@ -16,8 +16,8 @@ export class ProjectsService {
    */
   constructor(private http: HttpClient) {}
 
-  getFilteredProjects(name: string, status: string): Observable<any> {
-    const params = new HttpParams().set('statusName', status).set('name', name);
+  getFilteredProjects(name: string, status: string[]): Observable<any> {
+    const params = new HttpParams().set('name', name).set('statusName', status.join(','));
     return this.http.get('/investmentproject/search', { params });
   }
   getAllProject(name: string): Observable<any> {
