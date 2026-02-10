@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "GeneratePayRoll": "Generar nómina",
       "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
       "Create Simulation": "Crear simulación",
@@ -2461,6 +2462,7 @@
       "Valid Till Date": "Válido hasta la fecha",
       "Valid from Date": "Válido desde la fecha",
       "Validity": "Validez",
+      "Payment Date": "Fecha de pago",
       "Validity To": "Validez hasta",
       "Validity from": "Validez desde",
       "Value": "Valor",
@@ -2622,6 +2624,7 @@
       "Generate fund promissory": "Generar pagaré del fondo",
       "Global Search": "Búsqueda global",
       "Goodwill Credit": "Crédito de buena voluntad",
+      "Go To Promissory": "Ir al pagaré",
       "Groups": "Grupos",
       "Help": "Ayuda",
       "Hold Amount": "Retener Monto",

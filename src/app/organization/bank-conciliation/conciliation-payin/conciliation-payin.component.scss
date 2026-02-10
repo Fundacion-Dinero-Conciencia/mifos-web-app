@@ -7,6 +7,12 @@
   display: inline-block;
 }
 
+.InputValueLine {
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+}
+
 /* ======== ESTADOS ======== */
 
 .status-pill--pending {

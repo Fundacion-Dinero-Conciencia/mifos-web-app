@@ -61,7 +61,7 @@
 
     <mat-form-field fxFlex="calc(50% - 25px)">
       <mat-label>{{ 'labels.inputs.Document Key' | translate }}</mat-label>
-      <input id="documentNumber" formControlName="documentNumber" required matInput type="number" />
+      <input id="documentNumber" formControlName="documentNumber" required matInput type="text" />
       <mat-error *ngIf="familyMemberForm.controls.documentNumber.hasError('required')">
         {{ 'labels.inputs.Document Key' | translate }} {{ 'labels.commons.is' | translate }}
         <strong>{{ 'labels.commons.required' | translate }}</strong>

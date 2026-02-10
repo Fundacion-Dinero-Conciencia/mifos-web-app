@@ -54,6 +54,14 @@
         {{ row.rut }}
       </td>
     </ng-container>
+    <ng-container matColumnDef="payinType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo de PayIn</th>
+      <td mat-cell *matCellDef="let row">
+        <p style="text-align: center">
+          {{ row.notificationType.value === 'PAYIN' ? 'PSP' : row.notificationType.value }}
+        </p>
+      </td>
+    </ng-container>
 
     <!-- Tipo de cliente -->
     <ng-container matColumnDef="clientType">
@@ -359,9 +367,16 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Fecha de cuota</th>
+            <td mat-cell style="text-align: center" *matCellDef="let row; let i = index">
+              {{ findLoanByIndex(index) ? (findLoanByIndex(index).sinceOverdueDate | dateFormat) : '-' }}
+            </td>
+          </ng-container>
+
           <!-- Monto -->
           <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef>Monto</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Amount' | translate }}</th>
             <td
               mat-cell
               *matCellDef="let amount; let i = index"
@@ -371,6 +386,7 @@
               }"
             >
               <div
+                class="InputValueLine"
                 [matTooltipDisabled]="
                   !(selectorsGroup[i] && getLoanById(selectorsGroup[i])?.totalAmount < inputsGroup[i])
                 "
@@ -396,7 +412,7 @@
 
           <!-- Ver detalle de pago -->
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Accciones</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>
             <td mat-cell *matCellDef="let row; let i = index">
               <button
                 *ngIf="isDebtorDetail ? i > 0 : i > 0"

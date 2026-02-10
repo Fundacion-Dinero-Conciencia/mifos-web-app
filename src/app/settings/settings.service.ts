@@ -92,6 +92,10 @@ export class SettingsService {
     localStorage.setItem('mifosXTenantIdentifier', tenantIdentifier);
   }
 
+  getTenanIdentifierSelected(): string {
+    return localStorage.getItem('mifosXTenantIdentifier') || null;
+  }
+
   /**
    * Sets server Date setting for max datepicker, default today
    * @param {string} date

@@ -533,6 +533,14 @@ export class LoansService {
   }
 
   /**
+   * @param {string} accountId Loans group Id
+   * @returns {Observable<any>}
+   */
+  getLoanGroupId(accountId: string): Observable<any> {
+    return this.http.get(`/investmentgroup/subcredit/${accountId}`);
+  }
+
+  /**
    * @param {string} accountId Loans Account Id
    * @param {string} command Command
    * @param {any} data Data

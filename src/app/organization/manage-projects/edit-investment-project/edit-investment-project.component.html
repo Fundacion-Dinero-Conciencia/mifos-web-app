@@ -90,6 +90,19 @@
               </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="47%">
+              <mat-label>{{ 'Proyecto relacionado' }}</mat-label>
+              <input matInput formControlName="relatedProjectId" [matAutocomplete]="projectsAutocomplete" />
+              <mat-autocomplete
+                autoActiveFirstOption
+                #projectsAutocomplete="matAutocomplete"
+                [displayWith]="displayProject"
+              >
+                <mat-option *ngFor="let project of projectsData" [value]="project">
+                  {{ project.id }} - {{ project.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field fxFlex="47%">
               <mat-label>{{ 'labels.inputs.Loan Purpose' | translate }}</mat-label>
               <mat-select formControlName="loanPurposeId" id="loanPurposeId" disabled>
                 <mat-option *ngFor="let loanPurpose of loanPurposeData" [value]="loanPurpose.id">
@@ -97,6 +110,11 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
+            <div>
+              <mat-checkbox labelPosition="after" class="m-r-10" formControlName="isRenewable" id="isActive">
+                {{ 'Es renovable' }}
+              </mat-checkbox>
+            </div>
           </form>
           <div class="fullW">
             <button type="button" mat-raised-button [routerLink]="['../general']" id="cancelButton">
@@ -346,6 +364,7 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
+
             <mat-form-field fxFlex="98%">
               <mat-label>{{ 'labels.inputs.custom.Socio Environmental Description' | translate }}</mat-label>
               <input
@@ -365,13 +384,7 @@
               mat-raised-button
               color="primary"
               (click)="submit()"
-              [disabled]="
-                canEdit()
-                  ? !investmentProjectFormGeneral?.valid ||
-                    !investmentProjectImpact?.valid ||
-                    !investmentProjectPublication?.valid
-                  : false
-              "
+              [disabled]="!canSaveProject"
               id="submitImpactButton"
             >
               {{ 'labels.buttons.Submit' | translate }}

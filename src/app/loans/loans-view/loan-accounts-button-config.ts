@@ -38,6 +38,11 @@ export class LoansAccountButtonConfiguration {
       case 'Active':
         this.buttonsArray = [
           {
+            name: 'Go To Promissory',
+            icon: 'arrow-right',
+            taskPermissionName: 'VIEW_INVESTMENT_PROJECT'
+          },
+          {
             name: 'Add Loan Charge',
             icon: 'plus',
             taskPermissionName: 'CREATE_LOANCHARGE'

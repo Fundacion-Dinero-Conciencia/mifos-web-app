@@ -295,6 +295,7 @@
       "Home": "Home"
     },
     "buttons": {
+      "GeneratePayRoll": "Generate PayRoll",
       "Assign Transfer": "Assign transfer",
       "Assign": "Assign",
       "Create Simulation": "Create Simulation",
@@ -1627,6 +1628,7 @@
       "End Point": "End Point",
       "End Time": "End Time",
       "End time": "End time",
+      "Payment Date": "Payment Date",
       "Enforce Minimum Balance": "Enforce Minimum Balance",
       "Enforce Minimum Required Balance": "Enforce Minimum Required Balance",
       "Entity": "Entity",
@@ -2632,6 +2634,7 @@
       "Generate fund promissory": "Generate fund promissory",
       "Global Search": "Global Search",
       "Goodwill Credit": "Goodwill Credit",
+      "Go To Promissory": "Go to Promissory",
       "Groups": "Groups",
       "Help": "Help",
       "Hold Amount": "Hold Amount",

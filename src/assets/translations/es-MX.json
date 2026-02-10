@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "GeneratePayRoll": "Generar nómina",
       "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
       "Create Simulation": "Crear Simulación",
@@ -1868,6 +1869,7 @@
       "Last Name": "Apellido",
       "Last Repayment": "Último reembolso",
       "Last Repayment Date": "Última fecha de pago",
+      "Payment Date": "Fecha de pago",
       "Late": "Tarde",
       "Leave": "Dejar",
       "Legal Form": "Forma jurídica",
@@ -2626,6 +2628,7 @@
       "Generate fund promissory": "Generar pagaré del fondo",
       "Global Search": "Búsqueda global",
       "Goodwill Credit": "Crédito de buena voluntad",
+      "Go To Promissory": "Ir al pagaré",
       "Groups": "Grupos",
       "Help": "Ayuda",
       "Hold Amount": "Retener Monto",

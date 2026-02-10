@@ -1,6 +1,17 @@
 @use '@angular/material' as mat;
 @use 'sass:map';
 
+button.outlinedButton {
+  background-color: transparent;
+  color: #1074b9;
+  border: 1px solid #1074b9;
+  box-shadow: unset;
+  border-radius: 0.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 8rem;
+}
+
 @mixin account-view-component-theme($theme) {
   $primary: map.get($theme, primary);
 

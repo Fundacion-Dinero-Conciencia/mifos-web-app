@@ -1,11 +1,63 @@
 <div class="container">
   <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column" class="container m-b-20">
-    <a [routerLink]="['./edit']" *ngIf="!router.url.includes('edit')">
-      <button id="edit-button" mat-raised-button color="primary" *mifosxHasPermission="'UPDATE_FUND'">
-        <fa-icon icon="edit" class="m-r-10"></fa-icon>
-        {{ 'labels.buttons.Edit' | translate }} {{ 'labels.inputs.Proyect' | translate }}
+    <section *ngIf="!router.url.includes('edit')">
+      <button
+        mat-raised-button
+        color="primary"
+        [matMenuTriggerFor]="actionsMenu"
+        [attr.aria-label]="'Acciones'"
+        (click)="$event.stopPropagation()"
+        [id]="'actions-menu-button'"
+      >
+        <mat-icon>menu</mat-icon>
       </button>
-    </a>
+
+      <!-- Menú -->
+      <mat-menu #actionsMenu="matMenu">
+        <!-- Ver historial -->
+        <button
+          mat-menu-item
+          [id]="'view-status-history-button'"
+          [routerLink]="['../', 'statusHistory', projectData?.id]"
+          (click)="$event.stopPropagation()"
+        >
+          <mat-icon>history</mat-icon>
+          <span>{{ 'labels.buttons.View Status History' | translate }}</span>
+        </button>
+
+        <!-- Ver proyecto (solo en estados específicos) -->
+        <a
+          mat-menu-item
+          *ngIf="
+            projectData?.status?.statusValue?.name === 'En Formalización' ||
+            projectData?.status?.statusValue?.name === 'En Financiamiento' ||
+            projectData?.status?.statusValue?.name === 'En curso'
+          "
+          [id]="'view-project-button'"
+          [href]="setProjectUrl(projectData)"
+          target="_blank"
+          rel="noopener"
+          (click)="$event.stopPropagation()"
+        >
+          <mat-icon>open_in_new</mat-icon>
+          <span>{{ 'labels.buttons.View Project' | translate }}</span>
+        </a>
+
+        <!-- Ver participaciones -->
+        <button
+          mat-menu-item
+          [id]="'view-participations-button'"
+          (click)="$event.stopPropagation(); goToParticipations(projectData?.id)"
+        >
+          <mat-icon>groups</mat-icon>
+          <span>{{ 'tooltips.View Participations' | translate }}</span>
+        </button>
+        <button mat-menu-item [routerLink]="['./edit']" [id]="'edit button'" (click)="$event.stopPropagation()">
+          <mat-icon>edit</mat-icon>
+          <span> {{ 'labels.buttons.Edit' | translate }} {{ 'labels.inputs.Proyect' | translate }} </span>
+        </button>
+      </mat-menu>
+    </section>
   </div>
   <nav mat-tab-nav-bar class="navigation-tabs" *ngIf="!router.url.includes('edit')">
     <a

@@ -130,12 +130,8 @@ export class EditHolidayComponent implements OnInit {
       }
       const prevFromDate: Date = this.holidayForm.value.fromDate;
       const prevToDate: Date = this.holidayForm.value.toDate;
-      if (holidayFormData.closureDate instanceof Date) {
-        holidayFormData.fromDate = this.dateUtils.formatDate(prevFromDate, dateFormat);
-      }
-      if (holidayFormData.closureDate instanceof Date) {
-        holidayFormData.toDate = this.dateUtils.formatDate(prevToDate, dateFormat);
-      }
+      holidayFormData.fromDate = this.dateUtils.formatDate(prevFromDate, dateFormat);
+      holidayFormData.toDate = this.dateUtils.formatDate(prevToDate, dateFormat);
     }
     const data = {
       ...holidayFormData,

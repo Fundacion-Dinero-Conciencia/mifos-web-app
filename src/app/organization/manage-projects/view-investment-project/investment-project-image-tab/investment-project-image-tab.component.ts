@@ -128,9 +128,6 @@ export class InvestmentProjectImageTabComponent implements OnInit {
   }
 
   getImagePath(location: string): string {
-    console.log(environment);
-    console.log(environment.amazonBucketUrl);
-    console.log(environment.production);
     return environment.amazonBucketUrl + location;
   }
 
