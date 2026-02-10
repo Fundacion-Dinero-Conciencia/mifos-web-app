@@ -107,6 +107,10 @@
             *ngIf="editClientForm.contains('clientNonPersonDetails')"
           >
             <mat-form-field fxFlex="48%">
+              <mat-label>{{ 'Giro/actividad ' }}</mat-label>
+              <input id="remarksInput" matInput formControlName="activity" cdkTextareaAutosize cdkAutosizeMinRows="2" />
+            </mat-form-field>
+            <mat-form-field fxFlex="48%">
               <mat-label>{{ 'labels.inputs.Constitution' | translate }}</mat-label>
               <mat-select formControlName="constitutionId" required>
                 <mat-option *ngFor="let constitution of constitutionOptions" [value]="constitution.id">
@@ -114,20 +118,6 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
-
-            <mat-form-field fxFlex="48%" (click)="incorpValidityTillDateDatePicker.open()">
-              <mat-label>{{ 'labels.inputs.Incorporation Validity Till Date' | translate }}</mat-label>
-              <input
-                matInput
-                [min]="minDate"
-                [max]="maxDate"
-                [matDatepicker]="incorpValidityTillDateDatePicker"
-                formControlName="incorpValidityTillDate"
-              />
-              <mat-datepicker-toggle matSuffix [for]="incorpValidityTillDateDatePicker"></mat-datepicker-toggle>
-              <mat-datepicker #incorpValidityTillDateDatePicker></mat-datepicker>
-            </mat-form-field>
-
             <mat-form-field fxFlex="48%">
               <mat-label>{{ 'labels.inputs.Incorporation No' | translate }}</mat-label>
               <input matInput formControlName="incorpNumber" />

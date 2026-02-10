@@ -40,6 +40,14 @@
           </div>
           <div fxLayout="row wrap" class="m-b-15">
             <div fxFlex="30%" class="mat-body-strong">
+              {{ 'labels.inputs.Address' | translate }}
+            </div>
+            <div fxFlex="70%">
+              {{ projectData.address }}
+            </div>
+          </div>
+          <div fxLayout="row wrap" class="m-b-15">
+            <div fxFlex="30%" class="mat-body-strong">
               {{ 'labels.inputs.Mimum investment' | translate }}
             </div>
             <div fxFlex="70%">
@@ -124,7 +132,7 @@
               </mat-form-field>
             </div>
           </ng-container>
-          <button class="addImageButton" (click)="uploadDocument(null)" [disabled]="!canEdit">
+          <button class="addImageButton" (click)="uploadDocument(null)">
             <fa-icon icon="plus" class="m-r-5"></fa-icon>
           </button>
         </div>

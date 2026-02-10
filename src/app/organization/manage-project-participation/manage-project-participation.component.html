@@ -171,7 +171,7 @@
   color="primary"
   (confirm)="assignTransaction()"
   (dismiss)="onDialogCancel()"
-  (closed)="showDialog = false"
+  (closed)="onDialogCancel()"
   [confirmText]="'Assign Transfer'"
   [disableConfirm]="amountToInvest <= 0 || amountToInvest > amoutToBeAssigned || !!loading"
 >
@@ -182,7 +182,7 @@
       </span>
     </p>
     <p>
-      <span> Proyecto: </span>
+      <span> {{ 'labels.inputs.Proyect' }}: </span>
       <span>
         {{ reservationSelected?.projectName }}
       </span>
@@ -208,13 +208,13 @@
 
     <table mat-table #documentsTable [dataSource]="dataSourceInvestSelection" class="m-t-25">
       <ng-container matColumnDef="Date">
-        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Date' | translate }}</th>
         <td mat-cell *matCellDef="let invest">
           {{ invest.transactionDate | dateFormat }}
         </td>
       </ng-container>
       <ng-container matColumnDef="Bank">
-        <th mat-header-cell *matHeaderCellDef>Banco</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Bank' | translate }}</th>
         <td mat-cell *matCellDef="let invest">{{ invest.bankName || '-' }}</td>
       </ng-container>
 
@@ -227,7 +227,7 @@
         <td mat-cell *matCellDef="let invest">{{ invest.id || '-' }}</td>
       </ng-container>
       <ng-container matColumnDef="Add">
-        <th mat-header-cell *matHeaderCellDef>Asignar</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.buttons.Assign' }}</th>
         <td mat-cell *matCellDef="let invest">
           <mat-checkbox
             *ngIf="!invest?.status"

@@ -54,6 +54,7 @@ export class ConciliationPayinComponent implements OnInit {
   displayedColumns: string[] = [
     'systemDate',
     'rut',
+    'payinType',
     'clientType',
     'clientName',
     'transactionId',
@@ -97,6 +98,7 @@ export class ConciliationPayinComponent implements OnInit {
   ];
   assignDisplayedColumns: string[] = [
     'assignment',
+    'date',
     'amount',
     'actions'
   ];
@@ -249,6 +251,16 @@ export class ConciliationPayinComponent implements OnInit {
     this.inputsGroup.splice(index, 1);
     this.selectorsGroup.splice(index, 1);
     this.assignDataSource.data = [...this.selectedRowPartition];
+  }
+
+  findLoanByIndex(index: number): any {
+    const loanId = this.selectorsGroup[index];
+    if (loanId === undefined) {
+      return null;
+    }
+    const loan = this.availableLoans.find((loan) => Number(loan.loanId) === Number(loanId));
+    console.log(loan);
+    return loan;
   }
 
   onAmountChangeInput(event: Event, creditId: number, index: number): void {

@@ -64,6 +64,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     'Mnemotécnico',
     'InvestmentNumber',
     'Amount',
+    'Percentage',
     'State',
     'Process',
     'Actions'
@@ -165,6 +166,14 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
       total += invest.amount;
     });
     return total;
+  }
+
+  getPercentageAboutTheProject(amount: number): string {
+    if (this.projectData && this.projectData.amount) {
+      const percentage = (amount / this.projectData.amount) * 100;
+      return percentage.toFixed(1);
+    }
+    return '-';
   }
 
   downloadPromissoryNote(id: string) {

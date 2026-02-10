@@ -48,7 +48,6 @@ export class ViewInvestmentProjectComponent implements OnInit {
     if (!project) {
       return '';
     }
-    console.log(this.projectUrl + project.id + '?isPublicView=1&publicTenant=' + this.tenantIdentifier.trim());
     return this.projectUrl + project.id + '?isPublicView=1&publicTenant=' + this.tenantIdentifier.trim();
   }
 }
