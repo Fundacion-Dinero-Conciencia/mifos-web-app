@@ -412,7 +412,7 @@
 
           <!-- Ver detalle de pago -->
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>{{ labels.inputs.Actions }}</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>
             <td mat-cell *matCellDef="let row; let i = index">
               <button
                 *ngIf="isDebtorDetail ? i > 0 : i > 0"

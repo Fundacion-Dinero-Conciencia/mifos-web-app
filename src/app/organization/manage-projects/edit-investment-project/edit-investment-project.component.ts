@@ -128,8 +128,12 @@ export class EditInvestmentProjectComponent implements OnInit {
     return (group: AbstractControl): ValidationErrors | null => {
       const minControl = group.get('minAmount');
       const maxControl = group.get('maxAmount');
-      const min = minControl?.value;
-      const max = maxControl?.value;
+      let min = minControl?.value;
+      let max = maxControl?.value;
+      if (min && max) {
+        min = Number(('' + min).replace(/[^0-9]/g, ''));
+        max = Number(('' + max).replace(/[^0-9]/g, ''));
+      }
 
       if (min != null && max != null && max < min) {
         maxControl?.setErrors(null);
@@ -329,9 +333,6 @@ export class EditInvestmentProjectComponent implements OnInit {
   }
 
   get canSaveProject(): boolean {
-    // Si no puedo editar, no permito guardar
-    if (!this.canEdit()) return false;
-
     const newStatus = this.selectedStatusName;
     const currentStatus = this.projectData?.status?.statusValue?.name;
 
@@ -342,11 +343,10 @@ export class EditInvestmentProjectComponent implements OnInit {
       return this.investmentProjectFormGeneral?.valid;
     }
 
-    // Flujo normal: todos los forms deben estar válidos
     return (
       this.investmentProjectFormGeneral?.valid &&
       this.investmentProjectPublication?.valid &&
-      this.investmentProjectImpact?.valid
+      (this.investmentProjectImpact?.valid || this.investmentProjectImpact.disabled)
     );
   }
 
