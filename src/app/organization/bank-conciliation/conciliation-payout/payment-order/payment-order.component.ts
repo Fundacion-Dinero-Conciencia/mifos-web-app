@@ -111,7 +111,7 @@ export class PaymentOrderComponent implements OnInit {
     showGlobalLoader();
     const loanId = this.route.snapshot.paramMap.get('id');
     this.organizationService
-      .getPayoutOrders(Number(loanId), Number(1), { ...requestParams })
+      .getPayoutOrders(Number(loanId), Number(this.installmentNo), { ...requestParams })
       .subscribe((response: any) => {
         const tableContent = response.content.map((item: any) => ({
           ...item,
