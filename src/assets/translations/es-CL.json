@@ -2703,6 +2703,8 @@
     "status": {
       "Active": "Activo",
       "Approved": "Aprobado",
+      "Applied": "Aplicado",
+      "Invalid": "Rechazado",
       "Closed": "Cerrado",
       "Closed (obligations met)": "Cerrado (obligaciones cumplidas)",
       "Closed (rescheduled)": "Cerrado (reprogramado)",

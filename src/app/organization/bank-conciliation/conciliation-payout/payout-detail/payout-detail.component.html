@@ -100,7 +100,9 @@
             class="status-dot"
             [ngClass]="{
               'status-green': row.conciliationStatus?.value === 'ACCEPTED',
+              'status-green': row.conciliationStatus?.value === 'APPLIED',
               'status-red': row.conciliationStatus?.value === 'REJECTED',
+              'status-red': row.conciliationStatus?.value === 'INVALID',
               'status-yellow': row.conciliationStatus?.value === 'PENDING'
             }"
           ></span>
