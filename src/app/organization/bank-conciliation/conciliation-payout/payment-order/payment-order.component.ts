@@ -207,7 +207,7 @@ export class PaymentOrderComponent implements OnInit {
     }));
     this.organizationService.createPayRoll(data).subscribe((response: any) => {
       hideGlobalLoader();
-      this.router.navigate(['../../..'], { relativeTo: this.route });
+      this.router.navigate(['../../../..'], { relativeTo: this.route });
     });
   }
 
