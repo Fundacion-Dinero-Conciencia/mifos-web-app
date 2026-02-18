@@ -7,6 +7,7 @@ import { SettingsService } from 'app/settings/settings.service';
 /** Custom Services */
 import { SystemService } from '../../../system.service';
 import { OrganizationService } from 'app/organization/organization.service';
+import { ProductsService } from 'app/products/products.service';
 
 /**
  * Edit Configuration Component
@@ -28,8 +29,10 @@ export class EditConfigurationComponent implements OnInit {
   configuration: any;
 
   currencies: any[] = [];
+  charges: any[] = [];
 
   DEFAULT_CURRENCY: string;
+  ADDITIONAL_CHARGE: string;
 
   /**
    * Retrieves the configuration data from `resolve`.
@@ -45,7 +48,8 @@ export class EditConfigurationComponent implements OnInit {
     private settingsService: SettingsService,
     private route: ActivatedRoute,
     private router: Router,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private productService: ProductsService
   ) {
     this.route.data.subscribe((data: { configuration: any }) => {
       this.configuration = data.configuration;
@@ -54,6 +58,12 @@ export class EditConfigurationComponent implements OnInit {
     this.organizationService.getCurrencies().subscribe((data) => {
       this.currencies = data?.selectedCurrencyOptions;
     });
+
+    this.productService.getCharges().subscribe((data) => {
+      this.charges = data?.filter(
+        (item: { chargeAppliesTo: { value: string } }) => item.chargeAppliesTo.value === 'Loan'
+      );
+    });
   }
 
   /**
@@ -61,6 +71,7 @@ export class EditConfigurationComponent implements OnInit {
    */
   ngOnInit() {
     this.DEFAULT_CURRENCY = SettingsService.default_currency;
+    this.ADDITIONAL_CHARGE = SettingsService.additional_charge;
     this.maxDate = this.settingsService.businessDate;
     this.createConfigurationForm();
   }

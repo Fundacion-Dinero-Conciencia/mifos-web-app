@@ -16,6 +16,7 @@ export class SettingsService {
   public static businessDateFormat = 'dd MMMM yyyy';
   public static businessDateConfigName = 'enable-business-date';
   public static default_currency = 'default-currency';
+  public static additional_charge = 'additional-charge';
   public static businessDateType = 'BUSINESS_DATE';
   public static cobDateType = 'COB_DATE';
   public static defaultAccountConfigName = 'belat-account';
