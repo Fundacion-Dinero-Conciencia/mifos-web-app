@@ -1205,6 +1205,8 @@
       "Principal Amount": "Principal Amount"
     },
     "inputs": {
+      "Simulation": "Simulation",
+      "Subcredit": "Subcredit",
       "Year": "year",
       "Public": "Public",
       "accounting": {
