@@ -123,6 +123,7 @@
           [ngClass]="{
             'status-pill': true,
             'status-pill--pending': getPayrollStatus(row) === 'PENDIENTE',
+            'status-pill--partial': getPayrollStatus(row) === 'PARCIAL',
             'status-pill--applied': getPayrollStatus(row) === 'EXITOSA',
             'status-pill--error': getPayrollStatus(row) === 'FALLIDA'
           }"
