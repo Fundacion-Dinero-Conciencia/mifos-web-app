@@ -1,7 +1,7 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 
 /** Custom Services */
 import { LoansService } from '../loans.service';
@@ -10,13 +10,13 @@ import { LoansService } from '../loans.service';
 import { LoansAccountButtonConfiguration } from './loan-accounts-button-config';
 
 /** Dialog Components */
-import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
-import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
-import { LoanStatus } from '../models/loan-status.model';
-import { Currency } from 'app/shared/models/general.model';
-import { DelinquencyPausePeriod } from '../models/loan-account.model';
 import { TranslateService } from '@ngx-translate/core';
 import { LoanTransaction } from 'app/products/loan-products/models/loan-account.model';
+import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
+import { Currency } from 'app/shared/models/general.model';
+import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
+import { DelinquencyPausePeriod } from '../models/loan-account.model';
+import { LoanStatus } from '../models/loan-status.model';
 
 @Component({
   selector: 'mifosx-loans-view',

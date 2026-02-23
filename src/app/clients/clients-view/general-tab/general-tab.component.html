@@ -155,6 +155,14 @@
       <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Original Loan' | translate }}</th>
       <td mat-cell *matCellDef="let element">{{ element.originalLoan }}</td>
     </ng-container>
+    <ng-container matColumnDef="Proyect">
+      <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Proyect' | translate }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.projectName || '-' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="LoanNumber">
+      <th mat-header-cell *matHeaderCellDef>{{ 'Número de pagare ' }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.promissoryNumber }}</td>
+    </ng-container>
     <ng-container matColumnDef="Loan Balance">
       <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Loan Balance' | translate }}</th>
       <td mat-cell class="r-amount" *matCellDef="let element">{{ element.loanBalance | formatNumber }}</td>
