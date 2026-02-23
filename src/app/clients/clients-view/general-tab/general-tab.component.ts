@@ -20,6 +20,8 @@ export class GeneralTabComponent {
     'Loan Type',
     'Loan Account',
     'Original Loan',
+    'LoanNumber',
+    'Proyect',
     'Loan Balance',
     'Amount Paid',
     'Type',
