@@ -20,7 +20,7 @@ export class PayoutDetailComponent implements OnInit {
     private organizationService: OrganizationService,
     private systemService: SystemService
   ) {}
-
+  additional: any = null;
   currency = 'CLP';
 
   conciliationId = '-';
@@ -80,6 +80,7 @@ export class PayoutDetailComponent implements OnInit {
 
     this.organizationService.getPayoutOrdersTramited(Number(this.conciliationId), params).subscribe({
       next: (response: any) => {
+        this.additional = response?.additional ?? null;
         const content = (response?.content ?? response ?? []).map((item: any) => ({
           ...item,
           selected: false
