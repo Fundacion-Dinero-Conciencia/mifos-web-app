@@ -180,10 +180,6 @@ export class PaymentOrderComponent implements OnInit {
     this.loadPage(event.pageIndex, event.pageSize, this.inputSearch);
   }
 
-  onCancel(): void {
-    // navegar o reset
-  }
-
   onSaveChanges(): void {
     showGlobalLoader();
     const data = this.rowsSelected.map((row, index) => ({

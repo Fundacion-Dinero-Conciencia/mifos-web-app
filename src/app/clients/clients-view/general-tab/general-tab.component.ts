@@ -19,13 +19,11 @@ export class GeneralTabComponent {
     'Account No',
     'Loan Type',
     'Loan Account',
-    'Original Loan',
     'LoanNumber',
     'Proyect',
+    'Original Loan',
     'Loan Balance',
-    'Amount Paid',
-    'Type',
-    'Actions'
+    'Amount Paid'
   ];
   /** Closed Loan Accounts Columns */
   closedLoansColumns: string[] = [
