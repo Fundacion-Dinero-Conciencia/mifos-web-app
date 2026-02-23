@@ -87,6 +87,14 @@
           ></mifosx-external-identifier>
         </div>
 
+        <div fxFlex="50%" class="mat-body-strong">
+          {{ 'Note' | translate }}
+        </div>
+
+        <div fxFlex="50%">
+          {{ transactionData.note }}
+        </div>
+
         <mat-divider *ngIf="existTransactionRelations" [inset]="true"></mat-divider>
 
         <div fxFlex="100%" class="mat-body-strong" *ngIf="existTransactionRelations">
