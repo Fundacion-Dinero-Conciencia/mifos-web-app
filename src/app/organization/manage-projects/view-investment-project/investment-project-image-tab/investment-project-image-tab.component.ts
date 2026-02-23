@@ -58,17 +58,23 @@ export class InvestmentProjectImageTabComponent implements OnInit {
 
   uploadDocument(description: any) {
     const uploadDocumentDialogRef = this.dialog.open(UploadImageDialogComponent, {
-      data: { documentIdentifier: false, entityType: '' }
+      data: { documentIdentifier: false, entityType: '', multiple: true }
     });
     uploadDocumentDialogRef.afterClosed().subscribe((dialogResponse: any) => {
       if (dialogResponse) {
-        const formData: FormData = new FormData();
-        formData.append('name', dialogResponse.name);
-        formData.append('fileName', dialogResponse.name);
-        formData.append('file', dialogResponse);
-        formData.append('description', description);
-        this.organizationService.uploadProjectDocumentsImage(this.projectId, formData).subscribe((response: any) => {
-          this.getProjectImages();
+        const files: File[] = Array.isArray(dialogResponse) ? dialogResponse : [dialogResponse];
+
+        files.forEach((file) => {
+          const formData: FormData = new FormData();
+
+          formData.append('name', file.name);
+          formData.append('fileName', file.name);
+          formData.append('file', file);
+          formData.append('description', description);
+
+          this.organizationService.uploadProjectDocumentsImage(this.projectId, formData).subscribe(() => {
+            this.getProjectImages();
+          });
         });
       }
     });

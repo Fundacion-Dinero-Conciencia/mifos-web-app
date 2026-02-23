@@ -588,6 +588,7 @@
       "% Amount": "% Amount",
       "% Interest": "% Interest",
       "% Loan Amount + Interest": "% Loan Amount + Interest",
+      "% Quota": "% Quota",
       "Disbursement": "Disbursement",
       "Specified due date": "Specified due date",
       "Installment Fee": "Installment Fee",
@@ -1204,6 +1205,8 @@
       "Principal Amount": "Principal Amount"
     },
     "inputs": {
+      "Simulation": "Simulation",
+      "Subcredit": "Subcredit",
       "Year": "year",
       "Public": "Public",
       "accounting": {
@@ -2711,6 +2714,8 @@
     },
     "status": {
       "Active": "Active",
+      "Applied": "Applied",
+      "Invalid": "Invalid",
       "Approved": "Approved",
       "Closed": "Closed",
       "Closed (obligations met)": "Closed (obligations met)",

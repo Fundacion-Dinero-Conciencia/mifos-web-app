@@ -123,6 +123,7 @@
           [ngClass]="{
             'status-pill': true,
             'status-pill--pending': getPayrollStatus(row) === 'PENDIENTE',
+            'status-pill--partial': getPayrollStatus(row) === 'PARCIAL',
             'status-pill--applied': getPayrollStatus(row) === 'EXITOSA',
             'status-pill--error': getPayrollStatus(row) === 'FALLIDA'
           }"
@@ -152,7 +153,7 @@
           mat-raised-button
           color="primary"
           class="action-btn"
-          matTooltip="Descargar detalle"
+          matTooltip="Ver detalle"
           (click)="$event.stopPropagation()"
         >
           <fa-icon icon="eye"></fa-icon>
