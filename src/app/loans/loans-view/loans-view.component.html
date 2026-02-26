@@ -43,6 +43,12 @@
                 }}<span class="m-l-5">({{ loanDetailsData.clientAccountNo || loanDetailsData.group.accountNo }})</span
                 ><br />
               </span>
+              <p class="loans-overview m-t">
+                {{ 'labels.inputs.Proyect' | translate }} : {{ loanDetailsData.projectName }}
+              </p>
+              <p class="loans-overview" *ngIf="loanDetailsData.promissoryNumber">
+                {{ 'Número de pagare' }} : {{ loanDetailsData.promissoryNumber }}
+              </p>
               <div *ngIf="loanDisplayArrearsDelinquency !== 1">
                 <table class="account-overview">
                   <tbody>

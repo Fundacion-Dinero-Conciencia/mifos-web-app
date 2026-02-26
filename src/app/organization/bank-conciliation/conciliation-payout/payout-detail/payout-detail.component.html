@@ -7,7 +7,11 @@
   <!-- Título -->
   <div class="m-b-10">
     <h2 class="bc-title bc-title--section">Orden de pago</h2>
-    <p>Pagaré #{{ orderInfo.documentNumber }} - Subcrédito {{ orderInfo.subCreditAccountNo }}</p>
+    <p>
+      Pagaré #{{ orderInfo.documentNumber }} - Subcrédito {{ orderInfo.subCreditAccountNo }} - Cuota #{{
+        additional.installmentNumber || 'NA'
+      }}
+    </p>
     <p>Estado: {{ getPayrollStatus(orderInfo) }}</p>
   </div>
 
@@ -19,7 +23,7 @@
       <div class="infoBox__text">
         La nómina de pago ha sido generada con {{ totalItems }}
         {{ totalItems === 1 ? 'inversion' : 'inversiones' }} dando un total de
-        {{ orderInfo.amount | currency: currency }}.
+        {{ additional.totalAmount || 0 | currency: currency }}.
       </div>
     </div>
   </div>
@@ -100,7 +104,9 @@
             class="status-dot"
             [ngClass]="{
               'status-green': row.conciliationStatus?.value === 'ACCEPTED',
+              'status-green': row.conciliationStatus?.value === 'APPLIED',
               'status-red': row.conciliationStatus?.value === 'REJECTED',
+              'status-red': row.conciliationStatus?.value === 'INVALID',
               'status-yellow': row.conciliationStatus?.value === 'PENDING'
             }"
           ></span>

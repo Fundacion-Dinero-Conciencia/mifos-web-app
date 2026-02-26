@@ -587,6 +587,7 @@
       "% Amount": "% Monto",
       "% Interest": "% Interés",
       "% Loan Amount + Interest": "% Monto del Crédito + Interés",
+      "% Quota": "% Cuota",
       "Disbursement": "Desembolso",
       "Specified due date": "Fecha de Vencimiento",
       "Installment Fee": "Cuota de pago",
@@ -1191,6 +1192,8 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Simulation": "Simulación",
+      "Subcredit": "Subcredito",
       "Year": "Año",
       "Public": "Publico",
       "Debtor client": "Cliente deudor",
@@ -2705,6 +2708,8 @@
     "status": {
       "Active": "Activo",
       "Approved": "Aprobado",
+      "Applied": "Aplicado",
+      "Invalid": "Rechazado",
       "Closed": "Cerrado",
       "Closed (obligations met)": "Cerrado (obligaciones cumplidas)",
       "Closed (rescheduled)": "Cerrado (reprogramado)",

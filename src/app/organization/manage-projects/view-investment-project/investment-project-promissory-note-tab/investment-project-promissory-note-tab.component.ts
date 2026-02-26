@@ -288,7 +288,8 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
     const NoteId = Note.id;
     const creationDate = Note.creationDate;
     const isValidDate = this.isValidDate(new Date(`${creationDate[0]}-${creationDate[1]}-${creationDate[2]}`));
-
+    console.log(this.datePipe.transform(creationDate, 'dd MMMM yyyy', '', 'es'));
+    console.log(isValidDate);
     if (!isValidDate) {
       const dialogErrorDateRef = this.dialog.open(ConfirmationDialogComponent, {
         data: {
@@ -304,7 +305,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         data: {
           heading: '¿Deseas continuar?',
-          dialogContext: `Convertir a pagaré. Al consolidar este grupo, ya no podrás editar la información ni mover inversionistas. El grupo de pagaré quedará en modo consulta y pasará a estado Aprobado con fecha ${this.datePipe.transform(this.systemDate, 'dd MMMM yyyy', '', 'es')} Solo podrás visualizar la información y generar el último pagaré emitido.`
+          dialogContext: `Convertir a pagaré. Al consolidar este grupo, ya no podrás editar la información ni mover inversionistas. El grupo de pagaré quedará en modo consulta y pasará a estado Aprobado con fecha ${this.datePipe.transform(creationDate, 'dd MMMM yyyy', '', 'es')} Solo podrás visualizar la información y generar el último pagaré emitido.`
         }
       });
       dialogRef.afterClosed().subscribe((response: { confirm: any }) => {
@@ -312,7 +313,7 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
           const data = {
             dateFormat: 'dd MMMM yyyy',
             locale: 'es',
-            signedDate: this.datePipe.transform(this.systemDate, 'dd MMMM yyyy', '', 'es')
+            signedDate: this.datePipe.transform(creationDate, 'dd MMMM yyyy', '', 'es')
           };
 
           this.organizationService.editInsvestmentGroup(NoteId, JSON.stringify(data)).subscribe((response) => {

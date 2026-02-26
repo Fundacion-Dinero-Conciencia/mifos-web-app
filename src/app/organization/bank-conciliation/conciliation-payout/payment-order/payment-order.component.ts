@@ -111,7 +111,7 @@ export class PaymentOrderComponent implements OnInit {
     showGlobalLoader();
     const loanId = this.route.snapshot.paramMap.get('id');
     this.organizationService
-      .getPayoutOrders(Number(loanId), Number(1), { ...requestParams })
+      .getPayoutOrders(Number(loanId), Number(this.installmentNo), { ...requestParams })
       .subscribe((response: any) => {
         const tableContent = response.content.map((item: any) => ({
           ...item,
@@ -180,10 +180,6 @@ export class PaymentOrderComponent implements OnInit {
     this.loadPage(event.pageIndex, event.pageSize, this.inputSearch);
   }
 
-  onCancel(): void {
-    // navegar o reset
-  }
-
   onSaveChanges(): void {
     showGlobalLoader();
     const data = this.rowsSelected.map((row, index) => ({
@@ -207,7 +203,7 @@ export class PaymentOrderComponent implements OnInit {
     }));
     this.organizationService.createPayRoll(data).subscribe((response: any) => {
       hideGlobalLoader();
-      this.router.navigate(['../../..'], { relativeTo: this.route });
+      this.router.navigate(['../../../..'], { relativeTo: this.route });
     });
   }
 

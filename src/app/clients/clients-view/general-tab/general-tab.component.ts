@@ -17,12 +17,13 @@ export class GeneralTabComponent {
   /** Open Loan Accounts Columns */
   openLoansColumns: string[] = [
     'Account No',
+    'Loan Type',
     'Loan Account',
+    'LoanNumber',
+    'Proyect',
     'Original Loan',
     'Loan Balance',
-    'Amount Paid',
-    'Type',
-    'Actions'
+    'Amount Paid'
   ];
   /** Closed Loan Accounts Columns */
   closedLoansColumns: string[] = [
@@ -141,6 +142,16 @@ export class GeneralTabComponent {
    */
   toggleLoanAccountsOverview() {
     this.showClosedLoanAccounts = !this.showClosedLoanAccounts;
+  }
+
+  /**
+   * Get Loan Type based on the last character of the input string.
+   * @param loanId The loan identifier string.
+   * @returns 'Subcredit ' if the last character is a number, otherwise 'Simulation'.
+   */
+  getLoanType(loanId: string): string {
+    const lastChar = loanId.charAt(loanId.length - 1);
+    return /\d/.test(lastChar) ? 'Subcredit' : 'Simulation';
   }
 
   /**

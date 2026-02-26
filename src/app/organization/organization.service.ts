@@ -1109,7 +1109,7 @@ export class OrganizationService {
   }
 
   getLoanDataByClientId(clientId: number) {
-    return this.http.get(`/shinkansen/loandata/${clientId}`);
+    return this.http.get(`/loans/loandata/${clientId}`);
   }
 
   getProjectParticipationPageable(filters: {

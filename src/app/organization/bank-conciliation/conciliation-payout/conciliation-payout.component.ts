@@ -1,11 +1,11 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
+import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { SystemService } from 'app/system/system.service';
-import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
-import { DatePipe } from '@angular/common';
 
 type PayrollStatus = 'EXITOSA' | 'PARCIAL' | 'FALLIDA' | 'PENDIENTE';
 
@@ -64,8 +64,8 @@ export class ConciliationPayoutComponent implements OnInit {
       name: 'Pendiente'
     },
     {
-      id: 400,
-      name: 'Exitoso'
+      id: 200,
+      name: 'Exitoso - Parcial'
     },
     {
       id: 600,

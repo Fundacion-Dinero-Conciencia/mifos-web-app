@@ -361,6 +361,7 @@ export class EditPromissoryNoteComponent implements OnInit {
   saveGroup() {
     this.loading = true;
     const documetNumber = this.clientForm.get('documentNumber')?.value;
+
     const data = {
       documentNumber: documetNumber === this.PromissoryNoteGroup.documentNumber ? undefined : documetNumber,
       signators: this.selectedSignatorsArray.value,
@@ -368,6 +369,7 @@ export class EditPromissoryNoteComponent implements OnInit {
       dateFormat: 'dd MMMM yyyy',
       locale: 'es'
     };
+
     this.organizationService
       .editInsvestmentGroup(this.PromissoryNoteGroup.id, JSON.stringify(data))
       .pipe(

@@ -1,8 +1,8 @@
 <div [formGroup]="form" fxFlexFill>
   <!-- Rich Text Editor (CKEditor) -->
   <div *ngIf="formfield.controlType === 'richtext'" fxFlexFill>
-    <label class="mat-label">{{ formfield.label }}</label>
-    <br />
+    <label class="mat-label title">{{ formfield.label }}</label>
+    <div class="articifialSpace"></div>
     <ckeditor [editor]="Editor" [formControl]="form.controls[formfield.controlName]" [config]="editorConfig"></ckeditor>
     <mat-error *ngIf="form.controls[formfield.controlName].hasError('required')">
       {{ formfield.label }} {{ 'labels.commons.is' | translate }}

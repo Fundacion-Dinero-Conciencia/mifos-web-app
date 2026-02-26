@@ -40,13 +40,13 @@ export class ConciliationMenuComponent implements OnInit {
         name: 'payout',
         description:
           'Administra la conciliación de pagos salientes (Payout), relacionando las transferencias bancarias con las órdenes de pago generadas en el sistema.'
-      },
-      {
-        icon: 'assets/icons/recycle.png',
-        name: 'Reinversión',
-        description:
-          'Gestiona la retención de transacciones disponibles para destinarlas a una nueva inversión sin generar salida de dinero.'
       }
+      // {
+      //   icon: 'assets/icons/recycle.png',
+      //   name: 'Reinversión',
+      //   description:
+      //     'Gestiona la retención de transacciones disponibles para destinarlas a una nueva inversión sin generar salida de dinero.'
+      // }
     ];
   }
 

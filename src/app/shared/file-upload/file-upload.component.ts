@@ -13,9 +13,10 @@ export class FileUploadComponent implements OnInit {
   /** Form field flex dimension */
   @Input() flex: any;
   @Input() acceptFilter: string;
+  @Input() multiple: boolean = false;
 
   /** Selected file name */
-  fileName: File;
+  fileName: any = '';
 
   constructor() {}
 
@@ -30,6 +31,12 @@ export class FileUploadComponent implements OnInit {
    * @param {any} event File input change event.
    */
   onFileSelect($event: any) {
+    if (this.multiple) {
+      this.fileName = Array.from($event.target.files)
+        .map((file: any) => file.name)
+        .join(', ');
+      return;
+    }
     this.fileName = $event.target.files[0].name;
   }
 }

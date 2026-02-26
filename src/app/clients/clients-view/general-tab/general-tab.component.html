@@ -141,7 +141,24 @@
         <mifosx-long-text textValue="{{ element.productName }}" chars="35"></mifosx-long-text>
       </td>
     </ng-container>
+    <ng-container matColumnDef="Loan Type">
+      <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Type' | translate }}</th>
+      <td mat-cell *matCellDef="let element">
+        <mifosx-long-text
+          textValue="{{ 'labels.inputs.' + getLoanType(element.accountNo) | translate }}"
+          chars="35"
+        ></mifosx-long-text>
+      </td>
+    </ng-container>
 
+    <ng-container matColumnDef="Proyect">
+      <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Proyect' | translate }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.projectName || '-' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="LoanNumber">
+      <th mat-header-cell *matHeaderCellDef>{{ 'N° Pagaré' }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.promissoryNumber }}</td>
+    </ng-container>
     <ng-container matColumnDef="Original Loan">
       <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Original Loan' | translate }}</th>
       <td mat-cell *matCellDef="let element">{{ element.originalLoan }}</td>
@@ -154,63 +171,6 @@
     <ng-container matColumnDef="Amount Paid">
       <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Amount Paid' | translate }}</th>
       <td mat-cell class="r-amount" *matCellDef="let element">{{ element.amountPaid | formatNumber }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="Type">
-      <th mat-header-cell class="center" *matHeaderCellDef>{{ 'labels.inputs.Type' | translate }}</th>
-      <td mat-cell class="center" *matCellDef="let element">
-        <i
-          class="fa fa-large"
-          [ngClass]="element.loanType.value === 'Individual' ? 'fa-user' : 'fa-group'"
-          matTooltip="{{ element.loanType.value }}"
-          matTooltipPosition="above"
-        ></i>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="Actions">
-      <th mat-header-cell class="center" *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>
-      <td mat-cell class="center" *matCellDef="let element">
-        <button
-          *ngIf="element.status.active"
-          class="account-action-button"
-          mat-raised-button
-          color="primary"
-          matTooltip="{{ 'tooltips.Make Repayment' | translate }}"
-          matTooltipPosition="above"
-          (click)="routeEdit($event)"
-          [routerLink]="['../', 'loans-accounts', element.id, 'actions', 'Make Repayment']"
-        >
-          <i class="fa fa-dollar"></i>
-        </button>
-        <span *ngIf="!element.status.pendingApproval && !element.status.active && !element.status.overpaid">
-          <button
-            class="account-action-button"
-            mat-raised-button
-            color="primary"
-            matTooltip="{{ 'tooltips.Disburse' | translate }}"
-            matTooltipPosition="above"
-            *mifosxHasPermission="'DISBURSE_LOAN'"
-            (click)="routeEdit($event)"
-            [routerLink]="['../', 'loans-accounts', element.id, 'actions', 'Disburse']"
-          >
-            <i class="fa fa-flag"></i>
-          </button>
-        </span>
-        <span *ngIf="!element.status.pendingApproval && !element.status.active && element.status.overpaid">
-          <button
-            class="account-action-button"
-            mat-raised-button
-            color="primary"
-            matTooltip="{{ 'tooltips.Transfer Funds' | translate }}"
-            matTooltipPosition="above"
-            *mifosxHasPermission="'DISBURSE_LOAN'"
-            (click)="routeEdit($event); routeTransferFund(element.id)"
-          >
-            <i class="fa fa-exchange"></i>
-          </button>
-        </span>
-      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="openLoansColumns"></tr>

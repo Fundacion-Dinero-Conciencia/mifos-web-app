@@ -13,6 +13,7 @@ import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.componen
 /** Custom Services */
 import { TranslateService } from '@ngx-translate/core';
 import { ClientsService } from '../../clients.service';
+import { Validators } from '@angular/forms';
 
 /**
  * Clients Address Tab Component
@@ -193,6 +194,7 @@ export class AddressTabComponent {
             label: this.translateService.instant('labels.inputs.Address Line') + ' 1',
             value: address ? address.addressLine1 : '',
             type: 'text',
+            required: true,
             controlType: 'maps',
             order: 3
           })
