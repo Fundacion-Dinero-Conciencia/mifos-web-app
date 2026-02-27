@@ -17,7 +17,7 @@
   <div class="m-t-10" *ngIf="dataObject.data.length > 0">
     <div
       fxFlexFill
-      *ngFor="let columnHeader of dataObject.columnHeaders; let i = index"
+      *ngFor="let columnHeader of orderedColumnHeaders; let i = index"
       [ngClass]="setAttributeClass(columnHeader.columnName)"
     >
       <div fxFlex="40%" class="mat-body-strong left">
@@ -30,19 +30,19 @@
         class="right"
       >
         <span *ngSwitchCase="'DATE'">
-          {{ dataObject.data[0].row[i] | dateFormat }}
+          {{ dataObject.data[0].row[columnHeader.__rowIndex] | dateFormat }}
         </span>
         <span *ngSwitchCase="'DATETIME'">
-          {{ dataObject.data[0].row[i] | datetimeFormat }}
+          {{ dataObject.data[0].row[columnHeader.__rowIndex] | datetimeFormat }}
         </span>
         <span *ngSwitchCase="'INTEGER'">
-          {{ dataObject.data[0].row[i] }}
+          {{ dataObject.data[0].row[columnHeader.__rowIndex] }}
         </span>
         <span *ngSwitchCase="'DECIMAL'">
-          {{ dataObject.data[0].row[i] | formatNumber }}
+          {{ dataObject.data[0].row[columnHeader.__rowIndex] | formatNumber }}
         </span>
         <span *ngSwitchCase="'TEXT'" class="long-text">
-          {{ dataObject.data[0].row[i] }}
+          {{ dataObject.data[0].row[columnHeader.__rowIndex] }}
         </span>
         <textarea
           *ngSwitchCase="'JSON'"
@@ -50,28 +50,28 @@
           cdkAutosizeMaxRows="20"
           cdkAutosizeMinRows="1"
           class="json-textarea"
-          [innerHTML]="dataObject.data[0].row[i].value | prettyPrint"
+          [innerHTML]="dataObject.data[0].row[columnHeader.__rowIndex].value | prettyPrint"
         >
         </textarea>
         <span *ngSwitchCase="'CODELOOKUP'">
-          {{ getCodeValueName(columnHeader.columnName, dataObject.data[0].row[i]) }}
+          {{ getCodeValueName(columnHeader.columnName, dataObject.data[0].row[columnHeader.__rowIndex]) }}
         </span>
         <span *ngSwitchCase="'BOOLEAN'">
-          {{ dataObject.data[0].row[i] | yesNo }}
+          {{ dataObject.data[0].row[columnHeader.__rowIndex] | yesNo }}
         </span>
         <span *ngSwitchDefault>
-          <span class="m-r-5" *ngIf="isValidUrl(dataObject.data[0].row[i])">
+          <span class="m-r-5" *ngIf="isValidUrl(dataObject.data[0].row[columnHeader.__rowIndex])">
             <button
               mat-icon-button
               matTooltip="{{ 'tooltips.View Link' | translate }}"
-              (click)="openSite(dataObject.data[0].row[i])"
+              (click)="openSite(dataObject.data[0].row[columnHeader.__rowIndex])"
               matTooltipPosition="right"
               class="small-icon"
             >
               <fa-icon icon="eye" size="lg"></fa-icon>
             </button>
           </span>
-          {{ dataObject.data[0].row[i] }}
+          {{ dataObject.data[0].row[columnHeader.__rowIndex] }}
         </span>
       </div>
     </div>
