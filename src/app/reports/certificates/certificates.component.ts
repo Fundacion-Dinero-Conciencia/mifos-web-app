@@ -16,6 +16,12 @@ export class CertificatesComponent implements OnInit {
       reportType: 'PDF',
       reportCategory: 'Clientes',
       path: 'interest'
+    },
+    {
+      reportName: 'Certificado de deuda',
+      reportType: 'PDF',
+      reportCategory: 'Clientes',
+      path: 'debt'
     }
   ];
   /** Report category filter. */

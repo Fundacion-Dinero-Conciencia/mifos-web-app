@@ -19,6 +19,7 @@ import { MixTaxonomyResolver } from './common-resolvers/mixtaxonomy.resolver';
 import { ReportsResolver } from './common-resolvers/reports.resolver';
 import { RunReportResolver } from './common-resolvers/run-report.resolver';
 import { InterestCertificateComponent } from './interest-certificate/interest-certificate.component';
+import { DebtCertificateComponent } from './debt-certificate/debt-certificate.component';
 
 /** Reports Routes */
 const routes: Routes = [
@@ -35,6 +36,11 @@ const routes: Routes = [
           path: 'interest',
           data: { title: 'interest certificate', breadcrumb: 'interest' },
           component: InterestCertificateComponent
+        },
+        {
+          path: 'debt',
+          data: { title: 'debt certificate', breadcrumb: 'debt' },
+          component: DebtCertificateComponent
         }
       ]
     },
