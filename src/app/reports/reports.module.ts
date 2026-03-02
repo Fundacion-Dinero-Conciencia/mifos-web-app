@@ -17,6 +17,7 @@ import { XBRLReportComponent } from './xbrl-report/xbrl-report.component';
 import { CertificatesComponent } from './certificates/certificates.component';
 import { InterestCertificateComponent } from './interest-certificate/interest-certificate.component';
 import { DebtCertificateComponent } from './debt-certificate/debt-certificate.component';
+import { PaymentCertificateComponent } from './payment-certificate/payment-certificate.component';
 
 /**
  * Reports Module
@@ -38,7 +39,8 @@ import { DebtCertificateComponent } from './debt-certificate/debt-certificate.co
     XBRLReportComponent,
     CertificatesComponent,
     InterestCertificateComponent,
-    DebtCertificateComponent
+    DebtCertificateComponent,
+    PaymentCertificateComponent
   ],
   providers: [DecimalPipe]
 })

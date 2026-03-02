@@ -20,7 +20,7 @@ import { ReportsResolver } from './common-resolvers/reports.resolver';
 import { RunReportResolver } from './common-resolvers/run-report.resolver';
 import { InterestCertificateComponent } from './interest-certificate/interest-certificate.component';
 import { DebtCertificateComponent } from './debt-certificate/debt-certificate.component';
-
+import { PaymentCertificateComponent } from './payment-certificate/payment-certificate.component';
 /** Reports Routes */
 const routes: Routes = [
   Route.withShell([
@@ -41,6 +41,11 @@ const routes: Routes = [
           path: 'debt',
           data: { title: 'debt certificate', breadcrumb: 'debt' },
           component: DebtCertificateComponent
+        },
+        {
+          path: 'payment',
+          data: { title: 'payment certificate', breadcrumb: 'payment' },
+          component: PaymentCertificateComponent
         }
       ]
     },
