@@ -28,4 +28,8 @@ export class ProjectsService {
     const params = new HttpParams().set('id', id);
     return this.http.get('/investmentproject/search', { params });
   }
+  getProyectByClientId(id: string | number): Observable<any> {
+    const params = new HttpParams().set('ownerId', id);
+    return this.http.get('/investmentproject/search', { params });
+  }
 }

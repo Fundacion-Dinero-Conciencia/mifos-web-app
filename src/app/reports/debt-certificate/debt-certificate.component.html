@@ -3,6 +3,19 @@
     <form [formGroup]="reportForm">
       <mat-card-content fxLayout="column">
         <mat-form-field>
+          <mat-label>{{ 'labels.inputs.Client name' | translate }}</mat-label>
+          <input matInput formControlName="client" [matAutocomplete]="clientsAutocomplete" />
+          <mat-error *ngIf="reportForm.controls.client.hasError('required')">
+            {{ 'labels.inputs.Client' | translate }} {{ 'labels.commons.is' | translate }}
+            <strong>{{ 'labels.commons.required' | translate }}</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-autocomplete autoActiveFirstOption #clientsAutocomplete="matAutocomplete" [displayWith]="displayClient">
+          <mat-option *ngFor="let client of clientsData" [value]="client">
+            {{ client.id }} - {{ client.displayName }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-form-field>
           <mat-label>{{ 'labels.inputs.Project' | translate }}</mat-label>
           <input matInput formControlName="project" [matAutocomplete]="projectsAutocomplete" />
           <mat-error *ngIf="reportForm.controls.project.hasError('required')">
@@ -11,7 +24,7 @@
           </mat-error>
         </mat-form-field>
         <mat-autocomplete autoActiveFirstOption #projectsAutocomplete="matAutocomplete" [displayWith]="displayProject">
-          <mat-option *ngFor="let project of projectsData" [value]="project">
+          <mat-option *ngFor="let project of projectsFilteredData" [value]="project">
             {{ project.id }} - {{ project.name }}
           </mat-option>
         </mat-autocomplete>
@@ -29,6 +42,9 @@
           </mat-option>
         </mat-autocomplete>
         <p *ngIf="noGroupsInCurrentProject" class="errorGroups">El Proyecto seleccionado no tiene grupos disponibles</p>
+        <p *ngIf="noProjectsForCurrentClient" class="errorGroups">
+          El cliente seleccionado no tiene proyectos disponibles
+        </p>
       </mat-card-content>
 
       <mat-card-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px">
