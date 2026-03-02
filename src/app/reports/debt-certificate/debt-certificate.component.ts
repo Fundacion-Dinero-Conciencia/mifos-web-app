@@ -55,8 +55,8 @@ export class DebtCertificateComponent implements OnInit, AfterViewInit {
         this.projectsData = [];
         this.loading = true;
 
-        this.clientsService.getFilteredClients('displayName', 'ASC', true, value).subscribe((data: any) => {
-          this.clientsData = data.pageItems;
+        this.clientsService.searchByText(value).subscribe((data: any) => {
+          this.clientsData = data.content;
           this.loading = false;
         });
 

@@ -19,7 +19,7 @@
           <mat-label>{{ 'labels.inputs.Project' | translate }}</mat-label>
           <input matInput formControlName="project" [matAutocomplete]="projectsAutocomplete" />
           <mat-error *ngIf="reportForm.controls.project.hasError('required')">
-            {{ 'labels.inputs.Client' | translate }} {{ 'labels.commons.is' | translate }}
+            {{ 'labels.inputs.Project' | translate }} {{ 'labels.commons.is' | translate }}
             <strong>{{ 'labels.commons.required' | translate }}</strong>
           </mat-error>
         </mat-form-field>
@@ -29,10 +29,9 @@
           </mat-option>
         </mat-autocomplete>
         <mat-form-field>
-          <mat-label>{{ 'labels.inputs.Group' | translate }}</mat-label>
+          <mat-label>{{ 'N° Pagaré' | translate }}</mat-label>
           <input matInput formControlName="group" [matAutocomplete]="groupAutocomplete" />
           <mat-error *ngIf="reportForm.controls.group.hasError('required')">
-            {{ 'labels.inputs.Client' | translate }} {{ 'labels.commons.is' | translate }}
             <strong>{{ 'labels.commons.required' | translate }}</strong>
           </mat-error>
         </mat-form-field>
