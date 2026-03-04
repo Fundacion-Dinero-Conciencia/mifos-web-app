@@ -18,6 +18,7 @@ import { CertificatesComponent } from './certificates/certificates.component';
 import { InterestCertificateComponent } from './interest-certificate/interest-certificate.component';
 import { DebtCertificateComponent } from './debt-certificate/debt-certificate.component';
 import { PaymentCertificateComponent } from './payment-certificate/payment-certificate.component';
+import { ProyectCertificateComponent } from './proyect-certificate/proyect-certificate.component';
 
 /**
  * Reports Module
@@ -40,7 +41,8 @@ import { PaymentCertificateComponent } from './payment-certificate/payment-certi
     CertificatesComponent,
     InterestCertificateComponent,
     DebtCertificateComponent,
-    PaymentCertificateComponent
+    PaymentCertificateComponent,
+    ProyectCertificateComponent
   ],
   providers: [DecimalPipe]
 })

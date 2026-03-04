@@ -36,6 +36,9 @@ export class ReportsService {
   getDebtCertificatePDF(groupId: number): Observable<Blob> {
     return this.http.get(`/certificates/debt/${groupId}`, { responseType: 'blob' });
   }
+  getProjectCertificatePDF(projectId: number): Observable<Blob> {
+    return this.http.get(`/certificates/project/${projectId}`, { responseType: 'blob' });
+  }
   getPaymentCertificatePDF(groupId: number): Observable<Blob> {
     return this.http.get(`/certificates/debt/${groupId}`, { responseType: 'blob' });
   }

@@ -28,6 +28,12 @@ export class CertificatesComponent implements OnInit {
       reportType: 'PDF',
       reportCategory: 'Clientes',
       path: 'payment'
+    },
+    {
+      reportName: 'Certificado de proyecto',
+      reportType: 'PDF',
+      reportCategory: 'Clientes',
+      path: 'project'
     }
   ];
   /** Report category filter. */
