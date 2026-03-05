@@ -169,8 +169,8 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
   }
 
   getPercentageAboutTheProject(amount: number): string {
-    if (this.projectData && this.projectData.amount) {
-      const percentage = (amount / this.projectData.amount) * 100;
+    if (this.projectData && this.projectData.amountToBeFinanced) {
+      const percentage = (amount / this.projectData.amountToBeFinanced) * 100;
       return percentage.toFixed(1);
     }
     return '-';
