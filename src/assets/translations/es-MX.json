@@ -3397,7 +3397,8 @@
       "Accepted": "Aceptado",
       "Received": "Recibido",
       "Assigned": "Asignado",
-      "Reserved": "Reservado"
+      "Reserved": "Reservado",
+      "Confirmed": "Confirmado"
     },
     "titles": {
       "Dashboard": "Tableros",
