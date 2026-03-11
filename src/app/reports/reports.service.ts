@@ -40,7 +40,7 @@ export class ReportsService {
     return this.http.get(`/certificates/project/${projectId}`, { responseType: 'blob' });
   }
   getPaymentCertificatePDF(groupId: number): Observable<Blob> {
-    return this.http.get(`/certificates/debt/${groupId}`, { responseType: 'blob' });
+    return this.http.get(`/certificates/payment/${groupId}`, { responseType: 'blob' });
   }
 
   /**
