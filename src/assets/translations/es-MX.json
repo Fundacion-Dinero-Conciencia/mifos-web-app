@@ -3185,7 +3185,7 @@
       "Products": "Productos",
       "Products Mix": "Mezcla de productos",
       "Profile": "Perfil",
-
+      "Promissory Groups": "Pagarés",
       "Provisioning Criteria": "Criterios de aprovisionamiento",
       "Provisioning Entries": "Entradas de aprovisionamiento",
       "Provisioning criteria definitions": "Complete todas las definiciones de criterios de aprovisionamiento.",
@@ -3397,7 +3397,8 @@
       "Accepted": "Aceptado",
       "Received": "Recibido",
       "Assigned": "Asignado",
-      "Reserved": "Reservado"
+      "Reserved": "Reservado",
+      "Confirmed": "Confirmado"
     },
     "titles": {
       "Dashboard": "Tableros",

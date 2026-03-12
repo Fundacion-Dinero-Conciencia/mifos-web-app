@@ -33,6 +33,15 @@ export class ReportsService {
     const httpParams = new HttpParams().set('clientId', clientId.toString()).set('year', year.toString());
     return this.http.get('/certificates/interests', { params: httpParams, responseType: 'blob' });
   }
+  getDebtCertificatePDF(groupId: number): Observable<Blob> {
+    return this.http.get(`/certificates/debt/${groupId}`, { responseType: 'blob' });
+  }
+  getProjectCertificatePDF(projectId: number): Observable<Blob> {
+    return this.http.get(`/certificates/project/${projectId}`, { responseType: 'blob' });
+  }
+  getPaymentCertificatePDF(groupId: number): Observable<Blob> {
+    return this.http.get(`/certificates/payment/${groupId}`, { responseType: 'blob' });
+  }
 
   /**
    * @returns {Observable<any>} Mix Taxonomy data

@@ -35,7 +35,7 @@ export class SearchToolComponent {
   resourceOptions: any[] = [
     {
       name: 'All',
-      value: 'clients,clientIdentifiers,groups,savings,shares,loans'
+      value: 'clients,clientIdentifiers,groups,savings,shares,loans,promissoryGroups'
     },
     {
       name: 'Clients',
@@ -56,6 +56,10 @@ export class SearchToolComponent {
     {
       name: 'Loans',
       value: 'loans'
+    },
+    {
+      name: 'Promissory Groups',
+      value: 'promissoryGroups'
     }
   ];
 
@@ -63,7 +67,7 @@ export class SearchToolComponent {
    * @param {Router} router Router
    */
   constructor(private router: Router) {
-    this.resource.patchValue('clients,clientIdentifiers,groups,savings,shares,loans');
+    this.resource.patchValue('clients,clientIdentifiers,groups,savings,shares,loans,promissoryGroups');
   }
 
   /**

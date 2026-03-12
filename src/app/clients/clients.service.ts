@@ -429,20 +429,22 @@ export class ClientsService {
 
   searchByText(
     text: string,
-    clientTypeId: number,
-    page: number,
-    pageSize: number,
+    clientTypeId?: number,
+    page: number = 0,
+    pageSize: number = 10,
     sortAttribute: string = '',
     sortDirection: string = ''
   ) {
     let request: any = {
       request: {
-        text,
-        clientTypeId
+        text
       },
       page,
       size: pageSize
     };
+    if (clientTypeId) {
+      request.request.clientTypeId = clientTypeId;
+    }
     if (sortAttribute !== '' && sortDirection !== '') {
       request = {
         ...request,

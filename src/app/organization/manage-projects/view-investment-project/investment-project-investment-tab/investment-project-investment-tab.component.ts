@@ -166,16 +166,16 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   codeToState(code: number): string {
     switch (code) {
       case 100:
-        return 'Aceptada';
+        return 'Aceptado';
       case 200:
-        return 'Pendiente';
+        return 'Confirmado';
       case 300:
-        return 'Rechazada';
+        return 'Rechazado';
       case 400:
         return 'Reservado';
 
       default:
-        'Pendiente';
+        'Invalido';
         break;
     }
   }
