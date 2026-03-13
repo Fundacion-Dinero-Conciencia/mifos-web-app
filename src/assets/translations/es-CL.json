@@ -1191,6 +1191,7 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Partner": "Conyuge",
       "Simulation": "Simulación",
       "Subcredit": "Subcredito",
       "Year": "Año",

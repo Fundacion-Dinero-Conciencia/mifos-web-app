@@ -1,13 +1,14 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Services */
-import { ClientsService } from '../../../clients.service';
-import { SettingsService } from 'app/settings/settings.service';
+import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Dates } from 'app/core/utils/dates';
-import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { SettingsService } from 'app/settings/settings.service';
+import { ClientsService } from '../../../clients.service';
+
 /**
  * Edit Family Member Component
  */
@@ -28,12 +29,13 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
   familyMemberDetails: any;
   /** Client Identifier Codes */
   clientIdentifierCodes: any;
+  FamilyAvailableForRelation: any[] = [];
 
   /**
    * @param {FormBuilder} formBuilder Form Builder
    * @param {Dates} dateUtils Date Utils
    * @param {Router} router Router
-   * @param {ActivatedRoute} route Route
+   * @param {ActivatedRoute} route Route`
    * @param {ClientsService} clientsService Clients Service
    * @param {SettingsService} settingsService Setting service
    */
@@ -64,8 +66,11 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
     }, 50);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.maxDate = this.settingsService.businessDate;
+    if (this.familyMemberDetails.isMaritalPartnership) {
+      await this.showPartnerSelector();
+    }
     this.createEditFamilyMemberForm(this.familyMemberDetails);
   }
 
@@ -73,7 +78,7 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
    * Creates Edit Family Member Form
    * @param {any} familyMember Family Member
    */
-  createEditFamilyMemberForm(familyMember: any) {
+  async createEditFamilyMemberForm(familyMember: any) {
     this.editFamilyMemberForm = this.formBuilder.group({
       firstName: [
         familyMember.firstName,
@@ -95,6 +100,10 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
       relationshipId: [
         familyMember.relationshipId,
         Validators.required
+      ],
+      relationMemberId: [
+        familyMember.relationId ? familyMember.relationId : undefined,
+        familyMember.relationId ? Validators.required : null
       ],
       genderId: [
         familyMember.genderId,
@@ -118,6 +127,18 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
         this.dateUtils.formatDate(familyMember.dateOfBirth, 'yyyy-MM-dd'),
         Validators.required
       ] */
+    });
+    this.editFamilyMemberForm.get('isMaritalPartnership')?.valueChanges.subscribe(async (value) => {
+      const relationMemberControl = this.editFamilyMemberForm.get('relationMemberId');
+      if (!!value) {
+        await this.showPartnerSelector();
+        relationMemberControl?.setValidators([Validators.required]);
+      } else {
+        relationMemberControl?.clearValidators();
+        relationMemberControl?.setValue(null);
+      }
+
+      relationMemberControl?.updateValueAndValidity();
     });
   }
 
@@ -172,5 +193,31 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
     const matchedCode = this.clientIdentifierCodes.find((code: any) => code.id === relationshipId);
 
     return matchedCode.name;
+  }
+
+  async showPartnerSelector() {
+    let selectedPartner: any | null = null;
+    if (this.familyMemberDetails.relationId) {
+      selectedPartner = {
+        id: this.familyMemberDetails.relationId,
+        firstName: this.familyMemberDetails.relationFirstName,
+        lastName: this.familyMemberDetails.relationLastName
+      };
+    }
+    const res = await this.clientsService
+      .getClientFamilyMembersAvailableForRelationship(this.familyMemberDetails.clientId)
+      .toPromise();
+
+    if (!res) {
+      this.FamilyAvailableForRelation = [];
+    } else if (!Array.isArray(res)) {
+      this.FamilyAvailableForRelation = [res];
+    } else {
+      this.FamilyAvailableForRelation = res;
+    }
+    if (selectedPartner) {
+      this.FamilyAvailableForRelation.push(selectedPartner);
+    }
+    console.log(this.FamilyAvailableForRelation);
   }
 }
