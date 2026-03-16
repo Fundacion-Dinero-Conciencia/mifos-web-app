@@ -142,7 +142,9 @@ export class EditPromissoryNoteComponent implements OnInit {
 
   getGroupsList() {
     this.organizationService.getPromissoryNoteGroups(this.projectData.id).subscribe((data: any[]) => {
-      const filteredData = data.filter((group) => group.id !== this.PromissoryNoteGroup.id);
+      const filteredData = data.filter(
+        (group) => group.id !== this.PromissoryNoteGroup.id && group.status?.value !== 'SIGNED'
+      );
       this.othersGroups = filteredData.map((group) => ({
         value: group.id,
         label: group.mnemonic
