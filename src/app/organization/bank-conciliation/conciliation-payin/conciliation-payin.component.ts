@@ -254,6 +254,7 @@ export class ConciliationPayinComponent implements OnInit {
   }
 
   findLoanByIndex(index: number): any {
+    console.log(index);
     const loanId = this.selectorsGroup[index];
     if (loanId === undefined) {
       return null;

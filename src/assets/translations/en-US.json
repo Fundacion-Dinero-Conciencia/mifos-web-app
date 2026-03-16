@@ -3275,6 +3275,7 @@
       "Products": "Products",
       "Products Mix": "Products Mix",
       "Profile": "Profile",
+      "Promissory Groups": "Promissories",
       "Provisioning Criteria": "Provisioning Criteria",
       "Provisioning Entries": "Provisioning Entries",
       "Provisioning criteria definitions": "Please fill all provisioning criteria definitions.",
@@ -3499,7 +3500,8 @@
       "Accepted": "Accepted",
       "Received": "Received",
       "Assigned": "Assigned",
-      "Reserved": "Reserved"
+      "Reserved": "Reserved",
+      "Confirmed": "Confirmed"
     },
     "titles": {
       "Dashboard": "Dashboard",

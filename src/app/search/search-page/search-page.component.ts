@@ -128,6 +128,16 @@ export class SearchPageComponent {
           'general'
         ]);
         break;
+      case 'PROMISSORY':
+        this.router.navigate([
+          'organization',
+          'projects',
+          entity.parentId,
+          'grupos-pagare',
+          'edit',
+          entity.entityId
+        ]);
+        break;
     }
   }
 }

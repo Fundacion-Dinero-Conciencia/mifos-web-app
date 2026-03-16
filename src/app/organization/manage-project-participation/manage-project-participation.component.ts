@@ -101,7 +101,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
 
   statusId: Record<number, string> = {
     100: 'Accepted',
-    200: 'Pending',
+    200: 'Confirmed',
     300: 'Canceled',
     400: 'Reserved',
     500: 'Assigned'
@@ -234,9 +234,9 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
 
   statusCode(status: number) {
-    if (status === 200) {
-      return 'status-pending';
-    } else if (status === 100) {
+    if (status === 100) {
+      return 'status-active';
+    } else if (status === 200) {
       return 'status-active';
     } else if (status === 300) {
       return 'status-matured';

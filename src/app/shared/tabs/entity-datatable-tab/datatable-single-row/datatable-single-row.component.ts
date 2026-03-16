@@ -218,4 +218,22 @@ export class DatatableSingleRowComponent implements OnInit {
 
     return codeValue?.value;
   }
+
+  get orderedColumnHeaders() {
+    const headers = (this.dataObject?.columnHeaders ?? []).map((h: any, index: number) => ({
+      ...h,
+      __rowIndex: index // <- índice real dentro de dataObject.data[0].row
+    }));
+
+    const normal = headers.filter((h: any) => h.columnName !== 'created_at' && h.columnName !== 'updated_at');
+
+    const created = headers.find((h: any) => h.columnName === 'created_at');
+    const updated = headers.find((h: any) => h.columnName === 'updated_at');
+
+    return [
+      ...normal,
+      ...(created ? [created] : []),
+      ...(updated ? [updated] : [])
+    ];
+  }
 }

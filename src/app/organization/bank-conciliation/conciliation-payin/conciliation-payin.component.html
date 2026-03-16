@@ -269,12 +269,12 @@
               <button
                 *ngIf="detailedRow && isDebtorDetail"
                 [routerLink]="
-                  !!row.loanId
+                  !!row?.loanId
                     ? [
                         '/clients',
                         detailedRow.clientId,
                         'loans-accounts',
-                        row.loanId,
+                        row?.loanId,
                         'transactions',
                         row.transactionId
                       ]
@@ -359,7 +359,7 @@
                 <option [value]="undefined" disabled selected>Selecciona</option>
                 <option
                   *ngFor="let loan of getNonSelectedLoansOptionsExceptLoanId(selectorsGroup[i])"
-                  [value]="loan.loanId"
+                  [value]="loan?.loanId"
                 >
                   {{ loan.creditType }}-{{ loan.accountNo }}
                 </option>
@@ -369,8 +369,8 @@
 
           <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef>Fecha de cuota</th>
-            <td mat-cell style="text-align: center" *matCellDef="let row; let i = index">
-              {{ findLoanByIndex(index) ? (findLoanByIndex(index).sinceOverdueDate | dateFormat) : '-' }}
+            <td mat-cell style="text-align: center" *matCellDef="let row; let i = index" style="padding: 0 1rem">
+              {{ findLoanByIndex(i) ? (findLoanByIndex(i).sinceOverdueDate | dateFormat) : '-' }}
             </td>
           </ng-container>
 

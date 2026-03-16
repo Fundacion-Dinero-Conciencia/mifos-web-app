@@ -19,7 +19,9 @@ import { MixTaxonomyResolver } from './common-resolvers/mixtaxonomy.resolver';
 import { ReportsResolver } from './common-resolvers/reports.resolver';
 import { RunReportResolver } from './common-resolvers/run-report.resolver';
 import { InterestCertificateComponent } from './interest-certificate/interest-certificate.component';
-
+import { DebtCertificateComponent } from './debt-certificate/debt-certificate.component';
+import { PaymentCertificateComponent } from './payment-certificate/payment-certificate.component';
+import { ProyectCertificateComponent } from './proyect-certificate/proyect-certificate.component';
 /** Reports Routes */
 const routes: Routes = [
   Route.withShell([
@@ -33,8 +35,23 @@ const routes: Routes = [
         },
         {
           path: 'interest',
-          data: { title: 'interest certificate', breadcrumb: 'interest' },
+          data: { title: 'interest certificate', breadcrumb: 'Interest' },
           component: InterestCertificateComponent
+        },
+        {
+          path: 'debt',
+          data: { title: 'debt certificate', breadcrumb: 'Debt' },
+          component: DebtCertificateComponent
+        },
+        {
+          path: 'payment',
+          data: { title: 'payment certificate', breadcrumb: 'Payment' },
+          component: PaymentCertificateComponent
+        },
+        {
+          path: 'project',
+          data: { title: 'project certificate', breadcrumb: 'Project' },
+          component: ProyectCertificateComponent
         }
       ]
     },
