@@ -45,6 +45,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   amountToInvest: number = 0;
   filterStatus: string = '';
   filterText: string = '';
+  filterPaymentType: string = '';
   private valueText$ = new Subject<string>();
   reservationSelected: any;
   showDialog = false;
@@ -75,7 +76,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         size: this.pageSize,
         search: this.filterText,
         sort: this.sortColumn,
-        status: this.filterStatus
+        status: this.filterStatus,
+        paymentType: this.filterPaymentType
       })
       .subscribe((data: any) => {
         this.projectParticipationsData = data.content;
@@ -113,6 +115,10 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     { id: 300 },
     { id: 400 },
     { id: 500 }];
+
+  paymentTypes = [
+    { name: 'MANUAL' },
+    { name: 'Khipu' }];
   constructor(
     private route: ActivatedRoute,
     private organizationservice: OrganizationService,
@@ -199,6 +205,11 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
   applySelectFilter(filterValue: string) {
     this.filterStatus = filterValue;
+    this.loadParticipations();
+  }
+
+  applyPaymentFilter(filterValue: string) {
+    this.filterPaymentType = filterValue;
     this.loadParticipations();
   }
 

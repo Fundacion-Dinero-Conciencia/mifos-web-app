@@ -15,6 +15,15 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field fxFlex="15%">
+      <mat-label>Tipo de pago</mat-label>
+      <mat-select (selectionChange)="applyPaymentFilter($event.value)">
+        <mat-option *ngFor="let paymentType of paymentTypes" [value]="paymentType.name">
+          {{ paymentType.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <div fxLayoutAlign="end center" fxFlex="42%">
       <button
         mat-raised-button
