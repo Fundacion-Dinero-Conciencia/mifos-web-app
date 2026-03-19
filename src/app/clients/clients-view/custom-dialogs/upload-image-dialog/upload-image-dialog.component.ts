@@ -1,8 +1,6 @@
 /** Angular Imports */
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 /**
  * Upload image dialog component.
@@ -38,7 +36,7 @@ export class UploadImageDialogComponent implements OnInit {
 
     if (!files || files.length === 0) return;
 
-    if (this.data.multiple) {
+    if (this.data?.multiple) {
       this.image = Array.from(files);
     } else {
       this.image = files[0];
