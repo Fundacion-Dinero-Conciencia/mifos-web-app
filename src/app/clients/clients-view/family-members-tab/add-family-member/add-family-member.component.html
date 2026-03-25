@@ -62,10 +62,15 @@
 
       <mat-form-field fxFlex="calc(50% - 25px)">
         <mat-label>{{ 'labels.inputs.Document Key' | translate }}</mat-label>
-        <input formControlName="documentNumber" required matInput type="number" />
+        <input formControlName="documentNumber" required matInput type="text" />
         <mat-error *ngIf="addFamilyMemberForm.controls.documentNumber.hasError('required')">
           {{ 'labels.inputs.Document Key' | translate }} {{ 'labels.commons.is' | translate }}
           <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+
+        <mat-error *ngIf="addFamilyMemberForm.controls.documentNumber.hasError('documentInvalid')">
+          {{ 'labels.inputs.Document Key' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.invalid' | translate }}</strong>
         </mat-error>
       </mat-form-field>
 

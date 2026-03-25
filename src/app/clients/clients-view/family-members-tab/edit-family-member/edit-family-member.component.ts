@@ -1,6 +1,6 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Services */
@@ -8,6 +8,7 @@ import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
 import { ClientsService } from '../../../clients.service';
+import { DocumentValidatorService } from 'app/core/utils/documentValidator';
 
 /**
  * Edit Family Member Component
@@ -45,7 +46,8 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private clientsService: ClientsService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private docsValidator: DocumentValidatorService
   ) {
     this.route.data.subscribe((data: { clientTemplate: any; editFamilyMember: any; clientIdentifierCodes: any }) => {
       this.addFamilyMemberTemplate = data.clientTemplate.familyMemberOptions;
@@ -72,6 +74,13 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
       await this.showPartnerSelector();
     }
     this.createEditFamilyMemberForm(this.familyMemberDetails);
+    this.editFamilyMemberForm.get('documentTypeId')?.valueChanges.subscribe(() => {
+      this.editFamilyMemberForm.get('documentNumber')?.setValidators([
+        Validators.required,
+        this.rutValidator
+      ]);
+      this.editFamilyMemberForm.get('documentNumber')?.updateValueAndValidity();
+    });
   }
 
   /**
@@ -117,7 +126,10 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
       ],
       documentNumber: [
         familyMember.documentNumber,
-        Validators.required
+        [
+          Validators.required,
+          this.rutValidator
+        ]
       ],
       address: [
         familyMember.address,
@@ -185,6 +197,11 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
     control?.setValue(address);
     control?.markAsDirty();
     control?.markAsTouched();
+    this.editFamilyMemberForm.get('documentNumber')?.setValidators([
+      Validators.required,
+      this.rutValidator
+    ]);
+    this.editFamilyMemberForm.get('documentNumber')?.updateValueAndValidity({ emitEvent: false });
   }
 
   getRelationValue() {
@@ -220,4 +237,17 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
     }
     console.log(this.FamilyAvailableForRelation);
   }
+
+  private rutValidator = (control: AbstractControl) => {
+    const value = control.value;
+    const documentTypeId = control.parent?.get('documentTypeId')?.value;
+
+    if (!value) return null;
+
+    if (documentTypeId === 1) {
+      return this.docsValidator.validate(value) ? null : { documentInvalid: true };
+    }
+
+    return null;
+  };
 }

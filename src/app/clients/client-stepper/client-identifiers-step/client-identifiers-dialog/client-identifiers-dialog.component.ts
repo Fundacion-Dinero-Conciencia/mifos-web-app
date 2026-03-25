@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Dates } from 'app/core/utils/dates';
+import { DocumentValidatorService } from 'app/core/utils/documentValidator';
 import { SettingsService } from 'app/settings/settings.service';
 
 @Component({
@@ -25,7 +26,8 @@ export class ClientIdentifiersDialogComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private dateUtils: Dates,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private docValidator: DocumentValidatorService
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +53,20 @@ export class ClientIdentifiersDialogComponent implements OnInit {
       ],
       documentKey: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          (control: AbstractControl) => {
+            console.log('validator ejecutado:', control.value);
+
+            if (!control.value) return null;
+
+            const isValid = this.docValidator.validate(control.value);
+
+            return isValid ? null : { documentInvalid: true };
+          }
+
+        ]
+
       ],
       status: [
         '',

@@ -1,6 +1,6 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Services */
@@ -8,7 +8,7 @@ import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
 import { ClientsService } from '../../../clients.service';
-
+import { DocumentValidatorService } from 'app/core/utils/documentValidator';
 /**
  * Add Family Member Component
  */
@@ -50,7 +50,8 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private clientsService: ClientsService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private docsValidator: DocumentValidatorService
   ) {
     this.route.data.subscribe((data: { clientTemplate: any; clientIdentifierCodes: any }) => {
       this.addFamilyMemberTemplate = data.clientTemplate.familyMemberOptions;
@@ -74,6 +75,10 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
       }
 
       relationMemberControl?.updateValueAndValidity();
+    });
+
+    this.addFamilyMemberForm.get('documentTypeId')?.valueChanges.subscribe(() => {
+      this.addFamilyMemberForm.get('documentNumber')?.updateValueAndValidity();
     });
   }
 
@@ -126,7 +131,10 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
       ],
       documentNumber: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          this.rutValidator
+        ]
       ],
       expirationDate: ['']
       /* dateOfBirth: [
@@ -223,6 +231,11 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
     const control = this.addFamilyMemberForm.get('isMaritalPartnership');
     control?.clearValidators();
     control?.updateValueAndValidity();
+    this.addFamilyMemberForm.get('documentNumber')?.setValidators([
+      Validators.required,
+      this.rutValidator
+    ]);
+    this.addFamilyMemberForm.get('documentNumber')?.updateValueAndValidity({ emitEvent: false });
   }
 
   ngAfterViewInit() {
@@ -256,5 +269,22 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
     control?.setValue(address);
     control?.markAsDirty();
     control?.markAsTouched();
+    this.addFamilyMemberForm.get('documentNumber')?.setValidators([
+      Validators.required,
+      this.rutValidator
+    ]);
   }
+
+  private rutValidator = (control: AbstractControl) => {
+    const value = control.value;
+    const documentTypeId = control.parent?.get('documentTypeId')?.value;
+
+    if (!value) return null;
+
+    if (documentTypeId === 1) {
+      return this.docsValidator.validate(value) ? null : { documentInvalid: true };
+    }
+
+    return null;
+  };
 }

@@ -55,6 +55,10 @@ export class FormDialogComponent implements OnInit, AfterViewInit {
     if (!this.pristine) {
       this.form.markAsDirty();
     }
+
+    this.form.get('documentTypeId')?.valueChanges.subscribe(() => {
+      this.form.get('documentKey')?.updateValueAndValidity();
+    });
   }
 
   ngAfterViewInit(): void {
