@@ -187,7 +187,7 @@
           <ng-container matColumnDef="RUT">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>RUT</th>
             <td mat-cell *matCellDef="let signator">
-              {{ signator.documentType === 'RUT' ? signator.documentNumber : '-' }}
+              {{ signator.documentNumber }}
             </td>
           </ng-container>
           <ng-container matColumnDef="name">
@@ -222,7 +222,7 @@
           <ng-container matColumnDef="RUT">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>RUT</th>
             <td mat-cell *matCellDef="let signator">
-              {{ signator.documentType === 'RUT' ? signator.documentNumber : '-' }}
+              {{ signator.documentNumber }}
             </td>
           </ng-container>
           <ng-container matColumnDef="name">
