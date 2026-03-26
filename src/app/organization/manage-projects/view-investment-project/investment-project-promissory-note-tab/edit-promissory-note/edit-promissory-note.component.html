@@ -1,4 +1,18 @@
-<section class="tab-container mat-typography mt-10 createGroup">
+<section class="tab-container mat-typography createGroup">
+  <section class="matlist">
+    <p>
+      Monto total :
+      <b class="m-l-5"> {{ ' ' + getMontoTotal(PromissoryNoteGroup.investmentList) | currency: currency }} </b>
+    </p>
+    <p>
+      Porcentaje en el proyecto :
+      <b class="m-l-5"> {{ ' ' + getPercentageAboutTheProject(getMontoTotal(PromissoryNoteGroup.investmentList)) }}%</b>
+    </p>
+    <p>
+      {{ 'labels.inputs.Status' | translate }} :
+      <b class="m-l-5"> {{ ' ' + getStateLabel(PromissoryNoteGroup.status?.value) }}</b>
+    </p>
+  </section>
   <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper [linear]="true">
     <ng-template matStepperIcon="number">
       <fa-icon icon="pencil-alt" size="sm"></fa-icon>

@@ -12,6 +12,7 @@ import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/conf
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
 import { SystemService } from 'app/system/system.service';
 import { debounceTime, finalize } from 'rxjs/operators';
+import { getInvestmentGroupLabel } from 'app/shared/helpers/states';
 
 @Component({
   selector: 'mifosx-edit-promissory-note',
@@ -434,5 +435,25 @@ export class EditPromissoryNoteComponent implements OnInit {
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
     });
+  }
+
+  getMontoTotal(investments: any[]): number {
+    let total = 0;
+    investments.forEach((invest) => {
+      total += invest.amount;
+    });
+    return total;
+  }
+
+  getPercentageAboutTheProject(amount: number): string {
+    if (this.projectData && this.projectData.amountToBeFinanced) {
+      const percentage = (amount / this.projectData.amountToBeFinanced) * 100;
+      return percentage.toFixed(1);
+    }
+    return '-';
+  }
+
+  getStateLabel(state: string) {
+    return getInvestmentGroupLabel(state as any);
   }
 }

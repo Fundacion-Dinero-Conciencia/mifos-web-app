@@ -1,8 +1,8 @@
 /** Angular Imports */
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
-import { style, animate, transition, trigger } from '@angular/animations';
-import { Router } from '@angular/router';
 import { UntypedFormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 
 /**
  * Search Tool Component
@@ -30,7 +30,6 @@ export class SearchToolComponent {
   resource = new UntypedFormControl('');
 
   /** Sets the initial visibility of search input as hidden. Visible if true. */
-  searchVisible = false;
   /** Resource Options */
   resourceOptions: any[] = [
     {
@@ -40,6 +39,10 @@ export class SearchToolComponent {
     {
       name: 'Clients',
       value: 'clients,clientIdentifiers'
+    },
+    {
+      name: 'Promissory Groups',
+      value: 'promissoryGroups'
     },
     {
       name: 'Groups',
@@ -56,10 +59,6 @@ export class SearchToolComponent {
     {
       name: 'Loans',
       value: 'loans'
-    },
-    {
-      name: 'Promissory Groups',
-      value: 'promissoryGroups'
     }
   ];
 
@@ -73,9 +72,6 @@ export class SearchToolComponent {
   /**
    * Toggles the visibility of search input with fadeInOut animation.
    */
-  toggleSearchVisibility() {
-    this.searchVisible = !this.searchVisible;
-  }
 
   /**
    * Searches server for query and resource.
