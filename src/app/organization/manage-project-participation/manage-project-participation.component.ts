@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,13 +9,10 @@ import { AccountTransfersService } from 'app/account-transfers/account-transfers
 import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { SystemService } from 'app/system/system.service';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
@@ -67,6 +66,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     this.dataSourceInvestSelection = new MatTableDataSource([]);
     this.reservationSelected = null;
     this.selectedInvests = [];
+    this.selectedInvests = [];
+    this.amountToInvest = 0;
   }
 
   loadParticipations() {
