@@ -59,6 +59,7 @@ import { ClientDatatableStepComponent } from './client-stepper/client-datatable-
 import { ClientIdentifiersStepComponent } from './client-stepper/client-identifiers-step/client-identifiers-step.component';
 import { ClientIdentifiersDialogComponent } from './client-stepper/client-identifiers-step/client-identifiers-dialog/client-identifiers-dialog.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Clients Module
@@ -70,7 +71,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     SharedModule,
     ClientsRoutingModule,
     PipesModule,
-    DirectivesModule
+    DirectivesModule,
+    ReactiveFormsModule
   ],
   declarations: [
     ClientsComponent,

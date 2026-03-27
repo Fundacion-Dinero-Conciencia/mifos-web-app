@@ -1205,6 +1205,7 @@
       "Principal Amount": "Principal Amount"
     },
     "inputs": {
+      "Partner": "Partner",
       "Simulation": "Simulation",
       "Subcredit": "Subcredit",
       "Year": "year",

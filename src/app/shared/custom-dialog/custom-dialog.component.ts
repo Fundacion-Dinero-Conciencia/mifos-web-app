@@ -16,6 +16,7 @@ export class CustomDialogComponent {
   @Input() cancelText = 'Cancel';
   @Input() disableConfirm = false;
   @Input() hideCancelButton = false;
+  @Input() backDropClose = false;
   @Output() confirm = new EventEmitter<void>();
   @Output() dismiss = new EventEmitter<void>();
   @Output() closed = new EventEmitter<void>();
@@ -26,7 +27,9 @@ export class CustomDialogComponent {
   }
 
   onBackdropClick() {
-    this._close('backdrop');
+    if (this.backDropClose) {
+      this._close('backdrop');
+    }
   }
 
   onCancel() {

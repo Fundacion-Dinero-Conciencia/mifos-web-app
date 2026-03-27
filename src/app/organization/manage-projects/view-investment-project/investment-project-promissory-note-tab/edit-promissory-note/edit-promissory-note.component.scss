@@ -7,6 +7,14 @@
   gap: 1rem;
 }
 
+.matlist {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  font-size: 1.1rem;
+  transform: translateY(-20%);
+}
+
 button.outlinedButton {
   background-color: transparent;
   color: #1074b9;

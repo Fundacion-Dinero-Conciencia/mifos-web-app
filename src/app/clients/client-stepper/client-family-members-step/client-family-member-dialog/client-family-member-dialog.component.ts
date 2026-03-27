@@ -1,10 +1,11 @@
 /** Angular Imports */
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 /** Custom Services */
 import { Dates } from 'app/core/utils/dates';
+import { DocumentValidatorService } from 'app/core/utils/documentValidator';
 import { SettingsService } from 'app/settings/settings.service';
 
 /**
@@ -36,7 +37,8 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private dateUtils: Dates,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private docsValidator: DocumentValidatorService
   ) {}
 
   ngOnInit() {
@@ -62,6 +64,10 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
         dateOfBirth: this.data.member.dateOfBirth && new Date(this.data.member.dateOfBirth)
       });
     }
+
+    this.familyMemberForm.get('documentTypeId')?.valueChanges.subscribe(() => {
+      this.familyMemberForm.get('documentNumber')?.updateValueAndValidity();
+    });
   }
 
   /**
@@ -111,7 +117,23 @@ export class ClientFamilyMemberDialogComponent implements OnInit {
       ],
       documentNumber: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          (control: AbstractControl) => {
+            const value = control.value;
+            const documentTypeId = control.parent?.get('documentTypeId')?.value;
+            if (!value) return { documentInvalid: true };
+
+            if (documentTypeId === 1) {
+              const isValid = this.docsValidator.validate(value);
+              return isValid ? null : { documentInvalid: true };
+            }
+
+            return null;
+          }
+
+        ]
+
       ],
       documentTypeId: [
         '',

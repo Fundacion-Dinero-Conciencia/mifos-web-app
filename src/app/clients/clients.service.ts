@@ -225,6 +225,9 @@ export class ClientsService {
   getClientFamilyMembers(clientId: string) {
     return this.http.get(`/clients/${clientId}/familymembers`);
   }
+  getClientFamilyMembersAvailableForRelationship(clientId: string) {
+    return this.http.get(`/clients/${clientId}/familymembers/available-relation`);
+  }
 
   getClientFamilyMember(clientId: string, familyMemberId: string) {
     return this.http.get(`/clients/${clientId}/familymembers/${familyMemberId}`);

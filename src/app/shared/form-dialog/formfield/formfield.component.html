@@ -36,6 +36,11 @@
         {{ formfield.label }} {{ 'labels.commons.is' | translate }}
         <strong>{{ 'labels.commons.required' | translate }}</strong>
       </mat-error>
+
+      <mat-error *ngIf="form.controls[formfield.controlName].hasError('documentInvalid')">
+        {{ formfield.label }} {{ 'labels.commons.is' | translate }}
+        <strong>{{ 'labels.commons.invalid' | translate }}</strong>
+      </mat-error>
     </mat-form-field>
   </div>
   <div *ngIf="formfield.controlType === 'maps'" fxFlexFill>

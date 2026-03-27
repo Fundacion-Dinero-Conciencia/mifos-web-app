@@ -1,14 +1,14 @@
 /** Angular Imports */
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 /** Custom Services */
+import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
 import { ClientsService } from '../../../clients.service';
-import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-
+import { DocumentValidatorService } from 'app/core/utils/documentValidator';
 /**
  * Add Family Member Component
  */
@@ -35,6 +35,7 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
   /** Relation Code Value */
   relationValue: any;
 
+  FamilyAvailableForRelation: any[] = [];
   /**
    * @param {FormBuilder} formBuilder FormBuilder
    * @param {Dates} dateUtils Date Utils
@@ -49,7 +50,8 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private clientsService: ClientsService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private docsValidator: DocumentValidatorService
   ) {
     this.route.data.subscribe((data: { clientTemplate: any; clientIdentifierCodes: any }) => {
       this.addFamilyMemberTemplate = data.clientTemplate.familyMemberOptions;
@@ -61,6 +63,23 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.maxDate = this.settingsService.businessDate;
     this.createAddFamilyMemberForm();
+
+    this.addFamilyMemberForm.get('isMaritalPartnership')?.valueChanges.subscribe((value) => {
+      const relationMemberControl = this.addFamilyMemberForm.get('relationMemberId');
+      if (value && this.relationValue === 'Aval') {
+        this.showPartnerSelector();
+        relationMemberControl?.setValidators([Validators.required]);
+      } else {
+        relationMemberControl?.clearValidators();
+        relationMemberControl?.setValue(null);
+      }
+
+      relationMemberControl?.updateValueAndValidity();
+    });
+
+    this.addFamilyMemberForm.get('documentTypeId')?.valueChanges.subscribe(() => {
+      this.addFamilyMemberForm.get('documentNumber')?.updateValueAndValidity();
+    });
   }
 
   /**
@@ -91,6 +110,7 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
         Validators.required
       ], */
       isMaritalPartnership: [''],
+      relationMemberId: [''],
       relationshipId: [
         '',
         Validators.required
@@ -111,7 +131,10 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
       ],
       documentNumber: [
         '',
-        Validators.required
+        [
+          Validators.required,
+          this.rutValidator
+        ]
       ],
       expirationDate: ['']
       /* dateOfBirth: [
@@ -125,6 +148,18 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
    * Submits the form and adds the family member
    */
   submit() {
+    if (this.addFamilyMemberForm.invalid) {
+      Object.keys(this.addFamilyMemberForm.controls).forEach((key) => {
+        const controlErrors = this.addFamilyMemberForm.get(key)?.errors;
+
+        if (controlErrors != null) {
+          console.log('Control:', key);
+          console.log('Errores:', controlErrors);
+        }
+      });
+
+      return;
+    }
     if (this.addFamilyMemberForm.invalid) {
       return;
     }
@@ -147,6 +182,18 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
     };
     this.clientsService.addFamilyMember(this.clientId, data).subscribe((res) => {
       this.router.navigate(['../'], { relativeTo: this.route });
+    });
+  }
+
+  showPartnerSelector() {
+    this.clientsService.getClientFamilyMembersAvailableForRelationship(this.clientId).subscribe((res: any) => {
+      if (!res) {
+        this.FamilyAvailableForRelation = [];
+      } else if (!Array.isArray(res)) {
+        this.FamilyAvailableForRelation = [res];
+      } else {
+        this.FamilyAvailableForRelation = res;
+      }
     });
   }
 
@@ -180,13 +227,15 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
         this.addFamilyMemberForm.get(field)?.setValidators([Validators.required]);
         this.addFamilyMemberForm.get(field)?.updateValueAndValidity({ emitEvent: false });
       });
-    } else {
-      Object.keys(this.addFamilyMemberForm.controls).forEach((key) => {
-        this.addFamilyMemberForm.get(key)?.setValidators([Validators.required]);
-        this.addFamilyMemberForm.get(key)?.updateValueAndValidity({ emitEvent: false });
-      });
     }
-    this.addFamilyMemberForm.get('isMaritalPartnership')?.clearValidators();
+    const control = this.addFamilyMemberForm.get('isMaritalPartnership');
+    control?.clearValidators();
+    control?.updateValueAndValidity();
+    this.addFamilyMemberForm.get('documentNumber')?.setValidators([
+      Validators.required,
+      this.rutValidator
+    ]);
+    this.addFamilyMemberForm.get('documentNumber')?.updateValueAndValidity({ emitEvent: false });
   }
 
   ngAfterViewInit() {
@@ -220,5 +269,22 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
     control?.setValue(address);
     control?.markAsDirty();
     control?.markAsTouched();
+    this.addFamilyMemberForm.get('documentNumber')?.setValidators([
+      Validators.required,
+      this.rutValidator
+    ]);
   }
+
+  private rutValidator = (control: AbstractControl) => {
+    const value = control.value;
+    const documentTypeId = control.parent?.get('documentTypeId')?.value;
+
+    if (!value) return null;
+
+    if (documentTypeId === 1) {
+      return this.docsValidator.validate(value) ? null : { documentInvalid: true };
+    }
+
+    return null;
+  };
 }
