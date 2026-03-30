@@ -23,10 +23,11 @@ export class ClientsComponent implements OnInit {
   displayedColumns = [
     'displayName',
     'mnemonic',
+    'rut',
     'accountNumber',
-    'externalId',
-    'status',
-    'officeName'
+    //'externalId',
+    'status'
+    //'officeName'
   ];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
