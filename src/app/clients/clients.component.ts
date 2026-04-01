@@ -22,8 +22,8 @@ export class ClientsComponent implements OnInit {
 
   displayedColumns = [
     'displayName',
-    'mnemonic',
     'rut',
+    'mnemonic',
     'accountNumber',
     //'externalId',
     'status'
