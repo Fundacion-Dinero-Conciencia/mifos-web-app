@@ -8,6 +8,7 @@ permissions:
   id-token: write
   attestations: write
   contents: read
+  packages: read 
 jobs:
   deploy-aws:
     uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/deploy-aws.yml@v11
