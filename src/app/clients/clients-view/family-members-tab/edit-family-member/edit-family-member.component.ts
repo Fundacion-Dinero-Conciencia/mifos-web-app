@@ -212,8 +212,13 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
     const matchedCode = this.addFamilyMemberTemplate.relationshipIdOptions.find(
       (code: any) => code.id === relationshipId
     );
-    this.relationValue = matchedCode?.name;
 
+    this.relationValue = matchedCode?.name;
+    if (this.relationValue !== 'Aval') {
+      this.editFamilyMemberForm.get('relationMemberId')?.setValue(null);
+      this.editFamilyMemberForm.get('relationMemberId')?.setValidators(null);
+      this.editFamilyMemberForm.get('isMaritalPartnership')?.setValue(false);
+    }
     return matchedCode.name;
   }
 
