@@ -6,8 +6,8 @@ on:
   workflow_dispatch: ## Esto habilita el botón "Run workflow" en la interfaz de GitHub.
 
 jobs:
-  deploy:
-    uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/build_scan_push_img.yml@v9
+  deploy-aws:
+    uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/deploy-aws.yml@v11
     with:
       environment: pro
     secrets:
