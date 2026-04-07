@@ -4,7 +4,10 @@ on:
   push:
     branches: [ "main" ]
   workflow_dispatch: ##
-
+permissions:
+  id-token: write
+  attestations: write
+  contents: read
 jobs:
   deploy-aws:
     uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/deploy-aws.yml@v11
