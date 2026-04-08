@@ -9,6 +9,7 @@ permissions:
   attestations: write
   contents: read
   packages: read 
+  security-events: write
 jobs:
   deploy-aws:
     uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/deploy-aws.yml@v11
