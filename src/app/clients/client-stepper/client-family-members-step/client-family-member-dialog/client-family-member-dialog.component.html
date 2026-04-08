@@ -112,15 +112,6 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-checkbox
-      *ngIf="relationValue === 'Aval' || relationValue === 'Representante legal'"
-      formControlName="isMaritalPartnership"
-      labelPosition="before"
-      fxFlex="calc(50% - 25px)"
-      id="isMaritalPartnership"
-      >{{ 'labels.inputs.Is Marital Partnership' | translate }}?
-    </mat-checkbox>
-
     <mat-form-field
       *ngIf="relationValue === 'Aval' || relationValue === 'Representante legal'"
       fxFlex
