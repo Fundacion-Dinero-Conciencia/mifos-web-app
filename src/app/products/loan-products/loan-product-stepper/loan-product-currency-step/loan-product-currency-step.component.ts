@@ -24,7 +24,7 @@ export class LoanProductCurrencyStepComponent implements OnInit {
       currencyCode: this.loanProductsTemplate.currency.code || this.currencyData[0].code,
       digitsAfterDecimal: this.loanProductsTemplate.currency.decimalPlaces
         ? this.loanProductsTemplate.currency.decimalPlaces
-        : 2,
+        : 0,
       inMultiplesOf: this.loanProductsTemplate.currency.inMultiplesOf,
       installmentAmountInMultiplesOf: this.loanProductsTemplate.installmentAmountInMultiplesOf
     });
