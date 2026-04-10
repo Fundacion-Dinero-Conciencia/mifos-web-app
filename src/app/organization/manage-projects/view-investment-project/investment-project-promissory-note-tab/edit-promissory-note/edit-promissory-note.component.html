@@ -13,7 +13,13 @@
       <b class="m-l-5"> {{ ' ' + getStateLabel(PromissoryNoteGroup.status?.value) }}</b>
     </p>
   </section>
-  <mat-horizontal-stepper class="mat-elevation-z8" labelPosition="bottom" #clientStepper [linear]="true">
+  <mat-horizontal-stepper
+    class="mat-elevation-z8"
+    labelPosition="bottom"
+    #clientStepper
+    [linear]="true"
+    *ngIf="!!clientForm"
+  >
     <ng-template matStepperIcon="number">
       <fa-icon icon="pencil-alt" size="sm"></fa-icon>
     </ng-template>

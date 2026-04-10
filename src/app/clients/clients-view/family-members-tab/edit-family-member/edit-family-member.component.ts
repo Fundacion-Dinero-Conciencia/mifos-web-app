@@ -30,6 +30,7 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
   familyMemberDetails: any;
   /** Client Identifier Codes */
   clientIdentifierCodes: any;
+  relationValue: any;
   FamilyAvailableForRelation: any[] = [];
 
   /**
@@ -149,9 +150,9 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
         relationMemberControl?.clearValidators();
         relationMemberControl?.setValue(null);
       }
-
       relationMemberControl?.updateValueAndValidity();
     });
+    this.getRelationValue();
   }
 
   /**
@@ -206,9 +207,18 @@ export class EditFamilyMemberComponent implements OnInit, AfterViewInit {
 
   getRelationValue() {
     const relationshipId = this.editFamilyMemberForm.get('relationshipId')?.value;
+    console.log('relationshipId', relationshipId);
+    console.log('clientIdentifierCodes', this.addFamilyMemberTemplate.relationshipIdOptions);
+    const matchedCode = this.addFamilyMemberTemplate.relationshipIdOptions.find(
+      (code: any) => code.id === relationshipId
+    );
 
-    const matchedCode = this.clientIdentifierCodes.find((code: any) => code.id === relationshipId);
-
+    this.relationValue = matchedCode?.name;
+    if (this.relationValue !== 'Aval') {
+      this.editFamilyMemberForm.get('relationMemberId')?.setValue(null);
+      this.editFamilyMemberForm.get('relationMemberId')?.setValidators(null);
+      this.editFamilyMemberForm.get('isMaritalPartnership')?.setValue(false);
+    }
     return matchedCode.name;
   }
 

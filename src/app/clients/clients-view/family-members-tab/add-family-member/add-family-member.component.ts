@@ -66,11 +66,13 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
 
     this.addFamilyMemberForm.get('isMaritalPartnership')?.valueChanges.subscribe((value) => {
       const relationMemberControl = this.addFamilyMemberForm.get('relationMemberId');
+
       if (value && this.relationValue === 'Aval') {
         this.showPartnerSelector();
         relationMemberControl?.setValidators([Validators.required]);
       } else {
         relationMemberControl?.clearValidators();
+
         relationMemberControl?.setValue(null);
       }
 
@@ -236,6 +238,12 @@ export class AddFamilyMemberComponent implements OnInit, AfterViewInit {
       this.rutValidator
     ]);
     this.addFamilyMemberForm.get('documentNumber')?.updateValueAndValidity({ emitEvent: false });
+    if (this.relationValue !== 'Aval') {
+      this.addFamilyMemberForm.get('relationMemberId')?.setValue(null);
+      ``;
+      this.addFamilyMemberForm.get('relationMemberId')?.setValidators(null);
+      this.addFamilyMemberForm.get('isMaritalPartnership')?.setValue(false);
+    }
   }
 
   ngAfterViewInit() {

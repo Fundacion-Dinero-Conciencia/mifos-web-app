@@ -61,7 +61,7 @@
 
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Amount' | translate }}</th>
-        <td mat-cell *matCellDef="let item">{{ item.amount | currency: item.currencyCode }}</td>
+        <td mat-cell *matCellDef="let item">{{ item.amount | currency: currency }}</td>
       </ng-container>
       <ng-container matColumnDef="paymentType">
         <th mat-header-cell *matHeaderCellDef="type">{{ 'labels.inputs.PaymentType' | translate }}</th>
@@ -70,7 +70,7 @@
 
       <ng-container matColumnDef="commission">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Commission' | translate }}</th>
-        <td mat-cell *matCellDef="let item">{{ item.commission | currency: item.currencyCode }}</td>
+        <td mat-cell *matCellDef="let item">{{ item.commission | currency: currency }}</td>
       </ng-container>
 
       <ng-container matColumnDef="date">

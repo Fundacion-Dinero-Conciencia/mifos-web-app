@@ -8,8 +8,8 @@
   <div class="m-b-10">
     <h2 class="bc-title bc-title--section">Orden de pago</h2>
     <p>
-      Pagaré #{{ orderInfo.documentNumber }} - Subcrédito {{ orderInfo.subCreditAccountNo }} - Cuota #{{
-        additional.installmentNumber || 'NA'
+      Pagaré #{{ orderInfo?.documentNumber }} - Subcrédito {{ orderInfo?.subCreditAccountNo }} - Cuota #{{
+        additional?.installmentNumber || 'NA'
       }}
     </p>
     <p>Estado: {{ getPayrollStatus(orderInfo) }}</p>
@@ -23,7 +23,7 @@
       <div class="infoBox__text">
         La nómina de pago ha sido generada con {{ totalItems }}
         {{ totalItems === 1 ? 'inversion' : 'inversiones' }} dando un total de
-        {{ additional.totalAmount || 0 | currency: currency }}.
+        {{ additional?.totalAmount || 0 | currency: currency }}.
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@
   <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" class="m-b-10">
     <mat-form-field class="inputSearch" fxFlex="50%">
       <mat-label>Buscar por nombre o RUT de inversionista</mat-label>
-      <input matInput type="text" (input)="onSearchInput($any($event.target).value)" />
+      <input matInput type="text" (input)="onSearchInput($any($event.target)?.value)" />
       <button mat-icon-button matSuffix aria-label="Buscar">
         <mat-icon>search</mat-icon>
       </button>

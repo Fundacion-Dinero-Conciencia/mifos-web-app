@@ -16,6 +16,7 @@ import { OrganizationService } from '../organization.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-manage-projects',
@@ -58,6 +59,8 @@ export class ManageProjectsComponent implements OnInit {
   totalItems = 0;
   filterText: string = '';
 
+  currency: string;
+
   /** Paginator for charges table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   /** Sorter for charges table. */
@@ -82,7 +85,8 @@ export class ManageProjectsComponent implements OnInit {
     private router: Router,
     private configurationWizardService: ConfigurationWizardService,
     private popoverService: PopoverService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private systemService: SystemService
   ) {
     this.applyOwnerFilter();
   }
@@ -90,6 +94,7 @@ export class ManageProjectsComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new MatTableDataSource([]);
     this.dataSource.sort = this.sort;
+    this.getDefaultCurrency();
     this.loadProjects();
     this.valueText$.pipe(debounceTime(400), distinctUntilChanged()).subscribe((value) => {
       this.paginator.firstPage();
@@ -265,5 +270,11 @@ export class ManageProjectsComponent implements OnInit {
 
   goToParticipations(projectId: number) {
     window.location.hash = `#/organization/project-participation/${projectId}`;
+  }
+
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
+    });
   }
 }

@@ -151,7 +151,7 @@
       </mat-form-field>
 
       <mat-checkbox
-        *ngIf="relationValue === 'Aval' || relationValue === 'Representante legal'"
+        *ngIf="relationValue === 'Aval'"
         formControlName="isMaritalPartnership"
         labelPosition="before"
         fxFlex="calc(50% - 25px)"
@@ -177,11 +177,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field
-        *ngIf="relationValue === 'Aval' || relationValue === 'Representante legal'"
-        fxFlex
-        (click)="dueDatePicker.open()"
-      >
+      <mat-form-field *ngIf="relationValue === 'Aval'" fxFlex (click)="dueDatePicker.open()">
         <mat-label>{{ 'labels.inputs.Expiry Date' | translate }}</mat-label>
         <input formControlName="expirationDate" matInput [matDatepicker]="dueDatePicker" />
         <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
