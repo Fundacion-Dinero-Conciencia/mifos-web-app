@@ -1205,6 +1205,7 @@
       "Principal Amount": "Principal Amount"
     },
     "inputs": {
+      "Partner": "Partner",
       "Simulation": "Simulation",
       "Subcredit": "Subcredit",
       "Year": "year",
@@ -2564,6 +2565,7 @@
         "Min Amount": "Min Amount",
         "Mnemonic": "Mnemonic",
         "Fancy Name": "Fancy Name",
+        "rut": "Rut",
         "Position": "Position",
         "Socio Environmental Description": "Socio Environmental Description",
         "Detailed Socio Environmental Description": "Detailed Socio Environmental Description",

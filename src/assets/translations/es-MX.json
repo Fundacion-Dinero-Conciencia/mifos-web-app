@@ -1192,6 +1192,7 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "Partner": "Conyuge",
       "Simulation": "Simulación",
       "Subcredit": "Subcredito",
       "Year": "Año",
@@ -2564,6 +2565,7 @@
         "Min Amount": "Monto Mínimo",
         "Mnemonic": "Mnemotécnico",
         "Fancy Name": "Nombre de Fantasía",
+        "rut": "Rut",
         "Position": "Posición",
         "Socio Environmental Description": "Descripción Socio Ambiental",
         "Detailed Socio Environmental Description": "Descripción Detallada Socio Ambiental"

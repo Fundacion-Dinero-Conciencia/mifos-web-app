@@ -893,6 +893,7 @@ export class OrganizationService {
     search?: string;
     sort?: string;
     status?: string;
+    paymentType?: string;
   }): Observable<any> {
     const params: any = {
       page: payload.page?.toString() || '0',
@@ -909,6 +910,9 @@ export class OrganizationService {
       params.status = payload.status;
     }
 
+    if (payload.paymentType) {
+      params.paymentType = payload.paymentType;
+    }
     return this.http.get('/projectparticipation/all', { params });
   }
 

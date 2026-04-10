@@ -62,10 +62,14 @@
 
       <mat-form-field fxFlex="calc(50% - 25px)">
         <mat-label>{{ 'labels.inputs.Document Key' | translate }}</mat-label>
-        <input formControlName="documentNumber" required matInput type="number" />
+        <input formControlName="documentNumber" required matInput type="text" />
         <mat-error *ngIf="editFamilyMemberForm.controls.documentNumber.hasError('required')">
           {{ 'labels.inputs.Document Key' | translate }} {{ 'labels.commons.is' | translate }}
           <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+        <mat-error *ngIf="editFamilyMemberForm.controls.documentNumber.hasError('documentInvalid')">
+          {{ 'labels.inputs.Document Key' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.invalid' | translate }}</strong>
         </mat-error>
       </mat-form-field>
 
@@ -77,14 +81,9 @@
           <strong>{{ 'labels.commons.required and cannot be negative' | translate }}</strong>
         </mat-error>
       </mat-form-field> -->
-
-      <mat-checkbox formControlName="isMaritalPartnership" labelPosition="before" fxFlex="calc(50% - 25px)"
-        >{{ 'labels.inputs.Is Marital Partnership?' | translate }}
-      </mat-checkbox>
-
       <mat-form-field fxFlex="calc(50% - 25px)">
         <mat-label>{{ 'labels.inputs.Relationship' | translate }}</mat-label>
-        <mat-select formControlName="relationshipId" required>
+        <mat-select formControlName="relationshipId" required (selectionChange)="getRelationValue()">
           <mat-option *ngFor="let relation of addFamilyMemberTemplate.relationshipIdOptions" [value]="relation.id">
             {{ relation.name | translateKey: 'catalogs' }}
           </mat-option>
@@ -92,6 +91,29 @@
         <mat-error *ngIf="editFamilyMemberForm.controls.relationshipId.hasError('required')">
           {{ 'labels.inputs.Relationship' | translate }} {{ 'labels.commons.is' | translate }}
           <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-checkbox
+        *ngIf="relationValue === 'Aval'"
+        formControlName="isMaritalPartnership"
+        labelPosition="before"
+        fxFlex="calc(50% - 25px)"
+        >{{ 'labels.inputs.Is Marital Partnership?' | translate }}
+      </mat-checkbox>
+      <mat-form-field fxFlex="100%" class="m-0" *ngIf="editFamilyMemberForm.controls.isMaritalPartnership.value">
+        <mat-label>{{ 'labels.inputs.Partner' | translate }}</mat-label>
+        <mat-select formControlName="relationMemberId">
+          <mat-option *ngFor="let familyMember of FamilyAvailableForRelation" [value]="familyMember.id">
+            {{ familyMember.id }} - {{ familyMember.firstName }} {{ familyMember.lastName }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="editFamilyMemberForm.controls.relationMemberId.hasError('required')">
+          {{ 'labels.inputs.Partner' | translate }} {{ 'labels.commons.is' | translate }}
+          <strong>{{ 'labels.commons.required' | translate }}</strong>
+        </mat-error>
+        <mat-error *ngIf="!FamilyAvailableForRelation || FamilyAvailableForRelation.length === 0">
+          No tiene Familiares disponibles para esta relación
         </mat-error>
       </mat-form-field>
 

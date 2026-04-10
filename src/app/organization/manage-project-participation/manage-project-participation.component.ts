@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,13 +9,10 @@ import { AccountTransfersService } from 'app/account-transfers/account-transfers
 import { SettingsService } from 'app/settings/settings.service';
 import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 import { SystemService } from 'app/system/system.service';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
@@ -45,6 +44,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   amountToInvest: number = 0;
   filterStatus: string = '';
   filterText: string = '';
+  filterPaymentType: string = '';
   private valueText$ = new Subject<string>();
   reservationSelected: any;
   showDialog = false;
@@ -66,6 +66,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     this.dataSourceInvestSelection = new MatTableDataSource([]);
     this.reservationSelected = null;
     this.selectedInvests = [];
+    this.selectedInvests = [];
+    this.amountToInvest = 0;
   }
 
   loadParticipations() {
@@ -75,7 +77,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         size: this.pageSize,
         search: this.filterText,
         sort: this.sortColumn,
-        status: this.filterStatus
+        status: this.filterStatus,
+        paymentType: this.filterPaymentType
       })
       .subscribe((data: any) => {
         this.projectParticipationsData = data.content;
@@ -113,6 +116,10 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     { id: 300 },
     { id: 400 },
     { id: 500 }];
+
+  paymentTypes = [
+    { name: 'MANUAL' },
+    { name: 'Khipu' }];
   constructor(
     private route: ActivatedRoute,
     private organizationservice: OrganizationService,
@@ -199,6 +206,11 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
   applySelectFilter(filterValue: string) {
     this.filterStatus = filterValue;
+    this.loadParticipations();
+  }
+
+  applyPaymentFilter(filterValue: string) {
+    this.filterPaymentType = filterValue;
     this.loadParticipations();
   }
 

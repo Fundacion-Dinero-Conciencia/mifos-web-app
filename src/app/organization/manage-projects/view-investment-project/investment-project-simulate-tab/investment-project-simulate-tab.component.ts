@@ -403,7 +403,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     if (this.allowEditingForm) {
       this.createForm.enable();
       this.createForm.get('basedInLoanProductId').disable();
-      this.createForm.get('creditTypeId').disable();
     } else {
       this.createForm.disable();
     }
@@ -642,6 +641,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     if (this.isFactoring) {
       payload.creditTypeId = this.creditTypesData.find((ct: any) => ct.name === 'Factoring')?.id || undefined;
     }
+    console.log(payload);
     payload.projectRate = this.projectData.rate;
     payload.onlyAmounts = true;
 
