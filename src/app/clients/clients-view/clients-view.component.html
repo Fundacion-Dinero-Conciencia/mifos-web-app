@@ -433,7 +433,10 @@
         <div
           *ngIf="
             !(isInvestorClient && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS') &&
-            !(isCreditClient && clientDatatable.registeredTableName === 'BANK_DETAILS') &&
+            !(
+              clientViewData.legalForm.value !== 'Entity' && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS'
+            ) &&
+            !(clientViewData.legalForm.value === 'Entity' && clientDatatable.registeredTableName === 'BANK_DETAILS') &&
             !(isCreditClient && clientDatatable.registeredTableName === 'PROFILING') &&
             !(isCreditClient && clientDatatable.registeredTableName === 'INTEREST_SECTOR')
           "
