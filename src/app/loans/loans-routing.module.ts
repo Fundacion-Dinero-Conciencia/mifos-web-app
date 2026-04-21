@@ -65,6 +65,7 @@ import { LoanTermVariationsResolver } from './common-resolvers/loan-term-variati
 import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
 import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 import { LoanGroupResolver } from './common-resolvers/loan-group.resolver';
+import { PermissionGuard } from 'app/core/guards/permission.guard';
 
 /** Loans Route. */
 const routes: Routes = [
@@ -327,6 +328,7 @@ const routes: Routes = [
       {
         path: ':loanId/actions/:action',
         component: LoanAccountActionsComponent,
+        canActivate: [PermissionGuard],
         data: { title: 'Loan Account Actions', breadcrumb: 'action', routeParamBreadcrumb: 'action' },
         resolve: {
           actionButtonData: LoanActionButtonResolver

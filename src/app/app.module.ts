@@ -49,6 +49,7 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { LOCALE_ID } from '@angular/core';
+import { NotPermissionComponent } from './no-permission/not-permission.component';
 
 registerLocaleData(localeEs);
 
@@ -115,7 +116,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   declarations: [
     WebAppComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    NotPermissionComponent
   ],
   providers: [
     DatePipe,
