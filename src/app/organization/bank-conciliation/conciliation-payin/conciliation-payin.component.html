@@ -361,7 +361,7 @@
                   *ngFor="let loan of getNonSelectedLoansOptionsExceptLoanId(selectorsGroup[i])"
                   [value]="loan?.loanId"
                 >
-                  {{ loan.creditType }}-{{ loan.accountNo }}
+                  {{ loan.promissoryNumber }}-{{ loan.projectName }}
                 </option>
               </select>
             </td>
