@@ -49,7 +49,7 @@ export class UserSyncService {
       return of(null);
     }
 
-    const username = newData.emailAddress || originalData.emailAddress;
+    const username = originalData.emailAddress;
     if (!username) {
       log.debug(`${logPrefix} No email address found, skipping sync.`);
       return of(null);
