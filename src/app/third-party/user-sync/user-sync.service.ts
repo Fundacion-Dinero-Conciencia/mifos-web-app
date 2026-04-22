@@ -22,6 +22,19 @@ export class UserSyncService {
    */
   constructor(private http: HttpClient) {}
 
+  /** Sanitize and return the Base URL from the environment */
+  private get BASE_URL(): string {
+    return environment.userSyncUrl || '';
+  }
+
+  /**
+   * Construct the full update endpoint for a specific user.
+   * @param {string} username The username to append to the path.
+   */
+  private UPDATE_KEYCLOAK_USER_ENDPOINT(username: string): string {
+    return `${this.BASE_URL}/keycloak/update/user/${username}`;
+  }
+
   /**
    * Updates user details in Keycloak only if relevant fields have changed.
    * @param {any} newData New client data from the form.
@@ -73,7 +86,7 @@ export class UserSyncService {
       return of(null);
     }
 
-    const url = `${environment.userSyncUrl}/user/${username}`;
+    const url = this.UPDATE_KEYCLOAK_USER_ENDPOINT(username);
     log.debug(`${logPrefix} updateKeycloakUser initiated for ${username}`);
     log.debug(`${logPrefix} payload:`, payload);
     log.debug(`${logPrefix} POST to:`, url);
