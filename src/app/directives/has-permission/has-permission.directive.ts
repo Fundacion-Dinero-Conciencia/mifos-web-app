@@ -30,17 +30,42 @@ export class HasPermissionDirective {
   }
 
   /**
-   * Evaluates the condition to show template.
+   * Evaluates the condition to show template. original validations of community
    */
+  // @Input()
+  // set mifosxHasPermission(permission: any) {
+  //   if (typeof permission !== 'string') {
+  //     throw new Error('hasPermission value must be a string');
+  //   }
+  //   /** Clear the template beforehand to prevent overlap OnChanges. */
+  //   this.viewContainer.clear();
+  //   /** Shows Template if user has permission */
+  //   if (this.hasPermission(permission)) {
+  //     this.viewContainer.createEmbeddedView(this.templateRef);
+  //   }
+  // }
+
   @Input()
-  set mifosxHasPermission(permission: any) {
-    if (typeof permission !== 'string') {
-      throw new Error('hasPermission value must be a string');
-    }
-    /** Clear the template beforehand to prevent overlap OnChanges. */
+  set mifosxHasPermission(value: string | { permission: string; strict?: boolean }) {
     this.viewContainer.clear();
-    /** Shows Template if user has permission */
-    if (this.hasPermission(permission)) {
+
+    let permission: string;
+    let strict = false;
+
+    if (typeof value === 'string') {
+      permission = value;
+    } else {
+      permission = value.permission;
+      strict = value.strict ?? false;
+    }
+
+    if (!permission) {
+      throw new Error('Permission is required');
+    }
+
+    const hasAccess = strict ? this.explicitValidations(permission) : this.hasPermission(permission);
+
+    if (hasAccess) {
       this.viewContainer.createEmbeddedView(this.templateRef);
     }
   }
@@ -71,5 +96,11 @@ export class HasPermissionDirective {
     } else {
       return false;
     }
+  }
+
+  private explicitValidations(permission: string): boolean {
+    if (!permission) return false;
+
+    return this.userPermissions.includes(permission.trim());
   }
 }

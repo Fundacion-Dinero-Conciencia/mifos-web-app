@@ -117,7 +117,8 @@ export class PaymentOrderComponent implements OnInit {
           ...item,
           amountToPay: isNumber(item.amountToPaid) ? item.amountToPaid : item.amount,
           amountToReinvest: item.amountToReinvest || 0,
-          selected: false
+          selected: false,
+          investorLink: `/clients/${item.clientId}`
         }));
 
         this.dataSource.data = tableContent;
