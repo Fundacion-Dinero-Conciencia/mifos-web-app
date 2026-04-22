@@ -25,6 +25,8 @@ export class EditClientComponent implements OnInit {
 
   /** Client Data and Template */
   clientDataAndTemplate: any;
+  /** Original Client Data (Snapshot for synchronization) */
+  originalClientData: any;
   /** Edit Client Form */
   editClientForm: UntypedFormGroup;
 
@@ -66,6 +68,7 @@ export class EditClientComponent implements OnInit {
   ) {
     this.route.data.subscribe((data: { clientDataAndTemplate: any }) => {
       this.clientDataAndTemplate = data.clientDataAndTemplate;
+      this.originalClientData = JSON.parse(JSON.stringify(data.clientDataAndTemplate));
     });
   }
 
@@ -227,7 +230,7 @@ export class EditClientComponent implements OnInit {
       clientData.clientNonPersonDetails = {};
     }
     this.clientsService.updateClient(this.clientDataAndTemplate.id, clientData).subscribe(() => {
-      this.userSyncService.updateKeycloakUser(clientData, this.clientDataAndTemplate).subscribe();
+      this.userSyncService.updateKeycloakUser(clientData, this.originalClientData).subscribe();
       this.router.navigate(['../'], { relativeTo: this.route });
     });
   }
