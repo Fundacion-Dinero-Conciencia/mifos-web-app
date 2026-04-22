@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { of } from 'rxjs';
 
+/** Custom Services */
+import { Logger } from '../../core/logger/logger.service';
+
+/** Initialize Logger */
+const log = new Logger('UserSyncService');
+
 /**
  * User Sync Service
  * Handles integration with third-party user synchronization systems.
@@ -22,14 +28,17 @@ export class UserSyncService {
    * @param {any} originalData Original client data before editing.
    */
   updateKeycloakUser(newData: any, originalData: any) {
+    const logPrefix = '[user-sync.service::updateKeycloakUser]';
+    log.debug(`${logPrefix} init`);
+
     if (!environment.pushClientDataChangesToKeycloak) {
-      console.log('UserSyncService: pushClientDataChangesToKeycloak flag is disabled. Skipping synchronization.');
+      log.debug(`${logPrefix} pushClientDataChangesToKeycloak flag is disabled. Skipping synchronization.`);
       return of(null);
     }
 
     const username = newData.emailAddress || originalData.emailAddress;
     if (!username) {
-      console.warn('UserSyncService: No email address found, skipping sync.');
+      log.debug(`${logPrefix} No email address found, skipping sync.`);
       return of(null);
     }
 
@@ -60,14 +69,14 @@ export class UserSyncService {
     }
 
     if (Object.keys(payload).length === 0) {
-      console.log('UserSyncService: No changes detected in relevant fields. Skipping synchronization.');
+      log.debug(`${logPrefix} No changes detected in relevant fields. Skipping synchronization.`);
       return of(null);
     }
 
     const url = `${environment.userSyncUrl}/user/${username}`;
-    console.log(`UserSyncService: updateKeycloakUser initiated for ${username}`);
-    console.log('UserSyncService: payload:', payload);
-    console.log('UserSyncService: POST to:', url);
+    log.debug(`${logPrefix} updateKeycloakUser initiated for ${username}`);
+    log.debug(`${logPrefix} payload:`, payload);
+    log.debug(`${logPrefix} POST to:`, url);
 
     return this.http.disableApiPrefix().post(url, payload);
   }

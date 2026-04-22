@@ -5,11 +5,11 @@
  */
 
 const loadedEnv = (window as any)['env'] || {};
+const belat = loadedEnv['BELAT'] || {};
+const userSync = belat['USER_SYNC'] || {};
 
 export const extensions = {
-  userSyncUrl: loadedEnv['userSyncUrl'] || 'https://fineract-mifos-dev.up.railway.app',
-  /** Feature flag to control whether client data updates are pushed to Keycloak.
-   *  Set to 'true' in env.js to enable. */
-  pushClientDataChangesToKeycloak:
-    loadedEnv['pushClientDataChangesToKeycloak'] === 'true' || loadedEnv['pushClientDataChangesToKeycloak'] === true
+  userSyncUrl: userSync['URL'] || '',
+  /** Feature flag to control whether client data updates are pushed to Keycloak. */
+  pushClientDataChangesToKeycloak: userSync['PUSH_CLIENT_DATA_CHANGES_TO_KEYCLOAK'] === 'true'
 };
