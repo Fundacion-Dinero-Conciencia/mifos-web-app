@@ -53,4 +53,11 @@
   window['env']['vNextApiVersion'] = '$VNEXT_API_VERSION';
   window['env']['interbankTransfers'] = '$VNEXT_INTERBANK_TRANSFERS';
   window['env']['GOOGLE_MAPS_API_KEY'] = 'AIzaSyBIuTaxrgjb1iYJwzGCcjdWZUfqpxW3T_k';
+
+  window['env']['BELAT'] = {
+    USER_SYNC: {
+      URL: '$BELAT__USER_SYNC__URL',
+      PUSH_CLIENT_DATA_CHANGES_TO_KEYCLOAK: '$BELAT__USER_SYNC__PUSH_CLIENT_DATA_CHANGES_TO_KEYCLOAK'
+    }
+  };
 })(this);
