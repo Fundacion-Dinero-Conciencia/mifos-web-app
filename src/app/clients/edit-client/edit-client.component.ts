@@ -202,6 +202,7 @@ export class EditClientComponent implements OnInit {
    * Submits the edit client form.
    */
   submit() {
+    console.log('[edit-client::submit] init');
     const locale = this.settingsService.language.code;
     const dateFormat = this.settingsService.dateFormat;
     const editClientFormValue: any = this.editClientForm.getRawValue();
@@ -226,8 +227,13 @@ export class EditClientComponent implements OnInit {
     } else {
       clientData.clientNonPersonDetails = {};
     }
+    console.log('[edit-client::submit] updating client');
     this.clientsService.updateClient(this.clientDataAndTemplate.id, clientData).subscribe(() => {
-      this.userSyncService.updateKeycloakUser(clientData, this.clientDataAndTemplate).subscribe();
+      console.log('[edit-client::submit] updateClient successful. Calling Keycloak sync.');
+      this.userSyncService.updateKeycloakUser(clientData, this.clientDataAndTemplate).subscribe(() => {
+        console.log('[edit-client::submit] Keycloak sync call completed.');
+      });
+      console.log('[edit-client::submit] navigating back to client details.');
       this.router.navigate(['../'], { relativeTo: this.route });
     });
   }

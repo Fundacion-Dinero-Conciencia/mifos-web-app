@@ -64,6 +64,11 @@ export class UserSyncService {
       return of(null);
     }
 
-    return this.http.disableApiPrefix().post(`${environment.userSyncUrl}/user/${username}`, payload);
+    const url = `${environment.userSyncUrl}/user/${username}`;
+    console.log(`UserSyncService: updateKeycloakUser initiated for ${username}`);
+    console.log('UserSyncService: payload:', payload);
+    console.log('UserSyncService: POST to:', url);
+
+    return this.http.disableApiPrefix().post(url, payload);
   }
 }
