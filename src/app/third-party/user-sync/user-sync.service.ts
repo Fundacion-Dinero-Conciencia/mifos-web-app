@@ -126,7 +126,15 @@ export class UserSyncService {
       country: country
     };
 
-    const missingFields = Object.keys(payload).filter((key) => !payload[key]);
+    const requiredFields = [
+      'username',
+      'email',
+      'firstname',
+      'lastname',
+      'fineract_id',
+      'country'
+    ];
+    const missingFields = requiredFields.filter((key) => !payload[key]);
     if (missingFields.length > 0) {
       log.debug(`${logPrefix} Missing required fields: ${missingFields.join(', ')}. Skipping synchronization.`);
       return of(null);

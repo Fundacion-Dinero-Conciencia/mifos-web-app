@@ -1,17 +1,46 @@
 # Sincronización de Clientes a Keycloak
 
-Esta extensión permite mantener sincronizados los datos de los clientes entre Mifos (Fineract) y Keycloak. Cuando se actualiza la información de un cliente en la plataforma, los cambios se envían automáticamente a un servicio externo de sincronización para mantener la integridad de los perfiles en ambos sistemas.
+Esta extensión permite mantener sincronizados los datos de los clientes entre Mifos (Fineract) y Keycloak. Existen dos escenarios principales de sincronización: la creación de nuevos usuarios y la actualización de usuarios existentes.
 
-## Funcionamiento
+## Escenarios de Sincronización
 
-La sincronización se realiza de forma diferencial a través del servicio `UserSyncService`. El sistema captura un "snapshot" del estado original del cliente y lo compara con los nuevos datos del formulario, enviando únicamente los campos que han sido modificados (nombre, apellido, email, teléfono, etc.).
+La lógica de sincronización se centraliza en el servicio `UserSyncService`, el cual es invocado desde distintos módulos de la aplicación según la acción realizada.
 
-- **Servicio Interno:** `UserSyncService`
-- **Componente Integrado:** `EditClientComponent` (integrado en el flujo de guardado de edición de clientes).
+### 1. Creación de Clientes
+
+Cuando se registra un nuevo cliente en la plataforma, el sistema notifica automáticamente al servicio de sincronización para dar de alta al usuario en Keycloak e iniciar el flujo de bienvenida (verificación de email y establecimiento de contraseña).
+
+- **Componente:** `CreateClientComponent`
+- **Endpoint:** `POST /keycloak/create/user`
+- **Requerimientos de Campos:**
+  | Campo | Origen en Fineract | Requerido |
+  | :--- | :--- | :--- |
+  | `username` | `emailAddress` | Sí |
+  | `email` | `emailAddress` | Sí |
+  | `firstname` | `firstname` o `fullname` | Sí |
+  | `lastname` | `lastname` | Sí |
+  | `fineract_id` | `resourceId` (ID generado) | Sí |
+  | `country` | `tenantIdentifier` (Tenant activo) | Sí |
+  | `phone` | `mobileNo` | No |
+
+### 2. Actualización de Clientes
+
+Cuando se modifica la información de un cliente existente, el sistema realiza una sincronización diferencial. Captura un "snapshot" del estado original y lo compara con los nuevos datos, enviando únicamente los campos que han cambiado.
+
+- **Componente:** `EditClientComponent`
+- **Endpoint:** `POST /keycloak/update/user/{username}`
+- **Campos Sincronizados (Diferenciales):**
+  | Campo | Atributo Keycloak |
+  | :--- | :--- |
+  | `firstname` | `firstName` |
+  | `lastname` | `lastName` |
+  | `emailAddress` | `email` |
+  | `mobileNo` | `phone` |
+  | `externalId` | `external_id` |
 
 ## Variables de Configuración
 
-Para el correcto funcionamiento de esta extensión, se deben configurar las siguientes variables de entorno. En entornos de contenedores (Docker/Railway), se utiliza la convención de doble guion bajo (`__`) para representar la jerarquía:
+Para el correcto funcionamiento de esta extensión, se deben configurar las siguientes variables de entorno. Se utiliza la convención de doble guion bajo (`__`) para representar la jerarquía:
 
 | Variable                                                 | Descripción                                                                                      | Valor por Defecto |
 | :------------------------------------------------------- | :----------------------------------------------------------------------------------------------- | :---------------- |
@@ -20,4 +49,5 @@ Para el correcto funcionamiento de esta extensión, se deben configurar las sigu
 
 ## Consideraciones Técnicas
 
-- La sincronización solo se dispara si el campo `emailAddress` está presente, ya que se utiliza como identificador único en Keycloak.
+- **Validación:** En el escenario de creación, si falta algún campo obligatorio (todos excepto `phone`), la sincronización se omite y se registra un log de depuración.
+- **Identificador:** El campo `emailAddress` es fundamental en ambos escenarios, ya que se utiliza como identificador único para vincular las cuentas entre Mifos y Keycloak.
