@@ -155,7 +155,6 @@ export class CreateClientComponent {
     }
 
     this.clientsService.createClient(clientData).subscribe((response: any) => {
-      console.log('Create Client Response:', response);
       const country = this.settingsService.tenantIdentifier;
       this.userSyncService.createKeycloakUser(clientData, response.resourceId, country).subscribe();
       this.router.navigate(

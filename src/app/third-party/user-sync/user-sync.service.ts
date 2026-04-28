@@ -119,8 +119,8 @@ export class UserSyncService {
     const payload: any = {
       username: clientData.emailAddress,
       email: clientData.emailAddress,
-      firstName: clientData.firstname || clientData.fullname,
-      lastName: clientData.lastname,
+      firstname: clientData.firstname || clientData.fullname,
+      lastname: clientData.lastname,
       phone: clientData.mobileNo,
       fineract_id: fineractId,
       country: country
