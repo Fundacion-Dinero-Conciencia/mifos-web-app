@@ -120,9 +120,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   setBusinessDate(): void {
     this.systemService.getBusinessDate(SettingsService.businessDateType).subscribe((data: any) => {
       this.businessDate = this.dateUtils.parseDate(data.date);
-      this.settingsService.setBusinessDate(
-        this.dateUtils.formatDate(this.businessDate || new Date(), SettingsService.businessDateFormat)
-      );
+      this.settingsService.setBusinessDate(String(new Date(this.businessDate)));
       this.isBusinessDateDefined = true;
     });
   }
