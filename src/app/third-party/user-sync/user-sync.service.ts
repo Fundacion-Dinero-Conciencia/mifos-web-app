@@ -36,6 +36,13 @@ export class UserSyncService {
   }
 
   /**
+   * Construct the full create endpoint for a new user.
+   */
+  private get CREATE_KEYCLOAK_USER_ENDPOINT(): string {
+    return `${this.BASE_URL}/keycloak/create/user`;
+  }
+
+  /**
    * Updates user details in Keycloak only if relevant fields have changed.
    * @param {any} newData New client data from the form.
    * @param {any} originalData Original client data before editing.
@@ -88,6 +95,45 @@ export class UserSyncService {
 
     const url = this.UPDATE_KEYCLOAK_USER_ENDPOINT(username);
     log.debug(`${logPrefix} updateKeycloakUser initiated for ${username}`);
+    log.debug(`${logPrefix} payload:`, payload);
+    log.debug(`${logPrefix} POST to:`, url);
+
+    return this.http.disableApiPrefix().post(url, payload);
+  }
+
+  /**
+   * Creates a user in Keycloak.
+   * @param {any} clientData Client data.
+   * @param {string} fineractId Fineract ID of the created client.
+   * @param {string} country Country (tenant identifier).
+   */
+  createKeycloakUser(clientData: any, fineractId: string, country: string) {
+    const logPrefix = '[user-sync.service::createKeycloakUser]';
+    log.debug(`${logPrefix} init`);
+
+    if (!environment.pushClientDataChangesToKeycloak) {
+      log.debug(`${logPrefix} pushClientDataChangesToKeycloak flag is disabled. Skipping synchronization.`);
+      return of(null);
+    }
+
+    const payload: any = {
+      username: clientData.emailAddress,
+      email: clientData.emailAddress,
+      firstName: clientData.firstname || clientData.fullname,
+      lastName: clientData.lastname,
+      phone: clientData.mobileNo,
+      fineract_id: fineractId,
+      country: country
+    };
+
+    const missingFields = Object.keys(payload).filter((key) => !payload[key]);
+    if (missingFields.length > 0) {
+      log.debug(`${logPrefix} Missing required fields: ${missingFields.join(', ')}. Skipping synchronization.`);
+      return of(null);
+    }
+
+    const url = this.CREATE_KEYCLOAK_USER_ENDPOINT;
+    log.debug(`${logPrefix} createKeycloakUser initiated for ${payload.username}`);
     log.debug(`${logPrefix} payload:`, payload);
     log.debug(`${logPrefix} POST to:`, url);
 
