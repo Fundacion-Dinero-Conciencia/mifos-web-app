@@ -45,6 +45,7 @@ import { GeneralTabComponent } from './savings-account-view/general-tab/general-
 import { NotesTabComponent } from './savings-account-view/notes-tab/notes-tab.component';
 import { SavingsDocumentsTabComponent } from './savings-account-view/savings-documents-tab/savings-documents-tab.component';
 import { SavingsTransactionGeneralTabComponent } from './savings-account-view/transactions/view-transaction/savings-transaction-general-tab/savings-transaction-general-tab.component';
+import { PermissionGuard } from 'app/core/guards/permission.guard';
 
 /** Savings Routes */
 const routes: Routes = [
@@ -227,14 +228,17 @@ const routes: Routes = [
       },
       {
         path: ':savingAccountId/actions/:name',
-        data: { title: 'Savings Account Actions', breadcrumb: 'Savings Account Actions', routeParamBreadcrumb: 'name' },
         component: SavingAccountActionsComponent,
+        canActivate: [PermissionGuard],
+        data: { title: 'Savings Account Actions', breadcrumb: 'Savings Account Actions', routeParamBreadcrumb: 'name' },
         resolve: {
           savingsAccountActionData: SavingsAccountActionsResolver
         }
       },
       {
         path: ':savingAccountId/transfer-funds',
+        canActivate: [PermissionGuard],
+        data: { permission: 'Transfer Funds' },
         loadChildren: () =>
           import('../account-transfers/account-transfers.module').then((m) => m.AccountTransfersModule)
       },

@@ -109,6 +109,12 @@
                     <td *ngIf="clientViewData.staffName">{{ clientViewData.staffName }}</td>
                     <td *ngIf="!clientViewData.staffName">{{ 'labels.inputs.Unassigned' | translate }}</td>
                   </tr>
+                  <tr>
+                    <td>
+                      <b>{{ 'labels.inputs.Completed' | translate }}</b>
+                    </td>
+                    <td>{{ clientViewData.completedOnboarding | yesNo }}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -271,6 +277,16 @@
       </mat-menu>
 
       <mat-menu #Actions="matMenu">
+        <span *ngIf="!clientViewData.completedOnboarding"
+          ><button mat-menu-item (click)="doAction('Complete Onboarding')">
+            {{ 'labels.buttons.Complete Onboarding' | translate }}
+          </button></span
+        >
+        <!--<span *ngIf="clientViewData.completedOnboarding"
+          ><button mat-menu-item (click)="doAction('Uncomplete Onboarding')">
+            {{ 'labels.buttons.Uncomplete Onboarding' | translate }}
+          </button></span
+        >-->
         <button mat-menu-item (click)="doAction('Close')">{{ 'labels.buttons.Close' | translate }}</button>
         <button mat-menu-item (click)="doAction('Transfer Client')">
           {{ 'labels.buttons.Transfer Client' | translate }}
@@ -433,7 +449,10 @@
         <div
           *ngIf="
             !(isInvestorClient && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS') &&
-            !(isCreditClient && clientDatatable.registeredTableName === 'BANK_DETAILS') &&
+            !(
+              clientViewData.legalForm.value !== 'Entity' && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS'
+            ) &&
+            !(clientViewData.legalForm.value === 'Entity' && clientDatatable.registeredTableName === 'BANK_DETAILS') &&
             !(isCreditClient && clientDatatable.registeredTableName === 'PROFILING') &&
             !(isCreditClient && clientDatatable.registeredTableName === 'INTEREST_SECTOR')
           "

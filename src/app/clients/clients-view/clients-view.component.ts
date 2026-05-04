@@ -15,6 +15,8 @@ import { UploadSignatureDialogComponent } from './custom-dialogs/upload-signatur
 import { ViewSignatureDialogComponent } from './custom-dialogs/view-signature-dialog/view-signature-dialog.component';
 /** Custom Services */
 import { ClientsService } from '../clients.service';
+import { SettingsService } from 'app/settings/settings.service';
+import { ConfirmationDialogComponent } from 'app/shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'mifosx-clients-view',
@@ -32,7 +34,8 @@ export class ClientsViewComponent implements OnInit {
     private router: Router,
     private clientsService: ClientsService,
     private _sanitizer: DomSanitizer,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private settingsService: SettingsService
   ) {
     this.route.data.subscribe((data: { clientViewData: any; clientTemplateData: any; clientDatatables: any }) => {
       this.clientViewData = data.clientViewData;
@@ -162,6 +165,12 @@ export class ClientsViewComponent implements OnInit {
         }
         const url = `${originUrl}` + '?impersonatedAccountNo=' + this.clientViewData.accountNo;
         window.open(url, '_blank');
+        break;
+      case 'Complete Onboarding':
+        this.completeOnboarding(true);
+        break;
+      case 'Uncomplete Onboarding':
+        this.completeOnboarding(false);
         break;
     }
   }
@@ -300,6 +309,33 @@ export class ClientsViewComponent implements OnInit {
     deleteClientImageDialogRef.afterClosed().subscribe((response: any) => {
       if (response.delete) {
         this.clientsService.deleteClientProfileImage(this.clientViewData.id).subscribe(() => {
+          this.reload();
+        });
+      }
+    });
+  }
+
+  /**
+   * Mark client as completed Onboarding
+   */
+  private completeOnboarding(complete: Boolean) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        heading: '¿Deseas continuar?',
+        dialogContext: `Una vez marcado el onboarding como finalizado, no podrás desmarcarlo de nuevo.`
+      }
+    });
+    dialogRef.afterClosed().subscribe((response: { confirm: any }) => {
+      if (response.confirm) {
+        const locale = this.settingsService.language.code;
+        const dateFormat = this.settingsService.dateFormat;
+        const clientData = {
+          completedOnboarding: complete,
+          dateFormat,
+          locale
+        };
+
+        this.clientsService.updateClient(this.clientViewData.id, clientData).subscribe(() => {
           this.reload();
         });
       }

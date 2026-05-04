@@ -14,6 +14,7 @@ import { ClientDatatableStepComponent } from '../client-stepper/client-datatable
 /** Custom Services */
 import { SettingsService } from 'app/settings/settings.service';
 import { ClientIdentifiersStepComponent } from '../client-stepper/client-identifiers-step/client-identifiers-step.component';
+import { UserSyncService } from 'app/third-party/user-sync/user-sync.service';
 
 /**
  * Create Client Component.
@@ -49,12 +50,14 @@ export class CreateClientComponent {
    * @param {Router} router Router
    * @param {ClientsService} clientsService Clients Service
    * @param {SettingsService} settingsService Setting service
+   * @param {UserSyncService} userSyncService User sync service
    */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private clientsService: ClientsService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private userSyncService: UserSyncService
   ) {
     this.route.data.subscribe((data: { clientTemplate: any; clientAddressFieldConfig: any }) => {
       this.clientTemplate = data.clientTemplate;
@@ -152,6 +155,8 @@ export class CreateClientComponent {
     }
 
     this.clientsService.createClient(clientData).subscribe((response: any) => {
+      const country = this.settingsService.tenantIdentifier;
+      this.userSyncService.createKeycloakUser(clientData, response.resourceId, country).subscribe();
       this.router.navigate(
         [
           '../',

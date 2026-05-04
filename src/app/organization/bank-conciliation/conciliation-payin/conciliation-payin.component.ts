@@ -23,7 +23,8 @@ const statuses = {
   RECEIVED: 'Recibido',
   PENDING: 'Pendiente',
   CONCILIATED: 'Conciliado',
-  NOT_FOUND: 'No encontrado'
+  NOT_FOUND: 'No encontrado',
+  IRRECONCILABLE: 'No conciliable'
 };
 
 @Component({
@@ -87,6 +88,10 @@ export class ConciliationPayinComponent implements OnInit {
     {
       id: 500,
       name: 'No encontrado'
+    },
+    {
+      id: 900,
+      name: 'No conciliable'
     }
   ];
   detailDisplayedColumns: string[] = [
@@ -137,6 +142,8 @@ export class ConciliationPayinComponent implements OnInit {
         return 'Conciliado';
       case 'NOT_FOUND':
         return 'No encontrado';
+      case 'IRRECONCILABLE':
+        return 'No conciliable';
       default:
         return status || '-';
     }
