@@ -274,6 +274,7 @@
     "validation.msg.savingsproduct.withdrawalFeeType.is.not.one.of.expected.enumerations": "El tipo de período de comisión de retiro es obligatorio."
   },
   "labels": {
+    "CutOffDate": "Fecha de corte",
     "Term": "Plazo",
     "accounting": {
       "Accrual (periodic)": "Devengo (periódico)",
@@ -294,6 +295,8 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Clear": "Limpiar",
+      "Generate": "Generar",
       "GeneratePayRoll": "Generar nómina",
       "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
@@ -759,6 +762,7 @@
       "Feb 29 Period Only": "Solo periodo del 29 de febrero"
     },
     "commons": {
+      "selected": "seleccionados",
       "Of client": "De cliente",
       "50 characters long": "50 caracteres de largo",
       "12 characters long": "12 caracteres de largo",
@@ -805,6 +809,8 @@
       "Password validation": "La contraseña debe contener un mínimo de {{minchar}} caracteres, que deben incluir 1 carácter mayúscula, minúscula y especial y no debe constar de caracteres repetidos ni espacios en blanco."
     },
     "heading": {
+      "GenerateCutOffNotification": "Generar notificación de vencimiento",
+      "Notifications": "Notificaciones",
       "Bank-conciliation": "Conciliación bancaria",
       "investments": "inversiones",
       "Impact": "Impacto",
@@ -1191,7 +1197,11 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "searchClient": "Buscar cliente",
+      "messageMode": "Modo del mensaje",
       "Partner": "Conyuge",
+      "Scope": "Alcance",
+
       "Simulation": "Simulación",
       "Subcredit": "Subcredito",
       "Year": "Año",
@@ -2649,6 +2659,7 @@
       "Notifications": "Notificaciones",
       "Organization": "Organización",
       "Bank-conciliation": "Conciliación bancaria",
+
       "Interest Payment Waiver": "Exención de pago de intereses",
       "Payments": "Pagos",
       "Payout Refund": "Reembolso de pago",

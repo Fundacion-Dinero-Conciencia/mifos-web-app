@@ -294,6 +294,8 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "Clear": "Limpiar",
+      "Generate": "Generar",
       "GeneratePayRoll": "Generar nómina",
       "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
@@ -760,6 +762,7 @@
       "Feb 29 Period Only": "Solo periodo del 29 de febrero"
     },
     "commons": {
+      "selected": "seleccionados",
       "Of client": "De cliente",
       "50 characters long": "50 caracteres de largo",
       "12 characters long": "12 caracteres de largo",
@@ -806,6 +809,8 @@
       "Password validation": "La contraseña debe contener un mínimo de {{minchar}} caracteres, que deben incluir 1 carácter mayúscula, minúscula y especial y no debe constar de caracteres repetidos ni espacios en blanco."
     },
     "heading": {
+      "GenerateCutOffNotification": "Generar notificación de vencimiento",
+      "Notifications": "Notificaciones",
       "investments": "inversiones",
       "Impact": "Impacto",
       "Portrait image": "Imagen de portada",
@@ -1192,6 +1197,10 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "searchClient": "Buscar cliente",
+      "messageMode": "Modo del mensaje",
+      "CutOffDate": "Fecha de corte",
+      "Scope": "Alcance",
       "Partner": "Conyuge",
       "Simulation": "Simulación",
       "Subcredit": "Subcredito",

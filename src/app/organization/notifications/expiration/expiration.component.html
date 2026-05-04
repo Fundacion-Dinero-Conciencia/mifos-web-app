@@ -1,0 +1,96 @@
+<main class="tab-container mat-typography mt-10 container">
+  <h1>
+    {{ 'labels.heading.GenerateCutOffNotification' | translate }}
+  </h1>
+  <mat-form-field class="full-width">
+    <mat-label>{{ 'labels.inputs.messageMode' | translate }}</mat-label>
+    <mat-select required [(ngModel)]="messageMode" class="capitalize">
+      <mat-option *ngFor="let mode of messageModes" [value]="mode.value" class="capitalize">
+        {{ mode.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>{{ 'labels.inputs.Scope' | translate }}</mat-label>
+    <mat-select required [(ngModel)]="scope" class="capitalize" (valueChange)="scopeChange($event)">
+      <mat-option *ngFor="let scope of scopeOptions" [value]="scope.value" class="capitalize">
+        {{ scope.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field (click)="picker.open()" class="full-width">
+    <mat-label>{{ 'labels.inputs.CutOffDate' | translate }}</mat-label>
+    <input
+      id="notificationDatePicker"
+      matInput
+      [min]="minDate"
+      [matDatepicker]="picker"
+      [(ngModel)]="notificationDate"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <section [ngClass]="{ hide: scope }">
+    <div class="navbarSelect">
+      <mat-form-field fxFlex="48%">
+        <mat-label>{{ 'labels.inputs.searchClient' | translate }}</mat-label>
+        <input matInput [(ngModel)]="inputSearchValue" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="getClients()">
+        {{ 'labels.buttons.Search' | translate }}
+      </button>
+      <button
+        mat-raised-button
+        color="outlinedButton"
+        (click)="clearClientsSelection()"
+        [disabled]="selectedClients.length <= 0"
+      >
+        {{ 'labels.buttons.Clear' | translate }}
+      </button>
+
+      <div class="counter">
+        <span>{{ 'labels.commons.selected' | translate }}</span>
+        <b>{{ selectedClients.length }}/{{ totalClients }}</b>
+      </div>
+    </div>
+
+    <div class="clientOptions card" id="clientsContainer">
+      <ng-container *ngFor="let client of displayedClients">
+        <div
+          class="clientOption"
+          [ngClass]="{ selected: isClientSelected(client) }"
+          (click)="addOrRemoveClient(client)"
+        >
+          <mat-checkbox
+            [name]="client.clientRut"
+            [checked]="isClientSelected(client)"
+            (click)="$event.preventDefault()"
+          ></mat-checkbox>
+          <p>{{ client.clientRut }} | {{ client.clientName }}</p>
+        </div>
+      </ng-container>
+      <div id="scrollSentinel"></div>
+    </div>
+  </section>
+  <div class="buttonRow">
+    <button mat-raised-button color="primary" [disabled]="!canNotificateClients" (click)="sendNotifications()">
+      {{ 'labels.buttons.Generate' | translate }}
+    </button>
+    <button mat-raised-button color="outlinedButton" [routerLink]="['../.']">
+      {{ 'labels.buttons.Cancel' | translate }}
+    </button>
+  </div>
+</main>
+<mifosx-custom-dialog
+  [open]="showDialog"
+  [heading]="'¿Deseas enviar el aviso de vencimiento?'"
+  color="primary"
+  (confirm)="sendNotifications()"
+  (dismiss)="showDialog = false"
+  (closed)="showDialog = false"
+  [confirmText]="'Notify'"
+>
+  <p class="biggerFont m-b-0">
+    Estás a punto de generar la nómina de pago con las inversiones seleccionadas correspondiente al
+  </p>
+</mifosx-custom-dialog>

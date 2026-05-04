@@ -1,0 +1,23 @@
+<main class="tab-container mat-typography mt-10 container">
+  <table mat-table #menuTable [dataSource]="dataSource">
+    <!-- Nombre -->
+    <ng-container matColumnDef="title">
+      <td mat-cell *matCellDef="let method">
+        <div class="tabButton">
+          <p>
+            <fa-icon icon="home" class="m-l-10"></fa-icon>
+            <span style="text-transform: capitalize">{{ method.title }}</span>
+          </p>
+          <fa-icon icon="arrow-right" class="m-l-10"></fa-icon>
+        </div>
+      </td>
+    </ng-container>
+    <tr
+      class="row"
+      [routerLink]="['./expiration']"
+      mat-row
+      *matRowDef="let row; columns: displayedColumnsMethods"
+      style="cursor: pointer"
+    ></tr>
+  </table>
+</main>
