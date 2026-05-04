@@ -448,7 +448,6 @@
       <ng-container *ngFor="let clientDatatable of clientDatatables">
         <div
           *ngIf="
-            !(isInvestorClient && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS') &&
             !(
               clientViewData.legalForm.value !== 'Entity' && clientDatatable.registeredTableName === 'COMP_BANK_DETAILS'
             ) &&
