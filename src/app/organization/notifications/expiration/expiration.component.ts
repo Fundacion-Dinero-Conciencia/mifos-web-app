@@ -6,6 +6,7 @@ import { createInfiniteScroll } from 'app/shared/helpers/Dom';
 import { showGlobalLoader } from 'app/shared/helpers/loaders';
 import { hideGlobalLoader } from 'app/shared/helpers/loaders';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'mifosx-expiration',
@@ -55,7 +56,8 @@ export class ExpirationComponent implements OnInit, AfterViewInit {
   constructor(
     private clientService: ClientsService,
     private settingsService: SettingsService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   isClientSelected(client: any): boolean {
@@ -164,10 +166,14 @@ export class ExpirationComponent implements OnInit, AfterViewInit {
     showGlobalLoader();
     try {
       await this.clientService.sendNotificationToClients(this.messageMode, date, clientIds).toPromise();
-      this.router.navigate(['../.']);
+      this.router.navigate(['../']);
+      this.router.navigate(['../'], { relativeTo: this.route });
     } catch (error) {
     } finally {
       hideGlobalLoader();
     }
+  }
+  showDialogToSendNotification() {
+    this.showDialog = true;
   }
 }

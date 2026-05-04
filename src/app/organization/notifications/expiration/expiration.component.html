@@ -73,10 +73,15 @@
     </div>
   </section>
   <div class="buttonRow">
-    <button mat-raised-button color="primary" [disabled]="!canNotificateClients" (click)="sendNotifications()">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!canNotificateClients"
+      (click)="showDialogToSendNotification()"
+    >
       {{ 'labels.buttons.Generate' | translate }}
     </button>
-    <button mat-raised-button color="outlinedButton" [routerLink]="['../.']">
+    <button mat-raised-button color="outlinedButton" [routerLink]="['../']">
       {{ 'labels.buttons.Cancel' | translate }}
     </button>
   </div>
@@ -88,9 +93,9 @@
   (confirm)="sendNotifications()"
   (dismiss)="showDialog = false"
   (closed)="showDialog = false"
-  [confirmText]="'Notify'"
+  [confirmText]="'Confirm'"
 >
-  <p class="biggerFont m-b-0">
-    Estás a punto de generar la nómina de pago con las inversiones seleccionadas correspondiente al
+  <p style="text-align: center">
+    Esta acción enviará un aviso de vencimiento a los clientes seleccionados, ¿Deseas continuar con esta acción?
   </p>
 </mifosx-custom-dialog>
