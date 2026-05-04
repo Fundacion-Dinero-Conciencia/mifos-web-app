@@ -11,11 +11,11 @@ export class Dates {
 
   constructor(private datePipe: DatePipe) {}
 
-  public getDate(timestamp: any): string {
+  public getDate(timestamp: any): string | null {
     return this.datePipe.transform(timestamp, 'YYYY-MM-DD');
   }
 
-  public formatDate(timestamp: any, dateFormat: string): string {
+  public formatDate(timestamp: any, dateFormat: string): string | null {
     const datePipe: DatePipe = new DatePipe(this.language.code);
     return datePipe.transform(timestamp, dateFormat);
   }

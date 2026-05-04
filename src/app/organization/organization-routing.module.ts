@@ -6,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { Route } from '../core/route/route.service';
 
 /** Custom Components */
+import { ExpirationComponent } from './notifications/expiration/expiration.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 import { ClientTemplateResolver } from 'app/clients/common-resolvers/client-template.resolver';
 import { AdhocQueryComponent } from './adhoc-query/adhoc-query.component';
 import { CreateAdhocQueryComponent } from './adhoc-query/create-adhoc-query/create-adhoc-query.component';
@@ -689,6 +691,20 @@ const routes: Routes = [
                 offices: OfficesResolver,
                 imports: BulkImportResolver
               }
+            }
+          ]
+        },
+        {
+          path: 'notifications',
+          data: { title: 'Notifications', breadcrumb: 'Notifications' },
+          children: [
+            {
+              path: '',
+              component: NotificationsComponent
+            },
+            {
+              path: 'expiration',
+              component: ExpirationComponent
             }
           ]
         },
