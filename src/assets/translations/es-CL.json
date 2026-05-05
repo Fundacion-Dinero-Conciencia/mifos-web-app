@@ -2575,6 +2575,8 @@
         "Mnemonic": "Mnemotécnico",
         "Fancy Name": "Nombre de Fantasía",
         "rut": "Rut",
+        "dni": "Dni",
+        "cuit": "Cuit/Cuil",
         "Socio Environmental Description": "Descripción Socio Ambiental",
         "Detailed Socio Environmental Description": "Descripción Detallada Socio Ambiental"
       }

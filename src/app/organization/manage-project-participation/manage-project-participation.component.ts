@@ -26,17 +26,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   dataSource: MatTableDataSource<any>;
   currency: string;
   loading: boolean = false;
-  displayedColumns: string[] = [
-    'projectName',
-    'rut',
-    'participantName',
-    'amount',
-    'commission',
-    'paymentType',
-    'date',
-    'status',
-    'actions'
-  ];
+  displayedColumns: string[];
 
   sortColumn: string = '';
   selectedItems: any[] = [];
@@ -127,7 +117,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     private router: Router,
     private translateService: TranslateService,
     private accountTransfersService: AccountTransfersService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private settingsService: SettingsService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.applyOwnerFilter();
@@ -168,6 +159,35 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         (data.rut + '').toLowerCase().includes(parsedFilter.text.toLowerCase());
       return matchesStatus && matchesText;
     };
+
+    const tenant = this.settingsService.tenantIdentifier;
+
+    if (tenant?.toLowerCase() == 'argentina') {
+      this.displayedColumns = [
+        'projectName',
+        'dni',
+        'cuit',
+        'participantName',
+        'amount',
+        'commission',
+        'paymentType',
+        'date',
+        'status',
+        'actions'
+      ];
+    } else {
+      this.displayedColumns = [
+        'projectName',
+        'rut',
+        'participantName',
+        'amount',
+        'commission',
+        'paymentType',
+        'date',
+        'status',
+        'actions'
+      ];
+    }
   }
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;

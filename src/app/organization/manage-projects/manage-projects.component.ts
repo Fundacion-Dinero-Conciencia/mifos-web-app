@@ -108,6 +108,36 @@ export class ManageProjectsComponent implements OnInit {
     } else {
       this.projectUrl = environment.baseUrlProjectProduction;
     }
+    const tenant = this.settingsService.tenantIdentifier;
+
+    if (tenant?.toLowerCase() == 'argentina') {
+      this.displayedColumns = [
+        'name',
+        'dni',
+        'cuit',
+        'country',
+        'active',
+        'occupancyPercentage',
+        'financedAmount',
+        'amount',
+        'rate',
+        'creditType',
+        'status'
+      ];
+    } else {
+      this.displayedColumns = [
+        'name',
+        'Rut',
+        'country',
+        'active',
+        'occupancyPercentage',
+        'financedAmount',
+        'amount',
+        'rate',
+        'creditType',
+        'status'
+      ];
+    }
   }
   applyFilter(filterValue: string) {
     this.valueText$.next(filterValue.trim().toLowerCase());
