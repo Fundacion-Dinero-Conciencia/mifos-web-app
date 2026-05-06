@@ -1,0 +1,211 @@
+<main>
+  <h1>
+    {{ clientData.displayName }}
+  </h1>
+  <ng-container *ngIf="!isDetailingSimultation">
+    <mat-card class="bc-card">
+      <ng-container *ngIf="dataSource.data.length > 0">
+        <div class="legend">
+          <span><b>Calendario de cuotas</b></span>
+          <span class="flagLabelContainer"
+            ><div class="flag red"></div>
+            Atrasado</span
+          >
+          <span class="flagLabelContainer"
+            ><div class="flag green"></div>
+            Próximo</span
+          >
+        </div>
+        <mat-card class="checkCard">
+          <mat-checkbox labelPosition="after" (change)="selectAll($event)" [checked]="areAllSelected"
+            >Seleccionar todo
+          </mat-checkbox>
+        </mat-card>
+        <table mat-table [dataSource]="dataSource" class="bc-table__table">
+          <!-- Empresa -->
+          <ng-container matColumnDef="checkbox">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (change)="selectAll($event)" [checked]="isSelected(row.id)"> </mat-checkbox>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="proyect">
+            <th mat-header-cell *matHeaderCellDef>Proyecto</th>
+            <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
+          </ng-container>
+
+          <!-- RUT -->
+          <ng-container matColumnDef="number">
+            <th mat-header-cell *matHeaderCellDef>Nº pagaré</th>
+            <td mat-cell *matCellDef="let row">
+              <div class="flag flag--withContent" [ngClass]="{ red: true, green: false }">
+                {{ row.rut }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Subcrédito (como link) -->
+          <ng-container matColumnDef="sueDate">
+            <th mat-header-cell *matHeaderCellDef>Fecha de prox vencimiento</th>
+            <td mat-cell *matCellDef="let row" [routerLink]="['/clients', row.clientId, 'loans-accounts', row.loanId]">
+              <p class="linkStyle">{{ row.accountNo }}</p>
+            </td>
+          </ng-container>
+
+          <!-- N° pagaré -->
+          <ng-container matColumnDef="creditProduct">
+            <th mat-header-cell *matHeaderCellDef>Producto de crédito</th>
+            <td mat-cell *matCellDef="let row">{{ row.promissoryNumber }}</td>
+          </ng-container>
+
+          <!-- Estado -->
+          <ng-container matColumnDef="originalCredit">
+            <th mat-header-cell *matHeaderCellDef>Crédito original</th>
+          </ng-container>
+
+          <!-- Acciones -->
+          <ng-container matColumnDef="haveToPay">
+            <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Pendiente de pago</th>
+            <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+          </ng-container>
+          <ng-container matColumnDef="daysInArrears">
+            <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Días de mora</th>
+            <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </ng-container>
+      <ng-container *ngIf="dataSource.data.length == 0">
+        <div class="noData"><span>ⓘ</span><span>Cliente sin créditos activos</span></div>
+      </ng-container>
+    </mat-card>
+    <ngcontainer *ngIf="dataSource.data.length > 0">
+      <section class="bottomSection">
+        <div class="left">
+          <mat-form-field (click)="picker.open()">
+            <mat-label>{{ 'labels.inputs.CutOffDate' | translate }}</mat-label>
+            <input
+              id="dueDateDatePicker"
+              matInput
+              [min]="minDate"
+              [max]="maxDate"
+              [matDatepicker]="picker"
+              [(ngModel)]="dueDateDatePickerValue"
+            />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color="primary"
+            [disabled]="!dueDateDatePickerValue"
+            (click)="simulatePaymentProjection()"
+          >
+            Simular Proyección del pago
+          </button>
+          <div class="noData blue" *ngIf="!dueDateDatePickerValue">
+            <span>ⓘ</span><span>Debes seleccionar una fecha de corte para simular la proyección del pago</span>
+          </div>
+        </div>
+        <mat-card class="right">
+          <h4>Resumen total de la proyección</h4>
+          <ul>
+            <li><span>Fecha proyección del pago</span> {{ 0 | currency }}</li>
+            <li><span>Total de créditos seleccionados</span> {{ 0 | currency }}</li>
+            <li><span>Monto de capital</span> {{ 0 | currency }}</li>
+            <li><span>Monto por mora</span> {{ 0 | currency }}</li>
+            <li><span>Total</span> {{ 0 | currency }}</li>
+          </ul>
+        </mat-card>
+      </section>
+    </ngcontainer>
+  </ng-container>
+  <ng-container *ngIf="isDetailingSimultation">
+    <mat-card>
+      <table mat-table [dataSource]="dataSourceDetail" class="bc-table__table">
+        <ng-container matColumnDef="proyect">
+          <th mat-header-cell *matHeaderCellDef>Proyecto</th>
+          <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
+        </ng-container>
+
+        <!-- RUT -->
+        <ng-container matColumnDef="number">
+          <th mat-header-cell *matHeaderCellDef>Pagaré</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="flag flag--withContent" [ngClass]="{ red: true, green: false }">
+              {{ row.rut }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Subcrédito (como link) -->
+        <ng-container matColumnDef="sueDays">
+          <th mat-header-cell *matHeaderCellDef>Días de mora</th>
+          <td mat-cell *matCellDef="let row" [routerLink]="['/clients', row.clientId, 'loans-accounts', row.loanId]">
+            <p class="linkStyle">{{ row.accountNo }}</p>
+          </td>
+        </ng-container>
+
+        <!-- N° pagaré -->
+        <ng-container matColumnDef="cuotesCuantity">
+          <th mat-header-cell *matHeaderCellDef>Cantidad de cuotas</th>
+          <td mat-cell *matCellDef="let row">{{ row.promissoryNumber }}</td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="capital">
+          <th mat-header-cell *matHeaderCellDef>Monto de capital</th>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="haveToPay">
+          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Monto de intereses</th>
+          <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+        </ng-container>
+        <ng-container matColumnDef="daysInArrearsAmount">
+          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Monto por mora</th>
+          <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+        </ng-container>
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Total</th>
+          <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsDetail"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsDetail"></tr>
+      </table>
+    </mat-card>
+    <button
+      class="downloadButton"
+      mat-raised-button
+      color="primary"
+      [disabled]="!dueDateDatePickerValue"
+      (click)="downloadPDF()"
+    >
+      <fa-icon icon="download"></fa-icon> Descargar PDF
+    </button>
+  </ng-container>
+  <mifosx-custom-dialog
+    [open]="isModalOpen"
+    color="primary"
+    (dismiss)="closeModal()"
+    (closed)="closeModal()"
+    [hideCancelButton]="true"
+    [hideConfirmButton]="true"
+    [confirmText]="'Submit'"
+    [disableConfirm]="false"
+  >
+    <div class="modalContent" *ngIf="!haveError">
+      <fa-icon icon="check-circle" class="icon"></fa-icon>
+      <p>La descarga se ha realizado con éxito</p>
+      <a [routerLink]="['../']">Volver a simular</a>
+    </div>
+    <div class="modalContent error" *ngIf="haveError">
+      <fa-icon icon="exclamation-circle" class="icon"></fa-icon>
+      <p>No se ha podido descargar el archivo</p>
+      <span>Intentalo nuevamente</span>
+    </div>
+  </mifosx-custom-dialog>
+</main>

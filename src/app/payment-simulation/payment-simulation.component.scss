@@ -1,0 +1,168 @@
+main {
+  margin: 2rem;
+}
+
+.legend {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+
+.flagLabelContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flag {
+  width: 17px;
+  height: 17px;
+  border-radius: 2px;
+
+  &--withContent {
+    width: auto;
+    padding: 4px 8px;
+    text-align: center;
+    color: white;
+  }
+}
+
+.red {
+  background-color: #ff624e;
+}
+
+.green {
+  background-color: #00c7aa;
+}
+
+.noData {
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  color: #ff8b00;
+  background-color: #fff1df;
+  border-radius: 5px;
+  width: 300px;
+  padding: 10px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 12px;
+  height: 34px;
+
+  &::before {
+    background-color: #ff8b00;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    content: '';
+    display: block;
+    width: 6px;
+    height: 100%;
+  }
+
+  span:first-child {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  &.blue {
+    color: #229bf1;
+    background-color: #e7eff8;
+
+    &::before {
+      background-color: #229bf1;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .checkCard {
+    margin-top: 1rem;
+    width: fit-content;
+    font-size: 17px;
+    font-weight: bold;
+    padding-left: 22px;
+    padding-right: 30px;
+
+    .mat-checkbox-label {
+      margin-left: 1rem;
+    }
+  }
+}
+
+.bottomSection {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: 8px;
+
+  .left {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    flex: 3;
+  }
+
+  .right {
+    h4 {
+      margin-bottom: 5px;
+    }
+
+    flex: 4;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+
+    ul {
+      width: 100%;
+      padding: unset;
+      margin-top: unset;
+    }
+
+    li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 10px 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px dashed #ccc;
+      }
+    }
+  }
+}
+
+.downloadButton {
+  margin-top: 1rem;
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #00c7aa;
+  font-weight: bold;
+  font-size: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+
+  .icon {
+    font-size: 4.5rem;
+  }
+
+  &.error {
+    color: #ff624e;
+  }
+}

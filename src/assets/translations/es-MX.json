@@ -294,6 +294,7 @@
       "Home": "Inicio"
     },
     "buttons": {
+      "paymentSimulation": "Simulación de pago",
       "Clear": "Limpiar",
       "Generate": "Generar",
       "GeneratePayRoll": "Generar nómina",

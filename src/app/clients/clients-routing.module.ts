@@ -1,55 +1,56 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 /** Routing Imports */
 import { Route } from '../core/route/route.service';
 
 /** Custom Components */
-import { ClientsComponent } from './clients.component';
+import { PaymentSimulationComponent } from 'app/payment-simulation/payment-simulation.component';
+import { AddressTabComponent } from './clients-view/address-tab/address-tab.component';
+import { ClientPayChargesComponent } from './clients-view/charges/client-pay-charges/client-pay-charges.component';
+import { ViewChargeComponent } from './clients-view/charges/view-charge/view-charge.component';
+import { ClientActionsComponent } from './clients-view/client-actions/client-actions.component';
 import { ClientsViewComponent } from './clients-view/clients-view.component';
-import { GeneralTabComponent } from './clients-view/general-tab/general-tab.component';
-import { FamilyMembersTabComponent } from './clients-view/family-members-tab/family-members-tab.component';
+import { DatatableTabComponent } from './clients-view/datatable-tab/datatable-tab.component';
+import { DocumentsTabComponent } from './clients-view/documents-tab/documents-tab.component';
 import { AddFamilyMemberComponent } from './clients-view/family-members-tab/add-family-member/add-family-member.component';
 import { EditFamilyMemberComponent } from './clients-view/family-members-tab/edit-family-member/edit-family-member.component';
+import { FamilyMembersTabComponent } from './clients-view/family-members-tab/family-members-tab.component';
+import { GeneralTabComponent } from './clients-view/general-tab/general-tab.component';
 import { IdentitiesTabComponent } from './clients-view/identities-tab/identities-tab.component';
 import { NotesTabComponent } from './clients-view/notes-tab/notes-tab.component';
-import { DocumentsTabComponent } from './clients-view/documents-tab/documents-tab.component';
-import { DatatableTabComponent } from './clients-view/datatable-tab/datatable-tab.component';
-import { AddressTabComponent } from './clients-view/address-tab/address-tab.component';
-import { ClientActionsComponent } from './clients-view/client-actions/client-actions.component';
-import { ViewChargeComponent } from './clients-view/charges/view-charge/view-charge.component';
-import { ClientPayChargesComponent } from './clients-view/charges/client-pay-charges/client-pay-charges.component';
-import { EditClientComponent } from './edit-client/edit-client.component';
+import { ClientsComponent } from './clients.component';
 import { CreateClientComponent } from './create-client/create-client.component';
+import { EditClientComponent } from './edit-client/edit-client.component';
 
 /** Custom Resolvers */
-import { ClientViewResolver } from './common-resolvers/client-view.resolver';
-import { ClientAccountsResolver } from './common-resolvers/client-accounts.resolver';
-import { ClientAddressResolver } from './common-resolvers/client-address.resolver';
-import { ClientChargesResolver } from './common-resolvers/client-charges.resolver';
-import { ClientSummaryResolver } from './common-resolvers/client-summary.resolver';
-import { ClientFamilyMembersResolver } from './common-resolvers/client-family-members.resolver';
-import { ClientFamilyMemberResolver } from './common-resolvers/client-family-member.resolver';
-import { ClientTemplateResolver } from './common-resolvers/client-template.resolver';
-import { ClientIdentitiesResolver } from './common-resolvers/client-identities.resolver';
-import { ClientNotesResolver } from './common-resolvers/client-notes.resolver';
-import { ClientDocumentsResolver } from './common-resolvers/client-document.resolver';
-import { ClientDatatablesResolver } from './common-resolvers/client-datatables.resolver';
-import { ClientDatatableResolver } from './common-resolvers/client-datatable.resolver';
-import { ClientIdentifierTemplateResolver } from './common-resolvers/client-identifier-template.resolver';
-import { ClientAddressFieldConfigurationResolver } from './common-resolvers/client-address-fieldconfiguration.resolver';
-import { ClientAddressTemplateResolver } from './common-resolvers/client-address-template.resolver';
-import { ChargesOverviewComponent } from './clients-view/charges/charges-overview/charges-overview.component';
-import { ClientChargeOverviewResolver } from './clients-view/charges/charges-overview/charge-overview.resolver';
-import { ClientActionsResolver } from './common-resolvers/client-actions.resolver';
-import { ClientChargeViewResolver } from './common-resolvers/client-charge-view.resolver';
-import { ClientTransactionPayResolver } from './common-resolvers/client-transaction-pay.resolver';
-import { ClientDataAndTemplateResolver } from './common-resolvers/client-and-template.resolver';
-import { ClientCollateralResolver } from './common-resolvers/client-collateral.resolver';
-import { ClientIdentifierResolver } from './common-resolvers/client-identifier.resolver';
 import { CustomerDocumentsResolver } from 'app/shared/tabs/entity-documents-tab/customer-documents.resolver';
 import { DocumentTypesResolver } from 'app/shared/tabs/entity-documents-tab/document-types.resolver';
 import { ClientTypeCodeResolver } from './client-type-code.resolver';
+import { ClientChargeOverviewResolver } from './clients-view/charges/charges-overview/charge-overview.resolver';
+import { ChargesOverviewComponent } from './clients-view/charges/charges-overview/charges-overview.component';
+import { ClientAccountsResolver } from './common-resolvers/client-accounts.resolver';
+import { ClientActionsResolver } from './common-resolvers/client-actions.resolver';
+import { ClientAddressFieldConfigurationResolver } from './common-resolvers/client-address-fieldconfiguration.resolver';
+import { ClientAddressTemplateResolver } from './common-resolvers/client-address-template.resolver';
+import { ClientAddressResolver } from './common-resolvers/client-address.resolver';
+import { ClientDataAndTemplateResolver } from './common-resolvers/client-and-template.resolver';
+import { ClientChargeViewResolver } from './common-resolvers/client-charge-view.resolver';
+import { ClientChargesResolver } from './common-resolvers/client-charges.resolver';
+import { ClientCollateralResolver } from './common-resolvers/client-collateral.resolver';
+import { ClientDatatableResolver } from './common-resolvers/client-datatable.resolver';
+import { ClientDatatablesResolver } from './common-resolvers/client-datatables.resolver';
+import { ClientDocumentsResolver } from './common-resolvers/client-document.resolver';
+import { ClientFamilyMemberResolver } from './common-resolvers/client-family-member.resolver';
+import { ClientFamilyMembersResolver } from './common-resolvers/client-family-members.resolver';
+import { ClientIdentifierTemplateResolver } from './common-resolvers/client-identifier-template.resolver';
+import { ClientIdentifierResolver } from './common-resolvers/client-identifier.resolver';
+import { ClientIdentitiesResolver } from './common-resolvers/client-identities.resolver';
+import { ClientNotesResolver } from './common-resolvers/client-notes.resolver';
+import { ClientSummaryResolver } from './common-resolvers/client-summary.resolver';
+import { ClientTemplateResolver } from './common-resolvers/client-template.resolver';
+import { ClientTransactionPayResolver } from './common-resolvers/client-transaction-pay.resolver';
+import { ClientViewResolver } from './common-resolvers/client-view.resolver';
 
 const routes: Routes = [
   Route.withShell([
@@ -207,6 +208,11 @@ const routes: Routes = [
               resolve: {
                 clientDataAndTemplate: ClientDataAndTemplateResolver
               }
+            },
+            {
+              path: 'paymentSimulation',
+              component: PaymentSimulationComponent,
+              data: { title: 'paymentSimulation', breadcrumb: 'paymentSimulation', routeParamBreadcrumb: false }
             },
             {
               path: 'actions/:name',
