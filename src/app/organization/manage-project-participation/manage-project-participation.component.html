@@ -93,6 +93,11 @@
         <td mat-cell *matCellDef="let item">{{ item.commission | currency: currency }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="unassignedAmount">
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Pending Amount' | translate }}</th>
+        <td mat-cell *matCellDef="let item">{{ item.unassignedAmount | currency: currency }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef="createdOnDate">
           {{ 'labels.inputs.Date' | translate }}
