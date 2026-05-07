@@ -6,40 +6,54 @@
     <mat-card class="bc-card">
       <ng-container *ngIf="dataSource.data.length > 0">
         <div class="legend">
-          <span><b>Calendario de cuotas</b></span>
+          <span
+            ><b>{{ 'labels.inputs.cuotesCalendar' | translate }}</b></span
+          >
           <span class="flagLabelContainer"
             ><div class="flag red"></div>
-            Atrasado</span
+            {{ 'labels.commons.late' | translate }}</span
           >
           <span class="flagLabelContainer"
             ><div class="flag green"></div>
-            Próximo</span
+            {{ 'labels.commons.soon' | translate }}</span
           >
         </div>
         <mat-card class="checkCard">
-          <mat-checkbox labelPosition="after" (change)="selectAll($event)" [checked]="areAllSelected"
-            >Seleccionar todo
+          <mat-checkbox
+            labelPosition="after"
+            (change)="selectAll($event)"
+            [checked]="areAllSelected"
+            (click)="$event.preventDefault()"
+          >
+            >{{ 'labels.buttons.Select All' | translate }}
           </mat-checkbox>
         </mat-card>
+        <!-- TODO los td de la tabla no tienen los campos mapeados porque no se cual es la estructura de los datos que devuelve el endpoint, por lo que puse campos genericos, ajustar dependiendo de la respuesta del endpoint -->
         <table mat-table [dataSource]="dataSource" class="bc-table__table">
           <!-- Empresa -->
           <ng-container matColumnDef="checkbox">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let row">
-              <mat-checkbox (change)="selectAll($event)" [checked]="isSelected(row.id)"> </mat-checkbox>
+              <!-- TODO el metodo selectCredit recibe el id de la row ,ajustar dependiendo del nombre del campo -->
+              <mat-checkbox
+                (change)="selectCredit(row.id)"
+                [checked]="isSelected(row.id)"
+                (click)="$event.preventDefault()"
+              >
+              </mat-checkbox>
             </td>
           </ng-container>
           <ng-container matColumnDef="proyect">
-            <th mat-header-cell *matHeaderCellDef>Proyecto</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Proyect' | translate }}</th>
             <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
           </ng-container>
 
-          <!-- RUT -->
           <ng-container matColumnDef="number">
             <th mat-header-cell *matHeaderCellDef>Nº pagaré</th>
             <td mat-cell *matCellDef="let row">
+              <!-- TODO el ngClass falta por metodo para identificar si el crédito está próximo a vencer o en mora, actualmente puse un ejemplo con rojo, ajustar dependiendo de la respuesta del endpoint -->
               <div class="flag flag--withContent" [ngClass]="{ red: true, green: false }">
-                {{ row.rut }}
+                {{ row }}
               </div>
             </td>
           </ng-container>
@@ -111,12 +125,15 @@
         </div>
         <mat-card class="right">
           <h4>Resumen total de la proyección</h4>
+          <!-- TODO este resumen debe mostrar el total de los créditos seleccionados, el monto de capital, el monto por mora y el total a pagar proyectado, actualmente puse campos genericos porque no se la estructura de los datos que devuelve el endpoint, ajustar dependiendo de la respuesta del endpoint -->
           <ul>
             <li><span>Fecha proyección del pago</span> {{ 0 | currency }}</li>
             <li><span>Total de créditos seleccionados</span> {{ 0 | currency }}</li>
             <li><span>Monto de capital</span> {{ 0 | currency }}</li>
             <li><span>Monto por mora</span> {{ 0 | currency }}</li>
-            <li><span>Total</span> {{ 0 | currency }}</li>
+            <li>
+              <span>{{ 'labels.inputs.Total' | translate }}</span> {{ 0 | currency }}
+            </li>
           </ul>
         </mat-card>
       </section>
@@ -124,9 +141,10 @@
   </ng-container>
   <ng-container *ngIf="isDetailingSimultation">
     <mat-card>
+      <!-- TODO los td de la tabla no tienen los campos mapeados porque no se cual es la estructura de los datos que devuelve el endpoint, por lo que puse campos genericos, ajustar dependiendo de la respuesta del endpoint -->
       <table mat-table [dataSource]="dataSourceDetail" class="bc-table__table">
         <ng-container matColumnDef="proyect">
-          <th mat-header-cell *matHeaderCellDef>Proyecto</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Proyect' | translate }}</th>
           <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
         </ng-container>
 
@@ -169,7 +187,7 @@
           <td mat-cell *matCellDef="let row" class="bc-actions"></td>
         </ng-container>
         <ng-container matColumnDef="total">
-          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Total</th>
+          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">{{ 'labels.inputs.Total' | translate }}</th>
           <td mat-cell *matCellDef="let row" class="bc-actions"></td>
         </ng-container>
 
@@ -184,7 +202,7 @@
       [disabled]="!dueDateDatePickerValue"
       (click)="downloadPDF()"
     >
-      <fa-icon icon="download"></fa-icon> Descargar PDF
+      <fa-icon icon="download"></fa-icon>{{ 'labels.buttons.Download' }} PDF
     </button>
   </ng-container>
   <mifosx-custom-dialog

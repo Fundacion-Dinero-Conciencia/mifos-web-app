@@ -292,7 +292,8 @@
       }
     },
     "breadcrumbs": {
-      "Home": "Inicio"
+      "Home": "Inicio",
+      "paymentSimulation": "Simulación de pago"
     },
     "buttons": {
       "paymentSimulation": "Simulación de pago",
@@ -765,6 +766,8 @@
       "Feb 29 Period Only": "Solo periodo del 29 de febrero"
     },
     "commons": {
+      "late": "Atrasado",
+      "soon": "Próximo",
       "selected": "seleccionados",
       "Of client": "De cliente",
       "50 characters long": "50 caracteres de largo",
@@ -812,6 +815,7 @@
       "Password validation": "La contraseña debe contener un mínimo de {{minchar}} caracteres, que deben incluir 1 carácter mayúscula, minúscula y especial y no debe constar de caracteres repetidos ni espacios en blanco."
     },
     "heading": {
+      "paymentSimulation": "Simulación de pago",
       "GenerateCutOffNotification": "Generar notificación de vencimiento",
       "Notifications": "Notificaciones",
       "Bank-conciliation": "Conciliación bancaria",
@@ -1204,7 +1208,7 @@
       "messageMode": "Modo del mensaje",
       "Partner": "Conyuge",
       "Scope": "Alcance",
-
+      "cuotesCalendar": "Calendario de cuotas",
       "Simulation": "Simulación",
       "Subcredit": "Subcredito",
       "Year": "Año",

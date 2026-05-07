@@ -44,11 +44,10 @@ export class PaymentSimulationComponent implements OnInit {
   maxDate: any = '';
   constructor(
     private route: ActivatedRoute,
-    private settingsService: SettingsService,
-    private alertService: AlertService,
-    private translateService: AlertService
+    private settingsService: SettingsService
   ) {
     this.route.data.subscribe((data: any) => {
+      //Aqui esta la info del cliente, se asigna a clientData para mostrar en la vista y para lo que se necesite
       this.clientData = data.clientViewData;
     });
     this.minDate = this.settingsService.businessDate;
@@ -62,19 +61,31 @@ export class PaymentSimulationComponent implements OnInit {
     this.isModalOpen = true;
   }
 
+  getTableInformation() {
+    try {
+      showGlobalLoader();
+      //TODO metodo GET de informacion de la tabla con toPromise() y asignar el resultado a dataSource
+    } catch (error) {
+    } finally {
+      hideGlobalLoader();
+    }
+  }
+
   ngOnInit(): void {
     this.setMaxDate();
+    this.getTableInformation();
   }
 
   setMaxDate() {
     const today = new Date(this.minDate);
     this.maxDate = new Date(today.setDate(today.getDate() + 90));
   }
-
+  //Es importanten aclarar que todos los metodos referentes al elementSelect se hicieron bajo la asumcion que tendra un campo ID de no ser asi se debe cambiar todos los llamados al .id por el identificador unico correspondiente
   get areAllSelected(): boolean {
     if (this.dataSource.data.length === 0) {
       return false;
     }
+
     return this.dataSource.data.every((x: any) => this.elementSelected.includes(x.id));
   }
 
@@ -86,26 +97,32 @@ export class PaymentSimulationComponent implements OnInit {
     }
   }
 
+  selectCredit(id: number) {
+    if (this.elementSelected.includes(id)) {
+      this.elementSelected = this.elementSelected.filter((x: any) => x !== id);
+    } else {
+      this.elementSelected.push(id);
+    }
+  }
+
   isSelected(id: number): boolean {
     return this.elementSelected.includes(id);
   }
 
   simulatePaymentProjection() {
-    //TODO metodo de simulacion de proyeccion de pago
-    console.log(this.dueDateDatePickerValue);
-    console.log(this.elementSelected);
-    this.isDetailingSimultation = true;
     try {
       showGlobalLoader();
+      //TODO metodo GET de  simulacion de proyeccion de pago con toPromise() y asignar el resultado a dataSourceDetail
+      this.isDetailingSimultation = true;
     } catch (error) {
     } finally {
       hideGlobalLoader();
     }
   }
   downloadPDF() {
-    //TODO metodo de descargar PDF
     try {
       showGlobalLoader();
+      //TODO metodo de descargar PDF con toPromise()
     } catch (error) {
       this.haveError = true;
     } finally {
