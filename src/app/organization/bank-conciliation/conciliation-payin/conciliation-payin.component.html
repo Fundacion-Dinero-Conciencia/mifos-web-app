@@ -442,22 +442,6 @@
         </button>
       </section>
       <section>
-        <article
-          class="debtorAdvice"
-          *ngIf="
-            !!detailedRow &&
-            isDebtorDetail &&
-            totalAssignedAmount > 0 &&
-            detailedRow.amount !== totalAssignedAmount &&
-            totalAssignedAmount <= detailedRow.amount
-          "
-        >
-          <span class="infoIcon">𝐢</span>
-          <div>
-            <h3>Monto a cuenta vista: {{ detailedRow?.amount - totalAssignedAmount | currency: currency }}</h3>
-            <p>El monto será abonado automáticamente a la cuenta vista del cliente</p>
-          </div>
-        </article>
         <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">Debe asignar todo el monto disponible</p>
         <p *ngIf="isconfirming" class="important">
           Confirma la división de la transferencia. Esta acción no se puede revertir.

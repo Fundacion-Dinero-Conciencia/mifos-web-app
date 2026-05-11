@@ -9,6 +9,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { environment } from 'environments/environment';
 import { ClientsService } from './clients.service';
 import { ActivatedRoute } from '@angular/router';
+import { AuthenticationService } from 'app/core/authentication/authentication.service';
+import { SettingsService } from 'app/settings/settings.service';
 
 @Component({
   selector: 'mifosx-clients',
@@ -20,15 +22,7 @@ export class ClientsComponent implements OnInit {
 
   clientTypeOptions: [];
 
-  displayedColumns = [
-    'displayName',
-    'rut',
-    'mnemonic',
-    'accountNumber',
-    //'externalId',
-    'status'
-    //'officeName'
-  ];
+  displayedColumns: string[];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   existsClientsToFilter = false;
@@ -50,7 +44,8 @@ export class ClientsComponent implements OnInit {
 
   constructor(
     private clientService: ClientsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private settingsService: SettingsService
   ) {
     this.route.data.subscribe((data: { clientTypeOptions: any }) => {
       this.clientTypeOptions = data.clientTypeOptions.codeValues;
@@ -60,6 +55,31 @@ export class ClientsComponent implements OnInit {
   ngOnInit() {
     if (environment.preloadClients) {
       this.getClients();
+    }
+
+    const tenant = this.settingsService.tenantIdentifier;
+
+    if (tenant?.toLowerCase() == 'argentina') {
+      this.displayedColumns = [
+        'displayName',
+        'dni',
+        'cuit',
+        'mnemonic',
+        'accountNumber',
+        //'externalId',
+        'status'
+        //'officeName'
+      ];
+    } else {
+      this.displayedColumns = [
+        'displayName',
+        'rut',
+        'mnemonic',
+        'accountNumber',
+        //'externalId',
+        'status'
+        //'officeName'
+      ];
     }
   }
 

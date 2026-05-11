@@ -176,13 +176,35 @@
                       ></mifosx-external-identifier>
                     </td>
                   </tr>
-                  <tr>
+                  <tr *ngIf="clientViewData.rut">
                     <td>
-                      <b> RUT</b>
+                      <b>{{ 'labels.inputs.custom.rut' | translate }}</b>
                     </td>
                     <td>
                       <mifosx-external-identifier
                         externalId="{{ clientViewData.rut }}"
+                        completed="true"
+                      ></mifosx-external-identifier>
+                    </td>
+                  </tr>
+                  <tr *ngIf="clientViewData.dni">
+                    <td>
+                      <b>{{ 'labels.inputs.custom.dni' | translate }}</b>
+                    </td>
+                    <td>
+                      <mifosx-external-identifier
+                        externalId="{{ clientViewData.dni }}"
+                        completed="true"
+                      ></mifosx-external-identifier>
+                    </td>
+                  </tr>
+                  <tr *ngIf="clientViewData.cuit">
+                    <td>
+                      <b>{{ 'labels.inputs.custom.cuit' | translate }}</b>
+                    </td>
+                    <td>
+                      <mifosx-external-identifier
+                        externalId="{{ clientViewData.cuit }}"
                         completed="true"
                       ></mifosx-external-identifier>
                     </td>

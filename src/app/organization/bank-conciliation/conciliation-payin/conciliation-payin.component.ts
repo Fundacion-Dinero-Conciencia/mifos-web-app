@@ -406,10 +406,7 @@ export class ConciliationPayinComponent implements OnInit {
         });
       }
 
-      if (!this.isDebtorDetail) {
-        this.detailedRow && this.detailedRow.amount !== this.totalAssignedAmount && (disable = true);
-      }
-
+      this.detailedRow && this.detailedRow.amount !== this.totalAssignedAmount && (disable = true);
       this.totalAssignedAmount <= 1 && (disable = true);
       this.detailedRow && this.detailedRow.amount < this.totalAssignedAmount && (disable = true);
       return disable;
