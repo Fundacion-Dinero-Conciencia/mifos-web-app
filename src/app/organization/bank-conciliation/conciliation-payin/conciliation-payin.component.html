@@ -115,7 +115,8 @@
             'status-pill--applied': row.conciliationStatus.value === 'APPLIED',
             'status-pill--conciliated': row.conciliationStatus.value === 'CONCILIATED',
             'status-pill--recieved': row.conciliationStatus.value === 'RECEIVED',
-            'status-pill--error': row.conciliationStatus.value === 'INVALID'
+            'status-pill--error': row.conciliationStatus.value === 'INVALID',
+            'status-pill--error': row.conciliationStatus.value === 'FAILED'
           }"
         ></span>
         {{ getStatusLabel(row.conciliationStatus.value) }}

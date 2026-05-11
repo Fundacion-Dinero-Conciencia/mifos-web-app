@@ -202,7 +202,7 @@ export class PaymentOrderComponent implements OnInit {
       amountToReinvest: Number(row.amountToReinvest),
       id: row.id
     }));
-    this.organizationService.createPayRoll(data).subscribe((response: any) => {
+    this.organizationService.createPayRoll(data, false).subscribe((response: any) => {
       hideGlobalLoader();
       this.router.navigate(['../../../..'], { relativeTo: this.route });
     });

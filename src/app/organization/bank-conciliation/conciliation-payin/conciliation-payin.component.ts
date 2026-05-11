@@ -18,6 +18,7 @@ export interface ConciliationRow {
 }
 
 const statuses = {
+  FAILED: 'Fallido',
   INVALID: 'No detectado',
   APPLIED: 'Aplicado',
   RECEIVED: 'Recibido',

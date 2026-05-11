@@ -34,7 +34,8 @@ export class PayoutDetailComponent implements OnInit {
     'installmentAmount',
     'amountToPay',
     'amountToReinvest',
-    'status'
+    'status',
+    'select'
   ];
 
   dataSource = new MatTableDataSource<any>([]);
@@ -136,5 +137,62 @@ export class PayoutDetailComponent implements OnInit {
     if (pending === total) return 'PENDIENTE';
 
     return 'PARCIAL';
+  }
+
+  canRetry(row: any): boolean {
+    const status = row?.conciliationStatus?.value;
+
+    return status === 'FAILED' || status === 'REJECTED';
+  }
+
+  toggleRow(row: any): void {
+    if (!this.canRetry(row)) {
+      return;
+    }
+
+    row.selected = !row.selected;
+
+    this.rowsSelected = this.dataSource.data.filter((r) => r.selected);
+  }
+
+  toggleAll(event: any): void {
+    const checked = event.checked;
+
+    this.dataSource.data.forEach((row) => {
+      if (this.canRetry(row)) {
+        row.selected = checked;
+      }
+    });
+
+    this.rowsSelected = this.dataSource.data.filter((r) => r.selected);
+  }
+
+  isAllSelected(): boolean {
+    const retryables = this.dataSource.data.filter((r) => this.canRetry(r));
+
+    return retryables.length > 0 && retryables.every((r) => r.selected);
+  }
+
+  retrySelected(): void {
+    const data = this.rowsSelected.map((row) => ({
+      id: row.id
+    }));
+
+    if (!data.length) {
+      return;
+    }
+
+    showGlobalLoader();
+
+    this.organizationService.createPayRoll(data, true).subscribe({
+      next: () => {
+        hideGlobalLoader();
+
+        this.loadPage(this.pageIndex, this.pageSize, this.inputSearch);
+      },
+      error: () => {
+        hideGlobalLoader();
+      }
+    });
   }
 }
