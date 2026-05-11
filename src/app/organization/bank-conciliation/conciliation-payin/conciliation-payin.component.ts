@@ -114,6 +114,8 @@ export class ConciliationPayinComponent implements OnInit {
   inputsGroup: any[];
   selectorsGroup: any[] = [];
   availableLoans: any[] = [];
+  availableParticipations: any[] = [];
+  selectedParticipationIds: number[] = [];
 
   ngOnInit(): void {
     this.systemService.getCodeByName('ClientType').subscribe((data: any) => {
@@ -220,6 +222,14 @@ export class ConciliationPayinComponent implements OnInit {
   }
 
   viewAssignation(row: any) {
+    showGlobalLoader();
+
+    this.organizationService.getProjectParticipationAvailable(row.clientId).subscribe((data: any) => {
+      this.availableParticipations = [...data];
+      this.showDialogAssignation = true;
+      hideGlobalLoader();
+    });
+
     this.isDebtorDetail = false;
     this.detailedRow = row;
     this.selectedRowPartition = [
@@ -231,6 +241,7 @@ export class ConciliationPayinComponent implements OnInit {
     this.assignDataSource.data = this.selectedRowPartition || [];
     this.showDialogAssignation = true;
   }
+
   viewAssignationDebtor(row: any) {
     showGlobalLoader();
     this.organizationService.getLoanDataByClientId(row.clientId).subscribe((loanData: any) => {
@@ -357,12 +368,24 @@ export class ConciliationPayinComponent implements OnInit {
   assignPayingById(id: string): void {
     this.selectedRowPartition = this.getValuesConciliation();
     const loans = this.getValuesLoanIds();
-    const listPayload = this.selectedRowPartition
-      .map((amount, index) => ({
-        loanId: loans?.[index] || null,
-        amount
-      }))
-      .filter((item) => item.amount !== 0 && item.amount !== undefined && item.amount !== null);
+    let listPayload = null;
+
+    if (this.isDebtorDetail) {
+      listPayload = this.selectedRowPartition
+        .map((amount, index) => ({
+          loanId: loans?.[index] || null,
+          amount,
+          participationId: undefined
+        }))
+        .filter((item) => item.amount !== 0 && item.amount !== undefined && item.amount !== null);
+    } else {
+      listPayload = this.inputsGroup.map((amount, index) => ({
+        loanId: undefined,
+        amount,
+        participationId: this.selectedParticipationIds[index]
+      }));
+    }
+
     showGlobalLoader();
     this.organizationService.assignPayingById(id, listPayload).subscribe(() => {
       this.closeTransactionAssignation();
@@ -421,5 +444,40 @@ export class ConciliationPayinComponent implements OnInit {
       return null;
     }
     return this.availableLoans.find((loan) => Number(loan.loanId) === Number(id)) || null;
+  }
+
+  getNonSelectedParticipations(participationId: number): any[] {
+    if (!this.availableParticipations) {
+      return [];
+    }
+    if (participationId === undefined) {
+      return this.NonSelectedParticipationsOptions;
+    }
+    const participationsSelected = this.availableParticipations.find((pp) => Number(pp.id) === Number(participationId));
+    return [
+      ...this.NonSelectedParticipationsOptions,
+      participationsSelected
+    ];
+  }
+
+  get NonSelectedParticipationsOptions(): any[] {
+    if (!this.availableParticipations) {
+      return [];
+    }
+    const participationsSelected = this.getValuesParticipationsIds();
+    return this.availableParticipations.filter((loan) => !participationsSelected.includes(Number(loan.loanId)));
+  }
+
+  getValuesParticipationsIds(): number[] {
+    if (!this.selectorsGroup) {
+      return [];
+    }
+    const stringValues = [...this.selectorsGroup];
+    return stringValues.map((value) => (value !== undefined ? Number(value) : undefined));
+  }
+
+  changeSelectedParticipation(event: any, index: number): void {
+    this.selectedParticipationIds[index] = Number(event.target.value);
+    this.inputsGroup[index] = 0;
   }
 }
