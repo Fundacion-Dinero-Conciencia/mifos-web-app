@@ -916,6 +916,10 @@ export class OrganizationService {
     return this.http.get('/projectparticipation/all', { params });
   }
 
+  getProjectParticipationAvailable(clientId: string): Observable<any> {
+    return this.http.get(`/projectparticipation/available/${clientId}`);
+  }
+
   getInvestmentProjectParticipationsByProjectId(projectId: string): Observable<any> {
     return this.http.get(`/projectparticipation/search`, {
       params: {
@@ -1099,6 +1103,7 @@ export class OrganizationService {
     partitionList: {
       loanId?: number;
       amount: number;
+      participationId?: number;
     }[]
   ) {
     return this.http.post(

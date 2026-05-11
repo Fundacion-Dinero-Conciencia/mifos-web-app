@@ -55,7 +55,7 @@ header button {
   height: fit-content;
   max-height: 90dvh;
 
-  --w: min(640px, 92vw);
+  --w: fit-content;
 
   align-items: center;
   background: #fff;
