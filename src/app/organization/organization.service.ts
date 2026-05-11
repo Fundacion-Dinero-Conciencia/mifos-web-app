@@ -1084,11 +1084,12 @@ export class OrganizationService {
   createPayRoll(
     data: {
       id: number;
-      amountToPaid: number;
-      amountToReinvest: number;
-    }[]
+      amountToPaid?: number;
+      amountToReinvest?: number;
+    }[],
+    retry = false
   ) {
-    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data }), {
+    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data, retry }), {
       headers: { 'Content-Type': 'application/json' }
     });
   }

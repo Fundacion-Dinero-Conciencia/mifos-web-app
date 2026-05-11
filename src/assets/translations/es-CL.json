@@ -2728,6 +2728,7 @@
       "Closed (obligations met)": "Cerrado (obligaciones cumplidas)",
       "Closed (rescheduled)": "Cerrado (reprogramado)",
       "Closed (written off)": "Cerrado (cancelado)",
+      "Failed": "Fallido",
       "Overpaid": "Sobrepagado",
       "Pending": "Pendiente",
       "Rejected": "Rechazado",
