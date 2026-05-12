@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
 import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
+import { finalize } from 'rxjs/operators';
 
 export interface ConciliationRow {
   systemDate: string | Date;
@@ -160,13 +161,24 @@ export class ConciliationPayinComponent implements OnInit {
       sort: 'transactionDate'
     };
     showGlobalLoader();
-    this.organizationService.getShinkansen({ ...requestParams }).subscribe((response: any) => {
-      this.dataSource.data = response.content || response;
-      this.pageSize = size;
-      this.pageIndex = page;
-      this.totalItems = response.totalElements;
-      hideGlobalLoader();
-    });
+    this.organizationService
+      .getShinkansen({ ...requestParams })
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.dataSource.data = response.content || response;
+          this.pageSize = size;
+          this.pageIndex = page;
+          this.totalItems = response.totalElements;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
   onPageChange(event: any) {
     this.loadPage(event.pageIndex, event.pageSize, this.filters.value);
@@ -224,31 +236,53 @@ export class ConciliationPayinComponent implements OnInit {
   viewAssignation(row: any) {
     showGlobalLoader();
 
-    this.organizationService.getProjectParticipationAvailable(row.clientId).subscribe((data: any) => {
-      this.availableParticipations = [...data];
-      this.showDialogAssignation = true;
-      hideGlobalLoader();
-    });
-
-    this.isDebtorDetail = false;
-    this.detailedRow = row;
-    this.selectedRowPartition = [
-      0
-    ];
-    this.inputsGroup = [
-      0
-    ];
-    this.assignDataSource.data = this.selectedRowPartition || [];
-    this.showDialogAssignation = true;
+    this.organizationService
+      .getProjectParticipationAvailable(row.clientId)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.availableParticipations = [...data];
+          this.showDialogAssignation = true;
+          this.isDebtorDetail = false;
+          this.detailedRow = row;
+          this.selectedRowPartition = [
+            0
+          ];
+          this.inputsGroup = [
+            0
+          ];
+          this.assignDataSource.data = this.selectedRowPartition || [];
+          this.showDialogAssignation = true;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
 
   viewAssignationDebtor(row: any) {
     showGlobalLoader();
-    this.organizationService.getLoanDataByClientId(row.clientId).subscribe((loanData: any) => {
-      this.availableLoans = [...loanData];
-      this.showDialogAssignation = true;
-      hideGlobalLoader();
-    });
+    this.organizationService
+      .getLoanDataByClientId(row.clientId)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (loanData: any) => {
+          this.availableLoans = [...loanData];
+          this.showDialogAssignation = true;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
+
     this.detailedRow = row;
     this.isDebtorDetail = true;
     this.selectedRowPartition = [0];
@@ -273,13 +307,11 @@ export class ConciliationPayinComponent implements OnInit {
   }
 
   findLoanByIndex(index: number): any {
-    console.log(index);
     const loanId = this.selectorsGroup[index];
     if (loanId === undefined) {
       return null;
     }
     const loan = this.availableLoans.find((loan) => Number(loan.loanId) === Number(loanId));
-    console.log(loan);
     return loan;
   }
 
@@ -387,11 +419,22 @@ export class ConciliationPayinComponent implements OnInit {
     }
 
     showGlobalLoader();
-    this.organizationService.assignPayingById(id, listPayload).subscribe(() => {
-      this.closeTransactionAssignation();
-      this.applyFilters();
-      hideGlobalLoader();
-    });
+    this.organizationService
+      .assignPayingById(id, listPayload)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.closeTransactionAssignation();
+          this.applyFilters();
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
   }
 
   get NonSelectedLoansOptions(): any[] {

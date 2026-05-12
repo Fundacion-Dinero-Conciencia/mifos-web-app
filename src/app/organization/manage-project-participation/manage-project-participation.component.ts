@@ -72,16 +72,19 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         status: this.filterStatus,
         paymentType: this.filterPaymentType
       })
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
       .subscribe({
         next: (data: any) => {
           this.projectParticipationsData = data.content;
           this.totalItems = data.totalElements;
           this.dataSource.data = this.projectParticipationsData;
-          hideGlobalLoader();
         },
         error: (err) => {
-          console.error('Error loading project participations:', err);
-          hideGlobalLoader();
+          console.error(err);
         }
       });
   }

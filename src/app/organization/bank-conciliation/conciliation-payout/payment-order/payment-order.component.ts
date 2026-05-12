@@ -6,7 +6,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { isNumber } from 'lodash';
 import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'mifosx-payment-order',
@@ -112,21 +112,27 @@ export class PaymentOrderComponent implements OnInit {
     const loanId = this.route.snapshot.paramMap.get('id');
     this.organizationService
       .getPayoutOrders(Number(loanId), Number(this.installmentNo), { ...requestParams })
-      .subscribe((response: any) => {
-        const tableContent = response.content.map((item: any) => ({
-          ...item,
-          amountToPay: isNumber(item.amountToPaid) ? item.amountToPaid : item.amount,
-          amountToReinvest: item.amountToReinvest || 0,
-          selected: false,
-          investorLink: `/clients/${item.clientId}`
-        }));
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          const tableContent = response.content.map((item: any) => ({
+            ...item,
+            amountToPay: isNumber(item.amountToPaid) ? item.amountToPaid : item.amount,
+            amountToReinvest: item.amountToReinvest || 0,
+            selected: false,
+            investorLink: `/clients/${item.clientId}`
+          }));
 
-        this.dataSource.data = tableContent;
-        this.pageSize = size;
-        this.pageIndex = page;
-        this.totalItems = response.totalElements;
-        this.totalCount = response.totalElements;
-        hideGlobalLoader();
+          this.dataSource.data = tableContent;
+          this.pageSize = size;
+          this.pageIndex = page;
+          this.totalItems = response.totalElements;
+          this.totalCount = response.totalElements;
+        }
       });
   }
   onAmountToPayChange(id: number, index: number, totalAmount: number, event: any): void {
@@ -188,11 +194,18 @@ export class PaymentOrderComponent implements OnInit {
       amountToReinvest: Number(row.amountToReinvest),
       id: row.id
     }));
-    this.organizationService.EditOrderPayout(data).subscribe((response: any) => {
-      console.log('Cambios guardados', response);
-      hideGlobalLoader();
-      this.router.navigate(['../'], { relativeTo: this.route });
-    });
+    this.organizationService
+      .EditOrderPayout(data)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['../'], { relativeTo: this.route });
+        }
+      });
   }
 
   generatePayment() {
@@ -202,10 +215,18 @@ export class PaymentOrderComponent implements OnInit {
       amountToReinvest: Number(row.amountToReinvest),
       id: row.id
     }));
-    this.organizationService.createPayRoll(data, false).subscribe((response: any) => {
-      hideGlobalLoader();
-      this.router.navigate(['../../../..'], { relativeTo: this.route });
-    });
+    this.organizationService
+      .createPayRoll(data, false)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['../../../..'], { relativeTo: this.route });
+        }
+      });
   }
 
   get atleastOneChecked(): boolean {
