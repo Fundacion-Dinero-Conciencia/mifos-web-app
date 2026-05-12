@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { SystemService } from 'app/system/system.service';
+import { finalize } from 'rxjs/operators';
 
 type PayrollStatus = 'EXITOSA' | 'PARCIAL' | 'FALLIDA' | 'PENDIENTE';
 
@@ -146,13 +147,24 @@ export class ConciliationPayoutComponent implements OnInit {
       sort: 'transactionDate'
     };
     showGlobalLoader();
-    this.organizationService.getShinkansenOrdersPayout({ ...requestParams }).subscribe((response: any) => {
-      this.dataSource.data = response.content || response;
-      this.pageSize = size;
-      this.pageIndex = page;
-      this.totalItems = response.totalElements;
-      hideGlobalLoader();
-    });
+    this.organizationService
+      .getShinkansenOrdersPayout({ ...requestParams })
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.dataSource.data = response.content || response;
+          this.pageSize = size;
+          this.pageIndex = page;
+          this.totalItems = response.totalElements;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
   onPageChange(event: any) {
     this.loadPage(event.pageIndex, event.pageSize, this.filters.value);
@@ -223,11 +235,22 @@ export class ConciliationPayoutComponent implements OnInit {
   }
   viewAssignationDebtor(row: any) {
     showGlobalLoader();
-    this.organizationService.getLoanDataByClientId(row.clientId).subscribe((loanData: any) => {
-      this.availableLoans = [...loanData];
-      this.showDialogAssignation = true;
-      hideGlobalLoader();
-    });
+    this.organizationService
+      .getLoanDataByClientId(row.clientId)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (loanData: any) => {
+          this.availableLoans = [...loanData];
+          this.showDialogAssignation = true;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
     this.detailedRow = row;
     this.isDebtorDetail = true;
     this.selectedRowPartition = [0];
@@ -319,11 +342,22 @@ export class ConciliationPayoutComponent implements OnInit {
       }))
       .filter((item) => item.amount !== 0 && item.amount !== undefined && item.amount !== null);
     showGlobalLoader();
-    this.organizationService.assignPayingById(id, listPayload).subscribe(() => {
-      this.closeTransactionAssignation();
-      this.applyFilters();
-      hideGlobalLoader();
-    });
+    this.organizationService
+      .assignPayingById(id, listPayload)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.closeTransactionAssignation();
+          this.applyFilters();
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
 
   get NonSelectedLoansOptions(): any[] {

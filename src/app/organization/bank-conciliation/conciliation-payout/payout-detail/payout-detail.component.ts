@@ -7,7 +7,7 @@ import { SettingsService } from 'app/settings/settings.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { SystemService } from 'app/system/system.service';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 @Component({
   selector: 'mifosx-payout-detail',
   templateUrl: './payout-detail.component.html',
@@ -79,23 +79,30 @@ export class PayoutDetailComponent implements OnInit {
     showGlobalLoader();
     const params = { page, size, search: search ?? '' };
 
-    this.organizationService.getPayoutOrdersTramited(Number(this.conciliationId), params).subscribe({
-      next: (response: any) => {
-        this.additional = response?.additional ?? null;
-        const content = (response?.content ?? response ?? []).map((item: any) => ({
-          ...item,
-          selected: false
-        }));
+    this.organizationService
+      .getPayoutOrdersTramited(Number(this.conciliationId), params)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.additional = response?.additional ?? null;
+          const content = (response?.content ?? response ?? []).map((item: any) => ({
+            ...item,
+            selected: false
+          }));
 
-        this.dataSource.data = content;
-        this.pageSize = size;
-        this.pageIndex = page;
-        this.totalItems = response?.totalElements ?? content.length;
-
-        hideGlobalLoader();
-      },
-      error: () => hideGlobalLoader()
-    });
+          this.dataSource.data = content;
+          this.pageSize = size;
+          this.pageIndex = page;
+          this.totalItems = response?.totalElements ?? content.length;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
   capitalize(word: string) {
     if (!word) return '';
@@ -184,15 +191,20 @@ export class PayoutDetailComponent implements OnInit {
 
     showGlobalLoader();
 
-    this.organizationService.createPayRoll(data, true).subscribe({
-      next: () => {
-        hideGlobalLoader();
-
-        this.loadPage(this.pageIndex, this.pageSize, this.inputSearch);
-      },
-      error: () => {
-        hideGlobalLoader();
-      }
-    });
+    this.organizationService
+      .createPayRoll(data, true)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.loadPage(this.pageIndex, this.pageSize, this.inputSearch);
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
 }
