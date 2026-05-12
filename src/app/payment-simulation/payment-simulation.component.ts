@@ -4,6 +4,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SettingsService } from 'app/settings/settings.service';
 import { AlertService } from 'app/core/alert/alert.service';
 import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
+import { ClientsService } from 'app/clients/clients.service';
+import { Dates } from 'app/core/utils/dates';
 
 @Component({
   selector: 'mifosx-payment-simulation',
@@ -11,10 +13,11 @@ import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
   styleUrls: ['./payment-simulation.component.scss']
 })
 export class PaymentSimulationComponent implements OnInit {
-  dataSource = new MatTableDataSource([]);
-  dataSourceDetail = new MatTableDataSource([]);
+  dataSource: any;
+  dataSourceDetail: any;
   dueDateDatePickerValue: string = '';
   isModalOpen: boolean = false;
+  isSimulated: boolean = false;
   isDetailingSimultation: boolean = false;
   elementSelected: number[] = [];
   clientData: any;
@@ -24,30 +27,32 @@ export class PaymentSimulationComponent implements OnInit {
     'checkbox',
     'proyect',
     'Number',
-    'sueDate',
+    'dueDate',
     'creditProduct',
     'originalCredit',
     'haveToPay',
-    'daysInArrears'
+    'daysInArrears',
+    'arrears'
   ];
   displayedColumnsDetail: string[] = [
     'proyect',
     'Number',
-    'sueDays',
+    'daysInArrears',
     'cuotesCuantity',
     'capital',
-    'haveToPay',
-    'daysInArrearsAmount',
+    'interest',
+    'arrears',
     'total'
   ];
   minDate: any = '';
   maxDate: any = '';
   constructor(
     private route: ActivatedRoute,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private clientService: ClientsService,
+    private dateUtils: Dates
   ) {
     this.route.data.subscribe((data: any) => {
-      //Aqui esta la info del cliente, se asigna a clientData para mostrar en la vista y para lo que se necesite
       this.clientData = data.clientViewData;
     });
     this.minDate = this.settingsService.businessDate;
@@ -61,10 +66,12 @@ export class PaymentSimulationComponent implements OnInit {
     this.isModalOpen = true;
   }
 
-  getTableInformation() {
+  async getTableInformation() {
     try {
       showGlobalLoader();
-      //TODO metodo GET de informacion de la tabla con toPromise() y asignar el resultado a dataSource
+      const response = await this.clientService.getClientsForPaymentSimulation(this.clientData.id).toPromise();
+
+      this.dataSource = response;
     } catch (error) {
     } finally {
       hideGlobalLoader();
@@ -80,18 +87,17 @@ export class PaymentSimulationComponent implements OnInit {
     const today = new Date(this.minDate);
     this.maxDate = new Date(today.setDate(today.getDate() + 90));
   }
-  //Es importanten aclarar que todos los metodos referentes al elementSelect se hicieron bajo la asumcion que tendra un campo ID de no ser asi se debe cambiar todos los llamados al .id por el identificador unico correspondiente
   get areAllSelected(): boolean {
-    if (this.dataSource.data.length === 0) {
+    if (this.dataSource.length === 0) {
       return false;
     }
 
-    return this.dataSource.data.every((x: any) => this.elementSelected.includes(x.id));
+    return this.dataSource.every((x: any) => this.elementSelected.includes(x.loanId));
   }
 
   selectAll($event: any) {
     if ($event.checked) {
-      this.elementSelected = this.clientData.loanAccounts.map((x: any) => x.id);
+      this.elementSelected = this.dataSource.map((x: any) => x.loanId);
     } else {
       this.elementSelected = [];
     }
@@ -109,11 +115,24 @@ export class PaymentSimulationComponent implements OnInit {
     return this.elementSelected.includes(id);
   }
 
-  simulatePaymentProjection() {
+  async simulatePaymentProjection() {
     try {
       showGlobalLoader();
-      //TODO metodo GET de  simulacion de proyeccion de pago con toPromise() y asignar el resultado a dataSourceDetail
-      this.isDetailingSimultation = true;
+
+      const dateFormat = this.settingsService.dateFormat;
+      const locale = this.settingsService.language.code;
+
+      const params = {
+        loanIds: this.elementSelected,
+        cutoffDate: this.dateUtils.formatDate(this.dueDateDatePickerValue, dateFormat),
+        dateFormat: dateFormat,
+        locale: locale
+      };
+
+      const response = await this.clientService.createPaymentSimulation(this.clientData.id, params).toPromise();
+
+      this.dataSourceDetail = response;
+      this.isSimulated = true;
     } catch (error) {
     } finally {
       hideGlobalLoader();
@@ -129,5 +148,13 @@ export class PaymentSimulationComponent implements OnInit {
       this.isModalOpen = true;
       hideGlobalLoader();
     }
+  }
+
+  seeSimulationDetails() {
+    this.isDetailingSimultation = true;
+  }
+
+  goBack() {
+    this.isDetailingSimultation = false;
   }
 }

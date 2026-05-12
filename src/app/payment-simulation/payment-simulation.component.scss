@@ -166,3 +166,71 @@ main {
     color: #ff624e;
   }
 }
+
+/* ========================= */
+
+/* TABLES */
+
+/* ========================= */
+
+.centered-table {
+  width: 100%;
+}
+
+/* HEADERS */
+
+.centered-table th.mat-mdc-header-cell {
+  text-align: left !important;
+  vertical-align: middle !important;
+  padding: 0 16px !important;
+}
+
+/* BODY */
+
+.centered-table td.mat-mdc-cell {
+  text-align: left !important;
+  vertical-align: middle !important;
+  padding: 12px 16px !important;
+}
+
+/* CONTENT */
+
+.cell-content {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+}
+
+/* FLAG */
+
+.centered-flag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* MISC */
+
+.no-margin {
+  margin: 0;
+  text-align: left;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-button {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+}

@@ -1,101 +1,160 @@
 <main>
-  <h1>
-    {{ clientData.displayName }}
-  </h1>
+  <div class="header-container">
+    <span class="back-button" *ngIf="isDetailingSimultation" (click)="goBack()"> &lt; Volver </span>
+
+    <h1>
+      {{ clientData.displayName }}
+    </h1>
+  </div>
   <ng-container *ngIf="!isDetailingSimultation">
     <mat-card class="bc-card">
-      <ng-container *ngIf="dataSource.data.length > 0">
+      <ng-container *ngIf="dataSource?.length > 0">
         <div class="legend">
           <span
             ><b>{{ 'labels.inputs.cuotesCalendar' | translate }}</b></span
           >
-          <span class="flagLabelContainer"
-            ><div class="flag red"></div>
-            {{ 'labels.commons.late' | translate }}</span
-          >
-          <span class="flagLabelContainer"
-            ><div class="flag green"></div>
-            {{ 'labels.commons.soon' | translate }}</span
-          >
+          <span class="flagLabelContainer">
+            <div class="flag red"></div>
+            {{ 'labels.commons.late' | translate }}
+          </span>
+          <span class="flagLabelContainer">
+            <div class="flag green"></div>
+            {{ 'labels.commons.soon' | translate }}
+          </span>
         </div>
         <mat-card class="checkCard">
-          <mat-checkbox
-            labelPosition="after"
-            (change)="selectAll($event)"
-            [checked]="areAllSelected"
-            (click)="$event.preventDefault()"
-          >
+          <mat-checkbox labelPosition="after" (change)="selectAll($event)" [checked]="areAllSelected"
             >{{ 'labels.buttons.Select All' | translate }}
           </mat-checkbox>
         </mat-card>
         <!-- TODO los td de la tabla no tienen los campos mapeados porque no se cual es la estructura de los datos que devuelve el endpoint, por lo que puse campos genericos, ajustar dependiendo de la respuesta del endpoint -->
-        <table mat-table [dataSource]="dataSource" class="bc-table__table">
-          <!-- Empresa -->
+        <table mat-table [dataSource]="dataSource" class="bc-table__table centered-table">
+          <!-- Checkbox -->
           <ng-container matColumnDef="checkbox">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let row">
-              <!-- TODO el metodo selectCredit recibe el id de la row ,ajustar dependiendo del nombre del campo -->
-              <mat-checkbox
-                (change)="selectCredit(row.id)"
-                [checked]="isSelected(row.id)"
-                (click)="$event.preventDefault()"
-              >
-              </mat-checkbox>
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="proyect">
-            <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Proyect' | translate }}</th>
-            <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
-          </ng-container>
 
-          <ng-container matColumnDef="number">
-            <th mat-header-cell *matHeaderCellDef>Nº pagaré</th>
             <td mat-cell *matCellDef="let row">
-              <!-- TODO el ngClass falta por metodo para identificar si el crédito está próximo a vencer o en mora, actualmente puse un ejemplo con rojo, ajustar dependiendo de la respuesta del endpoint -->
-              <div class="flag flag--withContent" [ngClass]="{ red: true, green: false }">
-                {{ row }}
+              <div class="cell-content">
+                <mat-checkbox (change)="selectCredit(row.loanId)" [checked]="isSelected(row.loanId)"> </mat-checkbox>
               </div>
             </td>
           </ng-container>
 
-          <!-- Subcrédito (como link) -->
-          <ng-container matColumnDef="sueDate">
-            <th mat-header-cell *matHeaderCellDef>Fecha de prox vencimiento</th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/clients', row.clientId, 'loans-accounts', row.loanId]">
-              <p class="linkStyle">{{ row.accountNo }}</p>
+          <!-- Proyecto -->
+          <ng-container matColumnDef="proyect">
+            <th mat-header-cell *matHeaderCellDef class="center-header">
+              {{ 'labels.inputs.Proyect' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.projectName }}
+              </div>
             </td>
           </ng-container>
 
-          <!-- N° pagaré -->
+          <!-- Nº pagaré -->
+          <ng-container matColumnDef="Number">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Nº pagaré</th>
+
+            <td
+              mat-cell
+              *matCellDef="let row"
+              [routerLink]="['/clients', clientData.id, 'loans-accounts', row.loanId]"
+              class="cursor-pointer"
+            >
+              <div class="cell-content">
+                <div
+                  class="flag flag--withContent centered-flag"
+                  [ngClass]="{
+                    red: row.inArrears,
+                    green: !row.inArrears
+                  }"
+                >
+                  {{ row.promissoryNumber }}
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Fecha vencimiento -->
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Fecha de prox vencimiento</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                <p class="no-margin">
+                  {{ row.nextDueDate }}
+                </p>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Producto -->
           <ng-container matColumnDef="creditProduct">
-            <th mat-header-cell *matHeaderCellDef>Producto de crédito</th>
-            <td mat-cell *matCellDef="let row">{{ row.promissoryNumber }}</td>
+            <th mat-header-cell *matHeaderCellDef class="center-header">Producto de crédito</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.creditType }}
+              </div>
+            </td>
           </ng-container>
 
-          <!-- Estado -->
+          <!-- Crédito original -->
           <ng-container matColumnDef="originalCredit">
-            <th mat-header-cell *matHeaderCellDef>Crédito original</th>
+            <th mat-header-cell *matHeaderCellDef class="center-header">Crédito original</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.principalAmount | currency }}
+              </div>
+            </td>
           </ng-container>
 
-          <!-- Acciones -->
+          <!-- Pendiente -->
           <ng-container matColumnDef="haveToPay">
-            <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Pendiente de pago</th>
-            <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+            <th mat-header-cell *matHeaderCellDef class="center-header">Pendiente de pago</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.pendingAmount | currency }}
+              </div>
+            </td>
           </ng-container>
+
+          <!-- Mora -->
           <ng-container matColumnDef="daysInArrears">
-            <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Días de mora</th>
-            <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+            <th mat-header-cell *matHeaderCellDef class="center-header">Días de mora</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.daysInArrears }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Monto mora -->
+          <ng-container matColumnDef="arrears">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Monto por mora</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.arrearsAmount | currency }}
+              </div>
+            </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
       </ng-container>
-      <ng-container *ngIf="dataSource.data.length == 0">
+      <ng-container *ngIf="dataSource?.length == 0">
         <div class="noData"><span>ⓘ</span><span>Cliente sin créditos activos</span></div>
       </ng-container>
     </mat-card>
-    <ngcontainer *ngIf="dataSource.data.length > 0">
+    <ngcontainer *ngIf="dataSource?.length > 0">
       <section class="bottomSection">
         <div class="left">
           <mat-form-field (click)="picker.open()">
@@ -123,18 +182,24 @@
             <span>ⓘ</span><span>Debes seleccionar una fecha de corte para simular la proyección del pago</span>
           </div>
         </div>
-        <mat-card class="right">
+        <mat-card class="right" *ngIf="isSimulated">
           <h4>Resumen total de la proyección</h4>
           <!-- TODO este resumen debe mostrar el total de los créditos seleccionados, el monto de capital, el monto por mora y el total a pagar proyectado, actualmente puse campos genericos porque no se la estructura de los datos que devuelve el endpoint, ajustar dependiendo de la respuesta del endpoint -->
           <ul>
-            <li><span>Fecha proyección del pago</span> {{ 0 | currency }}</li>
-            <li><span>Total de créditos seleccionados</span> {{ 0 | currency }}</li>
-            <li><span>Monto de capital</span> {{ 0 | currency }}</li>
-            <li><span>Monto por mora</span> {{ 0 | currency }}</li>
+            <li><span>Fecha proyección del pago</span> {{ dataSourceDetail?.changes?.simulationDate }}</li>
+            <li><span>Total de créditos seleccionados</span> {{ dataSourceDetail.changes?.selectedLoans }}</li>
+            <li><span>Monto de capital</span> {{ dataSourceDetail.changes?.principalAmount | currency }}</li>
+            <li><span>Monto de intereses</span> {{ dataSourceDetail.changes?.interestAmount | currency }}</li>
+            <li><span>Monto por mora</span> {{ dataSourceDetail.changes?.arrearsAmount | currency }}</li>
             <li>
-              <span>{{ 'labels.inputs.Total' | translate }}</span> {{ 0 | currency }}
+              <span>{{ 'labels.inputs.Total' | translate }}</span> {{ dataSourceDetail.changes?.total | currency }}
             </li>
           </ul>
+          <div>
+            <button mat-raised-button color="primary" (click)="seeSimulationDetails()">
+              Ver detalle de la proyección
+            </button>
+          </div>
         </mat-card>
       </section>
     </ngcontainer>
@@ -142,56 +207,101 @@
   <ng-container *ngIf="isDetailingSimultation">
     <mat-card>
       <!-- TODO los td de la tabla no tienen los campos mapeados porque no se cual es la estructura de los datos que devuelve el endpoint, por lo que puse campos genericos, ajustar dependiendo de la respuesta del endpoint -->
-      <table mat-table [dataSource]="dataSourceDetail" class="bc-table__table">
+      <table mat-table [dataSource]="dataSourceDetail?.changes?.details" class="bc-table__table centered-table">
+        <!-- Proyecto -->
         <ng-container matColumnDef="proyect">
-          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Proyect' | translate }}</th>
-          <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
-        </ng-container>
+          <th mat-header-cell *matHeaderCellDef class="center-header">
+            {{ 'labels.inputs.Proyect' | translate }}
+          </th>
 
-        <!-- RUT -->
-        <ng-container matColumnDef="number">
-          <th mat-header-cell *matHeaderCellDef>Pagaré</th>
           <td mat-cell *matCellDef="let row">
-            <div class="flag flag--withContent" [ngClass]="{ red: true, green: false }">
-              {{ row.rut }}
+            <div class="cell-content">
+              {{ row.projectName }}
             </div>
           </td>
         </ng-container>
 
-        <!-- Subcrédito (como link) -->
-        <ng-container matColumnDef="sueDays">
-          <th mat-header-cell *matHeaderCellDef>Días de mora</th>
-          <td mat-cell *matCellDef="let row" [routerLink]="['/clients', row.clientId, 'loans-accounts', row.loanId]">
-            <p class="linkStyle">{{ row.accountNo }}</p>
+        <!-- Pagaré -->
+        <ng-container matColumnDef="Number">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Pagaré</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.promissoryNumber }}
+            </div>
           </td>
         </ng-container>
 
-        <!-- N° pagaré -->
+        <!-- Mora -->
+        <ng-container matColumnDef="daysInArrears">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Días de mora</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.daysInArrears }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Cuotas -->
         <ng-container matColumnDef="cuotesCuantity">
-          <th mat-header-cell *matHeaderCellDef>Cantidad de cuotas</th>
-          <td mat-cell *matCellDef="let row">{{ row.promissoryNumber }}</td>
+          <th mat-header-cell *matHeaderCellDef class="center-header">Cantidad de cuotas</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.numberOfRepayments }}
+            </div>
+          </td>
         </ng-container>
 
-        <!-- Estado -->
+        <!-- Capital -->
         <ng-container matColumnDef="capital">
-          <th mat-header-cell *matHeaderCellDef>Monto de capital</th>
+          <th mat-header-cell *matHeaderCellDef class="center-header">Monto de capital</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.principalAmount | currency }}
+            </div>
+          </td>
         </ng-container>
 
-        <!-- Acciones -->
-        <ng-container matColumnDef="haveToPay">
-          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Monto de intereses</th>
-          <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+        <!-- Intereses -->
+        <ng-container matColumnDef="interest">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Monto de intereses</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.interestAmount | currency }}
+            </div>
+          </td>
         </ng-container>
-        <ng-container matColumnDef="daysInArrearsAmount">
-          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">Monto por mora</th>
-          <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+
+        <!-- Mora monto -->
+        <ng-container matColumnDef="arrears">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Monto por mora</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.arrearsAmount | currency }}
+            </div>
+          </td>
         </ng-container>
+
+        <!-- Total -->
         <ng-container matColumnDef="total">
-          <th mat-header-cell *matHeaderCellDef class="bc-actions-h">{{ 'labels.inputs.Total' | translate }}</th>
-          <td mat-cell *matCellDef="let row" class="bc-actions"></td>
+          <th mat-header-cell *matHeaderCellDef class="center-header">
+            {{ 'labels.inputs.Total' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.total | currency }}
+            </div>
+          </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsDetail"></tr>
+
         <tr mat-row *matRowDef="let row; columns: displayedColumnsDetail"></tr>
       </table>
     </mat-card>
