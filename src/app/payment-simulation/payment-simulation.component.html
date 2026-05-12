@@ -1,0 +1,339 @@
+<main>
+  <div class="header-container">
+    <span class="back-button" *ngIf="isDetailingSimultation" (click)="goBack()"> &lt; Volver </span>
+
+    <h1>
+      {{ clientData.displayName }}
+    </h1>
+  </div>
+  <ng-container *ngIf="!isDetailingSimultation">
+    <mat-card class="bc-card">
+      <ng-container *ngIf="dataSource?.length > 0">
+        <div class="legend">
+          <span
+            ><b>{{ 'labels.inputs.cuotesCalendar' | translate }}</b></span
+          >
+          <span class="flagLabelContainer">
+            <div class="flag red"></div>
+            {{ 'labels.commons.late' | translate }}
+          </span>
+          <span class="flagLabelContainer">
+            <div class="flag green"></div>
+            {{ 'labels.commons.soon' | translate }}
+          </span>
+        </div>
+        <mat-card class="checkCard">
+          <mat-checkbox labelPosition="after" (change)="selectAll($event)" [checked]="areAllSelected"
+            >{{ 'labels.buttons.Select All' | translate }}
+          </mat-checkbox>
+        </mat-card>
+        <!-- TODO los td de la tabla no tienen los campos mapeados porque no se cual es la estructura de los datos que devuelve el endpoint, por lo que puse campos genericos, ajustar dependiendo de la respuesta del endpoint -->
+        <table mat-table [dataSource]="dataSource" class="bc-table__table centered-table">
+          <!-- Checkbox -->
+          <ng-container matColumnDef="checkbox">
+            <th mat-header-cell *matHeaderCellDef></th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                <mat-checkbox (change)="selectCredit(row.loanId)" [checked]="isSelected(row.loanId)"> </mat-checkbox>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Proyecto -->
+          <ng-container matColumnDef="proyect">
+            <th mat-header-cell *matHeaderCellDef class="center-header">
+              {{ 'labels.inputs.Proyect' | translate }}
+            </th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.projectName }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Nº pagaré -->
+          <ng-container matColumnDef="Number">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Nº pagaré</th>
+
+            <td
+              mat-cell
+              *matCellDef="let row"
+              [routerLink]="['/clients', clientData.id, 'loans-accounts', row.loanId]"
+              class="cursor-pointer"
+            >
+              <div class="cell-content">
+                <div
+                  class="flag flag--withContent centered-flag"
+                  [ngClass]="{
+                    red: row.inArrears,
+                    green: !row.inArrears
+                  }"
+                >
+                  {{ row.promissoryNumber }}
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Fecha vencimiento -->
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Fecha de prox vencimiento</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                <p class="no-margin">
+                  {{ row.nextDueDate }}
+                </p>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Producto -->
+          <ng-container matColumnDef="creditProduct">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Producto de crédito</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.creditType }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Crédito original -->
+          <ng-container matColumnDef="originalCredit">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Crédito original</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.principalAmount | currency }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Pendiente -->
+          <ng-container matColumnDef="haveToPay">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Pendiente de pago</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.pendingAmount | currency }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Mora -->
+          <ng-container matColumnDef="daysInArrears">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Días de mora</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.daysInArrears }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Monto mora -->
+          <ng-container matColumnDef="arrears">
+            <th mat-header-cell *matHeaderCellDef class="center-header">Monto por mora</th>
+
+            <td mat-cell *matCellDef="let row">
+              <div class="cell-content">
+                {{ row.arrearsAmount | currency }}
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </ng-container>
+      <ng-container *ngIf="dataSource?.length == 0">
+        <div class="noData"><span>ⓘ</span><span>Cliente sin créditos activos</span></div>
+      </ng-container>
+    </mat-card>
+    <ngcontainer *ngIf="dataSource?.length > 0">
+      <section class="bottomSection">
+        <div class="left">
+          <mat-form-field (click)="picker.open()">
+            <mat-label>{{ 'labels.inputs.CutOffDate' | translate }}</mat-label>
+            <input
+              id="dueDateDatePicker"
+              matInput
+              [min]="minDate"
+              [max]="maxDate"
+              [matDatepicker]="picker"
+              [(ngModel)]="dueDateDatePickerValue"
+            />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color="primary"
+            [disabled]="!dueDateDatePickerValue"
+            (click)="simulatePaymentProjection()"
+          >
+            Simular Proyección del pago
+          </button>
+          <div class="noData blue" *ngIf="!dueDateDatePickerValue">
+            <span>ⓘ</span><span>Debes seleccionar una fecha de corte para simular la proyección del pago</span>
+          </div>
+        </div>
+        <mat-card class="right" *ngIf="isSimulated">
+          <h4>Resumen total de la proyección</h4>
+          <!-- TODO este resumen debe mostrar el total de los créditos seleccionados, el monto de capital, el monto por mora y el total a pagar proyectado, actualmente puse campos genericos porque no se la estructura de los datos que devuelve el endpoint, ajustar dependiendo de la respuesta del endpoint -->
+          <ul>
+            <li><span>Fecha proyección del pago</span> {{ dataSourceDetail?.changes?.simulationDate }}</li>
+            <li><span>Total de créditos seleccionados</span> {{ dataSourceDetail.changes?.selectedLoans }}</li>
+            <li><span>Monto de capital</span> {{ dataSourceDetail.changes?.principalAmount | currency }}</li>
+            <li><span>Monto de intereses</span> {{ dataSourceDetail.changes?.interestAmount | currency }}</li>
+            <li><span>Monto por mora</span> {{ dataSourceDetail.changes?.arrearsAmount | currency }}</li>
+            <li>
+              <span>{{ 'labels.inputs.Total' | translate }}</span> {{ dataSourceDetail.changes?.total | currency }}
+            </li>
+          </ul>
+          <div>
+            <button mat-raised-button color="primary" (click)="seeSimulationDetails()">
+              Ver detalle de la proyección
+            </button>
+          </div>
+        </mat-card>
+      </section>
+    </ngcontainer>
+  </ng-container>
+  <ng-container *ngIf="isDetailingSimultation">
+    <mat-card>
+      <!-- TODO los td de la tabla no tienen los campos mapeados porque no se cual es la estructura de los datos que devuelve el endpoint, por lo que puse campos genericos, ajustar dependiendo de la respuesta del endpoint -->
+      <table mat-table [dataSource]="dataSourceDetail?.changes?.details" class="bc-table__table centered-table">
+        <!-- Proyecto -->
+        <ng-container matColumnDef="proyect">
+          <th mat-header-cell *matHeaderCellDef class="center-header">
+            {{ 'labels.inputs.Proyect' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.projectName }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Pagaré -->
+        <ng-container matColumnDef="Number">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Pagaré</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.promissoryNumber }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Mora -->
+        <ng-container matColumnDef="daysInArrears">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Días de mora</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.daysInArrears }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Cuotas -->
+        <ng-container matColumnDef="cuotesCuantity">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Cantidad de cuotas</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.numberOfRepayments }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Capital -->
+        <ng-container matColumnDef="capital">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Monto de capital</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.principalAmount | currency }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Intereses -->
+        <ng-container matColumnDef="interest">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Monto de intereses</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.interestAmount | currency }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Mora monto -->
+        <ng-container matColumnDef="arrears">
+          <th mat-header-cell *matHeaderCellDef class="center-header">Monto por mora</th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.arrearsAmount | currency }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Total -->
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef class="center-header">
+            {{ 'labels.inputs.Total' | translate }}
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="cell-content">
+              {{ row.total | currency }}
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsDetail"></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsDetail"></tr>
+      </table>
+    </mat-card>
+    <button
+      class="downloadButton"
+      mat-raised-button
+      color="primary"
+      [disabled]="!dueDateDatePickerValue"
+      (click)="downloadPDF()"
+    >
+      <fa-icon icon="download"></fa-icon>{{ 'labels.buttons.Download' }} PDF
+    </button>
+  </ng-container>
+  <mifosx-custom-dialog
+    [open]="isModalOpen"
+    color="primary"
+    (dismiss)="closeModal()"
+    (closed)="closeModal()"
+    [hideCancelButton]="true"
+    [hideConfirmButton]="true"
+    [confirmText]="'Submit'"
+    [disableConfirm]="false"
+  >
+    <div class="modalContent" *ngIf="!haveError">
+      <fa-icon icon="check-circle" class="icon"></fa-icon>
+      <p>La descarga se ha realizado con éxito</p>
+      <a [routerLink]="['../']">Volver a simular</a>
+    </div>
+    <div class="modalContent error" *ngIf="haveError">
+      <fa-icon icon="exclamation-circle" class="icon"></fa-icon>
+      <p>No se ha podido descargar el archivo</p>
+      <span>Intentalo nuevamente</span>
+    </div>
+  </mifosx-custom-dialog>
+</main>

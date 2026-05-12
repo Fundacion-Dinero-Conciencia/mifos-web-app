@@ -231,6 +231,14 @@ export class ClientsService {
     return this.http.get(`/paymentnotification/clients?page=${page}&size=${size}&text=${search}&type=${type}`);
   }
 
+  getClientsForPaymentSimulation(clientId: string) {
+    return this.http.get(`/paymentsimulation/activeloans/${clientId}`);
+  }
+
+  createPaymentSimulation(clientId: string, params: any) {
+    return this.http.post(`/paymentsimulation/${clientId}`, params);
+  }
+
   sendNotificationToClients(type: string, cutoffDate: string, clientIds?: number[]) {
     const body: NotificationBody = {
       type,
