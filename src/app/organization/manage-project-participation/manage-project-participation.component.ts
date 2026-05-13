@@ -162,7 +162,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
 
     const tenant = this.settingsService.tenantIdentifier;
 
-    if (tenant?.toLowerCase() == 'argentina') {
+    if (tenant?.trim().toLowerCase() == 'argentina') {
       this.displayedColumns = [
         'projectName',
         'dni',

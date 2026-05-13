@@ -50,7 +50,8 @@ import { DocumentFormatPipe } from './document-format.pipe';
     YesnoPipe,
     PrettyPrintPipe,
     TranslatePipe,
-    TruncateTextPipe
+    TruncateTextPipe,
+    DocumentFormatPipe
   ],
   exports: [
     StatusLookupPipe,
@@ -66,7 +67,8 @@ import { DocumentFormatPipe } from './document-format.pipe';
     YesnoPipe,
     PrettyPrintPipe,
     TranslatePipe,
-    TruncateTextPipe
+    TruncateTextPipe,
+    DocumentFormatPipe
   ]
 })
 export class PipesModule {}

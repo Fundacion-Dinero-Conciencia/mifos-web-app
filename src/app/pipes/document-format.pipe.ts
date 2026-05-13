@@ -10,7 +10,7 @@ export class DocumentFormatPipe implements PipeTransform {
     if (!value) return '';
 
     const raw = String(value).trim();
-    const country = localStorage.getItem('mifosXTenantIdentifier') as Country;
+    const country = (localStorage.getItem('mifosXTenantIdentifier') || '').trim().toLowerCase();
     switch (country) {
       // =====================================
       // ARGENTINA
@@ -21,11 +21,11 @@ export class DocumentFormatPipe implements PipeTransform {
       // =====================================
       // CHILE
       // =====================================
-      case 'chile':
-        return this.formatChile(raw);
+      /*       case 'chile':
+        return this.formatChile(raw); */
 
       default:
-        return raw;
+        return this.formatChile(raw);
     }
   }
 
