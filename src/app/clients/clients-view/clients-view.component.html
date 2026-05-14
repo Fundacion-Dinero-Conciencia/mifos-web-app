@@ -182,7 +182,7 @@
                     </td>
                     <td>
                       <mifosx-external-identifier
-                        externalId="{{ clientViewData.rut }}"
+                        externalId="{{ clientViewData.rut | documentFormat }}"
                         completed="true"
                       ></mifosx-external-identifier>
                     </td>
@@ -193,7 +193,7 @@
                     </td>
                     <td>
                       <mifosx-external-identifier
-                        externalId="{{ clientViewData.dni }}"
+                        externalId="{{ clientViewData.dni | documentFormat }}"
                         completed="true"
                       ></mifosx-external-identifier>
                     </td>
@@ -204,7 +204,7 @@
                     </td>
                     <td>
                       <mifosx-external-identifier
-                        externalId="{{ clientViewData.cuit }}"
+                        externalId="{{ clientViewData.cuit | documentFormat }}"
                         completed="true"
                       ></mifosx-external-identifier>
                     </td>
@@ -254,6 +254,12 @@
             <fa-icon icon="user-tie" size="sm"></fa-icon>
           </mat-icon>
           <span>{{ 'labels.buttons.Assign Staff' | translate }}</span>
+        </button>
+        <button mat-menu-item (click)="doAction('paymentSimulation')">
+          <mat-icon matListIcon>
+            <fa-icon icon="circle-dollar-to-slot" size="sm"></fa-icon>
+          </mat-icon>
+          <span>{{ 'labels.buttons.paymentSimulation' | translate }}</span>
         </button>
 
         <span *ngIf="clientViewData.staffId">

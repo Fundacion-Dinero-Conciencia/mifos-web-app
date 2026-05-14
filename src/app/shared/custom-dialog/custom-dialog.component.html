@@ -8,7 +8,7 @@
   aria-labelledby="cx-title"
   (click)="$event.stopPropagation()"
 >
-  <header class="cx-header">
+  <header class="cx-header" [ngClass]="{ noTitle: !heading }">
     <h1 id="cx-title">{{ heading }}</h1>
     <button mat-icon-button aria-label="Cerrar" (click)="onCancel()">✕</button>
   </header>
@@ -21,7 +21,13 @@
     <button mat-raised-button (click)="onCancel()" class="outlineButton" *ngIf="!hideCancelButton">
       {{ 'labels.buttons.' + cancelText | translate }}
     </button>
-    <button mat-raised-button [color]="color" (click)="onConfirm()" [disabled]="disableConfirm">
+    <button
+      mat-raised-button
+      [color]="color"
+      (click)="onConfirm()"
+      *ngIf="!hideConfirmButton"
+      [disabled]="disableConfirm"
+    >
       {{ 'labels.buttons.' + confirmText | translate }}
     </button>
   </footer>

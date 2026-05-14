@@ -14,7 +14,7 @@ import { TranslatePipe } from './translate.pipe';
 import { TruncateTextPipe } from './truncate-text.pipe';
 import { UrlToStringPipe } from './url-to-string.pipe';
 import { YesnoPipe } from './yesno.pipe';
-
+import { DocumentFormatPipe } from './document-format.pipe';
 @NgModule({
   imports: [
     CommonModule
@@ -33,7 +33,8 @@ import { YesnoPipe } from './yesno.pipe';
     YesnoPipe,
     PrettyPrintPipe,
     TruncateTextPipe,
-    TranslatePipe
+    TranslatePipe,
+    DocumentFormatPipe
   ],
   providers: [
     StatusLookupPipe,
@@ -49,7 +50,8 @@ import { YesnoPipe } from './yesno.pipe';
     YesnoPipe,
     PrettyPrintPipe,
     TranslatePipe,
-    TruncateTextPipe
+    TruncateTextPipe,
+    DocumentFormatPipe
   ],
   exports: [
     StatusLookupPipe,
@@ -65,7 +67,8 @@ import { YesnoPipe } from './yesno.pipe';
     YesnoPipe,
     PrettyPrintPipe,
     TranslatePipe,
-    TruncateTextPipe
+    TruncateTextPipe,
+    DocumentFormatPipe
   ]
 })
 export class PipesModule {}

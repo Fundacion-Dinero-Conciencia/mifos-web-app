@@ -59,7 +59,7 @@ export class ClientsComponent implements OnInit {
 
     const tenant = this.settingsService.tenantIdentifier;
 
-    if (tenant?.toLowerCase() == 'argentina') {
+    if (tenant?.trim().toLowerCase() == 'argentina') {
       this.displayedColumns = [
         'displayName',
         'dni',

@@ -50,6 +50,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { LOCALE_ID } from '@angular/core';
 import { NotPermissionComponent } from './no-permission/not-permission.component';
+import { PaymentSimulationComponent } from './payment-simulation/payment-simulation.component';
 
 registerLocaleData(localeEs);
 
@@ -117,7 +118,8 @@ export function HttpLoaderFactory(http: HttpClient) {
   declarations: [
     WebAppComponent,
     NotFoundComponent,
-    NotPermissionComponent
+    NotPermissionComponent,
+    PaymentSimulationComponent
   ],
   providers: [
     DatePipe,

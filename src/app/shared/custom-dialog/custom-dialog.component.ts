@@ -15,6 +15,7 @@ export class CustomDialogComponent {
   @Input() confirmText = 'Confirm';
   @Input() cancelText = 'Cancel';
   @Input() disableConfirm = false;
+  @Input() hideConfirmButton = false;
   @Input() hideCancelButton = false;
   @Input() backDropClose = false;
   @Output() confirm = new EventEmitter<void>();

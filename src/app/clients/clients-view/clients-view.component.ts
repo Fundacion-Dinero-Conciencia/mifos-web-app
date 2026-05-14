@@ -89,6 +89,9 @@ export class ClientsViewComponent implements OnInit {
       case 'Client Screen Reports':
         this.router.navigate([`actions/${name}`], { relativeTo: this.route });
         break;
+      case 'paymentSimulation':
+        this.router.navigate([`${name}`], { relativeTo: this.route });
+        break;
       case 'Unassign Staff':
         this.unassignStaff();
         break;

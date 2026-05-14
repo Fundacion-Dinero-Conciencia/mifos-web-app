@@ -12,6 +12,10 @@ header {
   padding: 1.1rem 2rem;
   min-width: 100%;
   box-sizing: border-box;
+
+  &.noTitle {
+    border-bottom: unset;
+  }
 }
 
 header h1 {
