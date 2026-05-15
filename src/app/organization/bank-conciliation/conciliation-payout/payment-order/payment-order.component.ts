@@ -98,6 +98,24 @@ export class PaymentOrderComponent implements OnInit {
     return total;
   }
 
+  get totalToPayCalculated(): number {
+    if (this.rowsSelected.length === 0) {
+      return 0;
+    }
+    let total = 0;
+    this.rowsSelected.forEach((row) => (total = Number(row.amountToPay) + total));
+    return total;
+  }
+
+  get totalToReinvestCalculated(): number {
+    if (this.rowsSelected.length === 0) {
+      return 0;
+    }
+    let total = 0;
+    this.rowsSelected.forEach((row) => (total = Number(row.amountToReinvest) + total));
+    return total;
+  }
+
   toggleAll(checked: boolean): void {
     this.dataSource.data = this.dataSource.data.map((r) => ({ ...r, selected: checked }));
   }
