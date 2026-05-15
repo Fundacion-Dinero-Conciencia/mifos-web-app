@@ -3423,7 +3423,8 @@
       "Received": "Recibido",
       "Assigned": "Asignado",
       "Reserved": "Reservado",
-      "Confirmed": "Confirmado"
+      "Confirmed": "Confirmado",
+      "Finished": "Finalizado"
     },
     "titles": {
       "Dashboard": "Tableros",

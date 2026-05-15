@@ -109,7 +109,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     200: 'Confirmed',
     300: 'Canceled',
     400: 'Reserved',
-    500: 'Assigned'
+    500: 'Assigned',
+    600: 'Finished'
   };
 
   statuses = [
@@ -117,7 +118,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     { id: 200 },
     { id: 300 },
     { id: 400 },
-    { id: 500 }];
+    { id: 500 },
+    { id: 600 }];
 
   paymentTypes = [
     { name: 'MANUAL' },
@@ -289,6 +291,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
       return 'status-matured';
     } else if (status === 400) {
       return 'text-primary';
+    } else if (status === 600) {
+      return 'status-active';
     }
   }
 

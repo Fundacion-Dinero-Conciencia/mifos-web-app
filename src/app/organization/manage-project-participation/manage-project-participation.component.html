@@ -119,7 +119,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>
         <td mat-cell *matCellDef="let item">
-          <span *ngIf="item.status.id !== 100">
+          <span *ngIf="item.status.id !== 100 && item.status.id !== 600">
             <button
               *ngIf="item.status.id !== 300"
               class="action-button"

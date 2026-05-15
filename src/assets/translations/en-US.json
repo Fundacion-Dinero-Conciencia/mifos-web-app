@@ -3509,7 +3509,8 @@
       "Received": "Received",
       "Assigned": "Assigned",
       "Reserved": "Reserved",
-      "Confirmed": "Confirmed"
+      "Confirmed": "Confirmed",
+      "Finished": "Finished"
     },
     "titles": {
       "Dashboard": "Dashboard",
