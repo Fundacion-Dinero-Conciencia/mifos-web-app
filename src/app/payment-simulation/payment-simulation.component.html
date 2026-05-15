@@ -107,7 +107,7 @@
 
             <td mat-cell *matCellDef="let row">
               <div class="cell-content">
-                {{ row.principalAmount | currency }}
+                {{ row.principalAmount | currency: currency }}
               </div>
             </td>
           </ng-container>
@@ -118,7 +118,7 @@
 
             <td mat-cell *matCellDef="let row">
               <div class="cell-content">
-                {{ row.pendingAmount | currency }}
+                {{ row.pendingAmount | currency: currency }}
               </div>
             </td>
           </ng-container>
@@ -140,7 +140,7 @@
 
             <td mat-cell *matCellDef="let row">
               <div class="cell-content">
-                {{ row.arrearsAmount | currency }}
+                {{ row.arrearsAmount | currency: currency }}
               </div>
             </td>
           </ng-container>
@@ -188,11 +188,12 @@
           <ul>
             <li><span>Fecha proyección del pago</span> {{ dataSourceDetail?.changes?.simulationDate }}</li>
             <li><span>Total de créditos seleccionados</span> {{ dataSourceDetail.changes?.selectedLoans }}</li>
-            <li><span>Monto de capital</span> {{ dataSourceDetail.changes?.principalAmount | currency }}</li>
-            <li><span>Monto de intereses</span> {{ dataSourceDetail.changes?.interestAmount | currency }}</li>
-            <li><span>Monto por mora</span> {{ dataSourceDetail.changes?.arrearsAmount | currency }}</li>
+            <li><span>Monto de capital</span> {{ dataSourceDetail.changes?.principalAmount | currency: currency }}</li>
+            <li><span>Monto de intereses</span> {{ dataSourceDetail.changes?.interestAmount | currency: currency }}</li>
+            <li><span>Monto por mora</span> {{ dataSourceDetail.changes?.arrearsAmount | currency: currency }}</li>
             <li>
-              <span>{{ 'labels.inputs.Total' | translate }}</span> {{ dataSourceDetail.changes?.total | currency }}
+              <span>{{ 'labels.inputs.Total' | translate }}</span>
+              {{ dataSourceDetail.changes?.total | currency: currency }}
             </li>
           </ul>
           <div>
@@ -260,7 +261,7 @@
 
           <td mat-cell *matCellDef="let row">
             <div class="cell-content">
-              {{ row.principalAmount | currency }}
+              {{ row.principalAmount | currency: currency }}
             </div>
           </td>
         </ng-container>
@@ -271,7 +272,7 @@
 
           <td mat-cell *matCellDef="let row">
             <div class="cell-content">
-              {{ row.interestAmount | currency }}
+              {{ row.interestAmount | currency: currency }}
             </div>
           </td>
         </ng-container>
@@ -282,7 +283,7 @@
 
           <td mat-cell *matCellDef="let row">
             <div class="cell-content">
-              {{ row.arrearsAmount | currency }}
+              {{ row.arrearsAmount | currency: currency }}
             </div>
           </td>
         </ng-container>
@@ -295,7 +296,7 @@
 
           <td mat-cell *matCellDef="let row">
             <div class="cell-content">
-              {{ row.total | currency }}
+              {{ row.total | currency: currency }}
             </div>
           </td>
         </ng-container>
@@ -312,7 +313,7 @@
       [disabled]="!dueDateDatePickerValue"
       (click)="downloadPDF()"
     >
-      <fa-icon icon="download"></fa-icon>{{ 'labels.buttons.Download' }} PDF
+      <fa-icon icon="download"></fa-icon>{{ 'labels.buttons.Download PDF' | translate }}
     </button>
   </ng-container>
   <mifosx-custom-dialog

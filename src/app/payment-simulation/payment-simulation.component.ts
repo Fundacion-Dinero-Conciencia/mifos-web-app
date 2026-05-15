@@ -6,6 +6,7 @@ import { AlertService } from 'app/core/alert/alert.service';
 import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
 import { ClientsService } from 'app/clients/clients.service';
 import { Dates } from 'app/core/utils/dates';
+import { SystemService } from 'app/system/system.service';
 
 @Component({
   selector: 'mifosx-payment-simulation',
@@ -22,6 +23,7 @@ export class PaymentSimulationComponent implements OnInit {
   elementSelected: number[] = [];
   clientData: any;
   haveError: boolean = false;
+  currency: string;
   /** Columns to be displayed in instructions table. */
   displayedColumns: string[] = [
     'checkbox',
@@ -50,7 +52,8 @@ export class PaymentSimulationComponent implements OnInit {
     private route: ActivatedRoute,
     private settingsService: SettingsService,
     private clientService: ClientsService,
-    private dateUtils: Dates
+    private dateUtils: Dates,
+    private systemService: SystemService
   ) {
     this.route.data.subscribe((data: any) => {
       this.clientData = data.clientViewData;
@@ -79,6 +82,7 @@ export class PaymentSimulationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getDefaultCurrency();
     this.setMaxDate();
     this.getTableInformation();
   }
@@ -156,5 +160,11 @@ export class PaymentSimulationComponent implements OnInit {
 
   goBack() {
     this.isDetailingSimultation = false;
+  }
+
+  getDefaultCurrency() {
+    this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
+      this.currency = data.stringValue;
+    });
   }
 }
