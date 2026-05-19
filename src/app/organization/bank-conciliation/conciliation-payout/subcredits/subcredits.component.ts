@@ -41,6 +41,8 @@ export class SubcreditsComponent implements OnInit, OnDestroy {
     this.search$.pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((value) => {
       this.onFilter(value);
     });
+    // Carga de data inciial
+    this.loadPage(0, this.pageSize, '');
   }
 
   applyFilters(): void {
@@ -49,17 +51,11 @@ export class SubcreditsComponent implements OnInit, OnDestroy {
   }
 
   loadPage(page: number, size: number, filter?: string) {
-    console.log(size);
     const requestParams = {
       page,
       size,
       search: filter || ''
     };
-    console.log(this.filter);
-    if (filter.length === 0) {
-      this.dataSource.data = [];
-      return;
-    }
     this.organizationService.getPayoutItems({ ...requestParams }).subscribe((response: any) => {
       this.dataSource.data = response.content || response;
       this.pageSize = size;

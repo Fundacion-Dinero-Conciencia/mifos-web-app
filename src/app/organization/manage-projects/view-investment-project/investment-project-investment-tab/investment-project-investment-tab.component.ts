@@ -65,6 +65,7 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
     'Investor',
     'date',
     'Value invested',
+    'Pending amount',
     'Investment status',
     'Watch order',
     'Watch promissory note'

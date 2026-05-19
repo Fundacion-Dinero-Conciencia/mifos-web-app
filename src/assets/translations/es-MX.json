@@ -416,6 +416,7 @@
       "Dividends": "Dividendos",
       "Download": "Descargar",
       "Download CSV": "Descargar CSV",
+      "Download PDF": "Descargar PDF",
       "Edit": "Editar",
       "Edit Code": "Editar Código",
       "Edit Schedule": "Editar Calendario",
@@ -3422,7 +3423,8 @@
       "Received": "Recibido",
       "Assigned": "Asignado",
       "Reserved": "Reservado",
-      "Confirmed": "Confirmado"
+      "Confirmed": "Confirmado",
+      "Finished": "Finalizado"
     },
     "titles": {
       "Dashboard": "Tableros",
