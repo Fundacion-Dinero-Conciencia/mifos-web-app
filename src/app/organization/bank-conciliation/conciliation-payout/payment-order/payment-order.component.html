@@ -62,6 +62,16 @@
     </div>
   </div>
 
+  <div class="select-all-container">
+    <mat-checkbox
+      [checked]="allSelected"
+      [indeterminate]="someSelected && !allSelected"
+      (change)="toggleSelectAll($event.checked)"
+    >
+      Seleccionar todos
+    </mat-checkbox>
+  </div>
+
   <!-- Tabla -->
   <div class="bc-table mat-elevation-z0">
     <table mat-table [dataSource]="dataSource" class="bc-table__table">
