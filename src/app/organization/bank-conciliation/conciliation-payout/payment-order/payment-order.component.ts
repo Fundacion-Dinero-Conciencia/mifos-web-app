@@ -238,7 +238,7 @@ export class PaymentOrderComponent implements OnInit {
     const loanId = this.route.snapshot.paramMap.get('id');
 
     this.organizationService
-      .createPayRoll(data, false, true, Number(loanId), this.installmentNo)
+      .createPayRoll(data, false, this.isAllSelected, Number(loanId), this.installmentNo)
       .pipe(
         finalize(() => {
           hideGlobalLoader();
@@ -273,6 +273,8 @@ export class PaymentOrderComponent implements OnInit {
 
   toggleSelectAll(checked: boolean): void {
     this.isAllSelected = checked;
+
+    console.log('is all: ', this.isAllSelected);
 
     this.selectableRows.forEach((row) => {
       this.toggleRow(row, checked);
