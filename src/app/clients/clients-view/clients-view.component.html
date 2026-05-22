@@ -176,13 +176,35 @@
                       ></mifosx-external-identifier>
                     </td>
                   </tr>
-                  <tr>
+                  <tr *ngIf="clientViewData.rut">
                     <td>
-                      <b> RUT</b>
+                      <b>{{ 'labels.inputs.custom.rut' | translate }}</b>
                     </td>
                     <td>
                       <mifosx-external-identifier
-                        externalId="{{ clientViewData.rut }}"
+                        externalId="{{ clientViewData.rut | documentFormat }}"
+                        completed="true"
+                      ></mifosx-external-identifier>
+                    </td>
+                  </tr>
+                  <tr *ngIf="clientViewData.dni">
+                    <td>
+                      <b>{{ 'labels.inputs.custom.dni' | translate }}</b>
+                    </td>
+                    <td>
+                      <mifosx-external-identifier
+                        externalId="{{ clientViewData.dni | documentFormat }}"
+                        completed="true"
+                      ></mifosx-external-identifier>
+                    </td>
+                  </tr>
+                  <tr *ngIf="clientViewData.cuit">
+                    <td>
+                      <b>{{ 'labels.inputs.custom.cuit' | translate }}</b>
+                    </td>
+                    <td>
+                      <mifosx-external-identifier
+                        externalId="{{ clientViewData.cuit | documentFormat }}"
                         completed="true"
                       ></mifosx-external-identifier>
                     </td>
@@ -232,6 +254,12 @@
             <fa-icon icon="user-tie" size="sm"></fa-icon>
           </mat-icon>
           <span>{{ 'labels.buttons.Assign Staff' | translate }}</span>
+        </button>
+        <button mat-menu-item (click)="doAction('paymentSimulation')">
+          <mat-icon matListIcon>
+            <fa-icon icon="circle-dollar-to-slot" size="sm"></fa-icon>
+          </mat-icon>
+          <span>{{ 'labels.buttons.paymentSimulation' | translate }}</span>
         </button>
 
         <span *ngIf="clientViewData.staffId">

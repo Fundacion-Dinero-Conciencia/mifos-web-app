@@ -7,7 +7,7 @@ import { SettingsService } from 'app/settings/settings.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { SystemService } from 'app/system/system.service';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 @Component({
   selector: 'mifosx-payout-detail',
   templateUrl: './payout-detail.component.html',
@@ -34,7 +34,8 @@ export class PayoutDetailComponent implements OnInit {
     'installmentAmount',
     'amountToPay',
     'amountToReinvest',
-    'status'
+    'status',
+    'select'
   ];
 
   dataSource = new MatTableDataSource<any>([]);
@@ -78,23 +79,30 @@ export class PayoutDetailComponent implements OnInit {
     showGlobalLoader();
     const params = { page, size, search: search ?? '' };
 
-    this.organizationService.getPayoutOrdersTramited(Number(this.conciliationId), params).subscribe({
-      next: (response: any) => {
-        this.additional = response?.additional ?? null;
-        const content = (response?.content ?? response ?? []).map((item: any) => ({
-          ...item,
-          selected: false
-        }));
+    this.organizationService
+      .getPayoutOrdersTramited(Number(this.conciliationId), params)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.additional = response?.additional ?? null;
+          const content = (response?.content ?? response ?? []).map((item: any) => ({
+            ...item,
+            selected: false
+          }));
 
-        this.dataSource.data = content;
-        this.pageSize = size;
-        this.pageIndex = page;
-        this.totalItems = response?.totalElements ?? content.length;
-
-        hideGlobalLoader();
-      },
-      error: () => hideGlobalLoader()
-    });
+          this.dataSource.data = content;
+          this.pageSize = size;
+          this.pageIndex = page;
+          this.totalItems = response?.totalElements ?? content.length;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
   capitalize(word: string) {
     if (!word) return '';
@@ -136,5 +144,67 @@ export class PayoutDetailComponent implements OnInit {
     if (pending === total) return 'PENDIENTE';
 
     return 'PARCIAL';
+  }
+
+  canRetry(row: any): boolean {
+    const status = row?.conciliationStatus?.value;
+
+    return status === 'FAILED' || status === 'REJECTED';
+  }
+
+  toggleRow(row: any): void {
+    if (!this.canRetry(row)) {
+      return;
+    }
+
+    row.selected = !row.selected;
+
+    this.rowsSelected = this.dataSource.data.filter((r) => r.selected);
+  }
+
+  toggleAll(event: any): void {
+    const checked = event.checked;
+
+    this.dataSource.data.forEach((row) => {
+      if (this.canRetry(row)) {
+        row.selected = checked;
+      }
+    });
+
+    this.rowsSelected = this.dataSource.data.filter((r) => r.selected);
+  }
+
+  isAllSelected(): boolean {
+    const retryables = this.dataSource.data.filter((r) => this.canRetry(r));
+
+    return retryables.length > 0 && retryables.every((r) => r.selected);
+  }
+
+  retrySelected(): void {
+    const data = this.rowsSelected.map((row) => ({
+      id: row.id
+    }));
+
+    if (!data.length) {
+      return;
+    }
+
+    showGlobalLoader();
+
+    this.organizationService
+      .createPayRoll(data, true)
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.loadPage(this.pageIndex, this.pageSize, this.inputSearch);
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
   }
 }

@@ -170,6 +170,7 @@ export class AddressTabComponent {
               label: this.translateService.instant('labels.inputs.Address Type'),
               value: address ? address.addressType : '',
               options: { label: 'name', value: 'id', data: this.clientAddressTemplate.addressTypeIdOptions },
+              required: true,
               order: 1
             })
           : null

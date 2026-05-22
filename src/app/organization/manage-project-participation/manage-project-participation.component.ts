@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
+import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
@@ -26,17 +27,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   dataSource: MatTableDataSource<any>;
   currency: string;
   loading: boolean = false;
-  displayedColumns: string[] = [
-    'projectName',
-    'rut',
-    'participantName',
-    'amount',
-    'commission',
-    'paymentType',
-    'date',
-    'status',
-    'actions'
-  ];
+  displayedColumns: string[];
 
   sortColumn: string = '';
   selectedItems: any[] = [];
@@ -71,6 +62,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
 
   loadParticipations() {
+    showGlobalLoader();
     this.organizationservice
       .getInvestmentProjectParticipations({
         page: this.pageIndex,
@@ -80,10 +72,20 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         status: this.filterStatus,
         paymentType: this.filterPaymentType
       })
-      .subscribe((data: any) => {
-        this.projectParticipationsData = data.content;
-        this.totalItems = data.totalElements;
-        this.dataSource.data = this.projectParticipationsData;
+      .pipe(
+        finalize(() => {
+          hideGlobalLoader();
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.projectParticipationsData = data.content;
+          this.totalItems = data.totalElements;
+          this.dataSource.data = this.projectParticipationsData;
+        },
+        error: (err) => {
+          console.error(err);
+        }
       });
   }
   onPageChange(event: any) {
@@ -107,7 +109,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     200: 'Confirmed',
     300: 'Canceled',
     400: 'Reserved',
-    500: 'Assigned'
+    500: 'Assigned',
+    600: 'Finished'
   };
 
   statuses = [
@@ -115,7 +118,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     { id: 200 },
     { id: 300 },
     { id: 400 },
-    { id: 500 }];
+    { id: 500 },
+    { id: 600 }];
 
   paymentTypes = [
     { name: 'MANUAL' },
@@ -127,7 +131,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     private router: Router,
     private translateService: TranslateService,
     private accountTransfersService: AccountTransfersService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private settingsService: SettingsService
   ) {
     this.route.data.subscribe((data: { projectparticipations: any }) => {
       this.applyOwnerFilter();
@@ -168,7 +173,39 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         (data.rut + '').toLowerCase().includes(parsedFilter.text.toLowerCase());
       return matchesStatus && matchesText;
     };
+
+    const tenant = this.settingsService.tenantIdentifier;
+
+    if (tenant?.trim().toLowerCase() == 'argentina') {
+      this.displayedColumns = [
+        'projectName',
+        'dni',
+        'cuit',
+        'participantName',
+        'amount',
+        'commission',
+        'unassignedAmount',
+        'paymentType',
+        'date',
+        'status',
+        'actions'
+      ];
+    } else {
+      this.displayedColumns = [
+        'projectName',
+        'rut',
+        'participantName',
+        'amount',
+        'commission',
+        'unassignedAmount',
+        'paymentType',
+        'date',
+        'status',
+        'actions'
+      ];
+    }
   }
+
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = (item: any, property: string) => {
@@ -254,6 +291,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
       return 'status-matured';
     } else if (status === 400) {
       return 'text-primary';
+    } else if (status === 600) {
+      return 'status-active';
     }
   }
 
@@ -329,9 +368,10 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
       )
       .subscribe({
         next: (data: any) => {
+          this.loadParticipations();
+
           this.showDialog = false;
           this.selectedInvests = [];
-          this.reload();
         },
         error: (err) => {
           console.error('Error asignando transacción:', err);

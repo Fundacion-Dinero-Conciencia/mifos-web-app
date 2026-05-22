@@ -103,8 +103,8 @@ export class Logger {
 
   private log(func: Function, level: LogLevel, objects: any[]) {
     if (level <= Logger.level) {
-      const log = this.source ? ['[' + this.source + ']'].concat(objects) : objects;
-      func.apply(console, log);
+      //const log = this.source ? ['[' + this.source + ']'].concat(objects) : objects;
+      //func.apply(console, log);
       Logger.outputs.forEach((output) =>
         output.apply(
           output,

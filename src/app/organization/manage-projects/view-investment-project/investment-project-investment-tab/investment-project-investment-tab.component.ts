@@ -65,6 +65,7 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
     'Investor',
     'date',
     'Value invested',
+    'Pending amount',
     'Investment status',
     'Watch order',
     'Watch promissory note'
@@ -92,7 +93,7 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
   getMandate(clientId: string, amount: string, projectId: string) {
     this.clientsService.getClientData(clientId).subscribe((response: any) => {
       if (response.legalForm.value === 'Entity') {
-        this.downloadFundMandate(clientId, amount);
+        this.downloadFundMandate(this.projectData.ownerId, amount);
       } else {
         this.downloadRetailMandate(clientId, amount, projectId);
       }

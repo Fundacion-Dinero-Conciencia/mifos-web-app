@@ -115,7 +115,8 @@
             'status-pill--applied': row.conciliationStatus.value === 'APPLIED',
             'status-pill--conciliated': row.conciliationStatus.value === 'CONCILIATED',
             'status-pill--recieved': row.conciliationStatus.value === 'RECEIVED',
-            'status-pill--error': row.conciliationStatus.value === 'INVALID'
+            'status-pill--error': row.conciliationStatus.value === 'INVALID',
+            'status-pill--error': row.conciliationStatus.value === 'FAILED'
           }"
         ></span>
         {{ getStatusLabel(row.conciliationStatus.value) }}
@@ -305,6 +306,7 @@
       </section>
     </main>
   </mifosx-custom-dialog>
+
   <mifosx-custom-dialog
     [open]="showDialogAssignation"
     [heading]="!isDebtorDetail ? 'Dividir transferencia en depósitos' : 'Asignar transferencia a subcréditos'"
@@ -350,7 +352,7 @@
           <ng-container matColumnDef="assignment">
             <th mat-header-cell *matHeaderCellDef>{{ isDebtorDetail ? 'Subcrédito' : 'Asignación' }}</th>
             <td mat-cell *matCellDef="let row; let i = index">
-              <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p>
+              <!-- <p *ngIf="!isDebtorDetail">Asignación {{ i + 1 }}</p> -->
               <select
                 *ngIf="isDebtorDetail && !!availableLoans"
                 id="loanSelector{{ i }}"
@@ -362,6 +364,20 @@
                   [value]="loan?.loanId"
                 >
                   {{ loan.promissoryNumber }}-{{ loan.projectName }}
+                </option>
+              </select>
+
+              <select
+                *ngIf="!isDebtorDetail && !!availableParticipations"
+                id="loanSelector{{ i }}"
+                (change)="changeSelectedParticipation($event, i)"
+              >
+                <option [value]="undefined" disabled selected>Selecciona</option>
+                <option
+                  *ngFor="let participation of getNonSelectedParticipations(selectorsGroup[i])"
+                  [value]="participation?.id"
+                >
+                  {{ participation.pendingAmount | currency: currency }} -- {{ participation.projectName }}
                 </option>
               </select>
             </td>
@@ -388,6 +404,7 @@
               <div
                 class="InputValueLine"
                 [matTooltipDisabled]="
+                  (!isDebtorDetail && !!availableParticipations) ||
                   !(selectorsGroup[i] && getLoanById(selectorsGroup[i])?.totalAmount < inputsGroup[i])
                 "
                 matTooltip="{{
@@ -442,22 +459,6 @@
         </button>
       </section>
       <section>
-        <article
-          class="debtorAdvice"
-          *ngIf="
-            !!detailedRow &&
-            isDebtorDetail &&
-            totalAssignedAmount > 0 &&
-            detailedRow.amount !== totalAssignedAmount &&
-            totalAssignedAmount <= detailedRow.amount
-          "
-        >
-          <span class="infoIcon">𝐢</span>
-          <div>
-            <h3>Monto a cuenta vista: {{ detailedRow?.amount - totalAssignedAmount | currency: currency }}</h3>
-            <p>El monto será abonado automáticamente a la cuenta vista del cliente</p>
-          </div>
-        </article>
         <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">Debe asignar todo el monto disponible</p>
         <p *ngIf="isconfirming" class="important">
           Confirma la división de la transferencia. Esta acción no se puede revertir.

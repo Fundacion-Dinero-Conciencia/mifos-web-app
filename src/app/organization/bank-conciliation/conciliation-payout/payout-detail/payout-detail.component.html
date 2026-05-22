@@ -37,6 +37,10 @@
         <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
+
+    <button mat-raised-button color="primary" [disabled]="rowsSelected.length === 0" (click)="retrySelected()">
+      Reintentar pagos
+    </button>
   </div>
 
   <!-- Tabla principal -->
@@ -107,10 +111,22 @@
               'status-green': row.conciliationStatus?.value === 'APPLIED',
               'status-red': row.conciliationStatus?.value === 'REJECTED',
               'status-red': row.conciliationStatus?.value === 'INVALID',
-              'status-yellow': row.conciliationStatus?.value === 'PENDING'
+              'status-yellow': row.conciliationStatus?.value === 'PENDING',
+              'status-red': row.conciliationStatus?.value === 'FAILED'
             }"
           ></span>
           {{ 'labels.status.' + capitalize(row.conciliationStatus?.value) | translate }}
+        </td>
+      </ng-container>
+
+      <!-- Selección -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox [checked]="isAllSelected()" (change)="toggleAll($event)"> </mat-checkbox>
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox *ngIf="canRetry(row)" [(ngModel)]="row.selected" (change)="toggleRow(row)"> </mat-checkbox>
         </td>
       </ng-container>
 

@@ -12,6 +12,10 @@ header {
   padding: 1.1rem 2rem;
   min-width: 100%;
   box-sizing: border-box;
+
+  &.noTitle {
+    border-bottom: unset;
+  }
 }
 
 header h1 {
@@ -55,7 +59,7 @@ header button {
   height: fit-content;
   max-height: 90dvh;
 
-  --w: min(640px, 92vw);
+  --w: fit-content;
 
   align-items: center;
   background: #fff;

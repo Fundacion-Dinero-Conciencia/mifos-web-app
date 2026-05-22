@@ -413,6 +413,7 @@
       "Dividends": "Dividends",
       "Download": "Download",
       "Download CSV": "Download CSV",
+      "Download PDF": "Download PDF",
       "Edit": "Edit",
       "Edit Code": "Edit Code",
       "Edit Schedule": "Edit Schedule",
@@ -1369,6 +1370,7 @@
       "CHARGES": "CHARGES",
       "COB Date": "COB Date",
       "Commission": "Commission",
+      "Pending Amount": "Pending Amount",
       "CSV format": "CSV format",
       "CURRENCY": "CURRENCY",
       "Calculate interest for exact days in partial period": "Calculate interest for exact days in partial period",
@@ -2568,6 +2570,8 @@
         "Mnemonic": "Mnemonic",
         "Fancy Name": "Fancy Name",
         "rut": "Rut",
+        "dni": "Dni",
+        "cuit": "Cuit/Cuil",
         "Position": "Position",
         "Socio Environmental Description": "Socio Environmental Description",
         "Detailed Socio Environmental Description": "Detailed Socio Environmental Description",
@@ -3505,7 +3509,8 @@
       "Received": "Received",
       "Assigned": "Assigned",
       "Reserved": "Reserved",
-      "Confirmed": "Confirmed"
+      "Confirmed": "Confirmed",
+      "Finished": "Finished"
     },
     "titles": {
       "Dashboard": "Dashboard",

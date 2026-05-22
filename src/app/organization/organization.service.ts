@@ -916,6 +916,10 @@ export class OrganizationService {
     return this.http.get('/projectparticipation/all', { params });
   }
 
+  getProjectParticipationAvailable(clientId: string): Observable<any> {
+    return this.http.get(`/projectparticipation/available/${clientId}`);
+  }
+
   getInvestmentProjectParticipationsByProjectId(projectId: string): Observable<any> {
     return this.http.get(`/projectparticipation/search`, {
       params: {
@@ -1084,11 +1088,15 @@ export class OrganizationService {
   createPayRoll(
     data: {
       id: number;
-      amountToPaid: number;
-      amountToReinvest: number;
-    }[]
+      amountToPaid?: number;
+      amountToReinvest?: number;
+    }[],
+    retry = false,
+    all = false,
+    loanId: number | null = null,
+    periodNumber: number | null = null
   ) {
-    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data }), {
+    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data, retry, all, loanId, periodNumber }), {
       headers: { 'Content-Type': 'application/json' }
     });
   }
@@ -1098,6 +1106,7 @@ export class OrganizationService {
     partitionList: {
       loanId?: number;
       amount: number;
+      participationId?: number;
     }[]
   ) {
     return this.http.post(

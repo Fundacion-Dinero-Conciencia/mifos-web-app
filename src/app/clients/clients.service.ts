@@ -1,6 +1,7 @@
 /** Angular Imports */
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NotificationBody } from './notificationModels';
 
 /** rxjs Imports */
 import { Observable } from 'rxjs';
@@ -225,6 +226,33 @@ export class ClientsService {
   getClientFamilyMembers(clientId: string) {
     return this.http.get(`/clients/${clientId}/familymembers`);
   }
+
+  getClientsForNotifications(search: string, type: string, page: number, size: number) {
+    return this.http.get(`/paymentnotification/clients?page=${page}&size=${size}&text=${search}&type=${type}`);
+  }
+
+  getClientsForPaymentSimulation(clientId: string) {
+    return this.http.get(`/paymentsimulation/activeloans/${clientId}`);
+  }
+
+  createPaymentSimulation(clientId: string, params: any) {
+    return this.http.post(`/paymentsimulation/${clientId}`, params);
+  }
+
+  sendNotificationToClients(type: string, cutoffDate: string, clientIds?: number[]) {
+    const body: NotificationBody = {
+      type,
+      cutoffDate,
+      dateFormat: 'yyyy-MM-dd',
+      locale: 'es'
+    };
+    if (clientIds) {
+      body.clientIds = clientIds;
+    }
+
+    return this.http.post(`/paymentnotification`, body);
+  }
+
   getClientFamilyMembersAvailableForRelationship(clientId: string) {
     return this.http.get(`/clients/${clientId}/familymembers/available-relation`);
   }

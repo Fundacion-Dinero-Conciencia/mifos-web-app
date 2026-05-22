@@ -291,9 +291,13 @@
       }
     },
     "breadcrumbs": {
-      "Home": "Inicio"
+      "Home": "Inicio",
+      "paymentSimulation": "Simulación de pago"
     },
     "buttons": {
+      "paymentSimulation": "Simulación de pago",
+      "Clear": "Limpiar",
+      "Generate": "Generar",
       "GeneratePayRoll": "Generar nómina",
       "Assign Transfer": "Asignar transferencia",
       "Assign": "Asignar",
@@ -412,6 +416,7 @@
       "Dividends": "Dividendos",
       "Download": "Descargar",
       "Download CSV": "Descargar CSV",
+      "Download PDF": "Descargar PDF",
       "Edit": "Editar",
       "Edit Code": "Editar Código",
       "Edit Schedule": "Editar Calendario",
@@ -762,6 +767,9 @@
       "Feb 29 Period Only": "Solo periodo del 29 de febrero"
     },
     "commons": {
+      "late": "Atrasado",
+      "soon": "Próximo",
+      "selected": "seleccionados",
       "Of client": "De cliente",
       "50 characters long": "50 caracteres de largo",
       "12 characters long": "12 caracteres de largo",
@@ -808,6 +816,9 @@
       "Password validation": "La contraseña debe contener un mínimo de {{minchar}} caracteres, que deben incluir 1 carácter mayúscula, minúscula y especial y no debe constar de caracteres repetidos ni espacios en blanco."
     },
     "heading": {
+      "paymentSimulation": "Simulación de pago",
+      "GenerateCutOffNotification": "Generar notificación de vencimiento",
+      "Notifications": "Notificaciones",
       "investments": "inversiones",
       "Impact": "Impacto",
       "Portrait image": "Imagen de portada",
@@ -1194,6 +1205,12 @@
       "Watch promissory note": "Ver pagaré"
     },
     "inputs": {
+      "cuotesCalendar": "Calendario de cuotas",
+
+      "searchClient": "Buscar cliente",
+      "messageMode": "Modo del mensaje",
+      "CutOffDate": "Fecha de corte",
+      "Scope": "Alcance",
       "Partner": "Conyuge",
       "Simulation": "Simulación",
       "Subcredit": "Subcredito",
@@ -1369,6 +1386,7 @@
       "CHARGES": "CARGOS",
       "COB Date": "Fecha de Cierre",
       "Commission": "Comisión",
+      "Pending Amount": "Monto Pendiente",
       "CSV format": "formato CSV",
       "CURRENCY": "MONEDA",
       "Calculate interest for exact days in partial period": "Calcular intereses por días exactos en periodo parcial",
@@ -2568,6 +2586,8 @@
         "Mnemonic": "Mnemotécnico",
         "Fancy Name": "Nombre de Fantasía",
         "rut": "Rut",
+        "dni": "Dni",
+        "cuit": "Cuit/Cuil",
         "Position": "Posición",
         "Socio Environmental Description": "Descripción Socio Ambiental",
         "Detailed Socio Environmental Description": "Descripción Detallada Socio Ambiental"
@@ -2718,6 +2738,7 @@
       "Closed (obligations met)": "Cerrado (obligaciones cumplidas)",
       "Closed (rescheduled)": "Cerrado (reprogramado)",
       "Closed (written off)": "Cerrado (cancelado)",
+      "Failed": "Fallido",
       "Overpaid": "Sobrepagado",
       "Pending": "Pendiente",
       "Rejected": "Rechazado",
@@ -3402,7 +3423,8 @@
       "Received": "Recibido",
       "Assigned": "Asignado",
       "Reserved": "Reservado",
-      "Confirmed": "Confirmado"
+      "Confirmed": "Confirmado",
+      "Finished": "Finalizado"
     },
     "titles": {
       "Dashboard": "Tableros",

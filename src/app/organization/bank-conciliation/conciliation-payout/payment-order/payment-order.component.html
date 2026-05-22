@@ -45,9 +45,31 @@
     </div>
 
     <div class="includedBar__total">
-      Total a dispersar en nómina:
-      <b>{{ totalToDisperseCalculated | currency: currency : 'symbol-narrow' }}</b>
+      <div>
+        Total a dispersar en nómina:
+        <b>{{ totalToDisperseCalculated | currency: currency : 'symbol-narrow' }}</b>
+      </div>
+
+      <div>
+        Total a pagar:
+        <b>{{ totalToPayCalculated | currency: currency : 'symbol-narrow' }}</b>
+      </div>
+
+      <div>
+        Total a reinvertir:
+        <b>{{ totalToReinvestCalculated | currency: currency : 'symbol-narrow' }}</b>
+      </div>
     </div>
+  </div>
+
+  <div class="select-all-container">
+    <mat-checkbox
+      [checked]="allSelected"
+      [indeterminate]="someSelected && !allSelected"
+      (change)="toggleSelectAll($event.checked)"
+    >
+      Seleccionar todos
+    </mat-checkbox>
   </div>
 
   <!-- Tabla -->

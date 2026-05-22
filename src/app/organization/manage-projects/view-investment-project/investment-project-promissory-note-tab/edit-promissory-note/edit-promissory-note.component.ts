@@ -47,6 +47,7 @@ export class EditPromissoryNoteComponent implements OnInit {
     'RUT',
     'Date',
     'Value invested',
+    'Pending amount',
     'Group'
   ];
   displayedColumnsLegal: string[] = [
