@@ -25,6 +25,7 @@ export class PaymentOrderComponent implements OnInit {
   installmentNo = 0;
   currentPeriodInfo: any;
   currency = 'CLP';
+  isAllSelected = false;
 
   // Bar superior (idealmente viene del endpoint)
   includedCount = 0;
@@ -233,8 +234,11 @@ export class PaymentOrderComponent implements OnInit {
       amountToReinvest: Number(row.amountToReinvest),
       id: row.id
     }));
+
+    const loanId = this.route.snapshot.paramMap.get('id');
+
     this.organizationService
-      .createPayRoll(data, false)
+      .createPayRoll(data, false, this.isAllSelected, Number(loanId), this.installmentNo)
       .pipe(
         finalize(() => {
           hideGlobalLoader();
@@ -253,5 +257,27 @@ export class PaymentOrderComponent implements OnInit {
 
   onGeneratePayroll(): void {
     this.showDialog = true;
+  }
+
+  get selectableRows() {
+    return this.dataSource.data.filter((row) => row.dataBank);
+  }
+
+  get allSelected(): boolean {
+    return this.selectableRows.length > 0 && this.selectableRows.every((row) => this.isRowSelected(row));
+  }
+
+  get someSelected(): boolean {
+    return this.selectableRows.some((row) => this.isRowSelected(row));
+  }
+
+  toggleSelectAll(checked: boolean): void {
+    this.isAllSelected = checked;
+
+    console.log('is all: ', this.isAllSelected);
+
+    this.selectableRows.forEach((row) => {
+      this.toggleRow(row, checked);
+    });
   }
 }

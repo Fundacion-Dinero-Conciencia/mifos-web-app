@@ -1091,9 +1091,12 @@ export class OrganizationService {
       amountToPaid?: number;
       amountToReinvest?: number;
     }[],
-    retry = false
+    retry = false,
+    all = false,
+    loanId: number | null = null,
+    periodNumber: number | null = null
   ) {
-    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data, retry }), {
+    return this.http.post(`/jobs/GENERATE_PAYROLL/inline`, JSON.stringify({ data, retry, all, loanId, periodNumber }), {
       headers: { 'Content-Type': 'application/json' }
     });
   }

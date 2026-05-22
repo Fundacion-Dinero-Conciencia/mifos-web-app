@@ -4,6 +4,7 @@ export const InvestmentGroupType = {
   FULL: { value: 200, code: 'investmentGroupType.full' },
   SIGNED: { value: 300, code: 'investmentGroupType.signed' },
   DELETED: { value: 400, code: 'investmentGroupType.deleted' },
+  CLOSED: { value: 600, code: 'investmentGroupType.closed' },
   DEFAULT: { value: 500, code: 'investmentGroupType.default' }
 } as const;
 
@@ -16,6 +17,7 @@ export function getInvestmentGroupLabel(key: InvestmentGroupKey): string {
     FULL: 'Lleno',
     SIGNED: 'Firmado',
     DELETED: 'Eliminado',
+    CLOSED: 'Cerrado',
     DEFAULT: 'Por defecto'
   };
 
