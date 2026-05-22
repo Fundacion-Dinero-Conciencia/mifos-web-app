@@ -264,6 +264,7 @@ export class PaymentOrderComponent implements OnInit {
   }
 
   get allSelected(): boolean {
+    console.log('all selected');
     return this.selectableRows.length > 0 && this.selectableRows.every((row) => this.isRowSelected(row));
   }
 
