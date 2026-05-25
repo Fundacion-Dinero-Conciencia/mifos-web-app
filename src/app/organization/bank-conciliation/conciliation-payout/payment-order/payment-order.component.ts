@@ -26,6 +26,7 @@ export class PaymentOrderComponent implements OnInit {
   currentPeriodInfo: any;
   currency = 'CLP';
   isAllSelected = false;
+  hasSavedChanges = false;
 
   // Bar superior (idealmente viene del endpoint)
   includedCount = 0;
@@ -165,6 +166,8 @@ export class PaymentOrderComponent implements OnInit {
 
     this.dataSource.data[index].amountToPay = String(amount);
     this.dataSource.data[index].amountToReinvest = String(totalAmount - amount);
+
+    this.hasSavedChanges = false;
   }
   onAmountToReinvestChange(id: number, index: number, totalAmount: number, event: any): void {
     const value = event.target.value;
@@ -177,6 +180,7 @@ export class PaymentOrderComponent implements OnInit {
 
     this.dataSource.data[index].amountToReinvest = String(amount);
     this.dataSource.data[index].amountToPay = String(totalAmount - amount);
+    this.hasSavedChanges = false;
   }
 
   isRowSelected(row: any): boolean {
@@ -189,6 +193,9 @@ export class PaymentOrderComponent implements OnInit {
     } else {
       this.rowsSelected = this.rowsSelected.filter((r) => r.id !== row.id);
     }
+
+    this.isAllSelected = this.allSelected;
+
     this.dataSourceSelected.data = this.rowsSelected;
     this.includedCount = this.rowsSelected.length;
   }
@@ -222,7 +229,8 @@ export class PaymentOrderComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.router.navigate(['../'], { relativeTo: this.route });
+          this.hasSavedChanges = true;
+          //this.router.navigate(['../'], { relativeTo: this.route });
         }
       });
   }
@@ -268,14 +276,12 @@ export class PaymentOrderComponent implements OnInit {
     return this.selectableRows.length > 0 && this.selectableRows.every((row) => this.isRowSelected(row));
   }
 
-  get someSelected(): boolean {
+  /*   get someSelected(): boolean {
     return this.selectableRows.some((row) => this.isRowSelected(row));
-  }
+  } */
 
   toggleSelectAll(checked: boolean): void {
     this.isAllSelected = checked;
-
-    console.log('is all: ', this.isAllSelected);
 
     this.selectableRows.forEach((row) => {
       this.toggleRow(row, checked);

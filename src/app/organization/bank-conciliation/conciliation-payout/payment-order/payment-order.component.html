@@ -63,11 +63,7 @@
   </div>
 
   <div class="select-all-container">
-    <mat-checkbox
-      [checked]="allSelected"
-      [indeterminate]="someSelected && !allSelected"
-      (change)="toggleSelectAll($event.checked)"
-    >
+    <mat-checkbox [checked]="isAllSelected" (change)="toggleSelectAll($event.checked)">
       Seleccionar todos
     </mat-checkbox>
   </div>
@@ -173,7 +169,7 @@
       [length]="totalItems"
       [pageSize]="pageSize"
       [pageIndex]="pageIndex"
-      [pageSizeOptions]="[5, 10, 25, 50]"
+      [pageSizeOptions]="[1, 5, 10, 25, 50]"
       showFirstLastButtons
       (page)="onPageChange($event)"
     >
@@ -241,6 +237,7 @@
     </button>
 
     <button
+      *ngIf="hasSavedChanges"
       mat-raised-button
       color="accent"
       class="btnGreen"
