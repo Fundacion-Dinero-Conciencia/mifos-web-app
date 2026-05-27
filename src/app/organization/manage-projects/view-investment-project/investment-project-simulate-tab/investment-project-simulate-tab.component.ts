@@ -35,6 +35,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   form!: FormGroup;
   comisiones: MatTableDataSource<any> = new MatTableDataSource();
   commissionTypes: any[] = [];
+  expenseTypes: any[] = [];
   commissionToShow: any[] = [];
   commissionAEF: any[] = [];
   displayedColumns: string[] = [
@@ -51,6 +52,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   ];
   displayedColumnsCommisions: string[] = [
     'commissionType',
+    'expenseType',
     'description',
     'netAmount',
     'vat',
@@ -170,6 +172,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   addCommission(): void {
     const formValue = this.adicionalForm.value;
     const otherExpenses = this.getCommissionByName('OTROS GASTOS');
+    const expenseType = this.getExpenseById(formValue.expenseTypeId);
     const vat = Number(formValue.vat ?? this.getIvaVigente());
     const netAMount = Number(formValue.netAmount);
     const total = netAMount + (netAMount * vat) / 100;
@@ -177,11 +180,15 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     const nuevaComision: any = {
       commissionTypeId: otherExpenses.id,
       commissionType: otherExpenses,
+      expenseTypeId: formValue.expenseTypeId,
+      expenseType: expenseType,
       description: formValue.description,
       netAmount: formValue.netAmount,
       vat: vat,
       total: total
     };
+
+    console.log('nuevaa: ', nuevaComision);
 
     if (this.selectedCommission) {
       if (this.selectedCommission.id) {
@@ -255,12 +262,14 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     } else {
       const period = this.isFactoring === true ? this.selectedSimulation?.period / 30 : this.selectedSimulation?.period;
       const tipoITE = this.getCommissionByName('ITE');
+      const expenseType = this.getExpenseByName('GASTOS PROPORCIONALES');
       const percentage = this.getPercentageITEAcordingPeriod() / 100;
       const percentageIte = period >= 12 ? percentage : percentage * period + percentage;
       const prommisoryAmount = this.calculatePromissoryNote(percentageIte);
       const total = prommisoryAmount * percentageIte;
       this.comisiones.data.push({
         commissionType: tipoITE,
+        expenseType: expenseType,
         description: 'Impuesto de Timbres y Estampillas (ITE)',
         netAmount: prommisoryAmount,
         vat: percentageIte * 100,
@@ -289,6 +298,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   addCommissionAmountInvoice() {
     const formValue = this.adicionalForm.value;
     const tipoInvoice = this.getCommissionByName('MONTO FACTURA');
+    const expenseType = this.getExpenseByName('GASTOS PROPORCIONALES');
 
     if (!tipoInvoice) {
       return;
@@ -310,6 +320,8 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     const invoiceCommission: any = {
       commissionTypeId: tipoInvoice.id,
       commissionType: tipoInvoice,
+      expenseTypeId: expenseType.id,
+      expenseType: expenseType,
       description: 'Monto de factura (factoring)',
       netAmount: formValue.netAmount,
       vat: formValue.vat,
@@ -387,6 +399,8 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     this.adicionalForm.patchValue({
       commissionTypeId: commission.commissionTypeId,
       commissionType: commission.commissionType,
+      expenseTypeId: commission.expenseTypeId,
+      expenseType: commission.expenseType,
       netAmount: commission.netAmount,
       vat: commission.vat,
       description: commission.description,
@@ -418,6 +432,10 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     this.adicionalForm = this.fb.group({
       commissionType: [null],
       commissionTypeId: [
+        null,
+        Validators.required
+      ],
+      expenseTypeId: [
         null,
         Validators.required
       ],
@@ -485,7 +503,6 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   switchEditingSimulation(row: any) {
-    console.log('Dataa: ', this.projectData);
     if (this.projectData?.status?.statusValue?.name == 'En Borrador') {
       this.selectedSimulation = row;
       this.isCreatingSimulation = !this.isCreatingSimulation;
@@ -735,6 +752,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     const payload = this.comisiones.data.map((c) => ({
       projectId: this.projectData.id,
       commissionTypeId: c.commissionType.id,
+      expenseTypeId: c.expenseType.id,
       description: c.description,
       netAmount: c.netAmount,
       vat: c.vat,
@@ -869,11 +887,28 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
       });
   }
 
+  loadTypesExpenses(): void {
+    this.loadingCommissions = true;
+
+    this.systemService
+      .getCodeByName('COMMISSION_TAXES_TYPES')
+      .pipe(
+        map((data) => {
+          this.expenseTypes = data?.codeValues?.filter((cv: any) => cv.active) || [];
+        }),
+        finalize(() => {
+          this.loadingCommissions = false;
+        })
+      )
+      .subscribe();
+  }
+
   private processAdditionalExpenses(data: any): void {
     if (data && Array.isArray(data)) {
       const enriched = data.map((item) => {
         const tipo = this.commissionTypes.find((c) => c.id === item.commissionTypeId);
-        return { ...item, id: item.id, commissionType: tipo };
+        const expense = this.expenseTypes.find((c) => c.id === item.expenseTypeId);
+        return { ...item, id: item.id, commissionType: tipo, expenseType: expense };
       });
       if (enriched.length > 0) {
         this.comisiones.data = enriched;
@@ -1043,6 +1078,14 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     return this.commissionTypes.find((t) => t.name?.trim().toLowerCase() === nombre.toLowerCase());
   }
 
+  getExpenseById(id: number): any {
+    return this.expenseTypes.find((t) => t.id === id);
+  }
+
+  getExpenseByName(name: string): any {
+    return this.expenseTypes.find((t) => t.name?.trim().toLowerCase() === name.toLowerCase());
+  }
+
   addCommissionAEF(baseAmount: number, percentage: number): void {
     console.log(baseAmount);
     console.log(percentage);
@@ -1076,6 +1119,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
 
     const tipoAEF = this.getCommissionByName('AEF');
     const tipoIVAAEF = this.getCommissionByName('IVA-AEF');
+    const expenseType = this.getExpenseByName('GASTOS PROPORCIONALES');
 
     if (tipoAEF) {
       const indexAEF = this.comisiones.data.findIndex((c) => c.commissionType?.id === tipoAEF.id);
@@ -1087,6 +1131,8 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         ...(existingAEF?.uuid && { uuid: existingAEF.uuid }),
         commissionTypeId: tipoAEF.id,
         commissionType: tipoAEF,
+        expenseTypeId: expenseType.id,
+        expenseType: expenseType,
         description: 'Comisión por Asesoría de Estructuración Financiera (AEF)',
         netAmount: montoSolicitado,
         vat: tasaAEF,
@@ -1114,6 +1160,8 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
         ...(existingIVAAEF?.uuid && { uuid: existingIVAAEF.uuid }),
         commissionTypeId: tipoIVAAEF.id,
         commissionType: tipoIVAAEF,
+        expenseTypeId: expenseType.id,
+        expenseType: expenseType,
         description: 'IVA sobre AEF',
         netAmount: montoAEF,
         vat: this.getIvaVigente(),
@@ -1246,6 +1294,7 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
     this.loanService.getLoanAccountAssociationDetails(this.projectData.loanId).subscribe((data) => {
       this.loanTemplate = data;
       this.isFactoring = this.loanTemplate?.shortName === 'FACT';
+      this.loadTypesExpenses();
       this.loadTypesCommissions();
       this.getTotalCredit();
     });
