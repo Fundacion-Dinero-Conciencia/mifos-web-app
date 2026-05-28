@@ -1,0 +1,39 @@
+name: Manual Rollback Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Entorno para aplicar el rollback'
+        required: true
+        default: 'pro'       
+        type: choice
+        options:
+          - pro               
+          - staging
+      rollback_type:
+        description: 'Estrategia de Rollback'
+        required: true
+        default: 'PREVIOUS'
+        type: choice
+        options:
+          - PREVIOUS
+          - SPECIFIC_TAG
+      target_tag:
+        description: 'Tag de imagen ECR específico (Solo para SPECIFIC_TAG)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+  actions: read
+
+jobs:
+  execute-rollback:
+    uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/rollback-aws.yml@v11
+    with:
+      environment: ${{ inputs.environment }}
+      rollback_type: ${{ inputs.rollback_type }}
+      target_tag: ${{ inputs.target_tag }}
+    secrets: inherit      
