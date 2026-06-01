@@ -196,7 +196,8 @@ export class PayinTransfersComponent implements OnInit {
         loanId: undefined,
         participationId: undefined,
         amount: this.returnAmount,
-        refund: true
+        refund: true,
+        note: this.returnReason
       });
     }
 

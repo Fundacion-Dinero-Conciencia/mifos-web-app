@@ -151,7 +151,7 @@
           <fa-icon [icon]="faCodeBranch"></fa-icon>
         </button>
         <button
-          *ngIf="row.conciliationStatus.value === 'RECEIVED'"
+          *ngIf="row.conciliationStatus.value === 'RECEIVED' && row.clientType?.name?.includes('Crédito')"
           mat-raised-button
           color="primary"
           class="action-btn"
