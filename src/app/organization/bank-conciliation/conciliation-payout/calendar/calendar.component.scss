@@ -1,3 +1,27 @@
 .littler {
   transform: scale(0.8);
 }
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.status-asignado {
+  background: #e6f1fb;
+  color: #2f6db3;
+}
+
+.status-pendiente {
+  background: #f1efe8;
+  color: #7a6e4d;
+}
+
+.status-parcial {
+  background: #faeeda;
+  color: #a86b00;
+}
