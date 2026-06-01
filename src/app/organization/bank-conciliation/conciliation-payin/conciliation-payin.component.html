@@ -138,7 +138,17 @@
           matTooltip="Ver detalle"
           (click)="$event.stopPropagation(); viewDetails(row)"
         >
-          <fa-icon icon="eye"></fa-icon>
+          <fa-icon [icon]="faEye"></fa-icon>
+        </button>
+        <button
+          *ngIf="row.conciliationStatus.value === 'RECEIVED' && !row.clientType?.name?.includes('Crédito')"
+          mat-raised-button
+          color="primary"
+          class="action-btn"
+          matTooltip="Dividir transferencias"
+          (click)="$event.stopPropagation(); viewAssignation(row)"
+        >
+          <fa-icon [icon]="faCodeBranch"></fa-icon>
         </button>
         <button
           *ngIf="row.conciliationStatus.value === 'RECEIVED'"
@@ -146,12 +156,10 @@
           color="primary"
           class="action-btn"
           matTooltip="Dividir transferencias"
-          (click)="
-            $event.stopPropagation();
-            row.clientType?.name?.includes('Crédito') ? viewAssignationDebtor(row) : viewAssignation(row)
-          "
+          [routerLink]="['/organization', 'bank-conciliation', 'Payin', 'transfers']"
+          [state]="{ row: row }"
         >
-          <fa-icon icon="code-branch"></fa-icon>
+          <fa-icon [icon]="faCodeBranch"></fa-icon>
         </button>
       </td>
     </ng-container>
@@ -164,7 +172,7 @@
     <tr class="mat-row noContentTable" *matNoDataRow>
       <td class="mat-cell" [attr.colspan]="displayedColumns.length">
         <div class="empty-state">
-          <fa-icon [icon]="filesvg" size="3x"></fa-icon>
+          <fa-icon [icon]="faFile" size="3x"></fa-icon>
           <p>No hay transacciones para mostrar.</p>
         </div>
       </td>
@@ -265,7 +273,7 @@
                 matTooltip="Ver detalle de pago"
                 (click)="$event.stopPropagation()"
               >
-                <fa-icon icon="eye"></fa-icon>
+                <fa-icon [icon]="faEye"></fa-icon>
               </button>
               <button
                 *ngIf="detailedRow && isDebtorDetail"
@@ -294,7 +302,7 @@
                 matTooltip="Ver detalle de pago"
                 (click)="$event.stopPropagation()"
               >
-                <fa-icon icon="eye"></fa-icon>
+                <fa-icon [icon]="faEye"></fa-icon>
               </button>
             </td>
           </ng-container>
@@ -439,7 +447,7 @@
                 matTooltip="Borrar asignación"
                 (click)="$event.stopPropagation(); deleteAmountByIndex(i)"
               >
-                <fa-icon icon="trash"></fa-icon>
+                <fa-icon [icon]="faTrash"></fa-icon>
               </button>
             </td>
           </ng-container>
@@ -454,7 +462,7 @@
           class="addAsignationButton"
           (click)="addAssinmentAmount()"
         >
-          <fa-icon icon="plus"></fa-icon>
+          <fa-icon [icon]="faPlus"></fa-icon>
           Agregar asignación
         </button>
       </section>

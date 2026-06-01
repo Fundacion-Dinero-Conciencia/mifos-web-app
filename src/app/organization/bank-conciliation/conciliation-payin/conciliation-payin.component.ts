@@ -6,6 +6,7 @@ import { OrganizationService } from 'app/organization/organization.service';
 import { SystemService } from 'app/system/system.service';
 import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
 import { finalize } from 'rxjs/operators';
+import { faEye, faCodeBranch, faTrash, faPlus, faFile } from '@fortawesome/free-solid-svg-icons';
 
 export interface ConciliationRow {
   systemDate: string | Date;
@@ -35,7 +36,17 @@ const statuses = {
   styleUrls: ['./conciliation-payin.component.scss']
 })
 export class ConciliationPayinComponent implements OnInit {
-  filters: UntypedFormGroup;
+  faEye = faEye;
+  faCodeBranch = faCodeBranch;
+  faTrash = faTrash;
+  faPlus = faPlus;
+  faFile = faFile;
+  filters: UntypedFormGroup = this.fb.group({
+    clientTypeId: [''],
+    rut: [''],
+    notificationId: [''],
+    status: ['']
+  });
   constructor(
     private fb: UntypedFormBuilder,
     private organizationService: OrganizationService,
@@ -121,13 +132,6 @@ export class ConciliationPayinComponent implements OnInit {
   ngOnInit(): void {
     this.systemService.getCodeByName('ClientType').subscribe((data: any) => {
       this.clientOptions = data.codeValues;
-    });
-
-    this.filters = this.fb.group({
-      clientTypeId: [''],
-      rut: [''],
-      notificationId: [''],
-      status: ['']
     });
     this.loadPage(0, this.pageSize);
   }

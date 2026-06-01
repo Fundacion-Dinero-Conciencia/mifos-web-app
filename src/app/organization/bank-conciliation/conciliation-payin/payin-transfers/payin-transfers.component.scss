@@ -1,0 +1,289 @@
+.payinTransfersContainer {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem auto;
+  width: calc(100% - 2rem);
+  max-width: 60%;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 8%);
+}
+
+.loadingBar {
+  min-width: 100%;
+  background-color: #f3f3f3;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  height: 12px;
+}
+
+.loadingBar div {
+  width: 0%;
+  height: 100%;
+  background-color: #1074b9;
+  transition: width 0.5s ease-in-out;
+}
+
+.headerTransactionDetail {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.headerTransactionDetail p {
+  font-size: 1.1rem;
+}
+
+.red {
+  background-color: #ff624e;
+}
+
+.green {
+  background-color: #00c7aa;
+}
+
+.flag {
+  width: 17px;
+  height: 17px;
+  border-radius: 2px;
+
+  &--withContent {
+    width: auto;
+    padding: 4px 8px;
+    text-align: center;
+    color: white;
+  }
+}
+
+.centered-flag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row-assigned {
+  background-color: #f5f5f5;
+}
+
+.amount-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.amount-cell--active {
+  background-color: #ececec;
+}
+
+.amount-input {
+  width: 180px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 1.1rem 0.75rem 0.4rem;
+  outline: none;
+  font-size: 0.95rem;
+  background: white;
+}
+
+.amount-input:focus {
+  border-color: #1074b9;
+}
+
+.floating-input {
+  position: relative;
+  display: inline-block;
+}
+
+.floating-input label {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  padding: 0 0.25rem;
+  color: #8a8a8a;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.floating-input .amount-input:focus + label,
+.floating-input .amount-input:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 0.72rem;
+  color: #1074b9;
+}
+
+.bottomMessages {
+  margin-top: 1.5rem;
+}
+
+.ErrorText {
+  color: #ff624e;
+  font-weight: 600;
+}
+
+.important {
+  color: #1074b9;
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+}
+
+th.center-header {
+  text-align: center;
+}
+
+.cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+}
+
+mat-card {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+/* =========================
+   RETURN SECTION
+========================= */
+
+.returnContainer {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.returnField {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+}
+
+.fieldTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #3d3d3d;
+}
+
+.fieldHint {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: #8a8a8a;
+}
+
+.returnInput {
+  width: 320px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 0.85rem;
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.returnInput:focus {
+  border-color: #1074b9;
+}
+
+.amount-return-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionsContainer {
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.outlineButton {
+  color: #2196f3;
+  border: 1px solid #2196f3;
+}
+
+.confirmContent {
+  min-width: 500px;
+}
+
+.confirmHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.infoIcon {
+  font-size: 2rem;
+  color: #2196f3;
+  line-height: 1;
+}
+
+.confirmTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.confirmSubtitle {
+  margin-top: 0.35rem;
+  color: #666;
+}
+
+.confirmSummary {
+  margin-top: 1.5rem;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.successContent {
+  min-width: 450px;
+  text-align: center;
+  padding: 1rem;
+}
+
+.successIcon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #4caf50;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.successContent h2 {
+  margin-bottom: 0.5rem;
+}
+
+.successContent p {
+  color: #666;
+}

@@ -1,0 +1,296 @@
+<main class="payinTransfersContainer">
+  <h1 *ngIf="isDebtorDetail">{{ 'labels.text.Assign Transfers to Subcredits' | translate }}</h1>
+  <h1 *ngIf="!isDebtorDetail">{{ 'labels.text.Assign Transfers to Participations' | translate }}</h1>
+
+  <hr />
+
+  <section class="headerTransactionDetail">
+    <p>{{ 'labels.text.Transfer Amount' | translate }}:</p>
+
+    <p>
+      {{ detailedRow?.amount | currency: currency }}
+    </p>
+
+    <div class="loadingBar">
+      <div
+        [ngStyle]="{
+          width: (totalAssignedAmount / detailedRow?.amount) * 100 + '%' || '0%'
+        }"
+      ></div>
+    </div>
+
+    <p>{{ 'labels.text.Assigned Amount' | translate }}:</p>
+
+    <p class="bold">
+      {{ totalAssignedAmount | currency: currency }}
+    </p>
+  </section>
+
+  <mat-card>
+    <h3>{{ 'labels.inputs.Allocation' | translate }}</h3>
+
+    <table mat-table [dataSource]="availableItems">
+      <!-- Proyecto -->
+      <ng-container matColumnDef="proyect">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.text.Project' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.projectName }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Estado -->
+      <ng-container matColumnDef="creditStatus">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.inputs.Loan Status' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            <div
+              class="flag flag--withContent centered-flag"
+              [ngClass]="{
+                red: row.daysInArrears > 0,
+                green: row.daysInArrears == 0
+              }"
+            >
+              <span *ngIf="row.daysInArrears > 0">
+                {{ 'labels.text.Overdue' | translate }}
+              </span>
+
+              <span *ngIf="row.daysInArrears == 0">
+                {{ 'labels.inputs.Active' | translate }}
+              </span>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Fecha cuota -->
+      <ng-container matColumnDef="periodDate">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.text.Installment Date' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.currentInstallmentFromDate | date: 'dd/MM/yyyy' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Total -->
+      <ng-container matColumnDef="totalDueAmount">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.text.Total Overdue Amount' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.totalAmount | currency: currency }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Cuotas -->
+      <ng-container matColumnDef="periodsInArrears">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.catalogs.Overdue Fees' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.periodsInArrears }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Dias -->
+      <ng-container matColumnDef="daysInArrears">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.text.Overdue Days' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.daysInArrears }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Fecha vencimiento -->
+      <ng-container matColumnDef="fromDate">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.catalogs.Specified due date' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.currentInstallmentDueDate | date }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Montos -->
+      <ng-container matColumnDef="amounts">
+        <th mat-header-cell *matHeaderCellDef class="center-header"></th>
+
+        <td mat-cell *matCellDef="let row" [style.background]="hasAssignedAmount(row) ? '#f1f1f1' : null">
+          <div class="cell-content amount-cell">
+            <span>$</span>
+
+            <div class="floating-input">
+              <input
+                type="number"
+                class="amount-input"
+                [(ngModel)]="row.amount"
+                (ngModelChange)="onAmountInput(row)"
+                min="0"
+                placeholder=" "
+              />
+
+              <label> Ingresa un monto </label>
+            </div>
+
+            <span>{{ currency }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Rows -->
+      <tr mat-header-row *matHeaderRowDef="assignDisplayedColumns"></tr>
+
+      <tr
+        mat-row
+        *matRowDef="let row; columns: assignDisplayedColumns"
+        [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'"
+      ></tr>
+    </table>
+  </mat-card>
+
+  <!-- Debajo del mat-card / tabla -->
+  <section class="returnContainer">
+    <!-- Glosa -->
+    <div class="returnField">
+      <span class="fieldTitle"> Glosa </span>
+
+      <input type="text" class="returnInput" [(ngModel)]="returnReason" />
+
+      <span class="fieldHint"> Ingresa el motivo de la devolución </span>
+    </div>
+
+    <!-- Monto -->
+    <div class="returnField">
+      <span class="fieldTitle"> Monto a devolver </span>
+
+      <div class="amount-return-wrapper">
+        <span>$</span>
+
+        <input
+          type="number"
+          class="returnInput"
+          [(ngModel)]="returnAmount"
+          (ngModelChange)="onReturnAmountChange()"
+          min="0"
+        />
+
+        <span>{{ currency }}</span>
+      </div>
+
+      <span class="fieldHint"> Ingresa el monto a devolver </span>
+    </div>
+  </section>
+
+  <section class="bottomMessages">
+    <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">Debe asignar todo el monto disponible</p>
+
+    <p *ngIf="isconfirming" class="important">
+      Confirma la división de la transferencia. Esta acción no se puede revertir.
+    </p>
+
+    <p *ngIf="detailedRow && detailedRow.amount < totalAssignedAmount" class="ErrorText">
+      El monto ingresado es mayor al monto disponible. Ajusta el valor para continuar.
+    </p>
+  </section>
+
+  <section class="actionsContainer">
+    <button mat-raised-button (click)="onCancel()" class="outlineButton">
+      {{ 'labels.buttons.Cancel' | translate }}
+    </button>
+
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      class="primaryButton"
+      [disabled]="totalAssignedAmount !== detailedRow?.amount"
+      (click)="showConfirmationDialog = true"
+    >
+      {{ 'labels.buttons.Submit' | translate }}
+    </button>
+  </section>
+
+  <mifosx-custom-dialog
+    [open]="showConfirmationDialog"
+    heading="Confirmar asignación"
+    color="primary"
+    confirmText="Confirm"
+    cancelText="Cancel"
+    (confirm)="assignPayingById(detailedRow.internalId)"
+    (dismiss)="showConfirmationDialog = false"
+    (closed)="showConfirmationDialog = false"
+  >
+    <div class="confirmContent">
+      <div class="confirmHeader">
+        <span class="infoIcon"> ⓘ </span>
+
+        <div>
+          <p class="confirmTitle">¿Confirma la asignación de pagos?</p>
+
+          <p class="confirmSubtitle">Esta acción no se puede revertir.</p>
+        </div>
+      </div>
+
+      <div class="confirmSummary">
+        <div class="summaryRow">
+          <span>Monto del crédito:</span>
+
+          <strong>
+            {{ creditAssignedAmount | currency: currency }}
+          </strong>
+        </div>
+
+        <div class="summaryRow">
+          <span>Monto devolución:</span>
+
+          <strong>
+            {{ returnAmount | currency: currency }}
+          </strong>
+        </div>
+      </div>
+    </div>
+  </mifosx-custom-dialog>
+
+  <mifosx-custom-dialog
+    [open]="showSuccessDialog"
+    heading="Resultado"
+    color="primary"
+    [hideCancelButton]="true"
+    confirmText="Back"
+    (confirm)="goToHome()"
+    (dismiss)="goToHome()"
+    (closed)="goToHome()"
+  >
+    <div class="successContent">
+      <div class="successIcon">✓</div>
+
+      <h2>Confirmación exitosa</h2>
+
+      <p>La asignación de pagos fue realizada correctamente.</p>
+    </div>
+  </mifosx-custom-dialog>
+</main>
