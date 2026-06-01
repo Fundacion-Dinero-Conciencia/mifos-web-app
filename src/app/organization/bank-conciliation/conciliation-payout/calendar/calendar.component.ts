@@ -11,19 +11,19 @@ import { ActivatedRoute } from '@angular/router';
 export class CalendarComponent implements OnInit {
   displayedColumns: string[] = [
     'period',
-    'daysInPeriod',
+    //'daysInPeriod',
     'dueDate',
-    'obligationsMetOnDate',
-    'principalLoanBalanceOutstanding',
+    //'obligationsMetOnDate',
+    //'principalLoanBalanceOutstanding',
     'principalDue',
     'interestDue',
-    'feeChargesDue',
+    //'feeChargesDue',
     'penaltyChargesDue',
-    'totalOutstandingForPeriod',
     'totalPaidForPeriod',
-    'totalPaidInAdvanceForPeriod',
-    'totalPaidLateForPeriod',
-    'totalOverdue',
+    'totalOutstandingForPeriod',
+    //'totalPaidInAdvanceForPeriod',
+    //'totalPaidLateForPeriod',
+    //'totalOverdue',
     'status',
     'actions'
   ];
@@ -32,9 +32,12 @@ export class CalendarComponent implements OnInit {
   subCreditinfo: any;
   globalData: any;
   dataSource = new MatTableDataSource<any>([]);
+  languajeCode: any;
+
   constructor(
     private route: ActivatedRoute,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private settingsService: SettingsService
   ) {
     this.getDefaultCurrency();
     this.route.data.subscribe(({ data }: any) => {
@@ -52,6 +55,7 @@ export class CalendarComponent implements OnInit {
   getDefaultCurrency() {
     this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
       this.currency = data.stringValue;
+      console.log(this.currency);
     });
   }
 
