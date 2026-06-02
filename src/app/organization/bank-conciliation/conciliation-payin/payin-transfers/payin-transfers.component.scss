@@ -80,13 +80,24 @@
 }
 
 .amount-input {
-  width: 180px;
+  width: 110px;
   border: 1px solid #dcdcdc;
   border-radius: 8px;
   padding: 1.1rem 0.75rem 0.4rem;
   outline: none;
   font-size: 0.95rem;
   background: white;
+
+  /* Chrome, Edge, Safari */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  appearance: textfield;
+  appearance: textfield;
 }
 
 .amount-input:focus {
@@ -168,7 +179,7 @@ mat-card {
 .returnField {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 380px;
 }
 
 .fieldTitle {
@@ -185,7 +196,7 @@ mat-card {
 }
 
 .returnInput {
-  width: 320px;
+  width: 380px;
   border: 1px solid #dcdcdc;
   border-radius: 8px;
   padding: 0.85rem;
@@ -194,6 +205,17 @@ mat-card {
   transition: border-color 0.2s ease;
   box-sizing: border-box;
   background: #fff;
+
+  /* Chrome, Edge, Safari */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  appearance: textfield;
+  appearance: textfield;
 }
 
 .returnInput:focus {
