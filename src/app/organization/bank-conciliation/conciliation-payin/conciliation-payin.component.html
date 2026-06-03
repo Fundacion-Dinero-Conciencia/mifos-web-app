@@ -374,7 +374,7 @@
               >
                 <option [value]="undefined" disabled selected>Selecciona</option>
                 <option
-                  *ngFor="let participation of getNonSelectedParticipations(selectorsGroup[i])"
+                  *ngFor="let participation of getNonSelectedParticipations(selectedParticipationIds[i])"
                   [value]="participation?.id"
                 >
                   {{ participation.pendingAmount | currency: currency }} -- {{ participation.projectName }}

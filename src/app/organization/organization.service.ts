@@ -1104,9 +1104,9 @@ export class OrganizationService {
   assignPayingById(
     notificationId: string,
     partitionList: {
-      loanId?: number;
+      loanId?: number | undefined;
       amount: number;
-      participationId?: number;
+      participationId?: number | undefined;
     }[]
   ) {
     return this.http.post(
