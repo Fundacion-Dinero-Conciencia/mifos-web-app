@@ -349,6 +349,8 @@ export class ConciliationPayinComponent implements OnInit {
     this.detailedRow = null;
     this.selectedRowPartition = [];
     this.isconfirming = false;
+    this.availableParticipations = [];
+    this.selectedParticipationIds = [];
   }
 
   confirmAction() {
@@ -405,7 +407,7 @@ export class ConciliationPayinComponent implements OnInit {
     if (this.isDebtorDetail) {
       listPayload = this.selectedRowPartition
         .map((amount, index) => ({
-          loanId: loans?.[index] || null,
+          loanId: loans?.[index] || undefined,
           amount,
           participationId: undefined
         }))
@@ -500,7 +502,7 @@ export class ConciliationPayinComponent implements OnInit {
     return [
       ...this.NonSelectedParticipationsOptions,
       participationsSelected
-    ];
+    ].filter(Boolean);
   }
 
   get NonSelectedParticipationsOptions(): any[] {
@@ -508,15 +510,11 @@ export class ConciliationPayinComponent implements OnInit {
       return [];
     }
     const participationsSelected = this.getValuesParticipationsIds();
-    return this.availableParticipations.filter((loan) => !participationsSelected.includes(Number(loan.loanId)));
+    return this.availableParticipations.filter((pp) => !participationsSelected.includes(Number(pp.id)));
   }
 
   getValuesParticipationsIds(): number[] {
-    if (!this.selectorsGroup) {
-      return [];
-    }
-    const stringValues = [...this.selectorsGroup];
-    return stringValues.map((value) => (value !== undefined ? Number(value) : undefined));
+    return [...this.selectedParticipationIds];
   }
 
   changeSelectedParticipation(event: any, index: number): void {
