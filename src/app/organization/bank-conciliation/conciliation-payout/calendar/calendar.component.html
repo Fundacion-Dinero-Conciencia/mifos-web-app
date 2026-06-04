@@ -118,7 +118,8 @@
             [ngClass]="{
               'status-asignado': row.status === 'ASIGNADO',
               'status-pendiente': row.status === 'PENDIENTE',
-              'status-parcial': row.status === 'PARCIAL'
+              'status-parcial': row.status === 'PARCIAL',
+              'status-without-pay': row.status === 'SIN PAGO'
             }"
           >
             {{ row.status }}
@@ -131,7 +132,7 @@
         <th mat-header-cell *matHeaderCellDef>Acciones</th>
         <td mat-cell *matCellDef="let row">
           <button
-            *ngIf="row.status !== 'ASIGNADO'"
+            *ngIf="row.status === 'PENDIENTE' || row.status === 'PARCIAL'"
             mat-raised-button
             color="primary"
             (click)="$event.stopPropagation()"
