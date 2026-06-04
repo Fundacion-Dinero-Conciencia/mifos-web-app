@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 /** Custom Services */
 import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 
 @Component({
   selector: 'mifosx-foreclosure',
@@ -36,12 +37,14 @@ export class ForeclosureComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dateUtils: Dates,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private idempotencyService: IdempotencyService
   ) {
     this.loanId = this.route.snapshot.params['loanId'];
   }
 
   ngOnInit() {
+    this.idempotencyService.create();
     this.maxDate = this.settingsService.businessDate;
     this.createforeclosureForm();
     this.onChanges();

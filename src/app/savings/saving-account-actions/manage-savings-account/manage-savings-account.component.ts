@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dates } from 'app/core/utils/dates';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 import { SavingsService } from 'app/savings/savings.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { Currency } from 'app/shared/models/general.model';
@@ -53,7 +54,8 @@ export class ManageSavingsAccountComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private systemService: SystemService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private idempotency: IdempotencyService
   ) {
     this.transactionCommand = this.route.snapshot.params['name'].toLowerCase().replaceAll(' ', '');
     this.transactionType[this.transactionCommand] = true;
@@ -64,6 +66,7 @@ export class ManageSavingsAccountComponent implements OnInit {
    * Creates the post interest savings form.
    */
   ngOnInit() {
+    this.idempotency.create();
     this.maxDate = this.settingsService.businessDate;
     this.createManageSavingsAccountForm();
     if (

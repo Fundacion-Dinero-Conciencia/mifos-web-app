@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dates } from 'app/core/utils/dates';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 import { LoansService } from 'app/loans/loans.service';
 import { SettingsService } from 'app/settings/settings.service';
 
@@ -41,7 +42,8 @@ export class ChargeOffComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dateUtils: Dates,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private idempotencyService: IdempotencyService
   ) {
     this.loanId = this.route.snapshot.params['loanId'];
   }
@@ -51,6 +53,7 @@ export class ChargeOffComponent implements OnInit {
    * and initialize with the required values
    */
   ngOnInit() {
+    this.idempotencyService.create();
     this.maxDate = this.settingsService.businessDate;
     this.chargeOffReasonOptions = this.dataObject.chargeOffReasonOptions;
     this.createChargeoffLoanForm();
