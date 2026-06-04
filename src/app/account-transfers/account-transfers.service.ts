@@ -152,4 +152,8 @@ export class AccountTransfersService {
       { headers }
     );
   }
+
+  reverseAccountTransfer(transferId: any): Observable<any> {
+    return this.http.post(`/accounttransfers/${transferId}/reversal`, null);
+  }
 }
