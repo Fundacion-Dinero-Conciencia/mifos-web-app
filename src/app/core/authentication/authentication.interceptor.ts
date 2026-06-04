@@ -1,6 +1,6 @@
 /** Angular Imports */
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 
 /** rxjs Imports */
 import { Observable } from 'rxjs';
@@ -8,9 +8,13 @@ import { Observable } from 'rxjs';
 /** Custom Imports */
 import { environment } from '../../../environments/environment';
 import { SettingsService } from 'app/settings/settings.service';
+import { IdempotencyService } from '../utils/idempotency.service';
+import { tap } from 'rxjs/internal/operators/tap';
 
 /** Http request (default) options headers. */
-const httpOptions = {
+const httpOptions: {
+  headers: { [key: string]: string };
+} = {
   headers: {
     'Fineract-Platform-TenantId': environment.fineractPlatformTenantId
   }
@@ -27,7 +31,10 @@ const twoFactorAccessTokenHeader = 'Fineract-Platform-TFA-Token';
  */
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {
-  constructor(private settingsService: SettingsService) {}
+  constructor(
+    private settingsService: SettingsService,
+    private idempotencyService: IdempotencyService
+  ) {}
 
   /**
    * Intercepts a Http request and sets the request headers.
@@ -36,8 +43,32 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     if (this.settingsService.tenantIdentifier) {
       httpOptions.headers['Fineract-Platform-TenantId'] = this.settingsService.tenantIdentifier;
     }
-    request = request.clone({ setHeaders: httpOptions.headers });
-    return next.handle(request);
+
+    const headers = {
+      ...httpOptions.headers
+    };
+
+    const idempotencyKey = this.idempotencyService.get();
+
+    if (idempotencyKey && (request.method === 'POST' || request.method === 'PUT')) {
+      headers['Idempotency-Key'] = idempotencyKey;
+    }
+    request = request.clone({ setHeaders: headers });
+
+    return next.handle(request).pipe(
+      tap({
+        next: (event) => {
+          if (
+            event instanceof HttpResponse &&
+            event.ok &&
+            idempotencyKey &&
+            (request.method === 'POST' || request.method === 'PUT')
+          ) {
+            this.idempotencyService.clear();
+          }
+        }
+      })
+    );
   }
 
   /**

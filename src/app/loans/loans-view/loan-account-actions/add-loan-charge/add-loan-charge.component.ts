@@ -7,6 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { LoansService } from '../../../loans.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 
 /**
  * Create Add Loan Charge component.
@@ -56,7 +57,8 @@ export class AddLoanChargeComponent implements OnInit {
     private router: Router,
     private dateUtils: Dates,
     private loansService: LoansService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private idempotencyService: IdempotencyService
   ) {
     this.route.data.subscribe((data: { actionButtonData: any }) => {
       this.loanChargeOptions = data.actionButtonData.chargeOptions;
@@ -68,6 +70,7 @@ export class AddLoanChargeComponent implements OnInit {
    * Creates the Loan Charge form.
    */
   ngOnInit() {
+    this.idempotencyService.create();
     this.maxDate = this.settingsService.maxFutureDate;
     this.createLoanChargeForm();
     this.loanChargeForm.controls.chargeId.valueChanges.subscribe((chargeId) => {

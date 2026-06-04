@@ -12,6 +12,7 @@ import { LoansAccountDetailsStepComponent } from '../loans-account-stepper/loans
 import { LoansAccountTermsStepComponent } from '../loans-account-stepper/loans-account-terms-step/loans-account-terms-step.component';
 import { LoansAccountChargesStepComponent } from '../loans-account-stepper/loans-account-charges-step/loans-account-charges-step.component';
 import { LoansAccountDatatableStepComponent } from '../loans-account-stepper/loans-account-datatable-step/loans-account-datatable-step.component';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 
 /**
  * Create loans account
@@ -58,11 +59,13 @@ export class CreateLoansAccountComponent {
     private router: Router,
     private loansService: LoansService,
     private settingsService: SettingsService,
-    private clientService: ClientsService
+    private clientService: ClientsService,
+    private idempotency: IdempotencyService
   ) {
     this.route.data.subscribe((data: { loansAccountTemplate: any }) => {
       this.loansAccountTemplate = data.loansAccountTemplate;
     });
+    this.idempotency.create();
   }
 
   /**

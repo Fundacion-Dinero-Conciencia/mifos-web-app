@@ -8,6 +8,7 @@ import { LoansService } from 'app/loans/loans.service';
 import { Dates } from 'app/core/utils/dates';
 import { SettingsService } from 'app/settings/settings.service';
 import { Currency } from 'app/shared/models/general.model';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 
 /**
  * Waive Interest component.
@@ -41,10 +42,12 @@ export class WaiveInterestComponent implements OnInit {
     private settingsService: SettingsService,
     private dateUtils: Dates,
     private loanService: LoansService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private idempotencyService: IdempotencyService
   ) {}
 
   ngOnInit() {
+    this.idempotencyService.create();
     this.maxDate = this.settingsService.businessDate;
     this.setLoanInterestForm();
     if (this.dataObject.currency) {
