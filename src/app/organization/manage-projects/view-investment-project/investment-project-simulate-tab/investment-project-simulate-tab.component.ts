@@ -158,10 +158,20 @@ export class InvestmentProjectSimulateTabComponent implements OnInit {
   }
 
   enabledFields(flag: boolean) {
+    const expenseTypeControl = this.adicionalForm.get('expenseTypeId');
+
     if (flag) {
       this.adicionalForm.get('netAmount')?.disable();
       this.adicionalForm.get('description')?.disable();
       this.adicionalForm.get('vat')?.disable();
+
+      const recurrentExpense = this.expenseTypes.find((e) => e.name?.toUpperCase() === 'GASTOS PROPORCIONALES');
+
+      if (recurrentExpense) {
+        expenseTypeControl?.setValue(recurrentExpense.id);
+      }
+
+      expenseTypeControl?.disable();
     } else {
       this.adicionalForm.get('netAmount')?.enable();
       this.adicionalForm.get('description')?.enable();
