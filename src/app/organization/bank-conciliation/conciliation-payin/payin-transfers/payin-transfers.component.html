@@ -283,8 +283,8 @@
   </section>
 
   <section class="bottomMessages">
-    <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail && !availableParticipationAmount">
-      Debe asignar todo el monto disponible
+    <p class="ErrorText" *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail && !availableParticipationAmount">
+      Debes ingresar un monto menor o igual al de la transferencia
     </p>
 
     <p *ngIf="isconfirming" class="important">
