@@ -141,17 +141,7 @@
           <fa-icon [icon]="faEye"></fa-icon>
         </button>
         <button
-          *ngIf="row.conciliationStatus.value === 'RECEIVED' && !row.clientType?.name?.includes('Crédito')"
-          mat-raised-button
-          color="primary"
-          class="action-btn"
-          matTooltip="Dividir transferencias"
-          (click)="$event.stopPropagation(); viewAssignation(row)"
-        >
-          <fa-icon [icon]="faCodeBranch"></fa-icon>
-        </button>
-        <button
-          *ngIf="row.conciliationStatus.value === 'RECEIVED' && row.clientType?.name?.includes('Crédito')"
+          *ngIf="row.conciliationStatus.value === 'RECEIVED'"
           mat-raised-button
           color="primary"
           class="action-btn"

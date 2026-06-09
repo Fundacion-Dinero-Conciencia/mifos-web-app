@@ -29,7 +29,8 @@
   <mat-card>
     <h3>{{ 'labels.inputs.Allocation' | translate }}</h3>
 
-    <table mat-table [dataSource]="availableItems">
+    <!--Table for debtor detail-->
+    <table mat-table [dataSource]="availableItems" *ngIf="isDebtorDetail">
       <!-- Proyecto -->
       <ng-container matColumnDef="proyect">
         <th mat-header-cell *matHeaderCellDef class="center-header">
@@ -163,10 +164,81 @@
 
       <!-- Rows -->
       <tr mat-header-row *matHeaderRowDef="assignDisplayedColumns"></tr>
-
       <tr
         mat-row
         *matRowDef="let row; columns: assignDisplayedColumns"
+        [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'"
+      ></tr>
+    </table>
+
+    <!--Table for participations detail-->
+    <table mat-table [dataSource]="availableItems" *ngIf="!isDebtorDetail">
+      <!-- Proyecto -->
+      <ng-container matColumnDef="proyect">
+        <th mat-header-cell *matHeaderCellDef class="center-header">
+          {{ 'labels.text.Project' | translate }}
+        </th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.projectName }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Total reservation amount -->
+      <ng-container matColumnDef="totalReservationAmount">
+        <th mat-header-cell *matHeaderCellDef class="center-header">Monto total de la reserva</th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ (row.amount || 0) + (row.commission || 0) | currency: currency }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Reservation amount -->
+      <ng-container matColumnDef="reservationAmount">
+        <th mat-header-cell *matHeaderCellDef class="center-header">Saldo de la reserva</th>
+
+        <td mat-cell *matCellDef="let row">
+          <div class="cell-content">
+            {{ row.pendingAmount | currency: currency }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Montos -->
+      <ng-container matColumnDef="amounts">
+        <th mat-header-cell *matHeaderCellDef class="center-header"></th>
+
+        <td mat-cell *matCellDef="let row" [style.background]="hasAssignedAmount(row) ? '#f1f1f1' : null">
+          <div class="cell-content amount-cell">
+            <span>$</span>
+
+            <div class="floating-input">
+              <input
+                type="number"
+                class="amount-input"
+                [(ngModel)]="row.participationAmount"
+                (ngModelChange)="onParticipationAmountInput(row)"
+                min="0"
+                placeholder=" "
+              />
+
+              <label> Ingresa un monto </label>
+            </div>
+
+            <span>{{ currency }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Rows -->
+      <tr mat-header-row *matHeaderRowDef="assignParticipationsDisplayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: assignParticipationsDisplayedColumns"
         [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'"
       ></tr>
     </table>
@@ -206,7 +278,9 @@
   </section>
 
   <section class="bottomMessages">
-    <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail">Debe asignar todo el monto disponible</p>
+    <p *ngIf="detailedRow && detailedRow.amount && !isDebtorDetail && !availableParticipationAmount">
+      Debe asignar todo el monto disponible
+    </p>
 
     <p *ngIf="isconfirming" class="important">
       Confirma la división de la transferencia. Esta acción no se puede revertir.
@@ -249,7 +323,10 @@
         <span class="infoIcon"> ⓘ </span>
 
         <div>
-          <p class="confirmTitle">¿Confirma la asignación de pagos?</p>
+          <p class="confirmTitle">
+            <span *ngIf="isDebtorDetail">¿Confirma la asignación de pagos?</span>
+            <span *ngIf="!isDebtorDetail">¿Confirma la división de la transferencia?</span>
+          </p>
 
           <p class="confirmSubtitle">Esta acción no se puede revertir.</p>
         </div>
@@ -257,7 +334,8 @@
 
       <div class="confirmSummary">
         <div class="summaryRow">
-          <span>Monto del crédito:</span>
+          <span *ngIf="isDebtorDetail">Monto del crédito:</span>
+          <span *ngIf="!isDebtorDetail">Monto de la inversión:</span>
 
           <strong>
             {{ creditAssignedAmount | currency: currency }}

@@ -28,6 +28,7 @@ export class PayinTransfersComponent implements OnInit {
   returnAmount = 0;
   showConfirmationDialog = false;
   showSuccessDialog = false;
+  availableParticipationAmount = true;
 
   assignDisplayedColumns: string[] = [
     'proyect',
@@ -40,12 +41,16 @@ export class PayinTransfersComponent implements OnInit {
     'amounts'
   ];
 
+  assignParticipationsDisplayedColumns: string[] = [
+    'proyect',
+    'totalReservationAmount',
+    'reservationAmount',
+    'amounts'
+  ];
+
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
-    private fb: UntypedFormBuilder,
-    private organizationService: OrganizationService,
-    private systemService: SystemService
+    private organizationService: OrganizationService
   ) {}
 
   ngOnInit(): void {
@@ -89,7 +94,11 @@ export class PayinTransfersComponent implements OnInit {
   }
 
   get totalAssignedAmount(): number {
-    const tableAmount = this.availableItems.reduce((total, item) => total + (Number(item.amount) || 0), 0);
+    const tableAmount = this.availableItems.reduce(
+      (total, item) =>
+        total + (this.isDebtorDetail == true ? Number(item.amount) || 0 : Number(item.participationAmount) || 0),
+      0
+    );
 
     return tableAmount + (Number(this.returnAmount) || 0);
   }
@@ -135,8 +144,7 @@ export class PayinTransfersComponent implements OnInit {
       .subscribe({
         next: (data: any) => {
           this.availableItems = data.map((item: any) => ({
-            ...item,
-            amount: null
+            ...item
           }));
 
           this.isDebtorDetail = false;
@@ -156,6 +164,28 @@ export class PayinTransfersComponent implements OnInit {
     }
 
     this.modifiedItemsCount = this.availableItems.reduce((total, item) => total + (Number(item.amount) || 0), 0);
+  }
+
+  onParticipationAmountInput(row: any): void {
+    if (row.participationAmount === '' || row.participationAmount === null || row.participationAmount === undefined) {
+      row.participationAmount = null;
+    } else {
+      row.participationAmount = Number(row.participationAmount);
+    }
+
+    if (row.participationAmount) {
+      if (row.participationAmount > row.pendingAmount) {
+        row.participationAmount = null;
+        this.availableParticipationAmount = false;
+      } else {
+        this.availableParticipationAmount = true;
+      }
+    }
+
+    this.modifiedItemsCount = this.availableItems.reduce(
+      (total, item) => total + (Number(item.participationAmount) || 0),
+      0
+    );
   }
 
   hasAssignedAmount(row: any): boolean {
@@ -186,7 +216,7 @@ export class PayinTransfersComponent implements OnInit {
         .filter((item) => Number(item.amount) > 0)
         .map((item) => ({
           loanId: undefined,
-          amount: Number(item.amount),
+          amount: Number(item.participationAmount),
           participationId: item.id
         }));
     }
