@@ -252,7 +252,12 @@
 
       <input type="text" class="returnInput" [(ngModel)]="returnReason" />
 
-      <span class="fieldHint"> Ingresa el motivo de la devolución </span>
+      <span class="ErrorText" *ngIf="isReturnReasonRequired && !returnReason?.trim()">
+        La glosa es obligatoria cuando existe un monto a devolver.
+      </span>
+      <span class="fieldHint" *ngIf="!isReturnReasonRequired || returnReason?.trim()">
+        Ingresa el motivo de la devolución
+      </span>
     </div>
 
     <!-- Monto -->
@@ -301,7 +306,7 @@
       mat-raised-button
       color="primary"
       class="primaryButton"
-      [disabled]="totalAssignedAmount !== detailedRow?.amount"
+      [disabled]="totalAssignedAmount !== detailedRow?.amount || !isReturnFormValid"
       (click)="showConfirmationDialog = true"
     >
       {{ 'labels.buttons.Submit' | translate }}

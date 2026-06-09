@@ -253,4 +253,15 @@ export class PayinTransfersComponent implements OnInit {
   get creditAssignedAmount(): number {
     return this.totalAssignedAmount - (Number(this.returnAmount) || 0);
   }
+
+  get isReturnReasonRequired(): boolean {
+    return !!this.returnAmount && this.returnAmount > 0;
+  }
+
+  get isReturnFormValid(): boolean {
+    if (this.isReturnReasonRequired) {
+      return !!this.returnReason?.trim();
+    }
+    return true;
+  }
 }
