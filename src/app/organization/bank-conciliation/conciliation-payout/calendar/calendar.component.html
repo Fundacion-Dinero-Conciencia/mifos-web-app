@@ -9,121 +9,121 @@
     <table mat-table [dataSource]="dataSource" class="bc-table__table">
       <!-- # -->
       <ng-container matColumnDef="period">
-        <th mat-header-cell *matHeaderCellDef>#</th>
+        <th mat-header-cell *matHeaderCellDef>N° Cuota</th>
         <td mat-cell *matCellDef="let row">
           {{ row.period }}
         </td>
       </ng-container>
 
       <!-- Días -->
-      <ng-container matColumnDef="daysInPeriod">
+      <!-- <ng-container matColumnDef="daysInPeriod">
         <th mat-header-cell *matHeaderCellDef>Días</th>
         <td mat-cell *matCellDef="let row">
           {{ row.daysInPeriod }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Fecha -->
       <ng-container matColumnDef="dueDate">
-        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <th mat-header-cell *matHeaderCellDef>Fecha de pago</th>
         <td mat-cell *matCellDef="let row">
           {{ row.dueDate ? (row.dueDate | dateFormat) : '-' }}
         </td>
       </ng-container>
 
       <!-- Fecha de pago -->
-      <ng-container matColumnDef="obligationsMetOnDate">
+      <!-- <ng-container matColumnDef="obligationsMetOnDate">
         <th mat-header-cell *matHeaderCellDef>Fecha de pago</th>
         <td mat-cell *matCellDef="let row">
           {{ row.obligationsMetOnDate ? (row.obligationsMetOnDate | dateFormat) : '-' }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Saldo del Crédito -->
-      <ng-container matColumnDef="principalLoanBalanceOutstanding">
+      <!-- <ng-container matColumnDef="principalLoanBalanceOutstanding">
         <th mat-header-cell *matHeaderCellDef>Saldo del Crédito</th>
         <td mat-cell *matCellDef="let row">
           {{ row.principalLoanBalanceOutstanding | currency: currency : 'symbol-narrow' }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Principal vencido -->
       <ng-container matColumnDef="principalDue">
         <th mat-header-cell *matHeaderCellDef>Principal vencido</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.principalDue | currency: currency : 'symbol-narrow' }}
-        </td>
+        <td mat-cell *matCellDef="let row">$ {{ row.principalDue | number: '1.0-0' }}</td>
       </ng-container>
 
       <!-- Interés -->
       <ng-container matColumnDef="interestDue">
         <th mat-header-cell *matHeaderCellDef>Interés</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.interestDue | currency: currency : 'symbol-narrow' }}
-        </td>
+        <td mat-cell *matCellDef="let row">$ {{ row.interestDue | number: '1.0-0' }}</td>
       </ng-container>
 
       <!-- Comisiones -->
-      <ng-container matColumnDef="feeChargesDue">
+      <!-- <ng-container matColumnDef="feeChargesDue">
         <th mat-header-cell *matHeaderCellDef>Comisiones</th>
         <td mat-cell *matCellDef="let row">
           {{ row.feeChargesDue | currency: currency : 'symbol-narrow' }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Penalizaciones -->
       <ng-container matColumnDef="penaltyChargesDue">
         <th mat-header-cell *matHeaderCellDef>Penalizaciones</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.penaltyChargesDue | currency: currency : 'symbol-narrow' }}
-        </td>
-      </ng-container>
-
-      <!-- Pendiente -->
-      <ng-container matColumnDef="totalOutstandingForPeriod">
-        <th mat-header-cell *matHeaderCellDef>Pendiente</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.totalOutstandingForPeriod | currency: currency : 'symbol-narrow' }}
-        </td>
+        <td mat-cell *matCellDef="let row">$ {{ row.penaltyChargesDue | number: '1.0-0' }}</td>
       </ng-container>
 
       <!-- Pagado -->
       <ng-container matColumnDef="totalPaidForPeriod">
         <th mat-header-cell *matHeaderCellDef>Pagado</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.totalPaidForPeriod | currency: currency : 'symbol-narrow' }}
-        </td>
+        <td mat-cell *matCellDef="let row">$ {{ row.totalPaidForPeriod | number: '1.0-0' }}</td>
+      </ng-container>
+
+      <!-- Pendiente de la cuota-->
+      <ng-container matColumnDef="totalOutstandingForPeriod">
+        <th mat-header-cell *matHeaderCellDef>Pendiente</th>
+        <td mat-cell *matCellDef="let row">$ {{ row.totalOutstandingForPeriod | number: '1.0-0' }}</td>
       </ng-container>
 
       <!-- Por adelantado -->
-      <ng-container matColumnDef="totalPaidInAdvanceForPeriod">
+      <!-- <ng-container matColumnDef="totalPaidInAdvanceForPeriod">
         <th mat-header-cell *matHeaderCellDef>Por adelantado</th>
         <td mat-cell *matCellDef="let row">
           {{ row.totalPaidInAdvanceForPeriod | currency: currency : 'symbol-narrow' }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Tarde -->
-      <ng-container matColumnDef="totalPaidLateForPeriod">
+      <!-- <ng-container matColumnDef="totalPaidLateForPeriod">
         <th mat-header-cell *matHeaderCellDef>Tarde</th>
         <td mat-cell *matCellDef="let row">
           {{ row.totalPaidLateForPeriod | currency: currency : 'symbol-narrow' }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Pendiente (derecha) -->
-      <ng-container matColumnDef="totalOverdue">
+      <!-- <ng-container matColumnDef="totalOverdue">
         <th mat-header-cell *matHeaderCellDef>Pendiente</th>
         <td mat-cell *matCellDef="let row">
           {{ row.totalOverdue | currency: currency : 'symbol-narrow' }}
         </td>
-      </ng-container>
+      </ng-container> -->
 
       <!-- Estado -->
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Situación</th>
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.status }}
+          <span
+            class="status-pill"
+            [ngClass]="{
+              'status-asignado': row.status === 'ASIGNADO',
+              'status-pendiente': row.status === 'PENDIENTE',
+              'status-parcial': row.status === 'PARCIAL',
+              'status-without-pay': row.status === 'SIN PAGO'
+            }"
+          >
+            {{ row.status }}
+          </span>
         </td>
       </ng-container>
 
@@ -132,7 +132,7 @@
         <th mat-header-cell *matHeaderCellDef>Acciones</th>
         <td mat-cell *matCellDef="let row">
           <button
-            *ngIf="row.status !== 'ASIGNADO'"
+            *ngIf="row.status === 'PENDIENTE' || row.status === 'PARCIAL'"
             mat-raised-button
             color="primary"
             (click)="$event.stopPropagation()"
@@ -149,7 +149,7 @@
               }
             }"
           >
-            <mat-icon>visibility</mat-icon>
+            <fa-icon [icon]="['fas', 'code-branch']"></fa-icon>
           </button>
         </td>
       </ng-container>

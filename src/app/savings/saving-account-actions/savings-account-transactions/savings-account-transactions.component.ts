@@ -8,6 +8,7 @@ import { SavingsService } from '../../savings.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { Dates } from 'app/core/utils/dates';
 import { Currency } from 'app/shared/models/general.model';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 
 /**
  * Create savings account transactions component.
@@ -57,7 +58,8 @@ export class SavingsAccountTransactionsComponent implements OnInit {
     private router: Router,
     private dateUtils: Dates,
     private savingsService: SavingsService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private idempotency: IdempotencyService
   ) {
     this.route.data.subscribe((data: { savingsAccountActionData: any }) => {
       this.paymentTypeOptions = data.savingsAccountActionData.paymentTypeOptions;
@@ -76,6 +78,7 @@ export class SavingsAccountTransactionsComponent implements OnInit {
   ngOnInit() {
     this.maxDate = this.settingsService.businessDate;
     this.createSavingAccountTransactionForm();
+    this.idempotency.create();
   }
 
   /**

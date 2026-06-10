@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Dates } from 'app/core/utils/dates';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 
 /** Custom Services */
 import { SavingsService } from 'app/savings/savings.service';
@@ -40,7 +41,8 @@ export class WithdrawByClientSavingsAccountComponent implements OnInit {
     private dateUtils: Dates,
     private route: ActivatedRoute,
     private router: Router,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private idempotencyService: IdempotencyService
   ) {
     this.accountId = this.route.snapshot.params['savingAccountId'];
   }
@@ -49,6 +51,7 @@ export class WithdrawByClientSavingsAccountComponent implements OnInit {
    * Creates the withdraw savings form.
    */
   ngOnInit() {
+    this.idempotencyService.create();
     this.maxDate = this.settingsService.businessDate;
     this.createWithdrawSavingsAccountForm();
   }

@@ -180,10 +180,10 @@
       *ngIf="projectData?.status?.statusValue?.name === 'En Borrador' && adicionalForm && isEditingSimulation"
       [formGroup]="adicionalForm"
       fxLayout="column"
-      fxLayoutGap="16px"
+      fxLayoutGap="10px"
       class="m-t-25"
     >
-      <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="start center">
+      <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
         <mat-form-field appearance="fill" fxFlex style="margin-top: 16px">
           <mat-label>{{ 'labels.inputs.Charge Type' | translate }}</mat-label>
           <mat-select
@@ -193,6 +193,15 @@
             id="charge-type-select"
           >
             <mat-option *ngFor="let type of commissionToShow" [value]="type.id">
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex style="margin-top: 16px">
+          <mat-label>{{ 'labels.inputs.Expense Type' | translate }}</mat-label>
+          <mat-select formControlName="expenseTypeId" required id="charge-type-select">
+            <mat-option *ngFor="let type of expenseTypes" [value]="type.id">
               {{ type.name }}
             </mat-option>
           </mat-select>
@@ -249,6 +258,11 @@
       <ng-container matColumnDef="commissionType">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Charge Type' | translate }}</th>
         <td mat-cell *matCellDef="let element">{{ element.commissionType?.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="expenseType">
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Expense Type' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.expenseType?.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="description">

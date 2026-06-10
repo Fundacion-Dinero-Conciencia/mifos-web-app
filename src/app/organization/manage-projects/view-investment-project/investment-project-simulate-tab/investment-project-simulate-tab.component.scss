@@ -1,10 +1,31 @@
 .tab-container {
-  padding: 1%;
-  margin: 1%;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.container.createForm {
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .container form {
+  width: 100%;
+  max-width: 100%;
   gap: 1rem;
+  box-sizing: border-box;
 }
 
 .container button.outlinedButton {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IdempotencyService } from 'app/core/utils/idempotency.service';
 import { LoansService } from 'app/loans/loans.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
@@ -42,7 +43,8 @@ export class AdjustLoanChargeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private settingsService: SettingsService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private idempotencyService: IdempotencyService
   ) {
     this.loanId = this.route.snapshot.params['loanId'];
     this.chargeId = this.route.snapshot.params['id'];
@@ -57,6 +59,7 @@ export class AdjustLoanChargeComponent implements OnInit {
    * and initialize with the required values
    */
   ngOnInit() {
+    this.idempotencyService.create();
     this.maxDate = this.settingsService.maxAllowedDate;
     this.createAdjustLoanChargeForm();
     this.setRepaymentLoanDetails();
