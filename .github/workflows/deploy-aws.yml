@@ -13,7 +13,7 @@ permissions:
   security-events: write
 jobs:
   deploy-aws:
-    uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/deploy-aws.yml@v11
+    uses: Fundacion-Dinero-Conciencia/github-template/.github/workflows/deploy-aws.yml@v13
     with:
       environment: pro
     secrets:
