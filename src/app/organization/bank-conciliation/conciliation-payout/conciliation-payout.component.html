@@ -63,7 +63,7 @@
     <ng-container matColumnDef="investmentType">
       <th mat-header-cell *matHeaderCellDef>Tipo de operación</th>
       <td mat-cell *matCellDef="let row">
-        {{ findOperationTypeById(row.orderType.id) }}
+        {{ findOperationTypeById(row.orderType?.id) }}
       </td>
     </ng-container>
 
