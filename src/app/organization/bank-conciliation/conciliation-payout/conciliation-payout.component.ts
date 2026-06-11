@@ -98,7 +98,8 @@ export class ConciliationPayoutComponent implements OnInit {
   ngOnInit(): void {
     this.operationType = [
       { id: 200, name: ' Pago de crédito' },
-      { id: 100, name: 'Cuotas de inversion' }
+      { id: 100, name: 'Cuotas de inversion' },
+      { id: 300, name: 'Devolución' }
     ];
 
     this.filters = this.fb.group({

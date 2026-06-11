@@ -213,7 +213,7 @@ export class PayinTransfersComponent implements OnInit {
         }));
     } else {
       listPayload = this.availableItems
-        .filter((item) => Number(item.amount) > 0)
+        .filter((item) => Number(item.participationAmount) > 0)
         .map((item) => ({
           loanId: undefined,
           amount: Number(item.participationAmount),
