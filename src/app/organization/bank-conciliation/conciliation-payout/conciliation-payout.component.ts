@@ -168,7 +168,9 @@ export class ConciliationPayoutComponent implements OnInit {
       });
   }
   onPageChange(event: any) {
-    this.loadPage(event.pageIndex, event.pageSize, this.filters.value);
+    const startDate = this.datePipe.transform(this.filters.value.startDate, 'yyyy-MM-dd');
+    const endDate = this.datePipe.transform(this.filters.value.endDate, 'yyyy-MM-dd');
+    this.loadPage(event.pageIndex, event.pageSize, { ...this.filters.value, startDate, endDate });
   }
 
   applyFilters(): void {
