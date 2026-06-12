@@ -835,6 +835,9 @@ const routes: Routes = [
         {
           path: 'projects',
           data: { title: 'Manage Projects', breadcrumb: 'Manage Projects' },
+          resolve: {
+            statusData: DataCodeStatusResolver
+          },
           children: [
             {
               path: '',
