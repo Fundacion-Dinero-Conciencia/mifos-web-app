@@ -349,12 +349,16 @@ export class ConciliationPayinComponent implements OnInit {
 
   closeTransactionAssignation() {
     this.availableLoans = [];
+    this.availableParticipations = [];
     this.showDialogAssignation = false;
     this.detailedRow = null;
-    this.selectedRowPartition = [];
     this.isconfirming = false;
-    this.availableParticipations = [];
+    this.selectedRowPartition = [];
     this.selectedParticipationIds = [];
+    this.inputsGroup = [];
+    this.selectorsGroup = [];
+    this.assignDataSource.data = [];
+    this.detailDataSource.data = [];
   }
 
   confirmAction() {
