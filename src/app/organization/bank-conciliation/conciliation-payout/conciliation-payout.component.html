@@ -42,6 +42,11 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-form-field fxFlex="30%">
+      <mat-label>{{ 'labels.inputs.Filter' | translate }}</mat-label>
+      <input id="filter-input" matInput formControlName="text" />
+    </mat-form-field>
+
     <!-- Botones -->
     <div fxFlex="100%" fxLayout="row" fxLayoutAlign="end center" class="m-b-10" fxLayoutGap="10px" class="m-r-20">
       <button mat-raised-button color="primary" class="m-r-10" type="button" (click)="applyFilters()">Buscar</button>

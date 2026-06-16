@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { SystemService } from 'app/system/system.service';
+import { Console } from 'console';
 import { finalize } from 'rxjs/operators';
 
 type PayrollStatus = 'EXITOSA' | 'PARCIAL' | 'FALLIDA' | 'PENDIENTE';
@@ -106,7 +107,8 @@ export class ConciliationPayoutComponent implements OnInit {
       type: [''],
       startDate: [''],
       endDate: [''],
-      status: ['']
+      status: [''],
+      text: ['']
     });
     this.loadPage(0, this.pageSize);
   }
@@ -141,12 +143,15 @@ export class ConciliationPayoutComponent implements OnInit {
   }
 
   loadPage(page: number, size: number, filters?: any) {
+    console.log('filters: ', filters);
     const requestParams = {
       ...filters,
       page,
       size,
       sort: 'transactionDate'
     };
+
+    console.log('requestParams: ', requestParams);
     showGlobalLoader();
     this.organizationService
       .getShinkansenOrdersPayout({ ...requestParams })
@@ -185,7 +190,8 @@ export class ConciliationPayoutComponent implements OnInit {
       type: '',
       status: '',
       startDate: '',
-      endDate: ''
+      endDate: '',
+      text: ''
     });
     this.applyFilters();
   }
