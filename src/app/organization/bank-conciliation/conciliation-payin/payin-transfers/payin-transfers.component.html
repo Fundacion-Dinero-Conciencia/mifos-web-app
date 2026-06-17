@@ -4,26 +4,42 @@
 
   <hr />
 
+  <p class="bold">
+    {{ 'labels.text.Client' | translate }}: {{ detailedRow?.clientName }} / {{ detailedRow?.rut | documentFormat }} / ID
+    {{ detailedRow?.clientId }}
+  </p>
+
   <section class="headerTransactionDetail">
-    <p>{{ 'labels.text.Transfer Amount' | translate }}:</p>
+    <div class="row">
+      <p>{{ 'labels.text.Transfer Amount' | translate }}:</p>
 
-    <p>
-      {{ detailedRow?.amount | currency: currency }}
-    </p>
-
-    <div class="loadingBar">
-      <div
-        [ngStyle]="{
-          width: (totalAssignedAmount / detailedRow?.amount) * 100 + '%' || '0%'
-        }"
-      ></div>
+      <p>
+        {{ detailedRow?.amount | currency: currency }}
+      </p>
     </div>
 
-    <p>{{ 'labels.text.Assigned Amount' | translate }}:</p>
+    <div class="row">
+      <div class="loadingBar">
+        <div
+          [ngStyle]="{
+            width: (totalAssignedAmount / detailedRow?.amount) * 100 + '%' || '0%'
+          }"
+        ></div>
+      </div>
+    </div>
 
-    <p class="bold">
-      {{ totalAssignedAmount | currency: currency }}
-    </p>
+    <div class="row">
+      <p>{{ 'labels.text.Assigned Amount' | translate }}:</p>
+
+      <p class="bold">
+        {{ totalAssignedAmount | currency: currency }}
+      </p>
+    </div>
+
+    <div class="row">
+      <p>Monto faltante por asignar:</p>
+      <p class="bold">{{ pendingAssignedAmount | currency: currency }}</p>
+    </div>
   </section>
 
   <mat-card>

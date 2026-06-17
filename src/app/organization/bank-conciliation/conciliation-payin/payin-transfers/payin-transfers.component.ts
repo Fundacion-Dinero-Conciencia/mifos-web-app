@@ -103,6 +103,10 @@ export class PayinTransfersComponent implements OnInit {
     return tableAmount + (Number(this.returnAmount) || 0);
   }
 
+  get pendingAssignedAmount(): number {
+    return this.detailedRow?.amount - this.totalAssignedAmount;
+  }
+
   viewAssignationDebtor(row: any) {
     showGlobalLoader();
 

@@ -26,13 +26,26 @@
 
 .headerTransactionDetail {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: 100%;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
   justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.row.column {
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .headerTransactionDetail p {
   font-size: 1.1rem;
+  margin: 0;
 }
 
 .red {
@@ -96,7 +109,6 @@
   }
 
   /* Firefox */
-  appearance: textfield;
   appearance: textfield;
 }
 
@@ -214,7 +226,6 @@ mat-card {
   }
 
   /* Firefox */
-  appearance: textfield;
   appearance: textfield;
 }
 
