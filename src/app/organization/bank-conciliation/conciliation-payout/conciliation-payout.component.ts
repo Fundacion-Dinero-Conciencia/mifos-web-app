@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { OrganizationService } from 'app/organization/organization.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { SystemService } from 'app/system/system.service';
+import { Console } from 'console';
 import { finalize } from 'rxjs/operators';
 
 type PayrollStatus = 'EXITOSA' | 'PARCIAL' | 'FALLIDA' | 'PENDIENTE';
@@ -98,14 +99,16 @@ export class ConciliationPayoutComponent implements OnInit {
   ngOnInit(): void {
     this.operationType = [
       { id: 200, name: ' Pago de crédito' },
-      { id: 100, name: 'Cuotas de inversion' }
+      { id: 100, name: 'Cuotas de inversion' },
+      { id: 300, name: 'Devolución' }
     ];
 
     this.filters = this.fb.group({
       type: [''],
       startDate: [''],
       endDate: [''],
-      status: ['']
+      status: [''],
+      text: ['']
     });
     this.loadPage(0, this.pageSize);
   }
@@ -140,12 +143,15 @@ export class ConciliationPayoutComponent implements OnInit {
   }
 
   loadPage(page: number, size: number, filters?: any) {
+    console.log('filters: ', filters);
     const requestParams = {
       ...filters,
       page,
       size,
       sort: 'transactionDate'
     };
+
+    console.log('requestParams: ', requestParams);
     showGlobalLoader();
     this.organizationService
       .getShinkansenOrdersPayout({ ...requestParams })
@@ -167,7 +173,9 @@ export class ConciliationPayoutComponent implements OnInit {
       });
   }
   onPageChange(event: any) {
-    this.loadPage(event.pageIndex, event.pageSize, this.filters.value);
+    const startDate = this.datePipe.transform(this.filters.value.startDate, 'yyyy-MM-dd');
+    const endDate = this.datePipe.transform(this.filters.value.endDate, 'yyyy-MM-dd');
+    this.loadPage(event.pageIndex, event.pageSize, { ...this.filters.value, startDate, endDate });
   }
 
   applyFilters(): void {
@@ -182,7 +190,8 @@ export class ConciliationPayoutComponent implements OnInit {
       type: '',
       status: '',
       startDate: '',
-      endDate: ''
+      endDate: '',
+      text: ''
     });
     this.applyFilters();
   }

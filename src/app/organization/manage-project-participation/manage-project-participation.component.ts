@@ -109,7 +109,6 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     200: 'Confirmed',
     300: 'Canceled',
     400: 'Reserved',
-    500: 'Assigned',
     600: 'Finished'
   };
 
@@ -118,7 +117,6 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     { id: 200 },
     { id: 300 },
     { id: 400 },
-    { id: 500 },
     { id: 600 }];
 
   paymentTypes = [
@@ -178,6 +176,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
 
     if (tenant?.trim().toLowerCase() == 'argentina') {
       this.displayedColumns = [
+        'promissoryNumber',
         'projectName',
         'dni',
         'cuit',
@@ -192,6 +191,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
       ];
     } else {
       this.displayedColumns = [
+        'promissoryNumber',
         'projectName',
         'rut',
         'participantName',
@@ -407,5 +407,17 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
       this.selectedInvests = this.selectedInvests.filter((id) => id !== invest.id);
       this.amountToInvest -= invest.amount;
     }
+  }
+
+  onClear() {
+    this.filterText = '';
+    this.filterStatus = '';
+    this.filterPaymentType = '';
+
+    this.pageIndex = 0;
+    this.pageSize = 5;
+    this.paginator?.firstPage();
+
+    this.loadParticipations();
   }
 }

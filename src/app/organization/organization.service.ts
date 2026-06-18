@@ -1172,6 +1172,7 @@ export class OrganizationService {
     type?: string;
     startDate?: string;
     endDate?: string;
+    text?: string;
   }) {
     let params = new HttpParams();
 
@@ -1181,6 +1182,7 @@ export class OrganizationService {
     if (filters.status !== undefined) params = params.set('status', filters.status);
     if (filters.startDate) params = params.set('fromDate', filters.startDate);
     if (filters.endDate) params = params.set('toDate', filters.endDate);
+    if (filters.text) params = params.set('text', filters.text);
 
     return this.http.get(`/shinkansen/ordersgroup/payout`, { params });
   }
