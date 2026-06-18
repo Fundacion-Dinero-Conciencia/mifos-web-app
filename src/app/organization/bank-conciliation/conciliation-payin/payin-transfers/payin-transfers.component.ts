@@ -32,6 +32,7 @@ export class PayinTransfersComponent implements OnInit {
 
   assignDisplayedColumns: string[] = [
     'proyect',
+    'promissoryNumber',
     'creditStatus',
     'periodDate',
     'totalDueAmount',
