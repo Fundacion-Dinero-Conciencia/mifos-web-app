@@ -174,7 +174,8 @@ export class InvestmentProjectInvestmentTabComponent implements OnInit {
         return 'Rechazado';
       case 400:
         return 'Reservado';
-
+      case 600:
+        return 'Finalizado';
       default:
         'Invalido';
         break;
