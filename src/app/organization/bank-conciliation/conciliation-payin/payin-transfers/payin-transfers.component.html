@@ -106,7 +106,7 @@
 
         <td mat-cell *matCellDef="let row">
           <div class="cell-content">
-            {{ row.currentInstallmentFromDate | date: 'dd/MM/yyyy' }}
+            {{ row.currentInstallmentDueDate | date: 'dd/MM/yyyy' }}
           </div>
         </td>
       </ng-container>
@@ -146,19 +146,6 @@
         <td mat-cell *matCellDef="let row">
           <div class="cell-content">
             {{ row.daysInArrears }}
-          </div>
-        </td>
-      </ng-container>
-
-      <!-- Fecha vencimiento -->
-      <ng-container matColumnDef="fromDate">
-        <th mat-header-cell *matHeaderCellDef class="center-header">
-          {{ 'labels.catalogs.Specified due date' | translate }}
-        </th>
-
-        <td mat-cell *matCellDef="let row">
-          <div class="cell-content">
-            {{ row.currentInstallmentDueDate | date }}
           </div>
         </td>
       </ng-container>

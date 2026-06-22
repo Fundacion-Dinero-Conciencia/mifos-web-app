@@ -38,7 +38,6 @@ export class PayinTransfersComponent implements OnInit {
     'totalDueAmount',
     'periodsInArrears',
     'daysInArrears',
-    'fromDate',
     'amounts'
   ];
 
