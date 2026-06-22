@@ -42,6 +42,10 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-form-field fxFlex="30%">
+      <input id="filter-input" matInput formControlName="text" placeholder="Search by Project, Promissory Note, RUT" />
+    </mat-form-field>
+
     <!-- Botones -->
     <div fxFlex="100%" fxLayout="row" fxLayoutAlign="end center" class="m-b-10" fxLayoutGap="10px" class="m-r-20">
       <button mat-raised-button color="primary" class="m-r-10" type="button" (click)="applyFilters()">Buscar</button>

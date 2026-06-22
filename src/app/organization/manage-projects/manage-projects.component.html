@@ -15,10 +15,29 @@
 
 <div class="container">
   <div #filter fxLayout="row" fxLayoutGap="20px">
-    <mat-form-field fxFlex>
-      <mat-label>{{ 'labels.inputs.Filter' | translate }}</mat-label>
-      <input id="filter-input" matInput (keyup)="applyFilter($event.target.value)" />
+    <mat-form-field fxFlex="70%">
+      <input
+        id="filter-input"
+        matInput
+        [(ngModel)]="filterText"
+        (keyup)="applyFilter($event.target.value)"
+        placeholder="Search by project name, RUT"
+      />
     </mat-form-field>
+
+    <mat-form-field fxFlex="15%">
+      <mat-label>Estado</mat-label>
+      <mat-select [(ngModel)]="filterStatus" (selectionChange)="applySelectFilter($event.value)">
+        <mat-option [value]="''">Todos</mat-option>
+
+        <mat-option *ngFor="let status of statusData" [value]="status.id">
+          {{ status.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div fxLayoutAlign="end center" fxFlex="42%" fxLayoutGap="10px">
+      <button mat-stroked-button color="primary" type="button" (click)="onClear()">Limpiar</button>
+    </div>
   </div>
 
   <div #projectsTable class="mat-elevation-z8 table-container">

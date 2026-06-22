@@ -150,6 +150,7 @@ import { CalendarComponent } from './bank-conciliation/conciliation-payout/calen
 import { LoanCalendarResolver } from './bank-conciliation/conciliation-payout/calendar/calendar.resolver';
 import { PaymentOrderComponent } from './bank-conciliation/conciliation-payout/payment-order/payment-order.component';
 import { PayoutDetailComponent } from './bank-conciliation/conciliation-payout/payout-detail/payout-detail.component';
+import { PayinTransfersComponent } from './bank-conciliation/conciliation-payin/payin-transfers/payin-transfers.component';
 /** Organization Routes */
 const routes: Routes = [
   Route.withShell([
@@ -723,6 +724,12 @@ const routes: Routes = [
                 {
                   path: '',
                   component: ConciliationPayinComponent
+                },
+
+                {
+                  data: { title: 'Payout Transfers', breadcrumb: 'Payout Transfers' },
+                  path: 'transfers',
+                  component: PayinTransfersComponent
                 }
               ]
             },
@@ -828,6 +835,9 @@ const routes: Routes = [
         {
           path: 'projects',
           data: { title: 'Manage Projects', breadcrumb: 'Manage Projects' },
+          resolve: {
+            statusData: DataCodeStatusResolver
+          },
           children: [
             {
               path: '',

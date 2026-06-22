@@ -108,6 +108,7 @@ import { PaymentOrderComponent } from './bank-conciliation/conciliation-payout/p
 import { PayoutDetailComponent } from './bank-conciliation/conciliation-payout/payout-detail/payout-detail.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { ExpirationComponent } from './notifications/expiration/expiration.component';
+import { PayinTransfersComponent } from './bank-conciliation/conciliation-payin/payin-transfers/payin-transfers.component';
 /**
  * Organization Module
  *
@@ -212,7 +213,8 @@ import { ExpirationComponent } from './notifications/expiration/expiration.compo
     PaymentOrderComponent,
     PayoutDetailComponent,
     NotificationsComponent,
-    ExpirationComponent
+    ExpirationComponent,
+    PayinTransfersComponent
   ],
   providers: [
     CreateHoliday,

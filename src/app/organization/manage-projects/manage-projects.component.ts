@@ -58,7 +58,8 @@ export class ManageProjectsComponent implements OnInit {
   pageIndex = 0;
   totalItems = 0;
   filterText: string = '';
-
+  filterStatus: string = '';
+  statusData: any[] = [];
   currency: string;
 
   /** Paginator for charges table. */
@@ -89,6 +90,10 @@ export class ManageProjectsComponent implements OnInit {
     private systemService: SystemService
   ) {
     this.applyOwnerFilter();
+
+    this.route.data.subscribe((data: { statusData: any }) => {
+      this.statusData = data.statusData.codeValues;
+    });
   }
 
   ngOnInit() {
@@ -148,7 +153,8 @@ export class ManageProjectsComponent implements OnInit {
       .getInvestmentProjects({
         page: this.pageIndex,
         size: this.pageSize,
-        search: this.filterText
+        search: this.filterText,
+        status: this.filterStatus
       })
       .subscribe((data: any) => {
         this.projectsData = data.content;
@@ -306,5 +312,21 @@ export class ManageProjectsComponent implements OnInit {
     this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
       this.currency = data.stringValue;
     });
+  }
+
+  applySelectFilter(filterValue: string) {
+    this.filterStatus = filterValue;
+    this.loadProjects();
+  }
+
+  onClear() {
+    this.filterText = '';
+    this.filterStatus = '';
+
+    this.pageIndex = 0;
+    this.pageSize = 5;
+    this.paginator?.firstPage();
+
+    this.loadProjects();
   }
 }

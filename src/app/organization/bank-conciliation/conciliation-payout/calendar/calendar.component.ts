@@ -72,4 +72,16 @@ export class CalendarComponent implements OnInit {
   canShowDetails(row: any): boolean {
     return true;
   }
+
+  canExecuteAction(index: number): boolean {
+    if (index === 0) {
+      return true;
+    }
+
+    const previousRow = this.dataSource.data[index - 1];
+    console.log(previousRow.complete === true && previousRow.totalOutstandingForPeriod === 0);
+
+    // Bloquear si la fila anterior tiene acción pendiente
+    return previousRow.complete === true && previousRow.totalOutstandingForPeriod === 0;
+  }
 }
