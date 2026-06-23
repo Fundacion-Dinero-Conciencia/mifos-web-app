@@ -14,20 +14,21 @@ import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { OrganizationService } from '../organization.service';
 import { SelectDialogComponent } from '../select-dialog/select-dialog.component';
 import { showGlobalLoader, hideGlobalLoader } from 'app/shared/helpers/loaders';
+
 @Component({
   selector: 'mifosx-manage-project-participation',
   templateUrl: './manage-project-participation.component.html',
   styleUrls: ['./manage-project-participation.component.scss']
 })
 export class ManageProjectParticipationComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator | any;
   @ViewChild(MatSort) sort!: MatSort;
 
   projectParticipationsData: any[] = [];
-  dataSource: MatTableDataSource<any>;
-  currency: string;
+  dataSource: MatTableDataSource<any> | any;
+  currency: string = '';
   loading: boolean = false;
-  displayedColumns: string[];
+  displayedColumns: string[] | any;
 
   sortColumn: string = '';
   selectedItems: any[] = [];
@@ -109,7 +110,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     200: 'Confirmed',
     300: 'Canceled',
     400: 'Reserved',
-    600: 'Finished'
+    600: 'Finished',
+    700: 'Pending'
   };
 
   statuses = [
@@ -117,7 +119,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     { id: 200 },
     { id: 300 },
     { id: 400 },
-    { id: 600 }];
+    { id: 600 },
+    { id: 700 }];
 
   paymentTypes = [
     { name: 'MANUAL' },
@@ -176,6 +179,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
 
     if (tenant?.trim().toLowerCase() == 'argentina') {
       this.displayedColumns = [
+        'date',
         'promissoryNumber',
         'projectName',
         'dni',
@@ -185,12 +189,12 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         'commission',
         'unassignedAmount',
         'paymentType',
-        'date',
         'status',
         'actions'
       ];
     } else {
       this.displayedColumns = [
+        'date',
         'promissoryNumber',
         'projectName',
         'rut',
@@ -199,7 +203,6 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         'commission',
         'unassignedAmount',
         'paymentType',
-        'date',
         'status',
         'actions'
       ];
@@ -419,5 +422,28 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     this.paginator?.firstPage();
 
     this.loadParticipations();
+  }
+
+  canShowAction(statusId: number, action: string): boolean {
+    const actions = {
+      view: [
+        100,
+        200,
+        600
+      ],
+      reserve: [700],
+      assign: [
+        200,
+        400,
+        700
+      ],
+      delete: [
+        200,
+        400,
+        700
+      ]
+    };
+
+    return actions[action]?.includes(statusId) ?? false;
   }
 }

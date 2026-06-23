@@ -63,3 +63,51 @@ h6 {
 :host ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
   background-color: #2196f3;
 }
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.status-accepted {
+  background: #e7eff8;
+  color: #229bf1;
+}
+
+.status-confirmed {
+  background: #dcf5f2;
+  color: #00595a;
+}
+
+.status-canceled {
+  background: #f3c5c2;
+  color: #ff624e;
+}
+
+.status-reserved {
+  background: #c9e1ff;
+  color: #032a5a;
+}
+
+.status-finished {
+  background: #00595a;
+  color: #fff;
+}
+
+.status-pending {
+  background: #fff1df;
+  color: #ff8b00;
+}
+
+:host ::ng-deep .container {
+  max-width: none !important;
+  width: 80% !important;
+}
+
+.clickable-cell {
+  cursor: pointer;
+}

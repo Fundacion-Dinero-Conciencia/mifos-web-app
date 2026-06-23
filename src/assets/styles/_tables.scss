@@ -1,0 +1,36 @@
+@use 'sass:map';
+@use '../../theme/material-palette' as *;
+
+.mat-header-row {
+  background-color: map.get($primary-palette, 500) !important;
+  color: #fff;
+}
+
+.mat-header-cell {
+  color: white !important;
+  font-weight: normal !important;
+  text-align: center !important;
+  font-size: 14px;
+  justify-content: center !important;
+  padding: 0 16px !important;
+  flex-wrap: nowrap !important;
+}
+
+.mat-cell {
+  text-align: center;
+  justify-content: center;
+  padding: 0 4px !important;
+  flex-wrap: nowrap !important;
+  background-color: #fff;
+}
+
+.actions-container {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: right;
+}
+
+.table-container {
+  border-radius: 1%;
+}
