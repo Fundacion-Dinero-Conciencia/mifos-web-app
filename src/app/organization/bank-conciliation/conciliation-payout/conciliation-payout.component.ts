@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { OrganizationService } from 'app/organization/organization.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
 import { SystemService } from 'app/system/system.service';
@@ -33,7 +34,8 @@ export class ConciliationPayoutComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private organizationService: OrganizationService,
     private systemService: SystemService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private router: Router
   ) {}
   currency = 'CLP';
   dataSource = new MatTableDataSource<ConciliationRow>([]);
@@ -43,6 +45,7 @@ export class ConciliationPayoutComponent implements OnInit {
   showDialogTransactions = false;
   isDebtorDetail = false;
   showDialogAssignation = false;
+  showDialogChooseClient = false;
   operationType: any[] = [];
   selectedRowPartition: number[] = [];
   isconfirming = false;
@@ -266,6 +269,34 @@ export class ConciliationPayoutComponent implements OnInit {
     this.selectorsGroup = [undefined];
     this.inputsGroup = [0];
     this.assignDataSource.data = this.selectedRowPartition || [];
+  }
+
+  viewChooseClient() {
+    this.showDialogChooseClient = true;
+  }
+
+  closeChooseClient() {
+    this.showDialogChooseClient = false;
+  }
+
+  goToInvestor() {
+    this.showDialogChooseClient = false;
+    this.router.navigate([
+      '/organization',
+      'bank-conciliation',
+      'payout',
+      'subcreditos'
+    ]);
+  }
+
+  goToDebtor() {
+    this.showDialogChooseClient = false;
+    this.router.navigate([
+      '/organization',
+      'bank-conciliation',
+      'payout',
+      'pending-subcredits'
+    ]);
   }
 
   onClientTypeChange() {

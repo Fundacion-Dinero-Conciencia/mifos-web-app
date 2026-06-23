@@ -1,0 +1,233 @@
+<div class="payinTransfersContainer">
+  <!-- Top: Volver -->
+  <div fxLayout="row" fxLayoutAlign="end center" class="m-b-15">
+    <button class="outlinedButton" mat-button [routerLink]="['../']">Volver</button>
+  </div>
+
+  <h4 class="m-t-20 m-b-20">Cliente de crédito</h4>
+
+  <!-- Included bar -->
+  <div class="includedBar m-b-10" fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+      <div class="includedBar__text">
+        Inversiones incluidas <b>{{ includedCount }}</b> de <b>{{ totalItems }}</b>
+      </div>
+    </div>
+
+    <div class="includedBar__total">
+      <div>
+        Total a dispersar en nómina:
+        <b>{{ totalToDisperseCalculated | currency: currency : 'symbol-narrow' }}</b>
+      </div>
+
+      <div>
+        Total a pagar:
+        <b>{{ totalToPayCalculated | currency: currency : 'symbol-narrow' }}</b>
+      </div>
+
+      <div>
+        Total repago:
+        <b>{{ totalToReinvestCalculated | currency: currency : 'symbol-narrow' }}</b>
+      </div>
+    </div>
+  </div>
+
+  <table mat-table [dataSource]="dataSource">
+    <!-- Proyecto -->
+    <ng-container matColumnDef="project">
+      <th mat-header-cell *matHeaderCellDef class="center-header">
+        {{ 'labels.text.Project' | translate }}
+      </th>
+
+      <td mat-cell *matCellDef="let row">
+        <div class="cell-content">
+          {{ row.projectName }}
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- rut -->
+    <ng-container matColumnDef="rut">
+      <th mat-header-cell *matHeaderCellDef class="center-header">{{ 'labels.inputs.custom.rut' | translate }}</th>
+
+      <td mat-cell *matCellDef="let row">
+        <div class="cell-content">
+          {{ row.rut }}
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- documentNumber -->
+    <ng-container matColumnDef="documentNumber">
+      <th mat-header-cell *matHeaderCellDef class="center-header">Pagaré</th>
+
+      <td mat-cell *matCellDef="let row">
+        <div class="cell-content">
+          {{ row.documentNumber }}
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- signedDate -->
+    <ng-container matColumnDef="signedDate">
+      <th mat-header-cell *matHeaderCellDef class="center-header">Fecha de aprobación</th>
+
+      <td mat-cell *matCellDef="let row">
+        <div class="cell-content">
+          {{ row.signedDate | date: 'dd/MM/yyyy' }}
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- expensesAmount -->
+    <ng-container matColumnDef="expensesAmount">
+      <th mat-header-cell *matHeaderCellDef class="center-header">Gastos</th>
+
+      <td mat-cell *matCellDef="let row">
+        <div class="cell-content">
+          {{ row.expensesAmount | currency: currency }}
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- amountToBeDelivered -->
+    <ng-container matColumnDef="amountToBeDelivered">
+      <th mat-header-cell *matHeaderCellDef class="center-header">Monto a entregar</th>
+
+      <td mat-cell *matCellDef="let row">
+        <div class="cell-content">
+          {{ row.amountToBeDelivered | currency: currency }}
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Montos -->
+
+    <!-- amountToPay -->
+    <ng-container matColumnDef="amountToPay">
+      <th mat-header-cell *matHeaderCellDef class="center-header">Monto banco</th>
+
+      <td mat-cell *matCellDef="let row" [style.background]="hasAssignedAmount(row) ? '#f1f1f1' : null">
+        <div class="cell-content amount-cell">
+          <span>$</span>
+
+          <div class="floating-input">
+            <input
+              type="number"
+              class="amount-input"
+              [value]="row.amountToPay"
+              (input)="onAmountToPayChange($event, row)"
+              min="0"
+              [max]="row.amountToBeDelivered"
+              placeholder=" "
+            />
+
+            <label> Ingresa un monto </label>
+          </div>
+
+          <span>{{ currency }}</span>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="amountToReinvest">
+      <th mat-header-cell *matHeaderCellDef class="center-header">Monto repago</th>
+
+      <td mat-cell *matCellDef="let row" [style.background]="hasAssignedAmount(row) ? '#f1f1f1' : null">
+        <div class="cell-content amount-cell">
+          <span>$</span>
+
+          <div class="floating-input">
+            <input
+              type="number"
+              class="amount-input"
+              [value]="row.amountToReinvest"
+              (input)="onAmountToReinvestChange($event, row)"
+              min="0"
+              [max]="row.amountToBeDelivered"
+              placeholder=" "
+            />
+
+            <label> Ingresa un monto </label>
+          </div>
+
+          <span>{{ currency }}</span>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Rows -->
+    <tr mat-header-row *matHeaderRowDef="pendingGroupsColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: pendingGroupsColumns"
+      [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'"
+    ></tr>
+  </table>
+
+  <mat-paginator
+    [length]="totalItems"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[1, 5, 10, 25, 50]"
+    showFirstLastButtons
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
+
+  <section class="actionsContainer">
+    <button mat-raised-button (click)="onCancel()" class="outlineButton">
+      {{ 'labels.buttons.Cancel' | translate }}
+    </button>
+
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      class="primaryButton"
+      [disabled]="includedCount == 0"
+      (click)="showConfirmationDialog = true"
+    >
+      {{ 'labels.buttons.Submit' | translate }}
+    </button>
+  </section>
+
+  <mifosx-custom-dialog
+    [open]="showConfirmationDialog"
+    heading="Confirmar generación de nómina"
+    color="primary"
+    confirmText="Confirm"
+    cancelText="Cancel"
+    (confirm)="processPendingGroups()"
+    (dismiss)="showConfirmationDialog = false"
+    (closed)="showConfirmationDialog = false"
+  >
+    <div class="confirmContent">
+      <div class="confirmHeader">
+        <span class="infoIcon"> ⓘ </span>
+
+        <div>
+          <p class="confirmSubtitle">Estás a punto de generar la nómina de pagos con los pagarés seleccionados</p>
+        </div>
+      </div>
+
+      <div class="confirmSummary">
+        <div class="summaryRow">
+          <span>Monto banco:</span>
+
+          <strong>
+            {{ totalToPayCalculated | currency: currency }}
+          </strong>
+        </div>
+
+        <div class="summaryRow">
+          <span>Monto repago:</span>
+
+          <strong>
+            {{ totalToReinvestCalculated | currency: currency }}
+          </strong>
+        </div>
+      </div>
+    </div>
+  </mifosx-custom-dialog>
+</div>

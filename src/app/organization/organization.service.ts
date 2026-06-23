@@ -1254,4 +1254,27 @@ export class OrganizationService {
       params
     });
   }
+
+  getPendingGroups(filters: { page?: number; size?: number }): Observable<any> {
+    return this.http.get(`/pending-groups`, {
+      params: {
+        page: filters.page.toString(),
+        size: filters.size.toString()
+      }
+    });
+  }
+
+  processPendingGroups(
+    data: {
+      amountToBeDelivered: number;
+      amountToPaid: number;
+      amountToReinvest: number;
+      loanId: number;
+      id: number;
+    }[]
+  ) {
+    return this.http.post(`/pending-groups`, JSON.stringify({ data }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }

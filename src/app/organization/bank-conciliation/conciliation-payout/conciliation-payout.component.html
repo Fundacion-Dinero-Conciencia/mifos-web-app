@@ -1,12 +1,6 @@
 <main class="container">
   <div fxLayoutAlign="flex-end center">
-    <button
-      mat-raised-button
-      color="primary"
-      [routerLink]="['/organization', 'bank-conciliation', 'payout', 'subcreditos']"
-    >
-      Generar orden de pago
-    </button>
+    <button mat-raised-button color="primary" (click)="viewChooseClient()">Generar orden de pago</button>
   </div>
   <form [formGroup]="filters" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-between center">
     <!-- Tipo de cliente -->
@@ -466,6 +460,23 @@
             El monto ingresado es mayor al monto disponible. Ajusta el valor para continuar.
           </p>
         </section>
+      </section>
+    </main>
+  </mifosx-custom-dialog>
+
+  <!-- Dialog to show debtor or investor  -->
+
+  <mifosx-custom-dialog
+    [open]="showDialogChooseClient"
+    (confirm)="goToDebtor()"
+    (dismiss)="closeChooseClient()"
+    (closed)="goToInvestor()"
+    [cancelText]="'Investor'"
+    [confirmText]="'Debtor'"
+  >
+    <main>
+      <section>
+        <p>Selecciona un tipo de cliente para generar la orden de pago</p>
       </section>
     </main>
   </mifosx-custom-dialog>

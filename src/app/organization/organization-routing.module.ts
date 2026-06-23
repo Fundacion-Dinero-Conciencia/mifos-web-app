@@ -151,6 +151,7 @@ import { LoanCalendarResolver } from './bank-conciliation/conciliation-payout/ca
 import { PaymentOrderComponent } from './bank-conciliation/conciliation-payout/payment-order/payment-order.component';
 import { PayoutDetailComponent } from './bank-conciliation/conciliation-payout/payout-detail/payout-detail.component';
 import { PayinTransfersComponent } from './bank-conciliation/conciliation-payin/payin-transfers/payin-transfers.component';
+import { PendingSubcreditsComponent } from './bank-conciliation/conciliation-payout/pending-subcredits/pending-subcredits.component';
 /** Organization Routes */
 const routes: Routes = [
   Route.withShell([
@@ -782,6 +783,11 @@ const routes: Routes = [
                       ]
                     }
                   ]
+                },
+                {
+                  data: { title: 'Pending Subcredits', breadcrumb: 'Pending Subcredits' },
+                  path: 'pending-subcredits',
+                  component: PendingSubcreditsComponent
                 }
               ]
             }

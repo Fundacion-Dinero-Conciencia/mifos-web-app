@@ -34,8 +34,11 @@ export class CustomDialogComponent {
   }
 
   onCancel() {
-    this.dismiss.emit();
     this._close('cancel');
+  }
+
+  ondismiss() {
+    this.dismiss.emit();
   }
 
   onConfirm() {
