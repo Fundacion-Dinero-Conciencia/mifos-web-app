@@ -13,7 +13,7 @@ import { Dialogs } from 'app/core/dialogs/dialogs';
   styleUrls: ['./confirmation-dialog.component.scss']
 })
 export class ConfirmationDialogComponent implements OnInit {
-  color: string;
+  color: string | any;
   /**
    * @param {MatDialogRef} dialogRef Component reference to dialog.
    * @param {any} data Provides a deleteContext.

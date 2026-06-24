@@ -52,6 +52,7 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     'Transactions',
     'Add'
   ];
+  onlyView: boolean = false;
 
   onDialogCancel() {
     this.showDialog = false;
@@ -99,10 +100,11 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     this.paginator.firstPage();
     this.loadParticipations();
   }
-  openAssignTransfersDialog(reservation: any) {
+  openAssignTransfersDialog(reservation: any, view: boolean) {
     this.reservationSelected = reservation;
     this.getTransactions(reservation.participantId, reservation.id);
     this.showDialog = true;
+    this.onlyView = view;
   }
 
   statusId: Record<number, string> = {
@@ -256,6 +258,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
 
   manageRequest(request: any, command: string): void {
     const approveLoanRescheduleDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      maxWidth: '500px',
+      minWidth: '300px',
       data: {
         heading: `${this.translateService.instant('tooltips.' + command)} ${this.translateService.instant('labels.heading.Project Participation')}`,
         dialogContext: `${this.translateService.instant('labels.dialogContext.Are you sure you want')}

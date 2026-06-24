@@ -114,19 +114,19 @@
       <!-- MONTO INVERSION-->
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Amount' | translate }}</th>
-        <td mat-cell *matCellDef="let item">{{ item.amount | currency: currency }}</td>
+        <td mat-cell *matCellDef="let item">$ {{ item.amount | currency: currency }}</td>
       </ng-container>
 
       <!-- MONTO COMISION -->
       <ng-container matColumnDef="commission">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Commission' | translate }}</th>
-        <td mat-cell *matCellDef="let item">{{ item.commission | currency: currency }}</td>
+        <td mat-cell *matCellDef="let item">$ {{ item.commission | currency: currency }}</td>
       </ng-container>
 
       <!-- MONTO PENDIENTE DE ASIGNACION -->
       <ng-container matColumnDef="unassignedAmount">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Pending Amount' | translate }}</th>
-        <td mat-cell *matCellDef="let item">{{ item.unassignedAmount | currency: currency }}</td>
+        <td mat-cell *matCellDef="let item">$ {{ item.unassignedAmount | currency: currency }}</td>
       </ng-container>
 
       <!-- MEDIO DE PAGO -->
@@ -168,7 +168,7 @@
               mat-icon-button
               matTooltip="{{ 'Ver transferencias bancarias asignadas' }}"
               matTooltipPosition="left"
-              (click)="openAssignTransfersDialog(item)"
+              (click)="openAssignTransfersDialog(item, true)"
             >
               <i class="fa-solid fa-eye"></i>
             </button>
@@ -187,7 +187,7 @@
               mat-icon-button
               matTooltip="{{ 'Asignar transferencias bancarias' }}"
               matTooltipPosition="left"
-              (click)="openAssignTransfersDialog(item)"
+              (click)="openAssignTransfersDialog(item, false)"
             >
               <i class="fa-solid fa-dollar-sign"></i>
             </button>
@@ -238,13 +238,15 @@
 </div>
 <mifosx-custom-dialog
   [open]="showDialog"
-  [heading]="'Asignar transferencias a la reserva'"
+  [heading]="onlyView ? 'Pagos asociados a la reserva' : 'Asignar transferencias a la reserva'"
   color="primary"
   (confirm)="assignTransaction()"
   (dismiss)="onDialogCancel()"
   (closed)="onDialogCancel()"
   [confirmText]="'Assign Transfer'"
   [disableConfirm]="amountToInvest <= 0 || amountToInvest > amoutToBeAssigned || !!loading"
+  [hideConfirmButton]="onlyView"
+  [hideCancelButton]="onlyView"
 >
   <section class="fullWidth" *ngIf="reservationSelected">
     <p>
@@ -260,15 +262,11 @@
     </p>
     <p>
       <span> Monto total reservado: </span>
-      <span>
-        {{ totalAmountSelected | currency: currency }}
-      </span>
+      <span> $ {{ totalAmountSelected | currency: currency }} </span>
     </p>
     <p>
       <span> Monto asignado: </span>
-      <span>
-        {{ this.reservationSelected?.assignedAmount || 0 | currency: currency }}
-      </span>
+      <span> $ {{ this.reservationSelected?.assignedAmount || 0 | currency: currency }} </span>
       <span> ({{ reservationSelected.occupancyPercentage * 100 }}%) </span>
     </p>
     <div>
@@ -291,14 +289,14 @@
 
       <ng-container matColumnDef="Amount">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Amount' | translate }}</th>
-        <td mat-cell *matCellDef="let invest">{{ invest.amount | currency: currency }}</td>
+        <td mat-cell *matCellDef="let invest">$ {{ invest.amount | currency: currency }}</td>
       </ng-container>
       <ng-container matColumnDef="Transactions">
         <th mat-header-cell *matHeaderCellDef>N° de transacción</th>
         <td mat-cell *matCellDef="let invest">{{ invest.id || '-' }}</td>
       </ng-container>
       <ng-container matColumnDef="Add">
-        <th mat-header-cell *matHeaderCellDef>{{ 'labels.buttons.Assign' }}</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'labels.buttons.Assign' | translate }}</th>
         <td mat-cell *matCellDef="let invest">
           <mat-checkbox
             *ngIf="!invest?.status"
@@ -322,34 +320,30 @@
         </td>
       </tr>
     </table>
-    <p>
+    <p *ngIf="!onlyView">
       <span> Monto restante por asignar: </span>
-      <span>
-        {{ amoutToBeAssigned | currency: currency }}
-      </span>
+      <span> $ {{ amoutToBeAssigned | currency: currency }} </span>
     </p>
-    <p>
+    <p *ngIf="!onlyView">
       <span> Monto seleccionado: </span>
-      <span>
-        {{ amountToInvest | currency: currency }}
-      </span>
+      <span> $ {{ amountToInvest | currency: currency }} </span>
     </p>
-    <h6 *ngIf="!!amountToInvest && amountToInvest <= amoutToBeAssigned" class="approved">
+    <h6 *ngIf="!onlyView && !!amountToInvest && amountToInvest <= amoutToBeAssigned" class="approved">
       <fa-icon icon="check-circle" size="lg"></fa-icon>
       <span> El monto seleccionado es válido. Puedes asignar la(s) transferencia(s) a la reserva. </span>
     </h6>
-    <h6 *ngIf="amoutToBeAssigned === 0" class="approved">
+    <h6 *ngIf="!onlyView && amoutToBeAssigned === 0" class="approved">
       <fa-icon icon="check-circle" size="lg"></fa-icon>
       <span>Esta reserva está completamente financiada. No hay transferencias pendientes por asignar. </span>
     </h6>
-    <h6 *ngIf="!!amountToInvest && amountToInvest > amoutToBeAssigned" class="notApproved">
+    <h6 *ngIf="!onlyView && !!amountToInvest && amountToInvest > amoutToBeAssigned" class="notApproved">
       <span>ⓘ</span>
       <span>
         El monto seleccionado supera el monto restante de la reserva. Por favor revisa las transacciones seleccionadas
         para continuar.</span
       >
     </h6>
-    <h6 *ngIf="dataSourceInvestSelection?.data?.length === 0">
+    <h6 *ngIf="!onlyView && dataSourceInvestSelection?.data?.length === 0">
       <span>ⓘ</span>
       <span>
         No hay transferencias bancarias para asignar. Cuando se registren inversiones, podrás asignarlas en este mismo
