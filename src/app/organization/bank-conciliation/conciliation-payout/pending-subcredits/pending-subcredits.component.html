@@ -10,7 +10,7 @@
   <div class="includedBar m-b-10" fxLayout="row" fxLayoutAlign="space-between center">
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
       <div class="includedBar__text">
-        Inversiones incluidas <b>{{ includedCount }}</b> de <b>{{ totalItems }}</b>
+        Registros incluidos <b>{{ includedCount }}</b> de <b>{{ totalItems }}</b>
       </div>
     </div>
 
@@ -39,7 +39,7 @@
         {{ 'labels.text.Project' | translate }}
       </th>
 
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'">
         <div class="cell-content">
           {{ row.projectName }}
         </div>
@@ -50,7 +50,7 @@
     <ng-container matColumnDef="rut">
       <th mat-header-cell *matHeaderCellDef class="center-header">{{ 'labels.inputs.custom.rut' | translate }}</th>
 
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'">
         <div class="cell-content">
           {{ row.rut }}
         </div>
@@ -61,7 +61,7 @@
     <ng-container matColumnDef="documentNumber">
       <th mat-header-cell *matHeaderCellDef class="center-header">Pagaré</th>
 
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'">
         <div class="cell-content">
           {{ row.documentNumber }}
         </div>
@@ -72,7 +72,7 @@
     <ng-container matColumnDef="signedDate">
       <th mat-header-cell *matHeaderCellDef class="center-header">Fecha de aprobación</th>
 
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'">
         <div class="cell-content">
           {{ row.signedDate | date: 'dd/MM/yyyy' }}
         </div>
@@ -83,7 +83,7 @@
     <ng-container matColumnDef="expensesAmount">
       <th mat-header-cell *matHeaderCellDef class="center-header">Gastos</th>
 
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'">
         <div class="cell-content">
           {{ row.expensesAmount | currency: currency }}
         </div>
@@ -94,7 +94,7 @@
     <ng-container matColumnDef="amountToBeDelivered">
       <th mat-header-cell *matHeaderCellDef class="center-header">Monto a entregar</th>
 
-      <td mat-cell *matCellDef="let row">
+      <td mat-cell *matCellDef="let row" [style.backgroundColor]="hasAssignedAmount(row) ? '#f1f1f1' : '#ffffff'">
         <div class="cell-content">
           {{ row.amountToBeDelivered | currency: currency }}
         </div>

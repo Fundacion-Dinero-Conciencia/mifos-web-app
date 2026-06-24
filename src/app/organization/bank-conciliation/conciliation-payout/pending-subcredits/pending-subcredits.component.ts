@@ -113,14 +113,21 @@ export class PendingSubcreditsComponent implements OnInit {
 
     let amountToPay = Number(event.target.value) || 0;
 
-    // clamp directo
-    amountToPay = Math.max(0, Math.min(amountToPay, max));
+    if (amountToPay == 0 && row.amountToReinvest == 0) {
+      event.target.value = '';
+      row.amountToPay = '';
+      row.amountToReinvest = '';
+    } else {
+      // clamp directo
+      amountToPay = Math.max(0, Math.min(amountToPay, max));
 
-    // sync UI + model
-    event.target.value = amountToPay;
+      // sync UI + model
+      event.target.value = amountToPay;
 
-    row.amountToPay = amountToPay;
-    row.amountToReinvest = max - amountToPay;
+      row.amountToPay = amountToPay;
+      row.amountToReinvest = max - amountToPay;
+    }
+
     this.addOrUpdateRow(row);
   }
 
@@ -129,14 +136,20 @@ export class PendingSubcreditsComponent implements OnInit {
 
     let amountToReinvest = Number(event.target.value) || 0;
 
-    // clamp directo
-    amountToReinvest = Math.max(0, Math.min(amountToReinvest, max));
+    if (amountToReinvest == 0 && row.amountToPay == 0) {
+      event.target.value = '';
+      row.amountToPay = '';
+      row.amountToReinvest = '';
+    } else {
+      // clamp directo
+      amountToReinvest = Math.max(0, Math.min(amountToReinvest, max));
 
-    // sync UI + model
-    event.target.value = amountToReinvest;
+      // sync UI + model
+      event.target.value = amountToReinvest;
 
-    row.amountToReinvest = amountToReinvest;
-    row.amountToPay = max - amountToReinvest;
+      row.amountToReinvest = amountToReinvest;
+      row.amountToPay = max - amountToReinvest;
+    }
     this.addOrUpdateRow(row);
   }
 
@@ -196,7 +209,11 @@ export class PendingSubcreditsComponent implements OnInit {
     if (index === -1) {
       this.rowsSelected.push(row);
     } else {
-      this.rowsSelected[index] = row;
+      if (this.hasAssignedAmount(row)) {
+        this.rowsSelected[index] = row;
+      } else {
+        this.rowsSelected.splice(index, 1);
+      }
     }
     this.includedCount = this.rowsSelected.length;
   }
