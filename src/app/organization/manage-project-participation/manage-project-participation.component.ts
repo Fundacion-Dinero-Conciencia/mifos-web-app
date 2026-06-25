@@ -53,14 +53,25 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     'Add'
   ];
   onlyView: boolean = false;
+  showAdditional: boolean = false;
 
   onDialogCancel() {
     this.showDialog = false;
     this.dataSourceInvestSelection = new MatTableDataSource([]);
+    this.displayedColumnsInvestSelection = [
+      'Date',
+      'Bank',
+      'Amount',
+      'Transactions',
+      'Add'
+    ];
+
     this.reservationSelected = null;
     this.selectedInvests = [];
     this.selectedInvests = [];
     this.amountToInvest = 0;
+    this.onlyView = false;
+    this.showAdditional = false;
   }
 
   loadParticipations() {
@@ -102,9 +113,11 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
   openAssignTransfersDialog(reservation: any, view: boolean) {
     this.reservationSelected = reservation;
-    this.getTransactions(reservation.participantId, reservation.id);
-    this.showDialog = true;
-    this.onlyView = view;
+    this.getTransactions(reservation.participantId, reservation.id, this.onlyView).subscribe((data: any) => {
+      this.dataSourceInvestSelection = new MatTableDataSource(data);
+      this.showDialog = true;
+      this.onlyView = view;
+    });
   }
 
   statusId: Record<number, string> = {
@@ -237,10 +250,8 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
       return item[property];
     };
   }
-  getTransactions(participantId: number, paticipationId: number) {
-    this.organizationservice.getTransactions(participantId, paticipationId).subscribe((data: any) => {
-      this.dataSourceInvestSelection = new MatTableDataSource(data);
-    });
+  getTransactions(participantId: number, paticipationId: number, onlyView: boolean) {
+    return this.organizationservice.getTransactions(participantId, paticipationId, onlyView);
   }
 
   applyFilter(filterValue: string) {
@@ -256,37 +267,66 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
     this.loadParticipations();
   }
 
-  manageRequest(request: any, command: string): void {
-    const approveLoanRescheduleDialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      maxWidth: '500px',
-      minWidth: '300px',
-      data: {
-        heading: `${this.translateService.instant('tooltips.' + command)} ${this.translateService.instant('labels.heading.Project Participation')}`,
-        dialogContext: `${this.translateService.instant('labels.dialogContext.Are you sure you want')}
-           ${this.translateService.instant('tooltips.' + command)}
-          ${this.translateService.instant('labels.text.the Project Participation')}
-           ${request.participantName}`
-      }
-    });
-    approveLoanRescheduleDialogRef.afterClosed().subscribe((response: { confirm: any }) => {
-      if (response.confirm) {
-        let status = 100;
-        if (command === 'Reject') {
-          status = 300;
-        } else if (command === 'Reserve') {
-          status = 400;
+  manageRequest(request: any, command: string, ignore: boolean): void {
+    if (command === 'Cancel' && request.assignedAmount > 0) {
+      // reserved
+
+      showGlobalLoader();
+      this.getTransactions(request.participantId, request.id, this.onlyView)
+        .pipe(
+          finalize(() => {
+            hideGlobalLoader();
+          })
+        )
+        .subscribe((data: any) => {
+          this.dataSourceInvestSelection = new MatTableDataSource(data);
+          this.showAdditional = true;
+          this.reservationSelected = request;
+          this.displayedColumnsInvestSelection = [
+            'Date',
+            'Amount',
+            'Transactions'
+          ];
+        });
+      return;
+    }
+    if (!this.showAdditional || ignore) {
+      const heading = `${this.translateService.instant('labels.dialogContext.Are you sure you want with pays')}`;
+      const dialogContext = `${this.translateService.instant('labels.dialogContext.this will generate new pays')}`;
+
+      let approveLoanRescheduleDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        maxWidth: '500px',
+        minWidth: '300px',
+        data: {
+          heading: ignore
+            ? heading
+            : `${this.translateService.instant('labels.buttons.' + command)} ${this.translateService.instant('labels.heading.Project Participation')}`,
+          dialogContext: ignore
+            ? dialogContext
+            : `${this.translateService.instant('labels.dialogContext.Are you sure you want')} ${this.translateService.instant('labels.buttons.' + command)} ${this.translateService.instant('labels.text.the Project Participation')} ${request.participantName}`
         }
-        const payload = {
-          amount: request.amount,
-          status
-        };
-        this.organizationservice
-          .updateInvestmentProjectParticipations(request.id, payload)
-          .subscribe((response: any) => {
-            this.reload();
-          });
-      }
-    });
+      });
+
+      approveLoanRescheduleDialogRef.afterClosed().subscribe((response: { confirm: any }) => {
+        if (response.confirm) {
+          let status = 100;
+          if (command === 'Cancel') {
+            status = 300;
+          } else if (command === 'Reserve') {
+            status = 400;
+          }
+          const payload = {
+            amount: request.amount,
+            status
+          };
+          this.organizationservice
+            .updateInvestmentProjectParticipations(this.reservationSelected.id, payload)
+            .subscribe((response: any) => {
+              this.reload();
+            });
+        }
+      });
+    }
   }
 
   statusCode(status: number) {

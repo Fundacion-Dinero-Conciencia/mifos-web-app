@@ -111,3 +111,57 @@ h6 {
 .clickable-cell {
   cursor: pointer;
 }
+
+.cancel-reservation-card {
+  background: white;
+  padding: 24px;
+}
+
+.summary-card {
+  width: 500px;
+  border: 0 solid;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.reservation-info {
+  margin-top: 8px;
+}
+
+.reservation-info small {
+  display: block;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.reservation-info div {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.payment-status {
+  text-align: right;
+}
+
+.promissory-number {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #4b5563;
+}

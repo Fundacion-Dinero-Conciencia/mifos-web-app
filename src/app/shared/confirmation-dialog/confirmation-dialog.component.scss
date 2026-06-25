@@ -1,0 +1,47 @@
+@use 'sass:map';
+@use '/src/theme/material-palette' as *;
+
+.confirm-dialog {
+  text-align: center;
+  padding: 24px;
+  min-width: 450px;
+}
+
+.dialog-icon mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  justify-content: center;
+  color: map.get($primary-palette, 500);
+}
+
+.confirm-dialog h2 {
+  color: map.get($primary-palette, 500);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.dialog-message {
+  color: #4b5563;
+  font-size: 15px;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.btn-secondary {
+  min-width: 180px;
+  border-color: map.get($primary-palette, 500);
+  color: map.get($primary-palette, 500);
+}
+
+.btn-primary {
+  min-width: 180px;
+  background: map.get($primary-palette, 500);
+}

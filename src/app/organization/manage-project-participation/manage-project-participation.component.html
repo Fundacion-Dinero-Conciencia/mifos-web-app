@@ -1,7 +1,7 @@
 <div class="container m-b-20" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="20px">
   <div #fundFormRef class="in-block"></div>
 </div>
-<div class="container m-b-20">
+<div class="container m-b-20" *ngIf="!showAdditional">
   <div #filter fxLayout="row" fxLayoutGap="20px">
     <mat-form-field fxFlex="40%">
       <input
@@ -178,7 +178,7 @@
               mat-icon-button
               matTooltip="{{ 'tooltips.Reserve' | translate }}"
               matTooltipPosition="left"
-              (click)="manageRequest(item, 'Reserve')"
+              (click)="manageRequest(item, 'Reserve', false)"
             >
               <i class="fa-solid fa-clock"></i>
             </button>
@@ -197,7 +197,7 @@
               mat-icon-button
               matTooltip="{{ 'tooltips.Reject' | translate }}"
               matTooltipPosition="left"
-              (click)="manageRequest(item, 'Reject')"
+              (click)="manageRequest(item, 'Cancel', false)"
             >
               <i class="fa-solid fa-trash-can"></i>
             </button>
@@ -236,6 +236,119 @@
     >
   </div>
 </div>
+
+<div class="container m-b-20" *ngIf="showAdditional">
+  <div class="cancel-reservation-card container mat-elevation-z8">
+    <h2>Pagos asociados a la reserva</h2>
+
+    <div class="header" fxLayout="row" ffxLayoutAlign="" spave-between start>
+      <div fxFlex>
+        <div class="reservation-info" fxLayout="row" fxLayoutGap="40px">
+          <div>
+            <div>{{ reservationSelected?.projectName }}</div>
+          </div>
+
+          <div>
+            <div>{{ reservationSelected?.rut | documentFormat }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-status">
+        <span
+          class="status-pill"
+          [ngClass]="{
+            'status-confirmed': reservationSelected?.status.id === 200,
+            'status-reserved': reservationSelected?.status.id === 400
+          }"
+        >
+          {{ 'labels.text.' + statusLabel(reservationSelected?.status.id) | translate }}
+        </span>
+
+        <div>N° pagaré {{ reservationSelected?.promissoryNumber }}</div>
+      </div>
+    </div>
+
+    <h3>¿Reinvertir en otro crédito o marcarlo para devolución?</h3>
+
+    <p>
+      Estás a punto de generar un Payin por
+      <strong> $ {{ reservationSelected?.assignedAmount | currency: currency }} </strong>
+      que quedará registrado en Conciliación bancaria.
+    </p>
+
+    <p>
+      Desde el módulo de Payin podrás ejecutar la reinversión asignándolo a un nuevo proyecto, o procesar la devolución
+      al cliente de inversión.
+    </p>
+
+    <br />
+
+    <div class="summary-card">
+      <div class="summary-row">
+        <span>Monto de la reserva</span>
+        <strong> $ {{ totalAmountSelected | currency: currency }} </strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Monto pagado</span>
+        <strong> $ {{ reservationSelected?.assignedAmount | currency: currency }} </strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Saldo</span>
+        <strong> $ {{ amoutToBeAssigned | currency: currency }} </strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Número de pagos</span>
+        <strong>
+          {{ dataSourceInvestSelection?.data.length }}
+        </strong>
+      </div>
+
+      <table mat-table #documentsTable [dataSource]="dataSourceInvestSelection" class="m-t-25">
+        <ng-container matColumnDef="Date">
+          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Date' | translate }}</th>
+          <td mat-cell *matCellDef="let invest">
+            {{ invest.transactionDate | dateFormat }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Amount">
+          <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Amount' | translate }}</th>
+          <td mat-cell *matCellDef="let invest">$ {{ invest.amount | currency: currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="Transactions">
+          <th mat-header-cell *matHeaderCellDef>N° de transacción</th>
+          <td mat-cell *matCellDef="let invest">{{ invest.id || '-' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsInvestSelection"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsInvestSelection"></tr>
+        <tr class="mat-row noContentTable" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            <div class="empty-state">
+              <p>No hay depósitos asignados</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button mat-stroked-button color="primary" (click)="onDialogCancel()">
+        {{ 'labels.buttons.Back' | translate }}
+      </button>
+
+      <button mat-raised-button color="primary" (click)="manageRequest(dataSourceInvestSelection, 'Cancel', true)">
+        {{ 'labels.buttons.Confirm' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
 <mifosx-custom-dialog
   [open]="showDialog"
   [heading]="onlyView ? 'Pagos asociados a la reserva' : 'Asignar transferencias a la reserva'"

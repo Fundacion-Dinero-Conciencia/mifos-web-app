@@ -1083,7 +1083,7 @@
       "Products Mix": "Mezcla de productos",
       "Progress Bar": "Barra de progreso",
       "Provisioning Entries": "Entradas de aprovisionamiento",
-      "Project Participation": "Participación del Proyecto",
+      "Project Participation": "participación del proyecto",
       "Question": "Pregunta",
       "Recent Activities": "Actividades recientes",
       "Recover from Guarantor": "Recuperarse del garante",
@@ -2759,6 +2759,7 @@
       "Are you sure you want recover the Original Schedule": "¿Estás seguro de que deseas recuperar el Calendario Original?",
       "Are you sure you want resume the Delinquency Classification for Loan": "¿Estás seguro de que deseas reanudar la Clasificación de Morosidad para el Crédito?",
       "Are you sure you want": "¿Estás seguro de que deseas",
+      "Are you sure you want with pays": "¿Estás seguro cancelar la inversión con pagos asociados?",
       "the Loan Reschedule": "la Recanlendrización del Crédito",
       "Are you sure you want undo the transaction": "¿Estás seguro de que deseas deshacer la transacción?",
       "Are you sure you want undo the transaction type": "¿Estás seguro de que deseas deshacer el tipo de transacción?",
@@ -2774,7 +2775,8 @@
       "Are you sure you want to": "¿Estás seguro de que deseas",
       "the productmix component with id": "el componente productmix con id",
       "the Reschedule Loan": "la Recandelarización del Crédito",
-      "the Transaction Type": "el tipo de transacción"
+      "the Transaction Type": "el tipo de transacción",
+      "this will generate new pays": "esto generará un nuevo payin para su reinversión o devolución"
     },
     "text": {
       "A": "A",

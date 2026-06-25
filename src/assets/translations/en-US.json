@@ -2753,8 +2753,9 @@
       "Are you sure you want recover the Original Schedule": "Are you sure you want recover the Original Schedule",
       "Are you sure you want resume the Delinquency Classification for Loan": "Are you sure you want resume the Delinquency Classification for Loan ",
       "Are you sure you want": "Are you sure you want ",
+      "Are you sure you want with pays": "Are you sure you want to cancel the investment and the associated payments?",
       "the Loan Reschedule": "the Loan Reschedule ",
-      "Are you sure you want undo the transaction": "Are you sure you want undo the transaction ",
+      "Are you sure you want undo the transaction": "Are you sure you want to cancel the investment and the associated payments?",
       "Are you sure you want undo the transaction type": "Are you sure you want undo the transaction type ",
       "with id": "with id ",
       "Are you sure you want to activate": "Are you sure you want to activate ",
@@ -2768,7 +2769,8 @@
       "Are you sure you want to": "Are you sure you want to ",
       "the productmix component with id": "the productmix component with id",
       "the Reschedule Loan": " the Reschedule Loan",
-      "the Transaction Type": "the Transaction Type"
+      "the Transaction Type": "the Transaction Type",
+      "this will generate new pays": "This will generate a new payment for reinvestment or a refund."
     },
     "text": {
       "A": "A",

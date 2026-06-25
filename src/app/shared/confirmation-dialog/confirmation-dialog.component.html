@@ -1,10 +1,21 @@
-<h1 mat-dialog-title>{{ data.heading }}</h1>
-<div mat-dialog-content>
-  <p>{{ data.dialogContext }} ?</p>
+<div class="confirm-dialog">
+  <div class="dialog-icon">
+    <mat-icon>info_outline</mat-icon>
+  </div>
+
+  <h2>{{ data.heading }}</h2>
+
+  <p class="dialog-message">
+    {{ data.dialogContext }}
+  </p>
+
+  <div class="dialog-actions">
+    <button mat-stroked-button mat-dialog-close class="btn-secondary">
+      {{ 'labels.buttons.Back' | translate }}
+    </button>
+
+    <button mat-flat-button color="primary" [mat-dialog-close]="{ confirm: true }" class="btn-primary">
+      {{ 'labels.buttons.Confirm' | translate }}
+    </button>
+  </div>
 </div>
-<mat-dialog-actions align="end">
-  <button mat-raised-button mat-dialog-close>{{ 'labels.buttons.Cancel' | translate }}</button>
-  <button mat-raised-button color="{{ color }}" [mat-dialog-close]="{ confirm: true }">
-    {{ 'labels.buttons.Confirm' | translate }}
-  </button>
-</mat-dialog-actions>
