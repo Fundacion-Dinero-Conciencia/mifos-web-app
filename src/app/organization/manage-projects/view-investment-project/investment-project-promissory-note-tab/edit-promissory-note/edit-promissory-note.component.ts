@@ -94,6 +94,8 @@ export class EditPromissoryNoteComponent implements OnInit {
 
   openApproveDialog() {
     const warningtDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      maxWidth: '500px',
+      minWidth: '300px',
       data: {
         heading: 'Convertir a pagaré',
         dialogContext:

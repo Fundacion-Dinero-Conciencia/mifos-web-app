@@ -303,6 +303,8 @@ export class InvestmentProjectPromissoryNoteTabComponent implements OnInit {
       return;
     } else {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        maxWidth: '500px',
+        minWidth: '300px',
         data: {
           heading: '¿Deseas continuar?',
           dialogContext: `Convertir a pagaré. Al consolidar este grupo, ya no podrás editar la información ni mover inversionistas. El grupo de pagaré quedará en modo consulta y pasará a estado Aprobado con fecha ${this.datePipe.transform(creationDate, 'dd MMMM yyyy', '', 'es')} Solo podrás visualizar la información y generar el último pagaré emitido.`

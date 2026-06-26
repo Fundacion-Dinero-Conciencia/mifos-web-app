@@ -268,7 +268,9 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
   }
 
   manageRequest(request: any, command: string, ignore: boolean): void {
-    if (command === 'Cancel' && request.assignedAmount > 0) {
+    this.reservationSelected = request;
+    console.log(this.reservationSelected);
+    if (command === 'Cancel' && request.assignedAmount > 0 && !ignore) {
       // reserved
 
       showGlobalLoader();
@@ -281,7 +283,6 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
         .subscribe((data: any) => {
           this.dataSourceInvestSelection = new MatTableDataSource(data);
           this.showAdditional = true;
-          this.reservationSelected = request;
           this.displayedColumnsInvestSelection = [
             'Date',
             'Amount',
