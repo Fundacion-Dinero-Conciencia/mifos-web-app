@@ -1,5 +1,6 @@
-.container {
-  padding: 24px;
+:host ::ng-deep .container {
+  max-width: none !important;
+  width: 80% !important;
 }
 
 .bc-subtitle {

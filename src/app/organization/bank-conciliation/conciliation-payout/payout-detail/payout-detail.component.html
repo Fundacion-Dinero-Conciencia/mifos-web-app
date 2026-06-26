@@ -31,7 +31,7 @@
   <!-- Search -->
   <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" class="m-b-10">
     <mat-form-field class="inputSearch" fxFlex="50%">
-      <mat-label>Buscar por nombre o RUT de inversionista</mat-label>
+      <mat-label>Buscar por nombre o RUT de ciente</mat-label>
       <input matInput type="text" (input)="onSearchInput($any($event.target)?.value)" />
       <button mat-icon-button matSuffix aria-label="Buscar">
         <mat-icon>search</mat-icon>
@@ -56,7 +56,7 @@
 
       <!-- Inversionista -->
       <ng-container matColumnDef="investor">
-        <th mat-header-cell *matHeaderCellDef>Inversionista</th>
+        <th mat-header-cell *matHeaderCellDef>Cliente</th>
         <td mat-cell *matCellDef="let row">
           {{ row.investorName }}
         </td>
@@ -94,7 +94,7 @@
 
       <!-- Monto a reinvertir -->
       <ng-container matColumnDef="amountToReinvest">
-        <th mat-header-cell *matHeaderCellDef>Monto a reinvertir</th>
+        <th mat-header-cell *matHeaderCellDef>Reinversión/Repago</th>
         <td mat-cell *matCellDef="let row">
           {{ row.amountToReinvest | currency: currency }}
         </td>

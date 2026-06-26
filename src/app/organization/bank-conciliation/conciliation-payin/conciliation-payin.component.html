@@ -132,8 +132,7 @@
             (row.conciliationStatus.value === 'APPLIED' || row.conciliationStatus.value === 'CONCILIATED') &&
             row.transactionDataList?.length > 0
           "
-          mat-raised-button
-          color="primary"
+          mat-icon-button
           class="action-btn"
           matTooltip="Ver detalle"
           (click)="$event.stopPropagation(); viewDetails(row)"
@@ -142,8 +141,7 @@
         </button>
         <button
           *ngIf="row.conciliationStatus.value === 'RECEIVED'"
-          mat-raised-button
-          color="primary"
+          mat-icon-button
           class="action-btn"
           matTooltip="Dividir transferencias"
           [routerLink]="['/organization', 'bank-conciliation', 'Payin', 'transfers']"

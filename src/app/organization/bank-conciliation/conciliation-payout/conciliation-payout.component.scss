@@ -1,3 +1,25 @@
+:host ::ng-deep .container {
+  max-width: none !important;
+  width: 80% !important;
+}
+
+td.mat-column-actions {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  text-align: center !important;
+}
+
+td.mat-column-actions .actions-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+td.mat-column-actions .action-btn {
+  margin: 0 !important;
+}
+
 /* Contenedor general del pill */
 .status-pill {
   width: 1rem;
@@ -187,7 +209,7 @@
   font-size: 0.85em;
   cursor: help;
   font-weight: bolder;
-  color: black;
+  color: white;
 }
 
 .alert {
