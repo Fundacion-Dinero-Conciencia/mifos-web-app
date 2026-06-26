@@ -319,10 +319,18 @@ export class ManageProjectParticipationComponent implements OnInit, AfterViewIni
             amount: request.amount,
             status
           };
+          showGlobalLoader();
           this.organizationservice
             .updateInvestmentProjectParticipations(this.reservationSelected.id, payload)
-            .subscribe((response: any) => {
-              this.reload();
+            .pipe(
+              finalize(() => {
+                hideGlobalLoader();
+              })
+            )
+            .subscribe({
+              next: (response: any) => {
+                this.reload();
+              }
             });
         }
       });
