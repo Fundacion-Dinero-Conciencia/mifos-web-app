@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AccountingService } from 'app/accounting/accounting.service';
 import { OrganizationService } from 'app/organization/organization.service';
 import { SettingsService } from 'app/settings/settings.service';
 import { hideGlobalLoader, showGlobalLoader } from 'app/shared/helpers/loaders';
+import { Currency } from 'app/shared/models/general.model';
 import { SystemService } from 'app/system/system.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
@@ -18,10 +21,11 @@ export class PayoutDetailComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private accountingService: AccountingService
   ) {}
   additional: any = null;
-  currency = 'CLP';
+  currency: Currency | null = null;
 
   conciliationId = '-';
   status = '-';
@@ -35,6 +39,7 @@ export class PayoutDetailComponent implements OnInit {
     'amountToPay',
     'amountToReinvest',
     'status',
+    'retryAmount',
     'select'
   ];
 
@@ -55,24 +60,31 @@ export class PayoutDetailComponent implements OnInit {
 
   getDefaultCurrency() {
     this.systemService.getConfigurationByName(SettingsService.default_currency).subscribe((data) => {
-      this.currency = data.stringValue;
+      this.accountingService.getCurrencies().subscribe((currencies) => {
+        const defaultCurrency = currencies?.selectedCurrencyOptions.find((c: any) => c.code === data.stringValue);
+        if (defaultCurrency) {
+          this.currency = defaultCurrency;
+          if (!history?.state.orderInfo) {
+            this.router.navigate(['../../'], { relativeTo: this.route });
+          }
+          this.orderInfo = history?.state.orderInfo;
+          console.log(this.orderInfo);
+          this.conciliationId = this.route.snapshot.paramMap.get('id') ?? '-';
+
+          this.search$.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
+            this.inputSearch = value;
+            this.loadPage(0, this.pageSize, this.inputSearch);
+          });
+
+          this.loadPage(0, this.pageSize, '');
+        }
+      });
     });
   }
 
   ngOnInit(): void {
-    if (!history?.state.orderInfo) {
-      this.router.navigate(['../../'], { relativeTo: this.route });
-    }
-    this.orderInfo = history?.state.orderInfo;
-    console.log(this.orderInfo);
-    this.conciliationId = this.route.snapshot.paramMap.get('id') ?? '-';
-
-    this.search$.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
-      this.inputSearch = value;
-      this.loadPage(0, this.pageSize, this.inputSearch);
-    });
-
-    this.loadPage(0, this.pageSize, '');
+    this.getDefaultCurrency();
+    console.log(this.currency, 'veala');
   }
 
   loadPage(page: number, size: number, search?: string): void {
@@ -91,7 +103,8 @@ export class PayoutDetailComponent implements OnInit {
           this.additional = response?.additional ?? null;
           const content = (response?.content ?? response ?? []).map((item: any) => ({
             ...item,
-            selected: false
+            selected: false,
+            retryAmount: new FormControl(null, Validators.required)
           }));
 
           this.dataSource.data = content;
@@ -149,15 +162,13 @@ export class PayoutDetailComponent implements OnInit {
   canRetry(row: any): boolean {
     const status = row?.conciliationStatus?.value;
 
-    return status === 'FAILED' || status === 'REJECTED';
+    return status === 'FAILED' || status === 'REJECTED' || status === 'PARTIAL';
   }
 
   toggleRow(row: any): void {
     if (!this.canRetry(row)) {
       return;
     }
-
-    row.selected = !row.selected;
 
     this.rowsSelected = this.dataSource.data.filter((r) => r.selected);
   }
@@ -182,7 +193,8 @@ export class PayoutDetailComponent implements OnInit {
 
   retrySelected(): void {
     const data = this.rowsSelected.map((row) => ({
-      id: row.id
+      id: row.id,
+      retryAmount: row.conciliationStatus?.value === 'PARTIAL' ? Number(row.retryAmount.value) : null
     }));
 
     if (!data.length) {

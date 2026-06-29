@@ -1,8 +1,3 @@
-:host ::ng-deep .container {
-  max-width: none !important;
-  width: 80% !important;
-}
-
 .bc-subtitle {
   margin-top: 6px;
   font-size: 13px;
@@ -167,4 +162,10 @@
 
 .status-red {
   background-color: #f44336;
+}
+
+:host ::ng-deep .container {
+  max-width: none !important;
+  width: 70% !important;
+  padding: 20px 20px 24px;
 }

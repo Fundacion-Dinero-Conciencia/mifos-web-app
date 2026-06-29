@@ -1092,6 +1092,7 @@ export class OrganizationService {
       id: number;
       amountToPaid?: number;
       amountToReinvest?: number;
+      retryAmount?: number;
     }[],
     retry = false,
     all = false,

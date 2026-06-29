@@ -1,44 +1,49 @@
-<main class="container">
+<main class="container m-b-20 mat-elevation-z8">
   <div fxLayoutAlign="flex-end center">
     <button mat-raised-button color="primary" (click)="viewChooseClient()">Generar orden de pago</button>
   </div>
-  <form [formGroup]="filters" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-between center">
-    <!-- Tipo de cliente -->
-    <mat-form-field fxFlex="30%" class="inputSearch m-b-10">
-      <mat-label>Tipo de operacion</mat-label>
-      <mat-select formControlName="type">
-        <mat-option *ngFor="let type of operationType" [value]="type.id">
-          {{ type.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <br />
+  <form [formGroup]="filters" fxLayout="column">
+    <div fxLayout="row" fxLayoutGap="45px" fxLayoutAlign="space-between start">
+      <mat-form-field fxFlex="40%">
+        <mat-label>Search by Project, Promissory Note, RUT</mat-label>
+        <input id="filter-input" matInput formControlName="text" />
+      </mat-form-field>
 
-    <!-- RUT -->
-    <!-- Id transacción -->
-    <mat-form-field fxFlex="30%">
-      <mat-label>Rango de fechas</mat-label>
+      <!-- RUT -->
+      <!-- Id transacción -->
+      <mat-form-field fxFlex="20%">
+        <mat-label>Rango de fechas</mat-label>
 
-      <mat-date-range-input [rangePicker]="picker" [formGroup]="filters">
-        <input matStartDate formControlName="startDate" placeholder="Desde" />
-        <input matEndDate formControlName="endDate" placeholder="Hasta" />
-      </mat-date-range-input>
+        <mat-date-range-input [rangePicker]="picker" [formGroup]="filters">
+          <input matStartDate formControlName="startDate" placeholder="Desde" />
+          <input matEndDate formControlName="endDate" placeholder="Hasta" />
+        </mat-date-range-input>
 
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-    </mat-form-field>
-    <!-- Estado -->
-    <mat-form-field fxFlex="30%" class="inputSearch m-b-10">
-      <mat-label>Estado</mat-label>
-      <mat-select formControlName="status">
-        <mat-option *ngFor="let status of statusOptions" [value]="status.id">
-          {{ status.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
 
-    <mat-form-field fxFlex="30%">
-      <input id="filter-input" matInput formControlName="text" placeholder="Search by Project, Promissory Note, RUT" />
-    </mat-form-field>
+      <!-- Tipo de cliente -->
+      <mat-form-field fxFlex="20%">
+        <mat-label>Tipo de operacion</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of operationType" [value]="type.id">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Estado -->
+      <mat-form-field fxFlex="20%">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let status of statusOptions" [value]="status.id">
+            {{ status.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
     <!-- Botones -->
     <div fxFlex="100%" fxLayout="row" fxLayoutAlign="end center" class="m-b-10" fxLayoutGap="10px" class="m-r-20">
@@ -46,6 +51,7 @@
       <button mat-stroked-button color="primary" type="button" (click)="onClear()">Limpiar</button>
     </div>
   </form>
+
   <table mat-table [dataSource]="dataSource" matSort class="m-t-25 conciliation-table">
     <!-- Fecha Sistema -->
     <ng-container matColumnDef="id">
@@ -134,29 +140,28 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Acciones</th>
       <td mat-cell *matCellDef="let row">
-        <div class="actions-container">
-          <button
-            mat-icon-button
-            class="action-btn"
-            matTooltip="Descargar detalle"
-            (click)="
-              $event.stopPropagation(); downloadDocument(row.documentData[0].parentEntityId, row.documentData[0].id)
-            "
-          >
-            <fa-icon icon="download"></fa-icon>
-          </button>
-
-          <button
-            mat-icon-button
-            class="action-btn"
-            [routerLink]="['/organization', 'bank-conciliation', 'payout', 'detalles', row.id]"
-            [state]="{ orderInfo: row }"
-            matTooltip="Ver detalle"
-            (click)="$event.stopPropagation()"
-          >
-            <fa-icon icon="eye"></fa-icon>
-          </button>
-        </div>
+        <button
+          mat-raised-button
+          color="primary"
+          class="action-btn"
+          matTooltip="Descargar detalle"
+          (click)="
+            $event.stopPropagation(); downloadDocument(row.documentData[0].parentEntityId, row.documentData[0].id)
+          "
+        >
+          <fa-icon icon="download"></fa-icon>
+        </button>
+        <button
+          [routerLink]="['/organization', 'bank-conciliation', 'payout', 'detalles', row.id]"
+          [state]="{ orderInfo: row }"
+          mat-raised-button
+          color="primary"
+          class="action-btn"
+          matTooltip="Ver detalle"
+          (click)="$event.stopPropagation()"
+        >
+          <fa-icon icon="eye"></fa-icon>
+        </button>
       </td>
     </ng-container>
 
@@ -225,8 +230,8 @@
                 <p *ngIf="isDebtorDetail">{{ row.quotas || '-' }}</p>
               </td>
 
-              <td></td
-            ></ng-container>
+              <td></td>
+            </ng-container>
 
             <!-- Proyecto -->
             <ng-container matColumnDef="project">

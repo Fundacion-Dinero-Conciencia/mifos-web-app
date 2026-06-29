@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container m-b-20 mat-elevation-z8">
   <!-- Top: Volver -->
   <div fxLayout="row" fxLayoutAlign="end center" class="m-b-15">
     <button class="outlinedButton" mat-button [routerLink]="['../../']">Volver</button>
@@ -44,7 +44,7 @@
   </div>
 
   <!-- Tabla principal -->
-  <div class="bc-table mat-elevation-z0">
+  <div class="bc-table mat-elevation-z0" *ngIf="currency">
     <table mat-table [dataSource]="dataSource" class="bc-table__table">
       <!-- ID -->
       <ng-container matColumnDef="id">
@@ -80,7 +80,7 @@
       <ng-container matColumnDef="installmentAmount">
         <th mat-header-cell *matHeaderCellDef>Monto cuota a pagar</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.amount | currency: currency }}
+          {{ row.amount | currency: currency?.code }}
         </td>
       </ng-container>
 
@@ -88,7 +88,7 @@
       <ng-container matColumnDef="amountToPay">
         <th mat-header-cell *matHeaderCellDef>Monto a pagar</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.amountToPaid | currency: currency }}
+          {{ row.amountToPaid | currency: currency?.code }}
         </td>
       </ng-container>
 
@@ -96,7 +96,7 @@
       <ng-container matColumnDef="amountToReinvest">
         <th mat-header-cell *matHeaderCellDef>Reinversión/Repago</th>
         <td mat-cell *matCellDef="let row">
-          {{ row.amountToReinvest | currency: currency }}
+          {{ row.amountToReinvest | currency: currency?.code }}
         </td>
       </ng-container>
 
@@ -107,15 +107,34 @@
           <span
             class="status-dot"
             [ngClass]="{
-              'status-green': row.conciliationStatus?.value === 'ACCEPTED',
-              'status-green': row.conciliationStatus?.value === 'APPLIED',
-              'status-red': row.conciliationStatus?.value === 'REJECTED',
-              'status-red': row.conciliationStatus?.value === 'INVALID',
-              'status-yellow': row.conciliationStatus?.value === 'PENDING',
-              'status-red': row.conciliationStatus?.value === 'FAILED'
+              'status-green':
+                row.conciliationStatus?.value === 'ACCEPTED' || row.conciliationStatus?.value === 'APPLIED',
+              'status-red':
+                row.conciliationStatus?.value === 'REJECTED' ||
+                row.conciliationStatus?.value === 'INVALID' ||
+                row.conciliationStatus?.value === 'PARTIAL' ||
+                row.conciliationStatus?.value === 'FAILED',
+              'status-yellow': row.conciliationStatus?.value === 'PENDING'
             }"
           ></span>
           {{ 'labels.status.' + capitalize(row.conciliationStatus?.value) | translate }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="retryAmount">
+        <th mat-header-cell *matHeaderCellDef>Monto reintento</th>
+
+        <td mat-cell *matCellDef="let row">
+          <div fxLayout="column" fxLayoutGap="8px">
+            <mifosx-input-amount
+              *ngIf="row.selected && row.conciliationStatus?.value === 'PARTIAL'"
+              [currency]="currency"
+              [isRequired]="true"
+              [inputFormControl]="row.retryAmount"
+              [inputLabel]="'Monto reintento'"
+            >
+            </mifosx-input-amount>
+          </div>
         </td>
       </ng-container>
 
@@ -126,7 +145,8 @@
         </th>
 
         <td mat-cell *matCellDef="let row">
-          <mat-checkbox *ngIf="canRetry(row)" [(ngModel)]="row.selected" (change)="toggleRow(row)"> </mat-checkbox>
+          <mat-checkbox align="rigth" *ngIf="canRetry(row)" [(ngModel)]="row.selected" (change)="toggleRow(row)">
+          </mat-checkbox>
         </td>
       </ng-container>
 
